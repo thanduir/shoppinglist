@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ShoppingList</string>
+    <string name="button_start_shoppinglist">New Shoppinglist</string>
+    <string name="button_manage_recipies">Manage Recipies</string>
+    <string name="button_manage_categories">Manage Categories</string>
+    <string name="button_manage_ingredients">Manage Ingredients</string>
+    <string name="button_add">Add</string>
+    <string name="button_delete">Del</string>
+    <string name="button_up">Up</string>
+    <string name="button_down">Down</string>
+    <string name="button_add_sortorder">Add SortOrder</string>
+    <string name="button_del_sortorder">Del SortOrder</string>
+    <string name="activity_ingredients">Manage ingredients</string>
+    <string name="activity_categories">Manage categories</string>
+    <string name="text_category">Category</string>
+    <string name="text_name">Name</string>
+    <string name="text_provenance">Provenance</string>
+</resources>

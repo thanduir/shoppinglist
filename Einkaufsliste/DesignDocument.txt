@@ -1,0 +1,76 @@
+Einkaufslisten-App
+==================
+
+Notizen
+-------
+
+- Ablauf: Liste für "heute" -> add essen -> Entweder: übernimm gespeichertes oder wähle zutaten
+- Jede zutat bekommt ein (oder mehrere? z.B. auch migros vs. coop o.ä. könnten diese synchronisiert werden?) Category (Gemüse+Früchte, Kühlprodukte, ...)
+- Categories werden separat definiert inkl. sortierreihenfolge
+- mehere sortierreihenfolgen erlauben (z.b. migros vs. coop). 
+- App macht dann gruppen (und fasst gleiches zusammen) und sortiert diese (Darstellung umschaltbar zwischen "Liste machen" und "Einkaufsmodus"). 
+- Danach Einkaufsmodus: sortierte anzeige, möglichkeit etwas "abzuhaken". 
+- Qualifier "gross / klein"? 
+- Skalierungsmöglichkeit für Rezepte? (für X Personen, Std. sollte 2 sein)
+- Items auf nächste Liste verschieben? 
+- Könnte diese (d.h. die Liste der allgemeinen einkaufssachen, analog Blatt auf Nicoles pult) irgendwo "extern" für mehrere Leute gespeichert sein (oder synchronisiert zw. versch. natels)?
+- Wenn synchronisation nicht möglich, dann sicher zuerst mal import / export möglichkeit. 
+- Integration (falls synchronisation möglich) von aktuellem Essensplanung.ods?
+
+
+Strukturierung der Daten
+=========================
+
+Klasse Ingredient
+-----------------
+* Name
+* List von Categories
+* Optional?
+* Qualifier (gross / klein, ...)
+
+Klasse Amount
+------------
+* Wert
+* Einheit
+
+Klasse Recipe
+-------------
+* Name
+* Liste von Ingredients inkl. dazugehörigem Amount
+* Standard Skalierungsfaktor (aka für wieviele Personen)
+
+Klasse CategorySortOrder
+---------------------
+* Name
+* Sortierte Liste von Categories
+
+Klasse ShoppingList
+--------------------
+* Name
+* Liste von Gruppen, welche listen von struct { Ingredient, Status ("Eingepackt"), Menge, ... } enthalten
+* Methode zum Generieren von map<Category, Ingredient-List>
+
+Klasse "Einkaufsplanung"
+------------------------
+* Liste von Rezepten
+* Liste von Categories
+* Liste von Zutaten? (Oder added man immer rezepte?)
+* Liste von IngredientSortOrders
+* Liste von Einkaufslisten
+* Liste von nicht-abgehakten Ingredients der (letzten oder aller?) Einkaufsliste
+* Serialisierungsmethoden
+
+
+Activities
+==========
+
+* MainActivity
+	- Button Manage Categories (and SortOrder)
+	- Button Manage Ingredients
+	- Button Manage Recipies (add, modify, delete)
+	- Button Start new ShoppingList
+
+* AddShoppingList
+* Go Shopping
+* ManageRecipies
+* ManageCategories
