@@ -12,8 +12,10 @@ public class MainActivity extends AppCompatActivity
 
     public static final String EXTRA_CATEGORIES = "ch.phwidmer.einkaufsliste.CATEGORIES";
     public static final String EXTRA_INGREDIENTS = "ch.phwidmer.einkaufsliste.INGREDIENTS";
+    public static final String EXTRA_RECIPES = "ch.phwidmer.einkaufsliste.RECIPES";
     private final int REQUEST_CODE_ManageCategories = 1;
-    private final int REQUEST_CODE_ManageIngredients = 1;
+    private final int REQUEST_CODE_ManageIngredients = 2;
+    private final int REQUEST_CODE_ManageRecipes = 3;
 
     private GroceryPlanning m_GroceryPlanning;
 
@@ -43,6 +45,14 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, REQUEST_CODE_ManageIngredients);
     }
 
+    public void manageRecipies(View view)
+    {
+        Intent intent = new Intent(this, ManageRecipes.class);
+        intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
+        intent.putExtra(EXTRA_RECIPES, m_GroceryPlanning.m_Recipes);
+        startActivityForResult(intent, REQUEST_CODE_ManageRecipes);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -58,6 +68,10 @@ public class MainActivity extends AppCompatActivity
         else if(requestCode == REQUEST_CODE_ManageIngredients)
         {
             m_GroceryPlanning.m_Ingredients = data.getParcelableExtra(EXTRA_INGREDIENTS);
+        }
+        else if(requestCode == REQUEST_CODE_ManageRecipes)
+        {
+            m_GroceryPlanning.m_Recipes = data.getParcelableExtra(EXTRA_RECIPES);
         }
     }
 }

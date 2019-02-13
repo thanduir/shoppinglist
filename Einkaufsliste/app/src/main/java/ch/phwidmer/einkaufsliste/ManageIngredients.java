@@ -1,14 +1,18 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +22,6 @@ import static android.view.View.VISIBLE;
 
 public class ManageIngredients extends AppCompatActivity  implements AdapterView.OnItemSelectedListener
 {
-
     private Ingredients m_Ingredients;
     private Categories m_Categories;
 
@@ -98,12 +101,57 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
 
     public void onAddIngredient(View v)
     {
-        // TODO: THIS
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add category");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Ingredients.addIngredient(input.getText().toString());
+                IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
+                adapter.setActiveElement(input.getText().toString());
+                adapter.notifyDataSetChanged();
+                handleIngredientSelected(input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     public void onDelIngredient(View v)
     {
-        // TODO: THIS
+        IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
+        if(adapter.getActiveElement() == "")
+        {
+            // TODO: Eigentlich sollte stattdessen der Delete-Button deaktiviert sein, wenn kein Element ausgewählt ist.
+            Toast.makeText(v.getContext(), "No Element selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        View activeItem = m_RecyclerView.getChildAt(adapter.getActiveElementIndex());
+        IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
+
+        Toast.makeText(v.getContext(), "Deleteing " + holder.m_TextView.getText(), Toast.LENGTH_SHORT).show();
+        m_Ingredients.removeIngredient((String)holder.m_TextView.getText());
+        adapter.notifyItemRemoved(adapter.getActiveElementIndex());
+        adapter.setActiveElement("");
+
+        if(m_RecyclerView.getAdapter() != null)
+        {
+            m_RecyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     public void handleIngredientSelected(String strActiveElement)
@@ -141,10 +189,8 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
 
         if(parent == m_SpinnerCategory)
         {
-            // TODO: Eintrag ändern!
             String category = (String)m_SpinnerCategory.getSelectedItem();
-            Toast.makeText(view.getContext(), "Category changed: " + category, Toast.LENGTH_SHORT).show();
-
+            ingredient.m_Category = m_Categories.getCategory(category);
             return;
         }
         else if(parent == m_SpinnerProvenance)
@@ -162,7 +208,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
     public void onConfirm(View v)
     {
         Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_CATEGORIES, m_Ingredients);
+        data.putExtra(MainActivity.EXTRA_INGREDIENTS, m_Ingredients);
         setResult(RESULT_OK, data);
         finish();
     }

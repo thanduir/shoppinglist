@@ -12,6 +12,7 @@
     <string name="button_del_sortorder">Del SortOrder</string>
     <string name="activity_ingredients">Manage ingredients</string>
     <string name="activity_categories">Manage categories</string>
+    <string name="activity_recipes">Manage recipes</string>
     <string name="text_category">Category</string>
     <string name="text_name">Name</string>
     <string name="text_provenance">Provenance</string>

@@ -9,9 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ManageIngredients"
-                  android:label="@string/activity_ingredients"
-                  android:parentActivityName=".MainActivity">
+        <activity
+            android:name=".ManageRecipes"
+            android:label="@string/activity_recipes"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".ManageIngredients"
+            android:label="@string/activity_ingredients"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

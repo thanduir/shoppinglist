@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Vector;
+
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder>
 {
     private Ingredients m_Ingredients;
     private Integer m_iActiveElement;
-
-    // TODO: Die Elemente sollten alphabetisch sortiert sein! -> Dann dürfte ich aber wohl die ByIndex-MEthode nicht mehr benutzen bzw. würde sie am Besten gleich entfernen!
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -38,7 +40,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             return "";
         }
-        return m_Ingredients.getAllIngredients().get(m_iActiveElement);
+        return getSortedIngredients().get(m_iActiveElement);
     }
     public Integer getActiveElementIndex()
     {
@@ -53,7 +55,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
         else
         {
-            m_iActiveElement = m_Ingredients.getAllIngredients().indexOf(strElement);
+            m_iActiveElement = getSortedIngredients().indexOf(strElement);
         }
     }
 
@@ -71,7 +73,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void onBindViewHolder(IngredientsAdapter.ViewHolder holder, int position)
     {
-        String strIngredient = m_Ingredients.getAllIngredients().get(position);
+        String strIngredient = getSortedIngredients().get(position);
         holder.m_TextView.setText(strIngredient);
 
         if(m_iActiveElement == position)
@@ -89,6 +91,21 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public int getItemCount()
     {
-        return m_Ingredients.getAllIngredients().size();
+        return getSortedIngredients().size();
+    }
+
+    private Vector<String> getSortedIngredients()
+    {
+        Vector<String> vec = m_Ingredients.getAllIngredients();
+        Collections.sort(vec, new SortIgnoreCase());
+        return vec;
+    }
+
+    private class SortIgnoreCase implements Comparator<Object> {
+        public int compare(Object o1, Object o2) {
+            String s1 = (String) o1;
+            String s2 = (String) o2;
+            return s1.toLowerCase().compareTo(s2.toLowerCase());
+        }
     }
 }

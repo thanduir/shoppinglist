@@ -53,6 +53,18 @@ public class Ingredients implements Parcelable
         m_Ingredients.put("Milk", in3);
     }
 
+    public void addIngredient(String strName)
+    {
+        if(m_Ingredients.containsKey(strName))
+        {
+            return;
+        }
+        Ingredient i = new Ingredient();
+        i.m_Provenance = Provenance.Everywhere;
+        i.m_Category = m_Categories.getCategory(m_Categories.getAllCategories().firstElement());
+        m_Ingredients.put(strName, i);
+    }
+
     public Ingredient getIngredient(String strName)
     {
         return m_Ingredients.get(strName);
@@ -68,12 +80,11 @@ public class Ingredients implements Parcelable
         }
         return vec;
     }
-    // TODO: Die beiden Methoden durch eine "getAllCategories" Methode ersetzen!
-    //public Ingredient getIngredientByIndex(Integer index) { return (Ingredient) m_Ingredients.values().toArray()[index]; }
-    /*public Integer getNumberOfIngredients()
+
+    public void removeIngredient(String strName)
     {
-        return m_Ingredients.size();
-    }*/
+        m_Ingredients.remove(strName);
+    }
 
     // Parceling
 
