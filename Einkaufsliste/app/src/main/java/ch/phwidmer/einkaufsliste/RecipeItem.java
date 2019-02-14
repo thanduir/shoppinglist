@@ -6,15 +6,20 @@ import android.os.Parcelable;
 public class RecipeItem implements Parcelable {
     public enum Size
     {
-        Standard,
+        Normal,
         Small,
         Large;
     }
 
     public String   m_Ingredient;
     public Amount   m_Amount;
-    public Size     m_Size;
-    public Boolean  m_Optional;
+    public Size     m_Size = Size.Normal;
+    public Boolean  m_Optional = false;
+
+    public RecipeItem()
+    {
+        m_Amount = new Amount();
+    }
 
     // Parceling
 
@@ -37,6 +42,7 @@ public class RecipeItem implements Parcelable {
         m_Optional = in.readInt() == 0;
 
         // Amount
+        m_Amount = new Amount();
         m_Amount.m_Quantity = in.readFloat();
         m_Amount.m_Unit = Amount.Unit.values()[in.readInt()];
     }

@@ -21,7 +21,9 @@ public class Ingredients implements Parcelable
     public class Ingredient
     {
         public Categories.Category m_Category;
-        public Provenance m_Provenance;
+        public Provenance m_Provenance = Provenance.Everywhere;;
+        // TODO: Std-Wert entfernen (Config?) und in ManageIngredients einbauen!
+        public Amount.Unit m_DefaultUnit = Amount.Unit.Count;
     }
     private LinkedHashMap<String, Ingredient>  m_Ingredients;
 
@@ -60,7 +62,6 @@ public class Ingredients implements Parcelable
             return;
         }
         Ingredient i = new Ingredient();
-        i.m_Provenance = Provenance.Everywhere;
         i.m_Category = m_Categories.getCategory(m_Categories.getAllCategories().firstElement());
         m_Ingredients.put(strName, i);
     }

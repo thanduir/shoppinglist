@@ -3,10 +3,11 @@ package ch.phwidmer.einkaufsliste;
 public class Amount {
     public enum Unit {
         Count,
-        Kilogramm,
-        Liter;
+        Kilogram,
+        Liter,
+        Unitless;
     }
 
-    public Float m_Quantity;
+    public Float m_Quantity = 1.0f;
     public Unit m_Unit;
 }
