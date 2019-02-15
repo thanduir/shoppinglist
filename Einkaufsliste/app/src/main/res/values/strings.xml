@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">ShoppingList</string>
-    <string name="button_start_shoppinglist">New Shoppinglist</string>
+    <string name="button_start_shoppinglist">Manage Shoppinglist</string>
     <string name="button_manage_recipies">Manage Recipies</string>
     <string name="button_manage_categories">Manage Categories</string>
     <string name="button_manage_ingredients">Manage Ingredients</string>
+    <string name="button_go_shopping">Go Shopping</string>
     <string name="button_add">Add</string>
     <string name="button_delete">Del</string>
     <string name="button_up">Up</string>
@@ -13,6 +14,7 @@
     <string name="activity_ingredients">Manage ingredients</string>
     <string name="activity_categories">Manage categories</string>
     <string name="activity_recipes">Manage recipes</string>
+    <string name="activity_manage_shoppinglist">Manage Shoppinglist</string>
     <string name="text_category">Category</string>
     <string name="text_name">Name</string>
     <string name="text_provenance">Provenance</string>
@@ -20,4 +22,5 @@
     <string name="text_amount">Amount</string>
     <string name="text_size">Size</string>
     <string name="text_optional">Optional</string>
+    <string name="text_std_unit">Default unit</string>
 </resources>

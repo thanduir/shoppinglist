@@ -10,7 +10,7 @@ import java.util.Vector;
 public class Recipes implements Parcelable {
 
     public class Recipe {
-        // TODO: Evtl. sollte dieser Default-Wert (+ evtl. vorhandene andere) in eine Configuration gespeichert werden?
+        // TODO: Dieser Default-Wert (+ evtl. vorhandene andere in anderen Klassen) sollte in eine Configuration gespeichert werden.
         public Integer m_NumberOfPersons = 4;
         public LinkedList<RecipeItem> m_Items = new LinkedList<RecipeItem>();
     }

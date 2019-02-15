@@ -11,13 +11,17 @@ public class MainActivity extends AppCompatActivity
     // TODO: Suchen, wieviele standard-werte notwendig sind und ob ich dafür einen Configuration anlegen sollte!
     // TODO: Code-Doku!
     // TODO: DesignDokuemnt.txt aktualisieren!
+    // TODO: Macht es Sinn, in jedem Dialog OK und CANCEL zu haben oder sollten z.T. die Änderungen *immer* übernommen werden? ZUMINDEST SOLLTE ICH BEI CANCEL ODER BACKBUTTON EINE BENUTZERABFRAGE EINBAUEN, ODER NICHT? (back-button handling funktioniert atm sowieso nicht und muss geändert werden!!)
+    // TODO: Braucht es in (einzelnen) Activites noch Reset-Methoden? Oder eine "alles resetten" Methode in der Config?
 
     public static final String EXTRA_CATEGORIES = "ch.phwidmer.einkaufsliste.CATEGORIES";
     public static final String EXTRA_INGREDIENTS = "ch.phwidmer.einkaufsliste.INGREDIENTS";
     public static final String EXTRA_RECIPES = "ch.phwidmer.einkaufsliste.RECIPES";
+    public static final String EXTRA_SHOPPINGLIST = "ch.phwidmer.einkaufsliste.SHOPPINGLIST";
     private final int REQUEST_CODE_ManageCategories = 1;
     private final int REQUEST_CODE_ManageIngredients = 2;
     private final int REQUEST_CODE_ManageRecipes = 3;
+    private final int REQUEST_CODE_ManageShoppingList = 4;
 
     private GroceryPlanning m_GroceryPlanning;
 
@@ -55,6 +59,22 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, REQUEST_CODE_ManageRecipes);
     }
 
+    public void editShoppingList(View view)
+    {
+        Intent intent = new Intent(this, ManageShoppingList.class);
+        intent.putExtra(EXTRA_SHOPPINGLIST, m_GroceryPlanning.m_ShoppingList);
+        startActivityForResult(intent, REQUEST_CODE_ManageShoppingList);
+    }
+
+    public void goShopping(View view)
+    {
+        // TODO
+        /*Intent intent = new Intent(this, ManageRecipes.class);
+        intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
+        intent.putExtra(EXTRA_RECIPES, m_GroceryPlanning.m_Recipes);
+        startActivityForResult(intent, REQUEST_CODE_ManageRecipes);*/
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -74,6 +94,10 @@ public class MainActivity extends AppCompatActivity
         else if(requestCode == REQUEST_CODE_ManageRecipes)
         {
             m_GroceryPlanning.m_Recipes = data.getParcelableExtra(EXTRA_RECIPES);
+        }
+        else if(requestCode == REQUEST_CODE_ManageShoppingList)
+        {
+            m_GroceryPlanning.m_ShoppingList = data.getParcelableExtra(EXTRA_SHOPPINGLIST);
         }
     }
 }

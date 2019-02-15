@@ -17,9 +17,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-
 public class ManageIngredients extends AppCompatActivity  implements AdapterView.OnItemSelectedListener
 {
     private Ingredients m_Ingredients;
@@ -32,6 +29,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
     private TextView    m_TextViewIngredient;
     private Spinner     m_SpinnerCategory;
     private Spinner     m_SpinnerProvenance;
+    private Spinner     m_SpinnerStdUnit;
 
     // TODO: Beachten, dass u.U. eine Category nicht mehr existieren könnte. Was sollte dann passieren? (+ analoge Frage für alle nachfolgenden Activities!)
 
@@ -47,7 +45,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         m_Ingredients = (Ingredients)intent.getParcelableExtra(MainActivity.EXTRA_INGREDIENTS);
 
         m_TextViewIngredient = (TextView) findViewById(R.id.textViewIntegrdient);
-        m_TextViewIngredient.setVisibility(INVISIBLE);
+        m_TextViewIngredient.setVisibility(View.INVISIBLE);
 
         m_SpinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
         ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
@@ -58,7 +56,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerCategory.setAdapter(adapterCategory);
         m_SpinnerCategory.setOnItemSelectedListener(this);
-        m_SpinnerCategory.setVisibility(INVISIBLE);
+        m_SpinnerCategory.setVisibility(View.INVISIBLE);
 
         m_SpinnerProvenance = (Spinner) findViewById(R.id.spinnerProvenance);
         ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
@@ -69,7 +67,18 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         adapterProvenance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerProvenance.setAdapter(adapterProvenance);
         m_SpinnerProvenance.setOnItemSelectedListener(this);
-        m_SpinnerProvenance.setVisibility(INVISIBLE);
+        m_SpinnerProvenance.setVisibility(View.INVISIBLE);
+
+        m_SpinnerStdUnit = (Spinner) findViewById(R.id.spinnerStdUnit);
+        ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        for(Amount.Unit u : Amount.Unit.values())
+        {
+            adapterStdUnit.add(u.toString());
+        }
+        adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        m_SpinnerStdUnit.setAdapter(adapterStdUnit);
+        m_SpinnerStdUnit.setOnItemSelectedListener(this);
+        m_SpinnerStdUnit.setVisibility(View.INVISIBLE);
 
         m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewIngredients);
         m_RecyclerView.setHasFixedSize(true);
@@ -160,15 +169,17 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
     {
         if(strActiveElement == "")
         {
-            m_TextViewIngredient.setVisibility(INVISIBLE);
-            m_SpinnerCategory.setVisibility(INVISIBLE);
-            m_SpinnerProvenance.setVisibility(INVISIBLE);
+            m_TextViewIngredient.setVisibility(View.INVISIBLE);
+            m_SpinnerCategory.setVisibility(View.INVISIBLE);
+            m_SpinnerProvenance.setVisibility(View.INVISIBLE);
+            m_SpinnerStdUnit.setVisibility(View.INVISIBLE);
             return;
         }
 
-        m_TextViewIngredient.setVisibility(VISIBLE);
-        m_SpinnerCategory.setVisibility(VISIBLE);
-        m_SpinnerProvenance.setVisibility(VISIBLE);
+        m_TextViewIngredient.setVisibility(View.VISIBLE);
+        m_SpinnerCategory.setVisibility(View.VISIBLE);
+        m_SpinnerProvenance.setVisibility(View.VISIBLE);
+        m_SpinnerStdUnit.setVisibility(View.VISIBLE);
 
         Ingredients.Ingredient ingredient = m_Ingredients.getIngredient(strActiveElement);
         m_TextViewIngredient.setText(strActiveElement);
@@ -177,6 +188,8 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category.getName()));
 
         m_SpinnerProvenance.setSelection(ingredient.m_Provenance.ordinal());
+
+        m_SpinnerStdUnit.setSelection(ingredient.m_DefaultUnit.ordinal());
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -199,6 +212,12 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         {
             String provenance = (String)m_SpinnerProvenance.getSelectedItem();
             ingredient.m_Provenance = Ingredients.Provenance.valueOf(provenance);
+            return;
+        }
+        else if(parent == m_SpinnerStdUnit)
+        {
+            String provenance = (String)m_SpinnerStdUnit.getSelectedItem();
+            ingredient.m_DefaultUnit = Amount.Unit.valueOf(provenance);
             return;
         }
     }

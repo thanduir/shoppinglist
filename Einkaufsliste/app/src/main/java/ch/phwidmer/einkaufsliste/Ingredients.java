@@ -37,21 +37,25 @@ public class Ingredients implements Parcelable
         Ingredient in0 = new Ingredient();
         in0.m_Category = m_Categories.getCategory("Fruits and vegetables");
         in0.m_Provenance = Provenance.Everywhere;
+        in0.m_DefaultUnit = Amount.Unit.Count;
         m_Ingredients.put("Pepper", in0);
 
         Ingredient in1 = new Ingredient();
         in1.m_Category = m_Categories.getCategory("Bread");
         in1.m_Provenance = Provenance.Everywhere;
+        in1.m_DefaultUnit = Amount.Unit.Kilogram;
         m_Ingredients.put("Zopf", in1);
 
         Ingredient in2 = new Ingredient();
         in2.m_Category = m_Categories.getCategory("Fruits and vegetables");
         in2.m_Provenance = Provenance.Coop;
+        in2.m_DefaultUnit = Amount.Unit.Count;
         m_Ingredients.put("Apple", in2);
 
         Ingredient in3 = new Ingredient();
         in3.m_Category = m_Categories.getCategory("Dairy products");
         in3.m_Provenance = Provenance.Migros;
+        in3.m_DefaultUnit = Amount.Unit.Liter;
         m_Ingredients.put("Milk", in3);
     }
 
