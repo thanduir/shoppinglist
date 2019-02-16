@@ -5,24 +5,64 @@ import android.os.Parcelable;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Vector;
 
 public class ShoppingList implements Parcelable
 {
     public class ShoppingRecipe
     {
-        private Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
-        private LinkedList<ShoppingListItem>    m_Items = new LinkedList<ShoppingListItem>();
+        public Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
+        public LinkedList<ShoppingListItem>    m_Items = new LinkedList<ShoppingListItem>();
     }
     private LinkedHashMap<String, ShoppingRecipe> m_Items;
 
-    // TODO: addFromRecipe-Methode (und keine andere "add" Methode, nur change-Methoden
     // TODO: Methode zum Generieren von map<Categories, Ingredient-List>? Oder wie mache ich das, damit es nicht ständig neu generiert wird?
 
     public ShoppingList()
     {
         m_Items = new LinkedHashMap<String, ShoppingRecipe>();
+    }
 
-        // TODO: Will ich hier noch ein oder zwei Test-Daten haben?
+    public void addFromRecipe(String strName, Recipes.Recipe recipe)
+    {
+        if(m_Items.containsKey(strName))
+        {
+            return;
+        }
+
+        ShoppingRecipe item = new ShoppingRecipe();
+        item.m_fScalingFactor = (float)recipe.m_NumberOfPersons;
+        for(RecipeItem r : recipe.m_Items)
+        {
+            ShoppingListItem li = new ShoppingListItem();
+            li.m_Amount = r.m_Amount;
+            li.m_Ingredient = r.m_Ingredient;
+            li.m_Optional = r.m_Optional;
+            li.m_Size = r.m_Size;
+            item.m_Items.add(li);
+        }
+        m_Items.put(strName, item);
+    }
+
+    public ShoppingRecipe getShoppingRecipe(String strName)
+    {
+        return m_Items.get(strName);
+    }
+
+    public Vector<String> getAllShoppingRecipes()
+    {
+        Vector<String> vec = new Vector<String>();
+        for(Object obj : m_Items.keySet())
+        {
+            String str = (String)obj;
+            vec.add(str);
+        }
+        return vec;
+    }
+
+    public void removeShoppingRecipe(String strName)
+    {
+        m_Items.remove(strName);
     }
 
     // Parceling

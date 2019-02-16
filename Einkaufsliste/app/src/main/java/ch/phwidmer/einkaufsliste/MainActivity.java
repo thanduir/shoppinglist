@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity
     {
         Intent intent = new Intent(this, ManageShoppingList.class);
         intent.putExtra(EXTRA_SHOPPINGLIST, m_GroceryPlanning.m_ShoppingList);
+        intent.putExtra(EXTRA_RECIPES, m_GroceryPlanning.m_Recipes);
+        intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
         startActivityForResult(intent, REQUEST_CODE_ManageShoppingList);
     }
 

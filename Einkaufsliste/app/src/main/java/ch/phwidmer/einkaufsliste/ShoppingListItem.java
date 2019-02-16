@@ -10,12 +10,17 @@ public class ShoppingListItem implements Parcelable {
         Taken;
     }
 
-    public Status           m_Status;
+    public Status           m_Status = Status.None;
 
     public String           m_Ingredient;
     public Amount           m_Amount;
     public RecipeItem.Size  m_Size = RecipeItem.Size.Normal;
     public Boolean          m_Optional = false;
+
+    public ShoppingListItem()
+    {
+        m_Amount = new Amount();
+    }
 
     // Parceling
 
