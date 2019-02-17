@@ -16,8 +16,6 @@ public class ShoppingList implements Parcelable
     }
     private LinkedHashMap<String, ShoppingRecipe> m_Items;
 
-    // TODO: Methode zum Generieren von map<Categories, Ingredient-List>? Oder wie mache ich das, damit es nicht ständig neu generiert wird?
-
     public ShoppingList()
     {
         m_Items = new LinkedHashMap<String, ShoppingRecipe>();

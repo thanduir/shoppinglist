@@ -16,6 +16,7 @@
     <string name="activity_recipes">Manage recipes</string>
     <string name="activity_manage_shoppinglist">Manage Shoppinglist</string>
     <string name="activity_edit_shoppinglist_recipe">Edit Shoppinglist Recipe</string>
+    <string name="activity_go_shopping">Go Shopping</string>
     <string name="text_category">Category</string>
     <string name="text_name">Name</string>
     <string name="text_provenance">Provenance</string>
@@ -27,4 +28,5 @@
     <string name="button_reset">Reset</string>
     <string name="text_scaling_factor">Scaling factor</string>
     <string name="button_edit">Edit</string>
+    <string name="text_sort_order">Sort order</string>
 </resources>

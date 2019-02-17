@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.StateSet;
 
 public class ShoppingListItem implements Parcelable {
     public enum Status
@@ -20,6 +21,18 @@ public class ShoppingListItem implements Parcelable {
     public ShoppingListItem()
     {
         m_Amount = new Amount();
+    }
+
+    public void invertStatus()
+    {
+        if(m_Status == Status.None)
+        {
+            m_Status = Status.Taken;
+        }
+        else
+        {
+            m_Status = Status.None;
+        }
     }
 
     // Parceling

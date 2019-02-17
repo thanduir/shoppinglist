@@ -7,6 +7,13 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity
 {
+    /* TODO NEXT:
+        1. Serialization (cf. also next point)!
+        2. StateLoad/Save (cf. Links). Macht das etwas, was ich auch für Serialisierung brauchen kann?
+        3. Import / Export der Daten! (human-readable format?)
+        4. Import-File mit den aktuellen Datensätzen erstellen und danach die Std-Werte entfernen!
+    */
+
     // TODO: Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
     // TODO: Suchen, wieviele standard-werte notwendig sind und ob ich dafür einen Configuration anlegen sollte!
     // TODO: Code-Doku!
@@ -22,10 +29,9 @@ public class MainActivity extends AppCompatActivity
     private final int REQUEST_CODE_ManageIngredients = 2;
     private final int REQUEST_CODE_ManageRecipes = 3;
     private final int REQUEST_CODE_ManageShoppingList = 4;
+    private final int REQUEST_CODE_GoShopping = 5;
 
     private GroceryPlanning m_GroceryPlanning;
-
-    // TODO: Serialization etc.
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -70,11 +76,11 @@ public class MainActivity extends AppCompatActivity
 
     public void goShopping(View view)
     {
-        // TODO
-        /*Intent intent = new Intent(this, ManageRecipes.class);
+        Intent intent = new Intent(this, GoShoppingActivity.class);
+        intent.putExtra(EXTRA_SHOPPINGLIST, m_GroceryPlanning.m_ShoppingList);
+        intent.putExtra(EXTRA_CATEGORIES, m_GroceryPlanning.m_Categories);
         intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
-        intent.putExtra(EXTRA_RECIPES, m_GroceryPlanning.m_Recipes);
-        startActivityForResult(intent, REQUEST_CODE_ManageRecipes);*/
+        startActivityForResult(intent, REQUEST_CODE_GoShopping);
     }
 
     @Override
@@ -98,6 +104,10 @@ public class MainActivity extends AppCompatActivity
             m_GroceryPlanning.m_Recipes = data.getParcelableExtra(EXTRA_RECIPES);
         }
         else if(requestCode == REQUEST_CODE_ManageShoppingList)
+        {
+            m_GroceryPlanning.m_ShoppingList = data.getParcelableExtra(EXTRA_SHOPPINGLIST);
+        }
+        else if(requestCode == REQUEST_CODE_GoShopping)
         {
             m_GroceryPlanning.m_ShoppingList = data.getParcelableExtra(EXTRA_SHOPPINGLIST);
         }

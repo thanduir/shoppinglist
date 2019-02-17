@@ -9,7 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditShoppingListRecipe"
+        <activity android:name=".GoShoppingActivity"
+            android:label="@string/activity_go_shopping"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".EditShoppingListRecipe"
             android:label="@string/activity_edit_shoppinglist_recipe"
             android:parentActivityName=".ManageShoppingList">
             <meta-data
