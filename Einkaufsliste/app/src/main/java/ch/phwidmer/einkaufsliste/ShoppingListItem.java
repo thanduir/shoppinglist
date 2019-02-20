@@ -62,7 +62,7 @@ public class ShoppingListItem implements Parcelable {
         m_Amount.m_Unit = Amount.Unit.values()[in.readInt()];
 
         m_Size = RecipeItem.Size.values()[in.readInt()];
-        m_Optional = in.readInt() == 0;
+        m_Optional = in.readInt() == 1;
     }
 
     @Override

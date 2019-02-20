@@ -2,7 +2,10 @@ package ch.phwidmer.einkaufsliste;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.JsonReader;
+import android.util.JsonWriter;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -19,44 +22,6 @@ public class Recipes implements Parcelable {
     public Recipes()
     {
         m_Recipies = new LinkedHashMap<String, Recipe>();
-
-        // TODO: Test-Code hier löschen, nachdem alles soweit fertig ist (und v.a. gespeichert wird!)
-
-        Recipe recipe0 = new Recipe();
-        recipe0.m_NumberOfPersons = 2;
-        RecipeItem j0 = new RecipeItem();
-        j0.m_Ingredient = "Pepper";
-        j0.m_Amount.m_Unit = Amount.Unit.Count;
-        j0.m_Amount.m_Quantity = 1f;
-        j0.m_Optional = true;
-        j0.m_Size = RecipeItem.Size.Large;
-        recipe0.m_Items.add(j0);
-        RecipeItem j1 = new RecipeItem();
-        j1.m_Ingredient = "Apple";
-        j1.m_Amount.m_Unit = Amount.Unit.Count;
-        j1.m_Amount.m_Quantity = 2f;
-        j1.m_Optional = false;
-        j1.m_Size = RecipeItem.Size.Small;
-        recipe0.m_Items.add(j1);
-        m_Recipies.put("Diverses", recipe0);
-
-        Recipe recipe1 = new Recipe();
-        recipe1.m_NumberOfPersons = 3;
-        RecipeItem i0 = new RecipeItem();
-        i0.m_Ingredient = "Zopf";
-        i0.m_Amount.m_Unit = Amount.Unit.Kilogram;
-        i0.m_Amount.m_Quantity = 0.5f;
-        i0.m_Optional = true;
-        i0.m_Size = RecipeItem.Size.Normal;
-        recipe1.m_Items.add(i0);
-        RecipeItem i1 = new RecipeItem();
-        i1.m_Ingredient = "Milk";
-        i1.m_Amount.m_Unit = Amount.Unit.Liter;
-        i1.m_Amount.m_Quantity = 1.0f;
-        i1.m_Optional = false;
-        i1.m_Size = RecipeItem.Size.Normal;
-        recipe1.m_Items.add(i1);
-        m_Recipies.put("Zopf mit Milch", recipe1);
     }
 
     public void addRecipe(String strName)
@@ -88,6 +53,109 @@ public class Recipes implements Parcelable {
             vec.add(str);
         }
         return vec;
+    }
+
+    // Serializing
+
+    public void saveToJson(JsonWriter writer) throws IOException
+    {
+        writer.beginObject();
+        writer.name("id").value("Recipes");
+
+        for(LinkedHashMap.Entry<String, Recipe> e : m_Recipies.entrySet())
+        {
+            writer.name(e.getKey());
+            writer.beginObject();
+            writer.name("NrPersons").value(e.getValue().m_NumberOfPersons);
+            for(RecipeItem ri : e.getValue().m_Items)
+            {
+                writer.name(ri.m_Ingredient);
+                writer.beginObject();
+
+                writer.name("amount");
+                writer.beginArray();
+                writer.value(ri.m_Amount.m_Quantity);
+                writer.value(ri.m_Amount.m_Unit.toString());
+                writer.endArray();
+
+                writer.name("size").value(ri.m_Size.toString());
+                writer.name("optional").value(ri.m_Optional);
+
+                writer.endObject();
+            }
+            writer.endObject();
+        }
+
+        writer.endObject();
+    }
+
+    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    {
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("id"))
+            {
+                String id = reader.nextString();
+                if (!id.equals("Recipes"))
+                {
+                    throw new IOException();
+                }
+            }
+            else
+            {
+                Recipe recipe = new Recipe();
+
+                reader.beginObject();
+                while (reader.hasNext())
+                {
+                    String currentName = reader.nextName();
+                    if (currentName.equals("NrPersons"))
+                    {
+                        recipe.m_NumberOfPersons = reader.nextInt();
+                    }
+                    else
+                    {
+                        RecipeItem item = new RecipeItem();
+                        item.m_Ingredient = currentName;
+
+                        reader.beginObject();
+                        while (reader.hasNext())
+                        {
+                            String itemName = reader.nextName();
+                            if(itemName.equals("amount"))
+                            {
+                                reader.beginArray();
+
+                                item.m_Amount.m_Quantity = (float)reader.nextDouble();
+                                String str = reader.nextString();
+                                item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+
+                                reader.endArray();
+                            }
+                            else if(itemName.equals("size"))
+                            {
+                                String size = reader.nextString();
+                                item.m_Size = RecipeItem.Size.valueOf(size);
+                            }
+                            else if(itemName.equals("optional"))
+                            {
+                                item.m_Optional = reader.nextBoolean();
+                            }
+                        }
+                        reader.endObject();
+
+                        recipe.m_Items.add(item);
+                    }
+                }
+
+                reader.endObject();
+
+                m_Recipies.put(name, recipe);
+            }
+        }
+
+        reader.endObject();
     }
 
     // Parceling

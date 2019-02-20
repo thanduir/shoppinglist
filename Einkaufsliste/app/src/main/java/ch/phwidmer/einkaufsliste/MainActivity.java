@@ -1,25 +1,32 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity
 {
-    /* TODO NEXT:
-        1. Serialization (cf. also next point)!
-        2. StateLoad/Save (cf. Links). Macht das etwas, was ich auch für Serialisierung brauchen kann?
-        3. Import / Export der Daten! (human-readable format?)
-        4. Import-File mit den aktuellen Datensätzen erstellen und danach die Std-Werte entfernen!
-    */
-
     // TODO: Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
     // TODO: Suchen, wieviele standard-werte notwendig sind und ob ich dafür einen Configuration anlegen sollte!
-    // TODO: Code-Doku!
-    // TODO: DesignDokuemnt.txt aktualisieren!
     // TODO: Macht es Sinn, in jedem Dialog OK und CANCEL zu haben oder sollten z.T. die Änderungen *immer* übernommen werden? ZUMINDEST SOLLTE ICH BEI CANCEL ODER BACKBUTTON EINE BENUTZERABFRAGE EINBAUEN, ODER NICHT? (back-button handling funktioniert atm sowieso nicht und muss geändert werden!!)
     // TODO: Braucht es in (einzelnen) Activites noch Reset-Methoden? Oder eine "alles resetten" Methode in der Config?
+    // TODO: Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
+    // TODO: StateLoad/Save (cf. Links).
+    // TODO(?) Liste von nicht-abgehakten Ingredients der Einkaufsliste
+    // TODO: TODOs in anderen Dateien!
+    // TODO: Code-Doku, wo nötig / sinnvoll!
+    // TODO: DesignDokuemnt.txt aktualisieren!
 
     public static final String EXTRA_CATEGORIES = "ch.phwidmer.einkaufsliste.CATEGORIES";
     public static final String EXTRA_INGREDIENTS = "ch.phwidmer.einkaufsliste.INGREDIENTS";
@@ -31,7 +38,15 @@ public class MainActivity extends AppCompatActivity
     private final int REQUEST_CODE_ManageShoppingList = 4;
     private final int REQUEST_CODE_GoShopping = 5;
 
+    private final String c_strFilename = "einkaufsliste.json";
+
     private GroceryPlanning m_GroceryPlanning;
+
+    private File getAppDataDirectory()
+    {
+        // TODO: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer!
+        return getFilesDir();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,7 +54,22 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        m_GroceryPlanning = new GroceryPlanning();
+        File file = new File(getAppDataDirectory(), c_strFilename);
+        if(file.exists())
+        {
+            m_GroceryPlanning = new GroceryPlanning(file, this);
+        }
+        else
+        {
+            m_GroceryPlanning = new GroceryPlanning();
+        }
+
+    }
+
+    private void saveStateToFile()
+    {
+        File file = new File(getAppDataDirectory(), c_strFilename);
+        m_GroceryPlanning.saveDataToFile(file);
     }
 
     public void manageCategories(View view)
@@ -111,5 +141,92 @@ public class MainActivity extends AppCompatActivity
         {
             m_GroceryPlanning.m_ShoppingList = data.getParcelableExtra(EXTRA_SHOPPINGLIST);
         }
+
+        saveStateToFile();
+    }
+
+    protected void onPause()
+    {
+        saveStateToFile();
+        super.onPause();
+    }
+
+    public void onExport(View v)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Save as");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strFilename = input.getText().toString();
+                if(!strFilename.endsWith(".json"))
+                {
+                    strFilename += ".json";
+                }
+
+                File file = new File(getAppDataDirectory(), strFilename);
+                m_GroceryPlanning.saveDataToFile(file);
+                Toast.makeText(MainActivity.this, "Data saved to " + strFilename, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    public void onImport(View v)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import file");
+
+        // Set up the input
+        final Spinner input = new Spinner(this);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+
+        File directory = getAppDataDirectory();
+        for(File f : directory.listFiles())
+        {
+            if(!f.getName().endsWith(".json") || f.getName().equals(c_strFilename))
+            {
+                continue;
+            }
+
+            adapter.add(f.getName());
+        }
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        input.setAdapter(adapter);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strFilename = input.getSelectedItem().toString();
+
+                File file = new File(getAppDataDirectory(), strFilename);
+                m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
+                Toast.makeText(MainActivity.this, "Data loaded from " + strFilename, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

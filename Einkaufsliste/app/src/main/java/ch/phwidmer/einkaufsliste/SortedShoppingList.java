@@ -33,6 +33,7 @@ public class SortedShoppingList
                 }
 
                 // TODO: Ggfs. zusammenfassen! (oder mache ich das erst am Schluss ausserhalb dieser Schleife?)
+                // TODO: Wie speichere ich zusammengefasste Zutaten überhaupt? -> Braucht wohl noch eine zusätzliche Meta-datenstruktur! (damit checked richtig aktualisiert werden kann)
                 m_UnorderdList.get(strCategory).add(item);
             }
         }

@@ -17,7 +17,7 @@ public class Amount {
     }
 
     public Float m_Quantity = 1.0f;
-    public Unit m_Unit;
+    public Unit m_Unit = Unit.Count;
 
     public static Amount addUp(Amount m1, Amount m2)
     {

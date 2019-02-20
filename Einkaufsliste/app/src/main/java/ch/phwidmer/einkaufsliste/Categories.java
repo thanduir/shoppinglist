@@ -2,7 +2,10 @@ package ch.phwidmer.einkaufsliste;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.JsonReader;
+import android.util.JsonWriter;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Vector;
@@ -46,30 +49,10 @@ public class Categories implements Parcelable
     }
     private LinkedHashMap<String, SortOrder>  m_SortOrders;
 
-    // TODO: Test-Code hier löschen, nachdem alles soweit fertig ist (und v.a. gespeichert wird!)
     public Categories()
     {
         m_Categories = new LinkedHashSet<String>();
-        m_Categories.add("Fruits and vegetables");
-        m_Categories.add("Meat");
-        m_Categories.add("Bread");
-        m_Categories.add("Dairy products");
-
         m_SortOrders = new LinkedHashMap<String, SortOrder>();
-
-        SortOrder order1 = new SortOrder();
-        order1.m_CategoriesOrder.add(new Category("Bread"));
-        order1.m_CategoriesOrder.add(new Category("Fruits and vegetables"));
-        order1.m_CategoriesOrder.add(new Category("Dairy products"));
-        order1.m_CategoriesOrder.add(new Category("Meat"));
-        m_SortOrders.put("Migros", order1);
-
-        SortOrder order2 = new SortOrder();
-        order2.m_CategoriesOrder.add(new Category("Bread"));
-        order2.m_CategoriesOrder.add(new Category("Meat"));
-        order2.m_CategoriesOrder.add(new Category("Dairy products"));
-        order2.m_CategoriesOrder.add(new Category("Fruits and vegetables"));
-        m_SortOrders.put("Coop", order2);
     }
 
     // Categories methods
@@ -149,6 +132,89 @@ public class Categories implements Parcelable
     public void removeSortOrder(String strName)
     {
         m_SortOrders.remove(strName);
+    }
+
+    // Serializing
+
+    public void saveToJson(JsonWriter writer) throws IOException
+    {
+        writer.beginObject();
+        writer.name("id").value("Categories");
+
+        writer.name("all categories");
+        writer.beginArray();
+        for(String str : m_Categories)
+        {
+            writer.value(str);
+        }
+        writer.endArray();
+
+        writer.name("sortOrders");
+        writer.beginObject();
+        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
+        {
+            writer.name(e.getKey());
+            writer.beginArray();
+            for(Category c : e.getValue().m_CategoriesOrder)
+            {
+                writer.value(c.getName());
+            }
+            writer.endArray();
+        }
+        writer.endObject();
+
+        writer.endObject();
+    }
+
+    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    {
+        reader.beginObject();
+        while (reader.hasNext())
+        {
+            String name = reader.nextName();
+            if (name.equals("id"))
+            {
+                String id = reader.nextString();
+                if(!id.equals("Categories"))
+                {
+                    throw new IOException();
+                }
+            }
+            else if (name.equals("all categories"))
+            {
+                reader.beginArray();
+                while (reader.hasNext())
+                {
+                    addCategory(reader.nextString());
+                }
+                reader.endArray();
+            }
+            else if (name.equals("sortOrders"))
+            {
+                reader.beginObject();
+                while (reader.hasNext())
+                {
+                    String orderName = reader.nextName();
+                    SortOrder order = new SortOrder();
+
+                    reader.beginArray();
+                    while (reader.hasNext())
+                    {
+                        order.m_CategoriesOrder.add(getCategory(reader.nextString()));
+                    }
+                    reader.endArray();
+                    m_SortOrders.put(orderName, order);
+                }
+                reader.endObject();
+            }
+            else
+            {
+                reader.skipValue();
+            }
+        }
+
+
+        reader.endObject();
     }
 
     // Parceling

@@ -2,7 +2,10 @@ package ch.phwidmer.einkaufsliste;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.JsonReader;
+import android.util.JsonWriter;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -61,6 +64,116 @@ public class ShoppingList implements Parcelable
     public void removeShoppingRecipe(String strName)
     {
         m_Items.remove(strName);
+    }
+
+    // Serializing
+
+    public void saveToJson(JsonWriter writer) throws IOException
+    {
+        writer.beginObject();
+        writer.name("id").value("Shoppinglist");
+
+        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
+        {
+            writer.name(e.getKey());
+            writer.beginObject();
+            writer.name("ScalingFactor").value(e.getValue().m_fScalingFactor);
+            for(ShoppingListItem si : e.getValue().m_Items)
+            {
+                writer.name(si.m_Ingredient);
+                writer.beginObject();
+
+                writer.name("status").value(si.m_Status.toString());
+
+                writer.name("amount");
+                writer.beginArray();
+                writer.value(si.m_Amount.m_Quantity);
+                writer.value(si.m_Amount.m_Unit.toString());
+                writer.endArray();
+
+                writer.name("size").value(si.m_Size.toString());
+                writer.name("optional").value(si.m_Optional);
+
+                writer.endObject();
+            }
+            writer.endObject();
+        }
+
+        writer.endObject();
+    }
+
+    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    {
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (name.equals("id"))
+            {
+                String id = reader.nextString();
+                if (!id.equals("Shoppinglist"))
+                {
+                    throw new IOException();
+                }
+            }
+            else
+            {
+                ShoppingRecipe recipe = new ShoppingRecipe();
+
+                reader.beginObject();
+                while (reader.hasNext())
+                {
+                    String currentName = reader.nextName();
+                    if (currentName.equals("ScalingFactor"))
+                    {
+                        recipe.m_fScalingFactor = (float)reader.nextDouble();
+                    }
+                    else
+                    {
+                        ShoppingListItem item = new ShoppingListItem();
+                        item.m_Ingredient = currentName;
+
+                        reader.beginObject();
+                        while (reader.hasNext())
+                        {
+                            String itemName = reader.nextName();
+                            if(itemName.equals("status"))
+                            {
+                                String str = reader.nextString();
+                                item.m_Status = ShoppingListItem.Status.valueOf(str);
+                            }
+                            else if(itemName.equals("amount"))
+                            {
+                                reader.beginArray();
+
+                                item.m_Amount.m_Quantity = (float)reader.nextDouble();
+                                String str = reader.nextString();
+                                item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+
+                                reader.endArray();
+                            }
+                            else if(itemName.equals("size"))
+                            {
+                                String size = reader.nextString();
+                                item.m_Size = RecipeItem.Size.valueOf(size);
+                            }
+                            else if(itemName.equals("optional"))
+                            {
+                                item.m_Optional = reader.nextBoolean();
+                            }
+                        }
+                        reader.endObject();
+
+                        recipe.m_Items.add(item);
+                    }
+                }
+
+                reader.endObject();
+
+                m_Items.put(name, recipe);
+            }
+        }
+
+        reader.endObject();
     }
 
     // Parceling

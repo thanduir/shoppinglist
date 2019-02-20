@@ -2,7 +2,10 @@ package ch.phwidmer.einkaufsliste;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.JsonReader;
+import android.util.JsonWriter;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Vector;
 
@@ -31,32 +34,6 @@ public class Ingredients implements Parcelable
     {
         m_Categories = categories;
         m_Ingredients = new LinkedHashMap<String, Ingredient>();
-
-        // TODO: Test-Code hier löschen, nachdem alles soweit fertig ist (und v.a. gespeichert wird!)
-
-        Ingredient in0 = new Ingredient();
-        in0.m_Category = m_Categories.getCategory("Fruits and vegetables");
-        in0.m_Provenance = Provenance.Everywhere;
-        in0.m_DefaultUnit = Amount.Unit.Count;
-        m_Ingredients.put("Pepper", in0);
-
-        Ingredient in1 = new Ingredient();
-        in1.m_Category = m_Categories.getCategory("Bread");
-        in1.m_Provenance = Provenance.Everywhere;
-        in1.m_DefaultUnit = Amount.Unit.Kilogram;
-        m_Ingredients.put("Zopf", in1);
-
-        Ingredient in2 = new Ingredient();
-        in2.m_Category = m_Categories.getCategory("Fruits and vegetables");
-        in2.m_Provenance = Provenance.Coop;
-        in2.m_DefaultUnit = Amount.Unit.Count;
-        m_Ingredients.put("Apple", in2);
-
-        Ingredient in3 = new Ingredient();
-        in3.m_Category = m_Categories.getCategory("Dairy products");
-        in3.m_Provenance = Provenance.Migros;
-        in3.m_DefaultUnit = Amount.Unit.Liter;
-        m_Ingredients.put("Milk", in3);
     }
 
     public void addIngredient(String strName)
@@ -91,6 +68,76 @@ public class Ingredients implements Parcelable
         m_Ingredients.remove(strName);
     }
 
+    // Serializing
+
+    public void saveToJson(JsonWriter writer) throws IOException
+    {
+        writer.beginObject();
+        writer.name("id").value("Ingredients");
+
+        for(LinkedHashMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
+        {
+            writer.name(e.getKey());
+            writer.beginObject();
+            writer.name("category").value(e.getValue().m_Category.getName());
+            writer.name("provenance").value(e.getValue().m_Provenance.toString());
+            writer.name("default-unit").value(e.getValue().m_DefaultUnit.toString());
+
+            writer.endObject();
+        }
+
+        writer.endObject();
+    }
+
+    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    {
+        reader.beginObject();
+        while (reader.hasNext())
+        {
+            String name = reader.nextName();
+            if (name.equals("id"))
+            {
+                String id = reader.nextString();
+                if(!id.equals("Ingredients"))
+                {
+                    throw new IOException();
+                }
+            }
+            else
+            {
+                Ingredient in = new Ingredient();
+
+                reader.beginObject();
+                while (reader.hasNext())
+                {
+                    String currentName = reader.nextName();
+                    if (currentName.equals("category"))
+                    {
+                        in.m_Category = m_Categories.getCategory(reader.nextString());
+                    }
+                    else if(currentName.equals("provenance"))
+                    {
+                        String provenance = reader.nextString();
+                        in.m_Provenance = Provenance.valueOf(provenance);
+                    }
+                    else if(currentName.equals("default-unit"))
+                    {
+                        String unit = reader.nextString();
+                        in.m_DefaultUnit = Amount.Unit.valueOf(unit);
+                    }
+                    else
+                    {
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject();
+
+                m_Ingredients.put(name, in);
+            }
+        }
+        reader.endObject();
+    }
+
     // Parceling
 
     @Override
@@ -104,6 +151,7 @@ public class Ingredients implements Parcelable
             out.writeString(e.getKey());
             out.writeString(e.getValue().m_Category.getName());
             out.writeInt(e.getValue().m_Provenance.ordinal());
+            out.writeInt(e.getValue().m_DefaultUnit.ordinal());
         }
     }
 
@@ -119,6 +167,7 @@ public class Ingredients implements Parcelable
             Ingredient order = new Ingredient();
             order.m_Category = m_Categories.getCategory(in.readString());
             order.m_Provenance = Provenance.values()[in.readInt()];
+            order.m_DefaultUnit = Amount.Unit.values()[in.readInt()];
             m_Ingredients.put(strName, order);
         }
     }

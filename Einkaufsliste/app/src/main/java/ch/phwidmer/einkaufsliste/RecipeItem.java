@@ -39,7 +39,7 @@ public class RecipeItem implements Parcelable {
     {
         m_Ingredient = in.readString();
         m_Size = Size.values()[in.readInt()];
-        m_Optional = in.readInt() == 0;
+        m_Optional = in.readInt() == 1;
 
         // Amount
         m_Amount = new Amount();

@@ -29,4 +29,6 @@
     <string name="text_scaling_factor">Scaling factor</string>
     <string name="button_edit">Edit</string>
     <string name="text_sort_order">Sort order</string>
+    <string name="button_export">Save as</string>
+    <string name="button_import">Load</string>
 </resources>

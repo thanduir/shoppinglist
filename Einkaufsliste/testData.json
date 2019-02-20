@@ -1,0 +1,138 @@
+[
+  {
+    "id": "ch.phwidmer.einkaufsliste",
+    "version": 0
+  },
+  {
+    "id": "Categories",
+    "all categories": [
+      "Fruits and vegetables",
+      "Meat",
+      "Bread",
+      "Dairy products"
+    ],
+    "sortOrders": {
+      "Migros": [
+        "Bread",
+        "Fruits and vegetables",
+        "Dairy products",
+        "Meat"
+      ],
+      "Coop": [
+        "Bread",
+        "Meat",
+        "Dairy products",
+        "Fruits and vegetables"
+      ]
+    }
+  },
+  {
+    "id": "Ingredients",
+    "Pepper": {
+      "category": "Fruits and vegetables",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Zopf": {
+      "category": "Bread",
+      "provenance": "Everywhere",
+      "default-unit": "Kilogram"
+    },
+    "Apple": {
+      "category": "Fruits and vegetables",
+      "provenance": "Coop",
+      "default-unit": "Count"
+    },
+    "Milk": {
+      "category": "Dairy products",
+      "provenance": "Migros",
+      "default-unit": "Liter"
+    }
+  },
+  {
+    "id": "Recipes",
+    "Diverses": {
+      "NrPersons": 2,
+      "Pepper": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Large",
+        "optional": true
+      },
+      "Apple": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Small",
+        "optional": false
+      }
+    },
+    "Zopf mit Milch": {
+      "NrPersons": 3,
+      "Zopf": {
+        "amount": [
+          0.5,
+          "Kilogram"
+        ],
+        "size": "Normal",
+        "optional": true
+      },
+      "Milk": {
+        "amount": [
+          1.0,
+          "Liter"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    }
+  },
+  {
+    "id": "Shoppinglist",
+    "Diverses": {
+      "ScalingFactor": 2.0,
+      "Pepper": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Large",
+        "optional": true
+      },
+      "Apple": {
+        "status": "None",
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Small",
+        "optional": false
+      }
+    },
+    "Zopf mit Milch": {
+      "ScalingFactor": 3.0,
+      "Zopf": {
+        "status": "None",
+        "amount": [
+          0.5,
+          "Kilogram"
+        ],
+        "size": "Normal",
+        "optional": true
+      },
+      "Milk": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Liter"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    }
+  }
+]
