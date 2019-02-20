@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class GroceryPlanning
 {
-    static int             SERIALIZING_VERSION = 0;
+    static int             SERIALIZING_VERSION = 1;
 
     public Categories      m_Categories;
     public Ingredients     m_Ingredients;

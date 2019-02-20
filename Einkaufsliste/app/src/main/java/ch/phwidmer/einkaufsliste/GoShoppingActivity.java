@@ -22,7 +22,6 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
     private RecyclerView.Adapter        m_Adapter;
     private RecyclerView.LayoutManager  m_LayoutManager;
 
-    // TODO: Beim Verlassen und wieder öffnen sollte die SortOrder erhalten bleiben, oder? Sollte ich die ShoppingList noch um eine SortOrder-Variable erweitern?
     // TODO: Nicht nur die Namen anzeigen für die Items, sondern alles relevante (Menge etc.)!
 
     @Override
@@ -47,6 +46,11 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerSortOrders.setAdapter(adapter);
         m_SpinnerSortOrders.setOnItemSelectedListener(this);
+        String strCurrentSortOrder = m_ShoppingList.getCurrentSortOrder();
+        if(!strCurrentSortOrder.isEmpty())
+        {
+            m_SpinnerSortOrders.setSelection(adapter.getPosition(strCurrentSortOrder));
+        }
 
         m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewShoppingListItems);
         m_RecyclerView.setHasFixedSize(true);
@@ -58,6 +62,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
     {
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
         Categories.SortOrder order = m_Categories.getSortOrder(strSortOrder);
+        m_ShoppingList.setCurrentSortOrder(strSortOrder);
 
         // TODO: Also allow swipe to setChecked?
         m_SortedShoppingList.setSortOrder(order);

@@ -18,10 +18,22 @@ public class ShoppingList implements Parcelable
         public LinkedList<ShoppingListItem>    m_Items = new LinkedList<ShoppingListItem>();
     }
     private LinkedHashMap<String, ShoppingRecipe> m_Items;
+    private String                                m_CurrentSortOrder;
 
     public ShoppingList()
     {
         m_Items = new LinkedHashMap<String, ShoppingRecipe>();
+        m_CurrentSortOrder = "";
+    }
+
+    public void setCurrentSortOrder(String strOrder)
+    {
+        m_CurrentSortOrder = strOrder;
+    }
+
+    public String getCurrentSortOrder()
+    {
+        return m_CurrentSortOrder;
     }
 
     public void addFromRecipe(String strName, Recipes.Recipe recipe)
@@ -72,6 +84,7 @@ public class ShoppingList implements Parcelable
     {
         writer.beginObject();
         writer.name("id").value("Shoppinglist");
+        writer.name("currentSortOrder").value(m_CurrentSortOrder);
 
         for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
         {
@@ -114,6 +127,10 @@ public class ShoppingList implements Parcelable
                 {
                     throw new IOException();
                 }
+            }
+            else if(name.equals("currentSortOrder"))
+            {
+                m_CurrentSortOrder = reader.nextString();
             }
             else
             {
@@ -181,6 +198,8 @@ public class ShoppingList implements Parcelable
     @Override
     public void writeToParcel(Parcel out, int flags)
     {
+        out.writeString(m_CurrentSortOrder);
+
         out.writeInt(m_Items.size());
         for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
         {
@@ -198,6 +217,8 @@ public class ShoppingList implements Parcelable
 
     private ShoppingList(Parcel in)
     {
+        m_CurrentSortOrder = in.readString();
+
         int size = in.readInt();
         m_Items = new LinkedHashMap<String, ShoppingRecipe>(size);
         for(int i = 0; i < size; i++)
