@@ -13,19 +13,20 @@ public class Ingredients implements Parcelable
 {
     private Categories m_Categories;
 
-    // TODO: Diese Liste sollte nicht statisch, sondern konfigurierbar sein (-> zusätzliche Activity nötig?)
     public enum Provenance
     {
         Everywhere,
         Migros,
-        Coop;
+        Coop,
+        Denner,
+        Aldi,
+        Lidl;
     }
 
     public class Ingredient
     {
         public Categories.Category m_Category;
-        public Provenance m_Provenance = Provenance.Everywhere;;
-        // TODO: Std-Wert entfernen (Config?) und in ManageIngredients einbauen!
+        public Provenance m_Provenance = Provenance.Everywhere;
         public Amount.Unit m_DefaultUnit = Amount.Unit.Count;
     }
     private LinkedHashMap<String, Ingredient>  m_Ingredients;

@@ -1,23 +1,44 @@
 package ch.phwidmer.einkaufsliste;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
 public class SortedShoppingList
 {
-    private LinkedHashMap<String, LinkedList<ShoppingListItem>> m_UnorderdList;
-    private LinkedList<CategoryItem>                            m_SortedList;
+    private LinkedHashMap<String, LinkedList<CategoryShoppingItem>>  m_UnorderdList;
+    private LinkedList<CategoryItem>                                 m_SortedList;
+
+    public class CategoryShoppingItem
+    {
+        private String                       m_Ingredient;
+        private Amount                       m_Amount = new Amount();
+        private LinkedList<ShoppingListItem> m_ShoppingItems = new LinkedList<ShoppingListItem>();
+
+        public ShoppingListItem.Status getStatus()
+        {
+            return m_ShoppingItems.getFirst().m_Status;
+        }
+        public void invertStatus()
+        {
+            for(ShoppingListItem item : m_ShoppingItems)
+            {
+                item.invertStatus();
+            }
+        }
+    }
 
     private class CategoryItem
     {
         public String m_Name;
-        LinkedList<ShoppingListItem> m_Items;
+        LinkedList<CategoryShoppingItem> m_Items;
     }
 
     public SortedShoppingList(ShoppingList shoppingList, Ingredients ingredients)
     {
-        m_UnorderdList = new LinkedHashMap<String, LinkedList<ShoppingListItem>>();
+        m_UnorderdList = new LinkedHashMap<String, LinkedList<CategoryShoppingItem>>();
 
         Vector<String> recipes = shoppingList.getAllShoppingRecipes();
         for(String strName : recipes)
@@ -29,13 +50,51 @@ public class SortedShoppingList
 
                 if(!m_UnorderdList.containsKey(strCategory))
                 {
-                    m_UnorderdList.put(strCategory, new LinkedList<ShoppingListItem>());
+                    m_UnorderdList.put(strCategory, new LinkedList<CategoryShoppingItem>());
                 }
 
-                // TODO: Ggfs. zusammenfassen! (oder mache ich das erst am Schluss ausserhalb dieser Schleife?)
-                // TODO: Wie speichere ich zusammengefasste Zutaten überhaupt? -> Braucht wohl noch eine zusätzliche Meta-datenstruktur! (damit checked richtig aktualisiert werden kann)
-                m_UnorderdList.get(strCategory).add(item);
+                addToCategoryItem(m_UnorderdList.get(strCategory), item);
             }
+        }
+    }
+
+    private void addToCategoryItem(LinkedList<CategoryShoppingItem> categoryItems, ShoppingListItem item)
+    {
+        for(CategoryShoppingItem csi : categoryItems)
+        {
+            if(!csi.m_Ingredient.equals(item.m_Ingredient))
+            {
+                continue;
+            }
+
+            ShoppingListItem firstItem = csi.m_ShoppingItems.getFirst();
+            if(item.m_Optional != firstItem.m_Optional || item.m_Size != firstItem.m_Size || item.m_Status != firstItem.m_Status)
+            {
+                continue;
+            }
+
+            if(Amount.canBeAddedUp(item.m_Amount, csi.m_Amount))
+            {
+                csi.m_Amount = Amount.addUp(item.m_Amount, csi.m_Amount);
+                csi.m_ShoppingItems.add(item);
+                return;
+            }
+        }
+
+        CategoryShoppingItem csi = new CategoryShoppingItem();
+        csi.m_Ingredient = item.m_Ingredient;
+        csi.m_Amount = item.m_Amount;
+        csi.m_ShoppingItems.add(item);
+        categoryItems.add(csi);
+
+        Collections.sort(categoryItems, new SortByIngredients());
+    }
+
+    private class SortByIngredients implements Comparator<Object> {
+        public int compare(Object o1, Object o2) {
+            CategoryShoppingItem s1 = (CategoryShoppingItem) o1;
+            CategoryShoppingItem s2 = (CategoryShoppingItem) o2;
+            return s1.m_Ingredient.compareTo(s2.m_Ingredient);
         }
     }
 
@@ -79,7 +138,7 @@ public class SortedShoppingList
             {
                 int delta = index - i;
                 int j = 1;
-                for(ShoppingListItem l : e.m_Items)
+                for(CategoryShoppingItem l : e.m_Items)
                 {
                     if(j == delta)
                     {
@@ -117,7 +176,7 @@ public class SortedShoppingList
         return false;
     }
 
-    public ShoppingListItem getListItem(int index)
+    public CategoryShoppingItem getListItem(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)
@@ -130,7 +189,7 @@ public class SortedShoppingList
             {
                 int delta = index - i;
                 int j = 1;
-                for(ShoppingListItem l : e.m_Items)
+                for(CategoryShoppingItem l : e.m_Items)
                 {
                     if(delta == j)
                     {

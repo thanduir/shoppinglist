@@ -78,7 +78,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
                             return;
                         }
 
-                        ShoppingListItem item = m_SortedShoppingList.getListItem(position);
+                        SortedShoppingList.CategoryShoppingItem item = m_SortedShoppingList.getListItem(position);
                         item.invertStatus();
 
                         GoShoppingAdapter adapter = (GoShoppingAdapter)recyclerView.getAdapter();

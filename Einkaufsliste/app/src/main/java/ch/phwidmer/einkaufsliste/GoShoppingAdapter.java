@@ -55,7 +55,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         }
         else
         {
-            holder.m_View.setBackgroundColor(m_SortedList.getListItem(position).m_Status == ShoppingListItem.Status.None ? Color.TRANSPARENT : Color.BLACK);
+            holder.m_View.setBackgroundColor(m_SortedList.getListItem(position).getStatus() == ShoppingListItem.Status.None ? Color.TRANSPARENT : Color.BLACK);
         }
     }
 

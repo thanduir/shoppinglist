@@ -18,13 +18,20 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity
 {
     // TODO: Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
-    // TODO: Suchen, wieviele standard-werte notwendig sind und ob ich dafür einen Configuration anlegen sollte!
+    /* TODO: Nötige Werte in Configuration (ALLE SUCHEN!):
+            * Ingredients.Provenance
+            * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
+            * Std-Wert für Recipes.Recipe.m_NumberOfPersons
+     */
     // TODO: Macht es Sinn, in jedem Dialog OK und CANCEL zu haben oder sollten z.T. die Änderungen *immer* übernommen werden? ZUMINDEST SOLLTE ICH BEI CANCEL ODER BACKBUTTON EINE BENUTZERABFRAGE EINBAUEN, ODER NICHT? (back-button handling funktioniert atm sowieso nicht und muss geändert werden!!)
     // TODO: Braucht es in (einzelnen) Activites noch Reset-Methoden? Oder eine "alles resetten" Methode in der Config?
     // TODO: Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
     // TODO: StateLoad/Save (cf. Links).
     // TODO(?) Liste von nicht-abgehakten Ingredients der Einkaufsliste
+    // TODO: Provenance und optional-Flag in GoShopping beachten...
+    // TODO: Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)!
     // TODO: TODOs in anderen Dateien!
+    // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen!
     // TODO: Code-Doku, wo nötig / sinnvoll!
     // TODO: DesignDokuemnt.txt aktualisieren!
 
@@ -44,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
     private File getAppDataDirectory()
     {
-        // TODO: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer!
+        // TODO: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!
         return getFilesDir();
     }
 

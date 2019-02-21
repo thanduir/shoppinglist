@@ -31,10 +31,6 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
     private Spinner     m_SpinnerProvenance;
     private Spinner     m_SpinnerStdUnit;
 
-    // TODO: Beachten, dass u.U. eine Category nicht mehr existieren könnte. Was sollte dann passieren? (+ analoge Frage für alle nachfolgenden Activities!)
-
-    // TODO: Ingredients sollten auch noch eine Standard-Amount.Unit angeben! (und diese wird dann in ManageRecipes.onAddRecipeItem ausgewählt)!
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

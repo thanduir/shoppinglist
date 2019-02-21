@@ -73,19 +73,31 @@ public class GroceryPlanning
             jr.beginArray();
 
             jr.beginObject();
-            String id = jr.nextName();
-            String name = jr.nextString();
-            if(!id.equals("id") || !name.equals("ch.phwidmer.einkaufsliste"))
-            {
-                throw new IOException();
-            }
-            String strVersion = jr.nextName();
-            int iVersion = jr.nextInt();
-            if(!strVersion.equals("version") || iVersion > SERIALIZING_VERSION)
-            {
-                throw new IOException();
+            Boolean bIDFound = false;
+            int iVersion = -1;
+            while (jr.hasNext()) {
+                String name = jr.nextName();
+                if (name.equals("id")) {
+                    String id = jr.nextString();
+                    if (!id.equals("ch.phwidmer.einkaufsliste"))
+                    {
+                        throw new IOException();
+                    }
+                    bIDFound = true;
+                }
+                else if (name.equals("version")) {
+                    iVersion = jr.nextInt();
+                    if (iVersion > SERIALIZING_VERSION)
+                    {
+                        throw new IOException();
+                    }
+                }
             }
             jr.endObject();
+            if(!bIDFound || iVersion == -1)
+            {
+                throw new IOException();
+            }
 
             m_Categories = new Categories();
             m_Categories.readFromJson(jr, iVersion);
