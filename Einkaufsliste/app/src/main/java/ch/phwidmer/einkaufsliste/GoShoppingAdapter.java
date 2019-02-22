@@ -1,10 +1,14 @@
 package ch.phwidmer.einkaufsliste;
 
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder> {
@@ -13,13 +17,17 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView m_TextView;
-        public View m_View;
+        private TextView m_TextView;
+        private CheckBox m_CheckBox;
+        private String m_id;
+        private View m_View;
         public ViewHolder(View v)
         {
             super(v);
             m_View = v;
             m_TextView = v.findViewById(R.id.textView);
+            m_CheckBox = v.findViewById(R.id.checkBox);
+            m_id = "";
         }
     }
 
@@ -33,7 +41,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
                                                            int viewType)
     {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.text_row_item, parent, false);
+                .inflate(R.layout.text_row_chkbox_item, parent, false);
 
         GoShoppingAdapter.ViewHolder vh = new GoShoppingAdapter.ViewHolder(v);
         return vh;
@@ -42,7 +50,26 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
     @Override
     public void onBindViewHolder(GoShoppingAdapter.ViewHolder holder, int position)
     {
-        holder.m_TextView.setText(m_SortedList.getName(position));
+        holder.m_id = m_SortedList.getName(position);
+
+        if(!m_SortedList.isCategory(position))
+        {
+            SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
+            Float f = item.getAmount().m_Quantity;
+            String amount = f.toString();
+            if(f == Math.round(f))
+            {
+                amount = String.valueOf(f.intValue());
+            }
+
+            String text = amount + " " + Amount.shortForm(item.getAmount().m_Unit) + " " + holder.m_id;
+            if(item.getSize() != RecipeItem.Size.Normal)
+            {
+                text += " (" + item.getSize().toString() + ")";
+            }
+            holder.m_CheckBox.setText(text);
+        }
+        holder.m_TextView.setText(holder.m_id);
 
         updateAppearance(holder, position);
     }
@@ -51,11 +78,37 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
     {
         if(m_SortedList.isCategory(position))
         {
-            holder.m_View.setBackgroundColor(Color.GRAY);
+            holder.m_TextView.setTypeface(holder.m_TextView.getTypeface(), Typeface.BOLD);
+
+            holder.m_CheckBox.setVisibility(View.GONE);
+            holder.m_TextView.setVisibility(View.VISIBLE);
         }
         else
         {
-            holder.m_View.setBackgroundColor(m_SortedList.getListItem(position).getStatus() == ShoppingListItem.Status.None ? Color.TRANSPARENT : Color.BLACK);
+            holder.m_CheckBox.setVisibility(View.VISIBLE);
+            holder.m_TextView.setVisibility(View.GONE);
+
+            SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
+            if(item.isOptional())
+            {
+                holder.m_CheckBox.setTextColor(Color.GRAY);
+                holder.m_CheckBox.setTypeface(holder.m_CheckBox.getTypeface(), Typeface.ITALIC);
+            }
+            else
+            {
+                holder.m_CheckBox.setTypeface(holder.m_CheckBox.getTypeface(), Typeface.NORMAL);
+            }
+
+            if(item.getStatus() != ShoppingListItem.Status.None)
+            {
+                holder.m_CheckBox.setPaintFlags(holder.m_CheckBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                holder.m_CheckBox.setChecked(true);
+            }
+            else
+            {
+                holder.m_CheckBox.setPaintFlags(holder.m_CheckBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                holder.m_CheckBox.setChecked(false);
+            }
         }
     }
 

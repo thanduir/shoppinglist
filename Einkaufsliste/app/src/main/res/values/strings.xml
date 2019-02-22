@@ -12,7 +12,7 @@
     <string name="button_add_sortorder">Add SortOrder</string>
     <string name="button_del_sortorder">Del SortOrder</string>
     <string name="activity_ingredients">Manage ingredients</string>
-    <string name="activity_categories">Manage categories</string>
+    <string name="activity_categories">Manage category sort orders</string>
     <string name="activity_recipes">Manage recipes</string>
     <string name="activity_manage_shoppinglist">Manage Shoppinglist</string>
     <string name="activity_edit_shoppinglist_recipe">Edit Shoppinglist Recipe</string>
@@ -31,4 +31,5 @@
     <string name="text_sort_order">Sort order</string>
     <string name="button_export">Save as</string>
     <string name="button_import">Load</string>
+    <string name="button_add_category">Add Category</string>
 </resources>

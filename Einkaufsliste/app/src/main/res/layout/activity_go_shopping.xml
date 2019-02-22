@@ -15,6 +15,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/text_sort_order"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/spinnerSortOrder"
         app:layout_constraintEnd_toStartOf="@+id/spinnerSortOrder"
         app:layout_constraintStart_toStartOf="parent"

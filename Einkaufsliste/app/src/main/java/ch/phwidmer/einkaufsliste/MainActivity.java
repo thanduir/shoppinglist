@@ -2,7 +2,6 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,24 +13,33 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity
 {
+    // TODO: TODOs in anderen Dateien!
+    // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen! (Oder wo sammle ich das am Besten? Im Projektview rechts sehe ich die Datei dann nicht mehr...)
+    // TODO: Speicherort der Dateien? (MainActivity.getAppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
+    // TODO: Data synchronisation between different devices (in the same network?) possible?
     // TODO: Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
-    /* TODO: Nötige Werte in Configuration (ALLE SUCHEN!):
-            * Ingredients.Provenance
+    /* TODO: Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
+            * Ingredients.Provenance -> Dynamische Liste, Daten definiert in Einstellungen
             * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
             * Std-Wert für Recipes.Recipe.m_NumberOfPersons
+            * Default-SortOrder aus ShoppingList?
      */
+    // TODO: Activities verbessern: ManageCategories, ManageIngredients, Manage Recipes, Manage ShoppingList, Edit ShoppingList Recipe, GoShopping
     // TODO: Macht es Sinn, in jedem Dialog OK und CANCEL zu haben oder sollten z.T. die Änderungen *immer* übernommen werden? ZUMINDEST SOLLTE ICH BEI CANCEL ODER BACKBUTTON EINE BENUTZERABFRAGE EINBAUEN, ODER NICHT? (back-button handling funktioniert atm sowieso nicht und muss geändert werden!!)
     // TODO: Braucht es in (einzelnen) Activites noch Reset-Methoden? Oder eine "alles resetten" Methode in der Config?
     // TODO: Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
     // TODO: StateLoad/Save (cf. Links).
+    // TODO: Schauen, dass es für verschiedene FormFactors funktioniert! (mein natel, nicoles natel, tablet)
     // TODO(?) Liste von nicht-abgehakten Ingredients der Einkaufsliste
     // TODO: Provenance und optional-Flag in GoShopping beachten...
     // TODO: Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)!
-    // TODO: TODOs in anderen Dateien!
-    // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen!
     // TODO: Code-Doku, wo nötig / sinnvoll!
     // TODO: DesignDokuemnt.txt aktualisieren!
 
@@ -45,13 +53,13 @@ public class MainActivity extends AppCompatActivity
     private final int REQUEST_CODE_ManageShoppingList = 4;
     private final int REQUEST_CODE_GoShopping = 5;
 
-    private final String c_strFilename = "einkaufsliste.json";
-
     private GroceryPlanning m_GroceryPlanning;
 
+    private final String c_strTestDataFilename = "testData.json";
+
+    private final String c_strFilename = "einkaufsliste.json";
     private File getAppDataDirectory()
     {
-        // TODO: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!
         return getFilesDir();
     }
 
@@ -60,6 +68,8 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        writeTestDataFileIfNotPresent();
 
         File file = new File(getAppDataDirectory(), c_strFilename);
         if(file.exists())
@@ -71,6 +81,30 @@ public class MainActivity extends AppCompatActivity
             m_GroceryPlanning = new GroceryPlanning();
         }
 
+    }
+
+    private void writeTestDataFileIfNotPresent()
+    {
+        File testDataFile = new File(getAppDataDirectory(), c_strTestDataFilename);
+        if(!testDataFile.exists())
+        {
+            try {
+                InputStream dataInputStream = getResources().openRawResource(R.raw.testdata);
+                OutputStream output = new FileOutputStream(testDataFile);
+
+                int read = 0;
+                byte[] bytes = new byte[1024];
+
+                while ((read = dataInputStream.read(bytes)) != -1) {
+                    output.write(bytes, 0, read);
+                }
+
+                output.close();
+            }
+            catch(IOException exception)
+            {
+            }
+        }
     }
 
     private void saveStateToFile()

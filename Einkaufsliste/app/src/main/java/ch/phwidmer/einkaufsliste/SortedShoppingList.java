@@ -28,6 +28,21 @@ public class SortedShoppingList
                 item.invertStatus();
             }
         }
+
+        public Boolean isOptional()
+        {
+            return m_ShoppingItems.getFirst().m_Optional;
+        }
+
+        public Amount getAmount()
+        {
+            return m_Amount;
+        }
+
+        public RecipeItem.Size getSize()
+        {
+            return m_ShoppingItems.getFirst().m_Size;
+        }
     }
 
     private class CategoryItem

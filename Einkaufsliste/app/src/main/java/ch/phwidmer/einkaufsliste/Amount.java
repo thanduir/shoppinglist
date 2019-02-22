@@ -25,7 +25,7 @@ public class Amount {
         switch(unit)
         {
             case Count:
-                return "ct";
+                return "";
 
             case Kilogram:
                 return "kg";

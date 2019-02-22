@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +26,6 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     private RecyclerView.Adapter       m_Adapter;
     private RecyclerView.LayoutManager m_LayoutManager;
 
-    // TODO: Evtl. sollte ich den ganzen Dialog nochmals überarbeiten, so ist er nicht intuitiv!
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -70,11 +70,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
             public void onClick(DialogInterface dialog, int which) {
                 m_Categories.addCategory(input.getText().toString());
                 CategoriesAdapter adapter = (CategoriesAdapter)m_RecyclerView.getAdapter();
-                if(adapter.getActiveElement() != "")
-                {
-                    adapter.notifyItemChanged(adapter.getActiveElementIndex());
-                }
-                adapter.setActiveElement(input.getText().toString());
+                adapter.notifyItemInserted(adapter.getItemCount()-1);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -85,30 +81,6 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         });
 
         builder.show();
-    }
-
-    public void onDelCategory(View v)
-    {
-        CategoriesAdapter adapter = (CategoriesAdapter)m_RecyclerView.getAdapter();
-        if(adapter.getActiveElement() == "")
-        {
-            // TODO: Eigentlich sollte stattdessen der Delete-Button deaktiviert sein, wenn kein Element ausgewählt ist.
-            Toast.makeText(v.getContext(), "No Element selected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        View activeItem = m_RecyclerView.getChildAt(adapter.getActiveElementIndex());
-        CategoriesAdapter.ViewHolder holder = (CategoriesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
-
-        Toast.makeText(v.getContext(), "Deleteing " + holder.m_TextView.getText(), Toast.LENGTH_SHORT).show();
-        m_Categories.removeCategory((String)holder.m_TextView.getText());
-        adapter.notifyItemRemoved(adapter.getActiveElementIndex());
-        adapter.setActiveElement("");
-
-        if(m_RecyclerView.getAdapter() != null)
-        {
-            m_RecyclerView.getAdapter().notifyDataSetChanged();
-        }
     }
 
     public void onAddSortOrder(View v)
@@ -154,55 +126,19 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
         Categories.SortOrder order = m_Categories.getSortOrder(strSortOrder);
 
-        m_Adapter = new CategoriesAdapter(m_Categories, order);
+        m_Adapter = new CategoriesAdapter(m_RecyclerView, m_Categories, order);
         m_RecyclerView.setAdapter(m_Adapter);
-        ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v)
-                    {
-                        CategoriesAdapter adapter = (CategoriesAdapter)recyclerView.getAdapter();
-                        if(adapter.getActiveElement() != "")
-                        {
-                            View prevItem = recyclerView.getChildAt(adapter.getActiveElementIndex());
-                            prevItem.setBackgroundColor(Color.TRANSPARENT);
-                            prevItem.setActivated(false);
-                        }
-
-                        CategoriesAdapter.ViewHolder vh = (CategoriesAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
-                        adapter.setActiveElement((String)vh.m_TextView.getText());
-                        v.setBackgroundColor(Color.GRAY);
-                        v.setActivated(true);
-                    }
-                }
-        );
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((CategoriesAdapter)m_Adapter,
+                                                                                                m_RecyclerView.getContext(),
+                                                                                                R.drawable.ic_delete_black_24dp,
+                                                                                                true));
+        ((CategoriesAdapter) m_Adapter).setTouchHelper(itemTouchHelper);
+        itemTouchHelper.attachToRecyclerView(m_RecyclerView);
     }
 
     public void onNothingSelected(AdapterView<?> parent)
     {
         m_RecyclerView.setAdapter(null);
-    }
-
-    public void onSortOrderItemUp(View v)
-    {
-        CategoriesAdapter adapter = (CategoriesAdapter)m_RecyclerView.getAdapter();
-        if(!adapter.switchPositionActiveElementWithNeighbor(true))
-        {
-            // TODO: Eigentlich sollte stattdessen der Delete-Button deaktiviert sein, wenn kein Element ausgewählt ist.
-            Toast.makeText(v.getContext(), "No or invalid Element selected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-    }
-
-    public void onSortOrderItemDown(View v)
-    {
-        CategoriesAdapter adapter = (CategoriesAdapter)m_RecyclerView.getAdapter();
-        if(!adapter.switchPositionActiveElementWithNeighbor(false))
-        {
-            // TODO: Eigentlich sollte stattdessen der Delete-Button deaktiviert sein, wenn kein Element ausgewählt ist.
-            Toast.makeText(v.getContext(), "No or invalid Element selected", Toast.LENGTH_SHORT).show();
-            return;
-        }
     }
 
     public void onConfirm(View v)

@@ -23,62 +23,28 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewSortOrders"
-        android:layout_width="268dp"
-        android:layout_height="428dp"
+        android:layout_width="match_parent"
+        android:layout_height="386dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="75dp"
-        android:layout_marginBottom="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonCancel"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerSortOrder" />
-
-    <Button
-        android:id="@+id/buttonSortOrderUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="onSortOrderItemUp"
-        android:text="@string/button_up"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSortOrderDown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
-        app:layout_constraintStart_toEndOf="@+id/recyclerViewSortOrders" />
-
-    <Button
-        android:id="@+id/buttonSortOrderDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="192dp"
-        android:onClick="onSortOrderItemDown"
-        android:text="@string/button_down"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewSortOrders"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
-        app:layout_constraintStart_toEndOf="@+id/recyclerViewSortOrders" />
 
     <Button
         android:id="@+id/ButtonConfirm"
         android:layout_width="160dp"
         android:layout_height="66dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:onClick="onConfirm"
         android:text="@android:string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerViewSortOrders"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/buttonCancel"
@@ -97,36 +63,17 @@
 
     <Button
         android:id="@+id/buttonCategoryAdd"
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:onClick="onAddCategory"
-        android:text="@string/button_add"
-        app:layout_constraintBottom_toTopOf="@+id/buttonCategoryDelete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.631"
-        app:layout_constraintStart_toEndOf="@+id/recyclerViewSortOrders"
-        app:layout_constraintTop_toTopOf="@+id/recyclerViewSortOrders" />
-
-    <Button
-        android:id="@+id/buttonCategoryDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="40dp"
-        android:onClick="onDelCategory"
-        android:text="@string/button_delete"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSortOrderUp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.521"
-        app:layout_constraintStart_toEndOf="@+id/recyclerViewSortOrders"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCategoryAdd" />
+        android:text="@string/button_add_category"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewSortOrders" />
 
     <Spinner
         android:id="@+id/spinnerSortOrder"

@@ -30,7 +30,7 @@ public class Categories implements Parcelable
         public boolean equals(Object other)
         {
             Category c = (Category)other;
-            return m_Category == c.m_Category;
+            return m_Category.equals(c.m_Category);
         }
 
         @Override

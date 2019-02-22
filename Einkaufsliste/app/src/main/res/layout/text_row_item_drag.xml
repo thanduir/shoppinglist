@@ -12,4 +12,12 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:text="1" />
+
+    <ImageView
+        android:id="@+id/reorder_view"
+        android:layout_width="?listPreferredItemHeight"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|right"
+        android:scaleType="center"
+        android:src="@drawable/ic_reorder_black_24dp" />
 </FrameLayout>
