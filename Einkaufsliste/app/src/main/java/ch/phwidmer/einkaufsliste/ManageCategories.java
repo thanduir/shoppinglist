@@ -57,6 +57,17 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         m_RecyclerView.setLayoutManager(m_LayoutManager);
     }
 
+    @Override
+    protected void onPause()
+    {
+        m_GroceryPlanning.m_Ingredients.updateCategories(m_GroceryPlanning.m_Categories);
+
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning.saveDataToFile(file);
+
+        super.onPause();
+    }
+
     public void onAddCategory(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -84,17 +95,6 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         });
 
         builder.show();
-    }
-
-    @Override
-    protected void onPause()
-    {
-        m_GroceryPlanning.m_Ingredients.updateCategories(m_GroceryPlanning.m_Categories);
-
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file);
-
-        super.onPause();
     }
 
     public void onAddSortOrder(View v)
@@ -153,15 +153,5 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     public void onNothingSelected(AdapterView<?> parent)
     {
         m_RecyclerView.setAdapter(null);
-    }
-
-    public void onConfirm(View v)
-    {
-        finish();
-    }
-
-    public void onCancel(View v)
-    {
-        finish();
     }
 }
