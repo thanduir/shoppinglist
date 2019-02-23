@@ -6,179 +6,147 @@
     android:layout_height="match_parent"
     tools:context=".ManageIngredients">
 
-    <Spinner
-        android:id="@+id/spinnerStdUnit"
-        android:layout_width="268dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonCancel2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerProvenance" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="86dp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutEditIntegrdient"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:background="#CCAAAAAA">
+
+            <TableLayout
+                android:layout_centerInParent="true"
+                android:id="@+id/tableLayoutEditIntegrdient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@android:color/background_light"
+                android:padding="10dp"
+                android:clickable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewIntegrdient"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:textStyle="bold"
+                        tools:layout_editor_absoluteX="123dp"
+                        tools:layout_editor_absoluteY="508dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewCategoryDesc"
+                        android:layout_width="86dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_category"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="558dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        tools:layout_editor_absoluteX="122dp"
+                        tools:layout_editor_absoluteY="558dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewProvenanceDesc"
+                        android:layout_width="86dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_provenance"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="631dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerProvenance"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        tools:layout_editor_absoluteX="123dp"
+                        tools:layout_editor_absoluteY="617dp" />
+                </TableRow>
+
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textViewStdUnitDesc"
+                        android:layout_width="86dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_std_unit"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="696dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerStdUnit"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        tools:layout_editor_absoluteX="123dp"
+                        tools:layout_editor_absoluteY="675dp" />
+
+                </TableRow>
+            </TableLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="@string/text_std_unit"
-        app:layout_constraintBottom_toBottomOf="@+id/spinnerStdUnit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinnerStdUnit" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="86dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/text_provenance"
-        app:layout_constraintBottom_toBottomOf="@+id/spinnerProvenance"
-        app:layout_constraintEnd_toStartOf="@+id/spinnerProvenance"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinnerProvenance" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="86dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/text_category"
-        app:layout_constraintBottom_toBottomOf="@+id/spinnerCategory"
-        app:layout_constraintEnd_toStartOf="@+id/spinnerCategory"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinnerCategory"
-        app:layout_constraintVertical_bias="0.476" />
-
-    <Button
-        android:id="@+id/buttonAddIngredient"
-        android:layout_width="60dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
         android:onClick="onAddIngredient"
-        android:text="@string/button_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/recyclerViewIngredients"
-        app:layout_constraintTop_toTopOf="@+id/recyclerViewIngredients" />
-
-    <Button
-        android:id="@+id/buttonDelIngredient"
-        android:layout_width="58dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:onClick="onDelIngredient"
-        android:text="@string/button_delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/recyclerViewIngredients"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAddIngredient" />
-
-    <Button
-        android:id="@+id/buttonCancel2"
-        android:layout_width="160dp"
-        android:layout_height="66dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="onCancel"
-        android:text="@android:string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonConfirm"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonConfirm"
-        android:layout_width="160dp"
-        android:layout_height="66dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="onConfirm"
-        android:text="@android:string/ok"
+        android:src="@drawable/ic_baseline_add_24px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewIngredients"
-        android:layout_width="294dp"
-        android:layout_height="291dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewIntegrdient"
-        android:layout_width="228dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerViewIngredients" />
-
-    <Spinner
-        android:id="@+id/spinnerProvenance"
-        android:layout_width="268dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerCategory" />
-
-    <Spinner
-        android:id="@+id/spinnerCategory"
-        android:layout_width="268dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textViewIntegrdient" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="86dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/text_name"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewIntegrdient"
-        app:layout_constraintEnd_toStartOf="@+id/textViewIntegrdient"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewIntegrdient" />
 </android.support.constraint.ConstraintLayout>

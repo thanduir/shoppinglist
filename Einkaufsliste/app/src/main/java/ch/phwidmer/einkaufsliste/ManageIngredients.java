@@ -3,19 +3,22 @@ package ch.phwidmer.einkaufsliste;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -28,10 +31,13 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
     private RecyclerView.Adapter       m_Adapter;
     private RecyclerView.LayoutManager m_LayoutManager;
 
+    private RelativeLayout m_TableLayoutEditIntegrdient;
     private TextView    m_TextViewIngredient;
     private Spinner     m_SpinnerCategory;
     private Spinner     m_SpinnerProvenance;
     private Spinner     m_SpinnerStdUnit;
+
+    private FloatingActionButton m_FAB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +49,12 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
 
+        m_FAB = (FloatingActionButton) findViewById(R.id.fab);
+
+        m_TableLayoutEditIntegrdient = (RelativeLayout) findViewById(R.id.relativeLayoutEditIntegrdient);
+        m_TableLayoutEditIntegrdient.setVisibility(View.INVISIBLE);
+
         m_TextViewIngredient = (TextView) findViewById(R.id.textViewIntegrdient);
-        m_TextViewIngredient.setVisibility(View.INVISIBLE);
 
         m_SpinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
         ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
@@ -55,7 +65,6 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerCategory.setAdapter(adapterCategory);
         m_SpinnerCategory.setOnItemSelectedListener(this);
-        m_SpinnerCategory.setVisibility(View.INVISIBLE);
 
         m_SpinnerProvenance = (Spinner) findViewById(R.id.spinnerProvenance);
         ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
@@ -66,7 +75,6 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         adapterProvenance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerProvenance.setAdapter(adapterProvenance);
         m_SpinnerProvenance.setOnItemSelectedListener(this);
-        m_SpinnerProvenance.setVisibility(View.INVISIBLE);
 
         m_SpinnerStdUnit = (Spinner) findViewById(R.id.spinnerStdUnit);
         ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
@@ -77,36 +85,58 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerStdUnit.setAdapter(adapterStdUnit);
         m_SpinnerStdUnit.setOnItemSelectedListener(this);
-        m_SpinnerStdUnit.setVisibility(View.INVISIBLE);
 
         m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewIngredients);
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
-        m_Adapter = new IngredientsAdapter(m_GroceryPlanning.m_Ingredients);
+        m_Adapter = new IngredientsAdapter(m_RecyclerView, m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v)
-                    {
-                        IngredientsAdapter adapter = (IngredientsAdapter)recyclerView.getAdapter();
-                        if(adapter.getActiveElement() != "")
-                        {
-                            View prevItem = recyclerView.getChildAt(adapter.getActiveElementIndex());
-                            prevItem.setBackgroundColor(Color.TRANSPARENT);
-                            prevItem.setActivated(false);
+                        new ItemClickSupport.OnItemClickListener() {
+                            @Override
+                            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                                IngredientsAdapter adapter = (IngredientsAdapter) recyclerView.getAdapter();
+                                /*if (adapter.getActiveElement() != "") {
+                                    ManageIngredients.this.m_TableLayoutEditIntegrdient.setVisibility(View.INVISIBLE);
+
+                                    View prevItem = recyclerView.getChildAt(adapter.getActiveElementIndex());
+                                    prevItem.setBackgroundColor(Color.TRANSPARENT);
+
+
+                                }*/
+
+                                IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
+                                adapter.setActiveElement((String) vh.m_TextView.getText());
+
+                                v.setBackgroundColor(Color.LTGRAY);
+
+                                handleIngredientSelected(adapter.getActiveElement());
+
+                                m_FAB.setVisibility(View.INVISIBLE);
+                            }
                         }
+                );
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((IngredientsAdapter)m_Adapter,
+                                                                                              m_RecyclerView.getContext(),
+                                                                                              R.drawable.ic_delete_black_24dp,
+                                                                                              false));
+        itemTouchHelper.attachToRecyclerView(m_RecyclerView);
 
-                        IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
-                        adapter.setActiveElement((String)vh.m_TextView.getText());
-                        v.setBackgroundColor(Color.GRAY);
-                        v.setActivated(true);
+        m_TableLayoutEditIntegrdient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m_TableLayoutEditIntegrdient.setVisibility(View.INVISIBLE);
 
-                        handleIngredientSelected(adapter.getActiveElement());
-                    }
+                IngredientsAdapter adapter = (IngredientsAdapter) m_RecyclerView.getAdapter();
+                if (adapter.getActiveElement() != "") {
+                    View prevItem = m_RecyclerView.getChildAt(adapter.getActiveElementIndex());
+                    prevItem.setBackgroundColor(Color.TRANSPARENT);
                 }
-        );
+
+                m_FAB.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -149,45 +179,15 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         builder.show();
     }
 
-    public void onDelIngredient(View v)
-    {
-        IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
-        if(adapter.getActiveElement() == "")
-        {
-            // TODO: Eigentlich sollte stattdessen der Delete-Button deaktiviert sein, wenn kein Element ausgewählt ist.
-            Toast.makeText(v.getContext(), "No Element selected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        View activeItem = m_RecyclerView.getChildAt(adapter.getActiveElementIndex());
-        IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
-
-        Toast.makeText(v.getContext(), "Deleteing " + holder.m_TextView.getText(), Toast.LENGTH_SHORT).show();
-        m_GroceryPlanning.m_Ingredients.removeIngredient((String)holder.m_TextView.getText());
-        adapter.notifyItemRemoved(adapter.getActiveElementIndex());
-        adapter.setActiveElement("");
-
-        if(m_RecyclerView.getAdapter() != null)
-        {
-            m_RecyclerView.getAdapter().notifyDataSetChanged();
-        }
-    }
-
     private void handleIngredientSelected(String strActiveElement)
     {
         if(strActiveElement == "")
         {
-            m_TextViewIngredient.setVisibility(View.INVISIBLE);
-            m_SpinnerCategory.setVisibility(View.INVISIBLE);
-            m_SpinnerProvenance.setVisibility(View.INVISIBLE);
-            m_SpinnerStdUnit.setVisibility(View.INVISIBLE);
+            m_TableLayoutEditIntegrdient.setVisibility(View.INVISIBLE);
             return;
         }
 
-        m_TextViewIngredient.setVisibility(View.VISIBLE);
-        m_SpinnerCategory.setVisibility(View.VISIBLE);
-        m_SpinnerProvenance.setVisibility(View.VISIBLE);
-        m_SpinnerStdUnit.setVisibility(View.VISIBLE);
+        m_TableLayoutEditIntegrdient.setVisibility(View.VISIBLE);
 
         Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(strActiveElement);
         m_TextViewIngredient.setText(strActiveElement);
@@ -232,15 +232,5 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
 
     public void onNothingSelected(AdapterView<?> parent)
     {
-    }
-
-    public void onConfirm(View v)
-    {
-        finish();
-    }
-
-    public void onCancel(View v)
-    {
-        finish();
     }
 }

@@ -21,7 +21,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity
 {
     // TODO: TODOs in anderen Dateien!
-    // TODO: Activities verbessern: ManageIngredients, Manage Recipes, Manage ShoppingList, Edit ShoppingList Recipe, GoShopping
+    // TODO: Activities verbessern: Manage Recipes, Manage ShoppingList, Edit ShoppingList Recipe, GoShopping
     // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen! (Oder wo sammle ich das am Besten? Im Projektview rechts sehe ich die Datei dann nicht mehr...)
     // TODO: Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
     // TODO: Data synchronisation between different devices (in the same network?) possible?
