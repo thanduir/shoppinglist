@@ -20,11 +20,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class EditShoppingListRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private ShoppingList                m_ShoppingList;
+    private GroceryPlanning m_GroceryPlanning;
+    private String          m_SaveFilePath;
+
     private ShoppingList.ShoppingRecipe m_Recipe;
-    private Ingredients                 m_Ingredients;
 
     private RecyclerView               m_RecyclerView;
     private RecyclerView.Adapter       m_Adapter;
@@ -45,9 +48,10 @@ public class EditShoppingListRecipe extends AppCompatActivity implements Adapter
         setContentView(R.layout.activity_edit_shopping_list_recipe);
 
         Intent intent = getIntent();
-        m_ShoppingList = (ShoppingList)intent.getParcelableExtra(ManageShoppingList.EXTRA_SHOPPINGLIST);
-        m_Recipe = m_ShoppingList.getShoppingRecipe(intent.getStringExtra(ManageShoppingList.EXTRA_RECIPE_NAME));
-        m_Ingredients = (Ingredients) intent.getParcelableExtra(ManageShoppingList.EXTRA_INGREDIENTS);
+        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+        File file = new File(m_SaveFilePath, MainActivity.c_strSaveFilename);
+        m_GroceryPlanning = new GroceryPlanning(file, this);
+        m_Recipe = m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(intent.getStringExtra(ManageShoppingList.EXTRA_RECIPE_NAME));
 
         m_CheckBoxOptional = (CheckBox) findViewById(R.id.checkBoxOptional);
         m_TextViewAmount  = (TextView) findViewById(R.id.textViewAmount);
@@ -147,6 +151,15 @@ public class EditShoppingListRecipe extends AppCompatActivity implements Adapter
         });
     }
 
+    @Override
+    protected void onPause()
+    {
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning.saveDataToFile(file);
+
+        super.onPause();
+    }
+
     public void onAddIngredient(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -155,7 +168,7 @@ public class EditShoppingListRecipe extends AppCompatActivity implements Adapter
         // Set up the input
         final Spinner input = new Spinner(this);
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        for(String strName : m_Ingredients.getAllIngredients())
+        for(String strName : m_GroceryPlanning.m_Ingredients.getAllIngredients())
         {
             EditShoppingRecipeAdapter adapterItems = (EditShoppingRecipeAdapter)m_RecyclerView.getAdapter();
             if(adapterItems.containsItem(strName))
@@ -176,7 +189,7 @@ public class EditShoppingListRecipe extends AppCompatActivity implements Adapter
 
                 ShoppingListItem item = new ShoppingListItem();
                 item.m_Ingredient = strIngredient;
-                item.m_Amount.m_Unit = m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
+                item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
                 m_Recipe.m_Items.add(item);
 
                 EditShoppingRecipeAdapter adapter = (EditShoppingRecipeAdapter)m_RecyclerView.getAdapter();
@@ -316,9 +329,9 @@ public class EditShoppingListRecipe extends AppCompatActivity implements Adapter
 
     public void onConfirm(View v)
     {
-        Intent data = new Intent();
-        data.putExtra(ManageShoppingList.EXTRA_SHOPPINGLIST, m_ShoppingList);
-        setResult(RESULT_OK, data);
+        Intent intent = new Intent(this, ManageCategories.class);
+        intent.putExtra(MainActivity.EXTRA_SAVEFILESPATH, m_SaveFilePath);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

@@ -11,19 +11,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
 
 public class ManageShoppingList extends AppCompatActivity {
 
-    public static final String EXTRA_SHOPPINGLIST = "ch.phwidmer.einkaufsliste.SHOPPINGLIST";
     public static final String EXTRA_RECIPE_NAME = "ch.phwidmer.einkaufsliste.SHOPPINGLIST_RECIPENAME";
-    public static final String EXTRA_INGREDIENTS = "ch.phwidmer.einkaufsliste.SHOPPINGLIST_INGREDIENTS";
     private final int REQUEST_CODE_EditShoppingListRecipe = 1;
 
-    private ShoppingList    m_ShoppingList;
-    private Recipes         m_Recipes;
-    private Ingredients     m_Ingredients;
+    private GroceryPlanning m_GroceryPlanning;
+    private String          m_SaveFilePath;
 
     private RecyclerView                m_RecyclerViewRecipes;
     private RecyclerView.Adapter        m_AdapterRecipes;
@@ -38,15 +36,15 @@ public class ManageShoppingList extends AppCompatActivity {
         setContentView(R.layout.activity_manage_shopping_list);
 
         Intent intent = getIntent();
-        m_ShoppingList = (ShoppingList)intent.getParcelableExtra(MainActivity.EXTRA_SHOPPINGLIST);
-        m_Recipes = (Recipes)intent.getParcelableExtra(MainActivity.EXTRA_RECIPES);
-        m_Ingredients = (Ingredients)intent.getParcelableExtra(MainActivity.EXTRA_INGREDIENTS);
+        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+        File file = new File(m_SaveFilePath, MainActivity.c_strSaveFilename);
+        m_GroceryPlanning = new GroceryPlanning(file, this);
 
         m_RecyclerViewRecipes = (RecyclerView) findViewById(R.id.recyclerViewShoppingRecipe);
         m_RecyclerViewRecipes.setHasFixedSize(true);
         m_LayoutManagerRecipes = new LinearLayoutManager(this);
         m_RecyclerViewRecipes.setLayoutManager(m_LayoutManagerRecipes);
-        m_AdapterRecipes = new ShoppingRecipesAdapter(m_ShoppingList);
+        m_AdapterRecipes = new ShoppingRecipesAdapter(m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
         ItemClickSupport.addTo(m_RecyclerViewRecipes).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
@@ -70,6 +68,15 @@ public class ManageShoppingList extends AppCompatActivity {
         );
     }
 
+    @Override
+    protected void onPause()
+    {
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning.saveDataToFile(file);
+
+        super.onPause();
+    }
+
     public void onAddShoppingRecipe(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -78,7 +85,7 @@ public class ManageShoppingList extends AppCompatActivity {
         // Set up the input
         final Spinner input = new Spinner(this);
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        for(String strName : m_Recipes.getAllRecipes())
+        for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             ShoppingRecipesAdapter adapterItems = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
             if(adapterItems.containsItem(strName))
@@ -103,7 +110,7 @@ public class ManageShoppingList extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String strRecipe = input.getSelectedItem().toString();
 
-                m_ShoppingList.addFromRecipe(strRecipe, m_Recipes.getRecipe(strRecipe));
+                m_GroceryPlanning.m_ShoppingList.addFromRecipe(strRecipe, m_GroceryPlanning.m_Recipes.getRecipe(strRecipe));
 
                 ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
                 adapter.notifyDataSetChanged();
@@ -135,7 +142,7 @@ public class ManageShoppingList extends AppCompatActivity {
 
         Toast.makeText(v.getContext(), "Deleteing " + holder.m_TextView.getText(), Toast.LENGTH_SHORT).show();
 
-        m_ShoppingList.removeShoppingRecipe((String)holder.m_TextView.getText());
+        m_GroceryPlanning.m_ShoppingList.removeShoppingRecipe((String)holder.m_TextView.getText());
         adapter.notifyItemRemoved(adapter.getActiveElementIndex());
         adapter.setActiveElement("");
 
@@ -157,9 +164,8 @@ public class ManageShoppingList extends AppCompatActivity {
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerViewRecipes.getChildViewHolder(activeItem);
 
         Intent intent = new Intent(this, EditShoppingListRecipe.class);
-        intent.putExtra(EXTRA_SHOPPINGLIST, m_ShoppingList);
+        intent.putExtra(MainActivity.EXTRA_SAVEFILESPATH, m_SaveFilePath);
         intent.putExtra(EXTRA_RECIPE_NAME, holder.m_TextView.getText().toString());
-        intent.putExtra(EXTRA_INGREDIENTS, m_Ingredients);
         startActivityForResult(intent, REQUEST_CODE_EditShoppingListRecipe);
     }
 
@@ -173,22 +179,21 @@ public class ManageShoppingList extends AppCompatActivity {
 
         if(requestCode == REQUEST_CODE_EditShoppingListRecipe)
         {
-            m_ShoppingList = data.getParcelableExtra(EXTRA_SHOPPINGLIST);
+            m_SaveFilePath = data.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+            File file = new File(m_SaveFilePath, MainActivity.c_strSaveFilename);
+            m_GroceryPlanning = new GroceryPlanning(file, this);
         }
     }
 
     public void onResetList(View v)
     {
-        m_ShoppingList = new ShoppingList();
-        m_AdapterRecipes = new ShoppingRecipesAdapter(m_ShoppingList);
+        m_GroceryPlanning.m_ShoppingList = new ShoppingList();
+        m_AdapterRecipes = new ShoppingRecipesAdapter(m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
     }
 
     public void onConfirm(View v)
     {
-        Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_SHOPPINGLIST, m_ShoppingList);
-        setResult(RESULT_OK, data);
         finish();
     }
 

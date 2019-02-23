@@ -17,10 +17,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class ManageIngredients extends AppCompatActivity  implements AdapterView.OnItemSelectedListener
 {
-    private Ingredients m_Ingredients;
-    private Categories m_Categories;
+    private GroceryPlanning m_GroceryPlanning;
+    private String          m_SaveFilePath;
 
     private RecyclerView               m_RecyclerView;
     private RecyclerView.Adapter       m_Adapter;
@@ -37,15 +39,16 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         setContentView(R.layout.activity_manage_ingredients);
 
         Intent intent = getIntent();
-        m_Categories = (Categories)intent.getParcelableExtra(MainActivity.EXTRA_CATEGORIES);
-        m_Ingredients = (Ingredients)intent.getParcelableExtra(MainActivity.EXTRA_INGREDIENTS);
+        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning = new GroceryPlanning(file, this);
 
         m_TextViewIngredient = (TextView) findViewById(R.id.textViewIntegrdient);
         m_TextViewIngredient.setVisibility(View.INVISIBLE);
 
         m_SpinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
         ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        for(String strCategory : m_Categories.getAllCategories())
+        for(String strCategory : m_GroceryPlanning.m_Categories.getAllCategories())
         {
             adapterCategory.add(strCategory);
         }
@@ -80,7 +83,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
-        m_Adapter = new IngredientsAdapter(m_Ingredients);
+        m_Adapter = new IngredientsAdapter(m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
@@ -106,6 +109,15 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         );
     }
 
+    @Override
+    protected void onPause()
+    {
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning.saveDataToFile(file);
+
+        super.onPause();
+    }
+
     public void onAddIngredient(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -120,7 +132,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Ingredients.addIngredient(input.getText().toString());
+                m_GroceryPlanning.m_Ingredients.addIngredient(input.getText().toString());
                 IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
                 adapter.setActiveElement(input.getText().toString());
                 adapter.notifyDataSetChanged();
@@ -151,7 +163,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
 
         Toast.makeText(v.getContext(), "Deleteing " + holder.m_TextView.getText(), Toast.LENGTH_SHORT).show();
-        m_Ingredients.removeIngredient((String)holder.m_TextView.getText());
+        m_GroceryPlanning.m_Ingredients.removeIngredient((String)holder.m_TextView.getText());
         adapter.notifyItemRemoved(adapter.getActiveElementIndex());
         adapter.setActiveElement("");
 
@@ -177,7 +189,7 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
         m_SpinnerProvenance.setVisibility(View.VISIBLE);
         m_SpinnerStdUnit.setVisibility(View.VISIBLE);
 
-        Ingredients.Ingredient ingredient = m_Ingredients.getIngredient(strActiveElement);
+        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(strActiveElement);
         m_TextViewIngredient.setText(strActiveElement);
 
         ArrayAdapter<CharSequence> adapterCategory = (ArrayAdapter<CharSequence>)m_SpinnerCategory.getAdapter();
@@ -196,12 +208,12 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
             return;
         }
 
-        Ingredients.Ingredient ingredient = m_Ingredients.getIngredient(adapter.getActiveElement());
+        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(adapter.getActiveElement());
 
         if(parent == m_SpinnerCategory)
         {
             String category = (String)m_SpinnerCategory.getSelectedItem();
-            ingredient.m_Category = m_Categories.getCategory(category);
+            ingredient.m_Category = m_GroceryPlanning.m_Categories.getCategory(category);
             return;
         }
         else if(parent == m_SpinnerProvenance)
@@ -224,9 +236,6 @@ public class ManageIngredients extends AppCompatActivity  implements AdapterView
 
     public void onConfirm(View v)
     {
-        Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_INGREDIENTS, m_Ingredients);
-        setResult(RESULT_OK, data);
         finish();
     }
 

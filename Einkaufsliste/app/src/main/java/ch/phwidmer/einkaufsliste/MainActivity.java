@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity
 {
     // TODO: TODOs in anderen Dateien!
     // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen! (Oder wo sammle ich das am Besten? Im Projektview rechts sehe ich die Datei dann nicht mehr...)
-    // TODO: Speicherort der Dateien? (MainActivity.getAppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
+    // TODO: Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
     // TODO: Data synchronisation between different devices (in the same network?) possible?
     // TODO: Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
     /* TODO: Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
@@ -43,25 +43,14 @@ public class MainActivity extends AppCompatActivity
     // TODO: Code-Doku, wo nötig / sinnvoll!
     // TODO: DesignDokuemnt.txt aktualisieren!
 
-    public static final String EXTRA_CATEGORIES = "ch.phwidmer.einkaufsliste.CATEGORIES";
-    public static final String EXTRA_INGREDIENTS = "ch.phwidmer.einkaufsliste.INGREDIENTS";
-    public static final String EXTRA_RECIPES = "ch.phwidmer.einkaufsliste.RECIPES";
-    public static final String EXTRA_SHOPPINGLIST = "ch.phwidmer.einkaufsliste.SHOPPINGLIST";
-    private final int REQUEST_CODE_ManageCategories = 1;
-    private final int REQUEST_CODE_ManageIngredients = 2;
-    private final int REQUEST_CODE_ManageRecipes = 3;
-    private final int REQUEST_CODE_ManageShoppingList = 4;
-    private final int REQUEST_CODE_GoShopping = 5;
+    public static final String EXTRA_SAVEFILESPATH = "ch.phwidmer.einkaufsliste.SAVEFILESPATH";
 
     private GroceryPlanning m_GroceryPlanning;
 
     private final String c_strTestDataFilename = "testData.json";
 
-    private final String c_strFilename = "einkaufsliste.json";
-    private File getAppDataDirectory()
-    {
-        return getFilesDir();
-    }
+    public static final String c_strSaveFilename = "einkaufsliste.json";
+    private File m_AppDataDirectory = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,9 +58,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        m_AppDataDirectory = getFilesDir();
+
         writeTestDataFileIfNotPresent();
 
-        File file = new File(getAppDataDirectory(), c_strFilename);
+        File file = new File(m_AppDataDirectory, c_strSaveFilename);
         if(file.exists())
         {
             m_GroceryPlanning = new GroceryPlanning(file, this);
@@ -79,13 +70,14 @@ public class MainActivity extends AppCompatActivity
         else
         {
             m_GroceryPlanning = new GroceryPlanning();
+            m_GroceryPlanning.saveDataToFile(file);
         }
 
     }
 
     private void writeTestDataFileIfNotPresent()
     {
-        File testDataFile = new File(getAppDataDirectory(), c_strTestDataFilename);
+        File testDataFile = new File(m_AppDataDirectory, c_strTestDataFilename);
         if(!testDataFile.exists())
         {
             try {
@@ -107,89 +99,39 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void saveStateToFile()
-    {
-        File file = new File(getAppDataDirectory(), c_strFilename);
-        m_GroceryPlanning.saveDataToFile(file);
-    }
-
     public void manageCategories(View view)
     {
         Intent intent = new Intent(this, ManageCategories.class);
-        intent.putExtra(EXTRA_CATEGORIES, m_GroceryPlanning.m_Categories);
-        startActivityForResult(intent, REQUEST_CODE_ManageCategories);
+        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+        startActivity(intent);
     }
 
     public void manageIngredients(View view)
     {
         Intent intent = new Intent(this, ManageIngredients.class);
-        intent.putExtra(EXTRA_CATEGORIES, m_GroceryPlanning.m_Categories);
-        intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
-        startActivityForResult(intent, REQUEST_CODE_ManageIngredients);
+        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+        startActivity(intent);
     }
 
     public void manageRecipies(View view)
     {
         Intent intent = new Intent(this, ManageRecipes.class);
-        intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
-        intent.putExtra(EXTRA_RECIPES, m_GroceryPlanning.m_Recipes);
-        startActivityForResult(intent, REQUEST_CODE_ManageRecipes);
+        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+        startActivity(intent);
     }
 
     public void editShoppingList(View view)
     {
         Intent intent = new Intent(this, ManageShoppingList.class);
-        intent.putExtra(EXTRA_SHOPPINGLIST, m_GroceryPlanning.m_ShoppingList);
-        intent.putExtra(EXTRA_RECIPES, m_GroceryPlanning.m_Recipes);
-        intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
-        startActivityForResult(intent, REQUEST_CODE_ManageShoppingList);
+        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+        startActivity(intent);
     }
 
     public void goShopping(View view)
     {
         Intent intent = new Intent(this, GoShoppingActivity.class);
-        intent.putExtra(EXTRA_SHOPPINGLIST, m_GroceryPlanning.m_ShoppingList);
-        intent.putExtra(EXTRA_CATEGORIES, m_GroceryPlanning.m_Categories);
-        intent.putExtra(EXTRA_INGREDIENTS, m_GroceryPlanning.m_Ingredients);
-        startActivityForResult(intent, REQUEST_CODE_GoShopping);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(resultCode != RESULT_OK)
-        {
-            return;
-        }
-
-        if(requestCode == REQUEST_CODE_ManageCategories)
-        {
-            m_GroceryPlanning.m_Categories = data.getParcelableExtra(EXTRA_CATEGORIES);
-        }
-        else if(requestCode == REQUEST_CODE_ManageIngredients)
-        {
-            m_GroceryPlanning.m_Ingredients = data.getParcelableExtra(EXTRA_INGREDIENTS);
-        }
-        else if(requestCode == REQUEST_CODE_ManageRecipes)
-        {
-            m_GroceryPlanning.m_Recipes = data.getParcelableExtra(EXTRA_RECIPES);
-        }
-        else if(requestCode == REQUEST_CODE_ManageShoppingList)
-        {
-            m_GroceryPlanning.m_ShoppingList = data.getParcelableExtra(EXTRA_SHOPPINGLIST);
-        }
-        else if(requestCode == REQUEST_CODE_GoShopping)
-        {
-            m_GroceryPlanning.m_ShoppingList = data.getParcelableExtra(EXTRA_SHOPPINGLIST);
-        }
-
-        saveStateToFile();
-    }
-
-    protected void onPause()
-    {
-        saveStateToFile();
-        super.onPause();
+        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+        startActivity(intent);
     }
 
     public void onExport(View v)
@@ -212,7 +154,7 @@ public class MainActivity extends AppCompatActivity
                     strFilename += ".json";
                 }
 
-                File file = new File(getAppDataDirectory(), strFilename);
+                File file = new File(m_AppDataDirectory, strFilename);
                 m_GroceryPlanning.saveDataToFile(file);
                 Toast.makeText(MainActivity.this, "Data saved to " + strFilename, Toast.LENGTH_SHORT).show();
             }
@@ -236,10 +178,10 @@ public class MainActivity extends AppCompatActivity
         final Spinner input = new Spinner(this);
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
 
-        File directory = getAppDataDirectory();
+        File directory = m_AppDataDirectory;
         for(File f : directory.listFiles())
         {
-            if(!f.getName().endsWith(".json") || f.getName().equals(c_strFilename))
+            if(!f.getName().endsWith(".json") || f.getName().equals(c_strSaveFilename))
             {
                 continue;
             }
@@ -256,7 +198,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 String strFilename = input.getSelectedItem().toString();
 
-                File file = new File(getAppDataDirectory(), strFilename);
+                File file = new File(m_AppDataDirectory, strFilename);
                 m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
                 Toast.makeText(MainActivity.this, "Data loaded from " + strFilename, Toast.LENGTH_SHORT).show();
             }

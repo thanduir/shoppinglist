@@ -2,7 +2,6 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,11 +14,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import java.io.File;
 
 public class ManageCategories extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
-    private Categories m_Categories;
+    private GroceryPlanning m_GroceryPlanning;
+    private String          m_SaveFilePath;
 
     private Spinner                    m_SpinnerSortOrders;
     private RecyclerView               m_RecyclerView;
@@ -33,14 +34,16 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_manage_categories);
 
         Intent intent = getIntent();
-        m_Categories = (Categories)intent.getParcelableExtra(MainActivity.EXTRA_CATEGORIES);
+        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning = new GroceryPlanning(file, this);
 
         // Manage SortOrders
 
         m_SpinnerSortOrders = (Spinner) findViewById(R.id.spinnerSortOrder);
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        for(String strName : m_Categories.getAllSortOrders())
+        for(String strName : m_GroceryPlanning.m_Categories.getAllSortOrders())
         {
             adapter.add(strName);
         }
@@ -68,7 +71,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Categories.addCategory(input.getText().toString());
+                m_GroceryPlanning.m_Categories.addCategory(input.getText().toString());
                 CategoriesAdapter adapter = (CategoriesAdapter)m_RecyclerView.getAdapter();
                 adapter.notifyItemInserted(adapter.getItemCount()-1);
             }
@@ -81,6 +84,17 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         });
 
         builder.show();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        m_GroceryPlanning.m_Ingredients.updateCategories(m_GroceryPlanning.m_Categories);
+
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning.saveDataToFile(file);
+
+        super.onPause();
     }
 
     public void onAddSortOrder(View v)
@@ -97,7 +111,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Categories.addSortOrder(input.getText().toString());
+                m_GroceryPlanning.m_Categories.addSortOrder(input.getText().toString());
                 ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
                 adapter.add(input.getText().toString());
                 m_SpinnerSortOrders.setSelection(adapter.getCount() - 1);
@@ -116,7 +130,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     public void onDeleteSortOrder(View v)
     {
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
-        m_Categories.removeSortOrder(strName);
+        m_GroceryPlanning.m_Categories.removeSortOrder(strName);
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
         adapter.remove((CharSequence)m_SpinnerSortOrders.getSelectedItem());
     }
@@ -124,9 +138,9 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
-        Categories.SortOrder order = m_Categories.getSortOrder(strSortOrder);
+        Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
 
-        m_Adapter = new CategoriesAdapter(m_RecyclerView, m_Categories, order);
+        m_Adapter = new CategoriesAdapter(m_RecyclerView, m_GroceryPlanning.m_Categories, order);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((CategoriesAdapter)m_Adapter,
                                                                                                 m_RecyclerView.getContext(),
@@ -143,9 +157,6 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
     public void onConfirm(View v)
     {
-        Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_CATEGORIES, m_Categories);
-        setResult(RESULT_OK, data);
         finish();
     }
 

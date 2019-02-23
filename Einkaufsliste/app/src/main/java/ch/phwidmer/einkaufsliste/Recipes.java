@@ -1,7 +1,5 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
@@ -10,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
-public class Recipes implements Parcelable {
+public class Recipes {
 
     public class Recipe {
         public Integer m_NumberOfPersons = 4;
@@ -156,63 +154,4 @@ public class Recipes implements Parcelable {
 
         reader.endObject();
     }
-
-    // Parceling
-
-    @Override
-    public void writeToParcel(Parcel out, int flags)
-    {
-        out.writeInt(m_Recipies.size());
-        for(LinkedHashMap.Entry<String, Recipe> e : m_Recipies.entrySet())
-        {
-            out.writeString(e.getKey());
-            out.writeInt(e.getValue().m_NumberOfPersons);
-
-            out.writeInt(e.getValue().m_Items.size());
-            for(Object obj : e.getValue().m_Items.toArray())
-            {
-                RecipeItem recipe = (RecipeItem)obj;
-                recipe.writeToParcel(out, flags);
-            }
-        }
-    }
-
-    private Recipes(Parcel in)
-    {
-        int size = in.readInt();
-        m_Recipies = new LinkedHashMap<String, Recipe>(size);
-        for(int i = 0; i < size; i++)
-        {
-            String strName = in.readString();
-            Recipe recipe = new Recipe();
-            recipe.m_NumberOfPersons = in.readInt();
-
-            int sizeItem = in.readInt();
-            for(int j = 0; j < sizeItem; j++)
-            {
-                RecipeItem item = RecipeItem.CREATOR.createFromParcel(in);
-                recipe.m_Items.add(item);
-            }
-            m_Recipies.put(strName, recipe);
-        }
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Parcelable.Creator<Recipes> CREATOR
-            = new Parcelable.Creator<Recipes>()
-    {
-        @Override
-        public Recipes createFromParcel(Parcel in) {
-            return new Recipes(in);
-        }
-
-        @Override
-        public Recipes[] newArray(int size) {
-            return new Recipes[size];
-        }
-    };
 }

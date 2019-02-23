@@ -1,7 +1,5 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
@@ -10,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Vector;
 
-public class Categories implements Parcelable
+public class Categories
 {
     public class Category
     {
@@ -216,81 +214,4 @@ public class Categories implements Parcelable
 
         reader.endObject();
     }
-
-    // Parceling
-
-    @Override
-    public void writeToParcel(Parcel out, int flags)
-    {
-        // Categories
-
-        out.writeInt(m_Categories.size());
-        for(Object obj : m_Categories.toArray())
-        {
-            out.writeString((String)obj);
-        }
-
-        // SortOrders
-
-        out.writeInt(m_SortOrders.size());
-        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
-        {
-            out.writeString(e.getKey());
-
-            out.writeInt(e.getValue().m_CategoriesOrder.size());
-            for(Category c : e.getValue().m_CategoriesOrder)
-            {
-                out.writeString(c.getName());
-            }
-        }
-    }
-
-    private Categories(Parcel in)
-    {
-        // Categories
-
-        int sizeCategories = in.readInt();
-        m_Categories = new LinkedHashSet<String>(sizeCategories);
-        for(int i = 0; i < sizeCategories; i++)
-        {
-            m_Categories.add(in.readString());
-        }
-
-        // SortOrders
-
-        int sizeSortOrders = in.readInt();
-        m_SortOrders = new LinkedHashMap<String, SortOrder>(sizeSortOrders);
-        for(int i = 0; i < sizeSortOrders; i++)
-        {
-            SortOrder order = new SortOrder();
-            String strName = in.readString();
-
-            int sizeOrder = in.readInt();
-            for(int j = 0; j < sizeOrder; ++j)
-            {
-                String strItem = in.readString();
-                order.m_CategoriesOrder.add(new Category(strItem));
-            }
-            m_SortOrders.put(strName, order);
-        }
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Parcelable.Creator<Categories> CREATOR
-            = new Parcelable.Creator<Categories>()
-    {
-        @Override
-        public Categories createFromParcel(Parcel in) {
-            return new Categories(in);
-        }
-
-        @Override
-        public Categories[] newArray(int size) {
-            return new Categories[size];
-        }
-    };
 }

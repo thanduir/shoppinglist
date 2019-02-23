@@ -21,10 +21,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class ManageRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private Recipes m_Recipes;
-    private Ingredients m_Ingredients;
+    private GroceryPlanning m_GroceryPlanning;
+    private String          m_SaveFilePath;
 
     private Spinner     m_SpinnerRecipes;
     private EditText    m_EditTextNrPersons;
@@ -48,8 +50,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_manage_recipes);
 
         Intent intent = getIntent();
-        m_Recipes = (Recipes)intent.getParcelableExtra(MainActivity.EXTRA_RECIPES);
-        m_Ingredients = (Ingredients)intent.getParcelableExtra(MainActivity.EXTRA_INGREDIENTS);
+        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning = new GroceryPlanning(file, this);
 
         m_EditTextNrPersons = (EditText) findViewById(R.id.editText_NrPersons);
         m_SpinnerRecipes = (Spinner) findViewById(R.id.spinnerRecipes);
@@ -58,7 +61,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
             public void afterTextChanged(Editable s) {
                 String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_Recipes.getRecipe(strRecipe);
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
                 if(recipe == null)
                 {
                     return;
@@ -91,7 +94,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_TextViewSize.setVisibility(View.INVISIBLE);
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        for(String strName : m_Recipes.getAllRecipes())
+        for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             adapter.add(strName);
         }
@@ -128,7 +131,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
                 String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_Recipes.getRecipe(strRecipe);
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
                 if(recipe == null)
                 {
                     return;
@@ -148,7 +151,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
             public void afterTextChanged(Editable s) {
                 String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_Recipes.getRecipe(strRecipe);
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
                 if(recipe == null)
                 {
                     return;
@@ -175,6 +178,15 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         });
     }
 
+    @Override
+    protected void onPause()
+    {
+        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
+        m_GroceryPlanning.saveDataToFile(file);
+
+        super.onPause();
+    }
+
     public void onAddRecipe(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -189,7 +201,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Recipes.addRecipe(input.getText().toString());
+                m_GroceryPlanning.m_Recipes.addRecipe(input.getText().toString());
                 ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
                 adapter.add(input.getText().toString());
                 m_SpinnerRecipes.setSelection(adapter.getCount() - 1);
@@ -208,7 +220,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     public void onDelRecipe(View v)
     {
         String strName = (String)m_SpinnerRecipes.getSelectedItem();
-        m_Recipes.removeRecipe(strName);
+        m_GroceryPlanning.m_Recipes.removeRecipe(strName);
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
         adapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
     }
@@ -221,7 +233,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         // Set up the input
         final Spinner input = new Spinner(this);
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        for(String strName : m_Ingredients.getAllIngredients())
+        for(String strName : m_GroceryPlanning.m_Ingredients.getAllIngredients())
         {
             RecipeItemsAdapter adapterItems = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
             if(adapterItems.containsItem(strName))
@@ -239,13 +251,13 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_Recipes.getRecipe(strRecipe);
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
 
                 String strIngredient = input.getSelectedItem().toString();
 
                 RecipeItem item = new RecipeItem();
                 item.m_Ingredient = strIngredient;
-                item.m_Amount.m_Unit = m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
+                item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
                 recipe.m_Items.add(item);
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
@@ -280,7 +292,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         Toast.makeText(v.getContext(), "Deleteing " + holder.m_TextView.getText(), Toast.LENGTH_SHORT).show();
 
         String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-        Recipes.Recipe recipe = m_Recipes.getRecipe(strRecipe);
+        Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
         RecipeItem item = getSelectedRecipeItem(recipe);
         recipe.m_Items.remove(item);
 
@@ -295,7 +307,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-        Recipes.Recipe recipe = m_Recipes.getRecipe(strRecipe);
+        Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
 
         if(parent == m_SpinnerRecipes)
         {
@@ -379,7 +391,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_EditTextAmount.setVisibility(View.VISIBLE);
 
         String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-        Recipes.Recipe recipe = m_Recipes.getRecipe(strRecipe);
+        Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
 
         RecipeItem item = getSelectedRecipeItem(recipe);
         if(item == null)
@@ -431,9 +443,6 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     public void onConfirm(View v)
     {
-        Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_RECIPES, m_Recipes);
-        setResult(RESULT_OK, data);
         finish();
     }
 
