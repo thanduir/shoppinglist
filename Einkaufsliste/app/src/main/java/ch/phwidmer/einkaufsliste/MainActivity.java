@@ -21,7 +21,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity
 {
     // TODO: TODOs in anderen Dateien!
-    // TODO: Activities verbessern: Manage Recipes, Manage ShoppingList + Edit ShoppingList Recipe, GoShopping
+    // TODO: Activities verbessern: Manage ShoppingList + Edit ShoppingList Recipe, GoShopping
     // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen! (Oder wo sammle ich das am Besten? Im Projektview rechts sehe ich die Datei dann nicht mehr...)
     // TODO: Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
     // TODO: Data synchronisation between different devices (in the same network?) possible?
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity
             * Default-SortOrder aus ShoppingList?
      */
     // TODO: Macht es Sinn, in jedem Dialog OK und CANCEL zu haben oder sollten z.T. die Änderungen *immer* übernommen werden? ZUMINDEST SOLLTE ICH BEI CANCEL ODER BACKBUTTON EINE BENUTZERABFRAGE EINBAUEN, ODER NICHT? (back-button handling funktioniert atm sowieso nicht und muss geändert werden!!)
+    // TODO: Die AlertDialog.Builder-Abfragen beim Hinzufügen von Elementen sollte ich noch besser designen (Abstände, Ausrichtungen)!
     // TODO: Braucht es in (einzelnen) Activites noch Reset-Methoden? Oder eine "alles resetten" Methode in der Config?
     // TODO: Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
     // TODO: StateLoad/Save (cf. Links).

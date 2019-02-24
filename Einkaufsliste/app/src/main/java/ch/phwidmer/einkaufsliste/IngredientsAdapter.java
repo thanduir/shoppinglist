@@ -1,6 +1,5 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -32,7 +30,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         private TextView m_TextViewDesc;
         private TableLayout m_TableLayout;
         private View m_View;
-        public String m_id;
+        private String m_id;
 
         private Spinner m_SpinnerCategory;
         private Spinner m_SpinnerProvenance;
@@ -93,6 +91,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient);
         holder.setDescription(ingredient);
+
+        updateViewHolder(holder, m_iActiveElement == position);
     }
 
     @Override
@@ -115,12 +115,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         if(m_iActiveElement != -1)
         {
             IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
-            vh.m_TableLayout.setVisibility(View.GONE);
-            vh.m_TextViewDesc.setVisibility(View.VISIBLE);
-
-            vh.m_SpinnerCategory.setAdapter(null);
-            vh.m_SpinnerProvenance.setAdapter(null);
-            vh.m_SpinnerStdUnit.setAdapter(null);
+            updateViewHolder(vh, false);
         }
 
         if(strElement == "")
@@ -131,7 +126,30 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             m_iActiveElement = getSortedIngredients().indexOf(strElement);
 
-            IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+            View child = m_RecyclerView.getChildAt(m_iActiveElement);
+            if(child == null)
+            {
+                return;
+            }
+
+            IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+            updateViewHolder(vh, true);
+        }
+    }
+
+    private void updateViewHolder(IngredientsAdapter.ViewHolder vh, boolean bActive)
+    {
+        if(!bActive)
+        {
+            vh.m_TableLayout.setVisibility(View.GONE);
+            vh.m_TextViewDesc.setVisibility(View.VISIBLE);
+
+            vh.m_SpinnerCategory.setAdapter(null);
+            vh.m_SpinnerProvenance.setAdapter(null);
+            vh.m_SpinnerStdUnit.setAdapter(null);
+        }
+        else
+        {
             vh.m_TableLayout.setVisibility(View.VISIBLE);
             vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
 

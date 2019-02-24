@@ -58,20 +58,22 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewCategoryDesc"
+                android:id="@+id/textViewAmount"
                 android:layout_width="86dp"
+                android:layout_height="40dp"
+                android:text="@string/text_amount" />
+
+            <EditText
+                android:id="@+id/editText_Amount"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="@string/text_category"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="558dp" />
+                android:ems="10"
+                android:inputType="numberSigned|number|numberDecimal" />
 
             <Spinner
-                android:id="@+id/spinnerCategory"
+                android:id="@+id/spinnerAmount"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                tools:layout_editor_absoluteX="122dp"
-                tools:layout_editor_absoluteY="558dp" />
+                android:layout_height="40dp" />
         </TableRow>
 
         <TableRow
@@ -79,42 +81,30 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewProvenanceDesc"
+                android:id="@+id/textViewSize"
                 android:layout_width="86dp"
-                android:layout_height="wrap_content"
-                android:text="@string/text_provenance"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="631dp" />
+                android:layout_height="40dp"
+                android:text="@string/text_size" />
 
             <Spinner
-                android:id="@+id/spinnerProvenance"
+                android:id="@+id/spinnerSize"
+                android:layout_span="2"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                tools:layout_editor_absoluteX="123dp"
-                tools:layout_editor_absoluteY="617dp" />
-        </TableRow>
+                android:layout_height="40dp" />
 
+        </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textViewStdUnitDesc"
-                android:layout_width="86dp"
-                android:layout_height="wrap_content"
-                android:text="@string/text_std_unit"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="696dp" />
-
-            <Spinner
-                android:id="@+id/spinnerStdUnit"
+            <CheckBox
+                android:id="@+id/checkBoxOptional"
+                android:layout_column="1"
+                android:layout_span="2"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                tools:layout_editor_absoluteX="123dp"
-                tools:layout_editor_absoluteY="675dp" />
+                android:text="@string/text_optional" />
 
         </TableRow>
     </TableLayout>
