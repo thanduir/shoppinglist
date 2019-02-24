@@ -49,6 +49,7 @@
         android:paddingRight="10dp"
         android:paddingBottom="0dp"
         android:clickable="true"
+        android:stretchColumns="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -63,17 +64,26 @@
                 android:layout_height="40dp"
                 android:text="@string/text_amount" />
 
-            <EditText
-                android:id="@+id/editText_Amount"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="numberSigned|number|numberDecimal" />
-
-            <Spinner
-                android:id="@+id/spinnerAmount"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editText_Amount"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberSigned|number|numberDecimal" />
+
+                <Spinner
+                    android:id="@+id/spinnerAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
+            </LinearLayout>
         </TableRow>
 
         <TableRow
@@ -88,7 +98,6 @@
 
             <Spinner
                 android:id="@+id/spinnerSize"
-                android:layout_span="2"
                 android:layout_width="match_parent"
                 android:layout_height="40dp" />
 
@@ -101,7 +110,6 @@
             <CheckBox
                 android:id="@+id/checkBoxOptional"
                 android:layout_column="1"
-                android:layout_span="2"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:text="@string/text_optional" />
