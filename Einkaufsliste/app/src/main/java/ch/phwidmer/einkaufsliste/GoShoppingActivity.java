@@ -24,6 +24,8 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
     private RecyclerView.LayoutManager  m_LayoutManager;
 
     // TODO: Nicht nur die Namen anzeigen für die Items, sondern alles relevante (Menge etc.)!
+    // TODO: Swipe to setChecked?
+    // TODO: Reset-Button in GoShopping: Entweder Sicherheits-Abfrage (Wirklich?) oder Undo-Button!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,6 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
         m_GroceryPlanning.m_ShoppingList.setCurrentSortOrder(strSortOrder);
 
-        // TODO: Also allow swipe to setChecked?
         m_SortedShoppingList.setSortOrder(order);
         m_Adapter = new GoShoppingAdapter(m_SortedShoppingList);
         m_RecyclerView.setAdapter(m_Adapter);

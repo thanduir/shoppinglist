@@ -41,6 +41,7 @@ public class EditShoppingListRecipe extends AppCompatActivity implements Adapter
     private Spinner     m_SpinnerSize;
 
     // TODO: Statt nur der Name der Zutat sollten im entspr. RecyclerView auch die weiteren Inhalte aufgelistet sein!
+    // TODO: Back-Button führt zu Crash!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
