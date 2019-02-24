@@ -6,16 +6,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements ReactToTouchActionsInterface
+public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
-    private Ingredients m_Ingredients;
+    private GroceryPlanning m_GroceryPlanning;
     private RecyclerView m_RecyclerView;
     private Integer m_iActiveElement;
 
@@ -24,21 +28,77 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView m_TextView;
-        public View m_View;
+        private TextView m_TextView;
+        private TextView m_TextViewDesc;
+        private TableLayout m_TableLayout;
+        private View m_View;
+        public String m_id;
+
+        private Spinner m_SpinnerCategory;
+        private Spinner m_SpinnerProvenance;
+        private Spinner m_SpinnerStdUnit;
+
         public ViewHolder(View v)
         {
             super(v);
             m_View = v;
             m_TextView = v.findViewById(R.id.textView);
+            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
+            m_TableLayout = v.findViewById(R.id.tableLayoutEditIntegrdient);
+            m_TableLayout.setVisibility(View.GONE);
+
+            m_SpinnerCategory = (Spinner) v.findViewById(R.id.spinnerCategory);
+            m_SpinnerProvenance = (Spinner) v.findViewById(R.id.spinnerProvenance);
+            m_SpinnerStdUnit = (Spinner) v.findViewById(R.id.spinnerStdUnit);
+
+            m_id = "";
+        }
+
+        public String getID()
+        {
+            return m_id;
+        }
+
+        public void setDescription(Ingredients.Ingredient ingredient)
+        {
+            String text = " (" + ingredient.m_Category.getName() + ", " + ingredient.m_Provenance.toString() + ", " + ingredient.m_DefaultUnit.toString() + ")";
+            m_TextViewDesc.setText(text);
         }
     }
 
-    public IngredientsAdapter(RecyclerView recyclerView, Ingredients ingredients)
+    public IngredientsAdapter(RecyclerView recyclerView, GroceryPlanning groceryPlanning)
     {
         m_iActiveElement = -1;
-        m_Ingredients = ingredients;
+        m_GroceryPlanning = groceryPlanning;
         m_RecyclerView = recyclerView;
+    }
+
+    @Override
+    public IngredientsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                            int viewType)
+    {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.row_item_edit_ingredients, parent, false);
+
+        IngredientsAdapter.ViewHolder vh = new IngredientsAdapter.ViewHolder(v);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(IngredientsAdapter.ViewHolder holder, int position)
+    {
+        String strIngredient = getSortedIngredients().get(position);
+        holder.m_id = strIngredient;
+        holder.m_TextView.setText(strIngredient);
+
+        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient);
+        holder.setDescription(ingredient);
+    }
+
+    @Override
+    public int getItemCount()
+    {
+        return getSortedIngredients().size();
     }
 
     public String getActiveElement()
@@ -49,13 +109,20 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
         return getSortedIngredients().get(m_iActiveElement);
     }
-    public Integer getActiveElementIndex()
-    {
-        return m_iActiveElement;
-    }
 
     public void setActiveElement(String strElement)
     {
+        if(m_iActiveElement != -1)
+        {
+            IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+            vh.m_TableLayout.setVisibility(View.GONE);
+            vh.m_TextViewDesc.setVisibility(View.VISIBLE);
+
+            vh.m_SpinnerCategory.setAdapter(null);
+            vh.m_SpinnerProvenance.setAdapter(null);
+            vh.m_SpinnerStdUnit.setAdapter(null);
+        }
+
         if(strElement == "")
         {
             m_iActiveElement = -1;
@@ -63,57 +130,75 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         else
         {
             m_iActiveElement = getSortedIngredients().indexOf(strElement);
+
+            IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+            vh.m_TableLayout.setVisibility(View.VISIBLE);
+            vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
+
+            Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
+
+            ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
+            for(String strCategory : m_GroceryPlanning.m_Categories.getAllCategories())
+            {
+                adapterCategory.add(strCategory);
+            }
+            adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            vh.m_SpinnerCategory.setAdapter(adapterCategory);
+            vh.m_SpinnerCategory.setOnItemSelectedListener(this);
+            vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category.getName()));
+
+            ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
+            for(int i = 0; i < Ingredients.Provenance.values().length; ++i)
+            {
+                adapterProvenance.add(Ingredients.Provenance.values()[i].toString());
+            }
+            adapterProvenance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            vh.m_SpinnerProvenance.setAdapter(adapterProvenance);
+            vh.m_SpinnerProvenance.setOnItemSelectedListener(this);
+            vh.m_SpinnerProvenance.setSelection(ingredient.m_Provenance.ordinal());
+
+            ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
+            for(Amount.Unit u : Amount.Unit.values())
+            {
+                adapterStdUnit.add(u.toString());
+            }
+            adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            vh.m_SpinnerStdUnit.setAdapter(adapterStdUnit);
+            vh.m_SpinnerStdUnit.setOnItemSelectedListener(this);
+            vh.m_SpinnerStdUnit.setSelection(ingredient.m_DefaultUnit.ordinal());
         }
     }
 
-    @Override
-    public IngredientsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                           int viewType)
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.text_row_item, parent, false);
-
-        IngredientsAdapter.ViewHolder vh = new IngredientsAdapter.ViewHolder(v);
-        return vh;
-    }
-
-    @Override
-    public void onBindViewHolder(IngredientsAdapter.ViewHolder holder, int position)
-    {
-        String strIngredient = getSortedIngredients().get(position);
-        holder.m_TextView.setText(strIngredient);
-
-        if(m_iActiveElement == position)
+        if(m_iActiveElement == -1)
         {
-            holder.m_View.setBackgroundColor(Color.GRAY);
-            holder.m_View.setActivated(true);
+            return;
         }
-        else
+        IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
+
+        if(parent == vh.m_SpinnerCategory)
         {
-            holder.m_View.setBackgroundColor(Color.TRANSPARENT);
-            holder.m_View.setActivated(false);
+            String category = (String)vh.m_SpinnerCategory.getSelectedItem();
+            ingredient.m_Category = m_GroceryPlanning.m_Categories.getCategory(category);
         }
-    }
-
-    @Override
-    public int getItemCount()
-    {
-        return getSortedIngredients().size();
-    }
-
-    private Vector<String> getSortedIngredients()
-    {
-        Vector<String> vec = m_Ingredients.getAllIngredients();
-        Collections.sort(vec, new SortIgnoreCase());
-        return vec;
-    }
-
-    private class SortIgnoreCase implements Comparator<Object> {
-        public int compare(Object o1, Object o2) {
-            String s1 = (String) o1;
-            String s2 = (String) o2;
-            return s1.toLowerCase().compareTo(s2.toLowerCase());
+        else if(parent == vh.m_SpinnerProvenance)
+        {
+            String provenance = (String)vh.m_SpinnerProvenance.getSelectedItem();
+            ingredient.m_Provenance = Ingredients.Provenance.valueOf(provenance);
         }
+        else if(parent == vh.m_SpinnerStdUnit)
+        {
+            String provenance = (String)vh.m_SpinnerStdUnit.getSelectedItem();
+            ingredient.m_DefaultUnit = Amount.Unit.valueOf(provenance);
+        }
+
+        vh.setDescription(ingredient);
+    }
+
+    public void onNothingSelected(AdapterView<?> parent)
+    {
     }
 
     public void reactToSwipe(int position)
@@ -124,9 +209,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
 
         m_strRecentlyDeleted = (String)holder.m_TextView.getText();
-        m_RecentlyDeleted = m_Ingredients.getIngredient(m_strRecentlyDeleted);
+        m_RecentlyDeleted = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
 
-        m_Ingredients.removeIngredient(m_strRecentlyDeleted);
+        m_GroceryPlanning.m_Ingredients.removeIngredient(m_strRecentlyDeleted);
         notifyItemRemoved(position);
         setActiveElement("");
 
@@ -136,8 +221,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                m_Ingredients.addIngredient(m_strRecentlyDeleted);
-                Ingredients.Ingredient ingredient = m_Ingredients.getIngredient(m_strRecentlyDeleted);
+                m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted);
+                Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
                 ingredient.m_Category = m_RecentlyDeleted.m_Category;
                 ingredient.m_Provenance = m_RecentlyDeleted.m_Provenance;
                 ingredient.m_DefaultUnit = m_RecentlyDeleted.m_DefaultUnit;
@@ -154,5 +239,20 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
     {
         return false;
+    }
+
+    private Vector<String> getSortedIngredients()
+    {
+        Vector<String> vec = m_GroceryPlanning.m_Ingredients.getAllIngredients();
+        Collections.sort(vec, new SortIgnoreCase());
+        return vec;
+    }
+
+    private class SortIgnoreCase implements Comparator<Object> {
+        public int compare(Object o1, Object o2) {
+            String s1 = (String) o1;
+            String s2 = (String) o2;
+            return s1.toLowerCase().compareTo(s2.toLowerCase());
+        }
     }
 }
