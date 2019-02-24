@@ -29,6 +29,7 @@ public class ManageShoppingList extends AppCompatActivity {
 
     // TODO: Statt nur der Name des Rezepts sollte im entspr. RecyclerView auch die weiteren Inhalte aufgelistet sein!
     // TODO: Kann ich evtl. gleich das ganze EditShoppingListRecipe-Activity in den RecyclerView packen?
+    // TODO: ShoppingRecipe.m_fScalingFactor wird in der GUI nirgens verwendet...
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

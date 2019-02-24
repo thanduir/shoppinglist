@@ -199,6 +199,10 @@ public class MainActivity extends AppCompatActivity
 
                 File file = new File(m_AppDataDirectory, strFilename);
                 m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
+
+                File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
+                m_GroceryPlanning.saveDataToFile(file2);
+
                 Toast.makeText(MainActivity.this, "Data loaded from " + strFilename, Toast.LENGTH_SHORT).show();
             }
         });
