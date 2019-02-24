@@ -103,9 +103,4 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
     {
         m_RecyclerView.setAdapter(null);
     }
-
-    public void onConfirm(View v)
-    {
-        finish();
-    }
 }

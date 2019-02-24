@@ -21,9 +21,10 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity
 {
     // TODO: TODOs in anderen Dateien!
-    // TODO: Activities verbessern: Manage ShoppingList + Edit ShoppingList Recipe, GoShopping
+    // TODO: Activities verbessern: Manage ShoppingList + Edit ShoppingList Recipe, GoShopping (layout wrong)
     // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen! (Oder wo sammle ich das am Besten? Im Projektview rechts sehe ich die Datei dann nicht mehr...)
     // TODO: Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
+    // TODO: Reset-Button in GoShopping: Entweder Abfrage (Wirklich?) oder Undo-Button!
     // TODO: Data synchronisation between different devices (in the same network?) possible?
     // TODO: Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
     /* TODO: Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
