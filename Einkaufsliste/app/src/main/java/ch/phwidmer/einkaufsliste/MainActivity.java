@@ -21,7 +21,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity
 {
     // TODO: TODOs in anderen Dateien!
-    // TODO: Activities verbessern: Manage ShoppingList + Edit ShoppingList Recipe, GoShopping (layout wrong), Main Activity (die ersten drei Buttons sind eher Config und sollten deshalb evtl. kleiner sein)
+    // TODO: Activities verbessern: Manage ShoppingList + Edit ShoppingList Recipe, Main Activity (die ersten drei Buttons sind eher Config und sollten deshalb evtl. kleiner sein)
     // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen! (Oder wo sammle ich das am Besten? Im Projektview rechts sehe ich die Datei dann nicht mehr...)
     // TODO: Die AlertDialog.Builder-Abfragen beim Hinzufügen von Elementen sollte ich noch besser designen (Abstände, Ausrichtungen)!
     // TODO: Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!

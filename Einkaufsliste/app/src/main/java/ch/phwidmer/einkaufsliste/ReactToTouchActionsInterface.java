@@ -6,4 +6,5 @@ public interface ReactToTouchActionsInterface
 {
     public void reactToSwipe(int position);
     public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target);
+    public boolean swipeAllowed(RecyclerView.ViewHolder vh);
 }

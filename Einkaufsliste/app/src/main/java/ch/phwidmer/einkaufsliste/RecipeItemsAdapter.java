@@ -318,6 +318,8 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         snackbar.show();
     }
 
+    public boolean swipeAllowed(RecyclerView.ViewHolder vh) { return true; }
+
     public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
     {
         return false;

@@ -107,6 +107,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         snackbar.show();
     }
 
+    public boolean swipeAllowed(RecyclerView.ViewHolder vh) { return true; }
+
     public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
     {
         int oldPos = vh.getAdapterPosition();

@@ -11,8 +11,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder> {
+public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder> implements ReactToTouchActionsInterface {
 
+    private RecyclerView m_RecyclerView;
     private SortedShoppingList m_SortedList;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
@@ -31,8 +32,9 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         }
     }
 
-    public GoShoppingAdapter(SortedShoppingList sortedList)
+    public GoShoppingAdapter(RecyclerView recyclerView, SortedShoppingList sortedList)
     {
+        m_RecyclerView = recyclerView;
         m_SortedList = sortedList;
     }
 
@@ -96,7 +98,8 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             }
             else
             {
-                holder.m_CheckBox.setTypeface(holder.m_CheckBox.getTypeface(), Typeface.NORMAL);
+                holder.m_CheckBox.setTextColor(Color.BLACK);
+                holder.m_CheckBox.setTypeface(null, Typeface.NORMAL);
             }
 
             if(item.getStatus() != ShoppingListItem.Status.None)
@@ -117,4 +120,25 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
     {
         return m_SortedList.itemsCount();
     }
+
+    @Override
+    public void reactToSwipe(int position)
+    {
+        SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
+        item.invertStatus();
+        notifyItemChanged(position);
+    }
+
+    public boolean swipeAllowed(RecyclerView.ViewHolder vh)
+    {
+        return !m_SortedList.isCategory(m_RecyclerView.getChildAdapterPosition(vh.itemView));
+    }
+
+    @Override
+    public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
+    {
+        return false;
+    }
+
+
 }

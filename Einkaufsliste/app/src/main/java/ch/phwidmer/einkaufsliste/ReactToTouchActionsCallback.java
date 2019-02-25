@@ -14,20 +14,21 @@ public class ReactToTouchActionsCallback<Myadapter extends ReactToTouchActionsIn
     private Boolean m_bAllowDrag;
     private Myadapter m_Adapter;
 
-    private Drawable  m_DeleteIcon;
+    private Drawable  m_SwipeIcon;
 
     public ReactToTouchActionsCallback(Myadapter adapter, Context context, int swipeIcon, boolean bAllowDrag)
     {
         m_bAllowDrag = bAllowDrag;
         m_Adapter = adapter;
 
-        m_DeleteIcon = ContextCompat.getDrawable(context, swipeIcon);
+        m_SwipeIcon = ContextCompat.getDrawable(context, swipeIcon);
     }
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
     {
-        final int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+        boolean bSwipeAlloed = m_Adapter.swipeAllowed(viewHolder);
+        final int swipeFlags = bSwipeAlloed ? ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT : 0;
         final int dragFlags = m_bAllowDrag ? ItemTouchHelper.UP | ItemTouchHelper.DOWN : 0;
         return makeMovementFlags(dragFlags, swipeFlags);
     }
@@ -60,8 +61,8 @@ public class ReactToTouchActionsCallback<Myadapter extends ReactToTouchActionsIn
 
         View itemView = viewHolder.itemView;
 
-        int iconIntrinsicHeight = m_DeleteIcon.getIntrinsicHeight();
-        int iconIntrinsicWidth = m_DeleteIcon.getIntrinsicWidth();
+        int iconIntrinsicHeight = m_SwipeIcon.getIntrinsicHeight();
+        int iconIntrinsicWidth = m_SwipeIcon.getIntrinsicWidth();
 
         int viewHeight = itemView.getHeight();
         int viewTop = itemView.getTop();
@@ -76,20 +77,20 @@ public class ReactToTouchActionsCallback<Myadapter extends ReactToTouchActionsIn
         {
             int iconLeft = viewLeft + iconMargin ;
             int iconRight = viewLeft + iconMargin + iconIntrinsicWidth;
-            m_DeleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+            m_SwipeIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
         }
         else if(dX < 0) // Swiping to the left
         {
             int iconLeft = viewRight - iconMargin - iconIntrinsicWidth;
             int iconRight = viewRight - iconMargin;
-            m_DeleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+            m_SwipeIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
         }
         else // view is unswiped
         {
-            m_DeleteIcon.setBounds(0, 0, 0, 0);
+            m_SwipeIcon.setBounds(0, 0, 0, 0);
         }
 
-        m_DeleteIcon.draw(c);
+        m_SwipeIcon.draw(c);
     }
 
     @Override

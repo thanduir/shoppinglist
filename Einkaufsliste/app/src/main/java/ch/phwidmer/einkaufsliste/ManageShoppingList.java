@@ -30,6 +30,7 @@ public class ManageShoppingList extends AppCompatActivity {
     // TODO: Statt nur der Name des Rezepts sollte im entspr. RecyclerView auch die weiteren Inhalte aufgelistet sein!
     // TODO: Kann ich evtl. gleich das ganze EditShoppingListRecipe-Activity in den RecyclerView packen?
     // TODO: ShoppingRecipe.m_fScalingFactor wird in der GUI nirgens verwendet...
+    // TODO: Reset-Button: Entweder Sicherheits-Abfrage (Wirklich?) oder Undo-Button!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,15 +192,5 @@ public class ManageShoppingList extends AppCompatActivity {
         m_GroceryPlanning.m_ShoppingList = new ShoppingList();
         m_AdapterRecipes = new ShoppingRecipesAdapter(m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
-    }
-
-    public void onConfirm(View v)
-    {
-        finish();
-    }
-
-    public void onCancel(View v)
-    {
-        finish();
     }
 }
