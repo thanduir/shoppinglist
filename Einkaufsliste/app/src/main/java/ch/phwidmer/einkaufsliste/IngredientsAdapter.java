@@ -1,5 +1,6 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -147,11 +148,15 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             vh.m_SpinnerCategory.setAdapter(null);
             vh.m_SpinnerProvenance.setAdapter(null);
             vh.m_SpinnerStdUnit.setAdapter(null);
+
+            vh.m_View.setBackgroundColor(Color.TRANSPARENT);
         }
         else
         {
             vh.m_TableLayout.setVisibility(View.VISIBLE);
             vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
+
+            vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
 
             Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
 

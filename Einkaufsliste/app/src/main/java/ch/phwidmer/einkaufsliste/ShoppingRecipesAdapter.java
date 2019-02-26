@@ -36,7 +36,6 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     private ShoppingListItem m_RecentlyDeletedItem = null;
     private int m_RecentlyDeletedIndex = -1;
 
-    // TODO: ShoppingRecipe.m_fScalingFactor wird in der GUI nirgens verwendet...
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         private TextView m_TextView;
@@ -212,6 +211,8 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             vh.m_TableLayout.setVisibility(View.GONE);
             vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
 
+            vh.m_View.setBackgroundColor(Color.TRANSPARENT);
+
             vh.m_ButtonAddRecipeItem.setVisibility(View.VISIBLE);
             vh.m_ButtonDeleteRecipe.setVisibility(View.VISIBLE);
 
@@ -251,11 +252,15 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 vh.m_TableLayout.setVisibility(View.GONE);
                 vh.m_TextViewDesc.setVisibility(View.VISIBLE);
 
+                vh.m_View.setBackgroundColor(Color.TRANSPARENT);
+
                 return;
             }
 
             vh.m_TableLayout.setVisibility(View.VISIBLE);
             vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
+
+            vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
 
             ShoppingListItem item = vh.m_RecipeItem;
 

@@ -188,11 +188,15 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
             vh.m_SpinnerAmount.setAdapter(null);
             vh.m_SpinnerSize.setAdapter(null);
+
+            vh.m_View.setBackgroundColor(Color.TRANSPARENT);
         }
         else
         {
             vh.m_TableLayout.setVisibility(View.VISIBLE);
             vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
+
+            vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
 
             RecipeItem item = getRecipeItem(vh.m_id);
 
