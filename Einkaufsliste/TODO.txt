@@ -1,26 +1,29 @@
 TODO
 ====
 
-- ShoppingRecipe.m_fScalingFactor wird in der GUI nirgends verwendet...
-	-> in klickbarer Textbox steht Anzahl Personen! klick -> alertdialog zum ändern des Werts!
-	-> umbenenen in m_fNumberOfPersons!
 - Undo für delete (ManageCategories::deleteSortOrder, ManageRecipes::deleteRecipe) und ManageShoppingList::Reset Buttons!
 
+- Formating of number to strings should be moved into one global method (and rounding to at most two decimalplaces should be added!)
+    -> Is this only for Amounts? Then I could just move it there!
+- BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
+- Have all EditBoxes correct settings regarding number range etc.?
+- Manage ShoppingList: Del recipe with swipes?
 - Die AlertDialog.Builder-Abfragen beim Hinzufügen von Elementen sollte ich noch besser designen (Abstände, Ausrichtungen)!
-- Buttons, die atm nichts machen (AddRecipe in Shoppinglist, wenn alle Rezepte hinzugefügt wurden), ggfs. ausblenden, statt eine Meldung anzeigen? (oder ist letzters von der UI-Perspektive her besser, da der Benutzer informiert wird? Gibt es noch andere solche Fälle (-> nach Toast suchen)
 - Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
+- Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
+
 - Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
 - Data synchronisation between different devices (in the same network?) possible?
-- Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
+- StateLoad/Save (cf. Links).
+
 - Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
             * Ingredients.Provenance -> Dynamische Liste, Daten definiert in Einstellungen
             * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
             * Std-Wert für Recipes.Recipe.m_NumberOfPersons
             * Default-SortOrder aus ShoppingList?
-- Braucht es in (einzelnen) Activites noch Reset-Methoden? Oder eine "alles resetten" Methode in der Config?
-- StateLoad/Save (cf. Links).
-- (?) Liste von nicht-abgehakten Ingredients der Einkaufsliste
+- Liste von nicht-abgehakten Ingredients der Einkaufsliste?
 - Provenance in GoShopping beachten (aber wie verbinde ich dies mit den SortOrders?)
+
 - Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)! Remove Strings not used anymore!
 - Code-Doku, wo nötig / sinnvoll!
 - DesignDokuemnt.txt aktualisieren!

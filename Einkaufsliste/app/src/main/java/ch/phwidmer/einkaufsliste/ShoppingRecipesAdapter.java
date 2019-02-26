@@ -8,6 +8,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         private TextView m_TextView;
         private View m_View;
 
-        private String m_Recipe;
+        private String m_strRecipe;
         private ShoppingListItem m_RecipeItem = null;
 
         private TextView m_TextViewDesc;
@@ -76,7 +77,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         public Pair<String, String> getID()
         {
             String strItem = m_RecipeItem != null ? m_RecipeItem.m_Ingredient : "";
-            return new Pair<String, String>(m_Recipe, strItem);
+            return new Pair<String, String>(m_strRecipe, strItem);
         }
 
         private void updateDescription()
@@ -187,7 +188,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     {
         Pair<String, String> strItem = getShoppingRecipes().get(position);
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strItem.first);
-        holder.m_Recipe = strItem.first;
+        holder.m_strRecipe = strItem.first;
         holder.m_RecipeItem = null;
         if(!strItem.second.isEmpty())
         {
@@ -209,14 +210,33 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         if(vh.m_RecipeItem == null)
         {
             vh.m_TableLayout.setVisibility(View.GONE);
-            vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
+
+            final String strRecipe = vh.m_strRecipe;
+
+            ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
+
+            Float f = recipe.m_fScalingFactor;
+            String factor = f.toString();
+            if(f == Math.round(f))
+            {
+                factor = String.valueOf(f.intValue());
+            }
+            vh.m_TextViewDesc.setText(" (" + factor + " Pers. [+] )");
+
+            vh.m_TextViewDesc.setOnClickListener(new View.OnClickListener() {
+                                                     @Override
+                                                     public void onClick(View view) {
+                                                       onChangeRecipeScaling(strRecipe);
+                                                     };
+                                                 }
+
+            );
 
             vh.m_View.setBackgroundColor(Color.TRANSPARENT);
 
             vh.m_ButtonAddRecipeItem.setVisibility(View.VISIBLE);
             vh.m_ButtonDeleteRecipe.setVisibility(View.VISIBLE);
 
-            final String strRecipe = vh.m_Recipe;
             vh.m_ButtonDeleteRecipe.setOnClickListener(new View.OnClickListener() {
                                                            @Override
                                                            public void onClick(View view) {
@@ -236,13 +256,16 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             vh.m_SpinnerSize.setAdapter(null);
 
             // Recipe -> Header line
-            vh.m_TextView.setText(vh.m_Recipe);
+            vh.m_TextView.setText(vh.m_strRecipe);
         }
         else
         {
             // Active ShoppingListItem
 
             vh.m_TextView.setText("\t\u2022 " + vh.m_RecipeItem.m_Ingredient);
+
+            vh.m_TextViewDesc.setOnClickListener(null);
+            vh.m_TextViewDesc.setClickable(false);
 
             vh.m_ButtonAddRecipeItem.setVisibility(View.GONE);
             vh.m_ButtonDeleteRecipe.setVisibility(View.GONE);
@@ -372,7 +395,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             return;
         }
 
-        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(holder.m_Recipe);
+        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(holder.m_strRecipe);
 
         m_RecentlyDeletedIndex = recipe.m_Items.indexOf(holder.m_RecipeItem);
         m_RecentlyDeleted = recipe;
@@ -528,12 +551,12 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             return;
         }
 
-        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(holder.m_Recipe);
+        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(holder.m_strRecipe);
 
         m_RecentlyDeleted = recipe;
         m_RecentlyDeletedIndex = -1;
         m_RecentlyDeletedItem = null;
-        m_ShoppingList.removeShoppingRecipe(holder.m_Recipe);
+        m_ShoppingList.removeShoppingRecipe(holder.m_strRecipe);
 
         notifyDataSetChanged();
         setActiveElement(null);
@@ -561,5 +584,47 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             }
         });
         snackbar.show();
+    }
+
+    private void onChangeRecipeScaling(final String strRecipe)
+    {
+        // TODO!
+        int index = getShoppingRecipes().indexOf(new Pair<String, String>(strRecipe, ""));
+        View v = m_RecyclerView.getChildAt(index);
+        ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
+        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        builder.setTitle("Change number of persons of recipe \"" + strRecipe + "\"");
+
+        // Set up the input
+        final EditText input = new EditText(v.getContext());
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        input.setText(recipe.m_fScalingFactor.toString());
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(input.getText().toString().isEmpty())
+                {
+                    return;
+                }
+                float fNewValue = Float.valueOf(input.getText().toString());
+
+                ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
+                recipe.changeScalingFactor(fNewValue);
+                notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

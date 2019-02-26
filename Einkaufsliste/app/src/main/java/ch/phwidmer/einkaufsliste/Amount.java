@@ -20,6 +20,22 @@ public class Amount {
     public Float m_Quantity = 1.0f;
     public Unit m_Unit = Unit.Count;
 
+    public void scaleAmount(float fFactor)
+    {
+        switch(m_Unit)
+        {
+            case Unitless:
+            {
+                break;
+            }
+
+            default:
+            {
+                m_Quantity *= fFactor;
+            }
+        }
+    }
+
     public static String shortForm(Unit unit)
     {
         switch(unit)

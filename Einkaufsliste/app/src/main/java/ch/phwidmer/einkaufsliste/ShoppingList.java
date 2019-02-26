@@ -14,6 +14,17 @@ public class ShoppingList
     {
         public Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
         public LinkedList<ShoppingListItem>    m_Items = new LinkedList<ShoppingListItem>();
+
+        public void changeScalingFactor(float f)
+        {
+            float fFactor = f / m_fScalingFactor;
+            m_fScalingFactor = f;
+
+            for(ShoppingListItem sli : m_Items)
+            {
+                sli.m_Amount.scaleAmount(fFactor);
+            }
+        }
     }
     private LinkedHashMap<String, ShoppingRecipe> m_Items;
     private String                                m_CurrentSortOrder;
