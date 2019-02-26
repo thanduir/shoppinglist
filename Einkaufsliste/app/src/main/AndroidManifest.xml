@@ -17,14 +17,6 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".EditShoppingListRecipe"
-            android:label="@string/activity_edit_shoppinglist_recipe"
-            android:parentActivityName=".ManageShoppingList">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ManageShoppingList" />
-        </activity>
-        <activity
             android:name=".ManageShoppingList"
             android:label="@string/activity_manage_shoppinglist"
             android:parentActivityName=".MainActivity">

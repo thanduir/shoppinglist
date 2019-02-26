@@ -20,28 +20,6 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity
 {
-    // TODO: TODOs in anderen Dateien!
-    // TODO: Activities verbessern: Manage ShoppingList + Edit ShoppingList Recipe, Main Activity (die ersten drei Buttons sind eher Config und sollten deshalb evtl. kleiner sein)
-    // TODO: TODO.txt erstellen und alle TODOs aus den java-Dateien entfernen! (Oder wo sammle ich das am Besten? Im Projektview rechts sehe ich die Datei dann nicht mehr...)
-    // TODO: Die AlertDialog.Builder-Abfragen beim Hinzufügen von Elementen sollte ich noch besser designen (Abstände, Ausrichtungen)!
-    // TODO: Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
-    // TODO: Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
-    // TODO: Data synchronisation between different devices (in the same network?) possible?
-    // TODO: Überprüfen, dass alle Activities auch mit leeren Daten zurechtkommen! (nach dem serialisierung etc. eingebaut ist. Evtl. brauche ich dann auch einen Debug-Button zum Resetten der Daten (u/o "mit irgendwas füllen")
-    /* TODO: Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
-            * Ingredients.Provenance -> Dynamische Liste, Daten definiert in Einstellungen
-            * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
-            * Std-Wert für Recipes.Recipe.m_NumberOfPersons
-            * Default-SortOrder aus ShoppingList?
-     */
-    // TODO: Braucht es in (einzelnen) Activites noch Reset-Methoden? Oder eine "alles resetten" Methode in der Config?
-    // TODO: StateLoad/Save (cf. Links).
-    // TODO(?) Liste von nicht-abgehakten Ingredients der Einkaufsliste
-    // TODO: Provenance in GoShopping beachten (aber wie verbinde ich dies mit den SortOrders?)
-    // TODO: Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)!
-    // TODO: Code-Doku, wo nötig / sinnvoll!
-    // TODO: DesignDokuemnt.txt aktualisieren!
-
     public static final String EXTRA_SAVEFILESPATH = "ch.phwidmer.einkaufsliste.SAVEFILESPATH";
 
     private GroceryPlanning m_GroceryPlanning;

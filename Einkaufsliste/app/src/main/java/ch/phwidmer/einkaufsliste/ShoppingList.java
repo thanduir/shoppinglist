@@ -76,6 +76,16 @@ public class ShoppingList
         m_Items.remove(strName);
     }
 
+    public void addExistingShoppingRecipe(String strName, ShoppingRecipe recipe)
+    {
+        if(m_Items.containsKey(strName))
+        {
+            return;
+        }
+
+        m_Items.put(strName, recipe);
+    }
+
     // Serializing
 
     public void saveToJson(JsonWriter writer) throws IOException

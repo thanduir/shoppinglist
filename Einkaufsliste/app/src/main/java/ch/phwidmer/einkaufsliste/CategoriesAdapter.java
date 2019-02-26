@@ -100,6 +100,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
                 m_Categories.addCategory(m_RecentlyDeleted.getName());
                 notifyDataSetChanged();
 
+                m_RecentlyDeleted = null;
+
                 Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Item restored", Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }

@@ -247,6 +247,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
                 notifyDataSetChanged();
 
+                m_strRecentlyDeleted = "";
+                m_RecentlyDeleted = null;
+
                 Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Item restored", Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }

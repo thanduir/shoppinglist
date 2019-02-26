@@ -3,11 +3,13 @@ package ch.phwidmer.einkaufsliste;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -15,22 +17,14 @@ import android.widget.Toast;
 
 import java.io.File;
 
-public class ManageShoppingList extends AppCompatActivity {
-
-    public static final String EXTRA_RECIPE_NAME = "ch.phwidmer.einkaufsliste.SHOPPINGLIST_RECIPENAME";
-    private final int REQUEST_CODE_EditShoppingListRecipe = 1;
-
+public class ManageShoppingList extends AppCompatActivity
+{
     private GroceryPlanning m_GroceryPlanning;
     private String          m_SaveFilePath;
 
     private RecyclerView                m_RecyclerViewRecipes;
     private RecyclerView.Adapter        m_AdapterRecipes;
     private RecyclerView.LayoutManager  m_LayoutManagerRecipes;
-
-    // TODO: Statt nur der Name des Rezepts sollte im entspr. RecyclerView auch die weiteren Inhalte aufgelistet sein!
-    // TODO: Kann ich evtl. gleich das ganze EditShoppingListRecipe-Activity in den RecyclerView packen?
-    // TODO: ShoppingRecipe.m_fScalingFactor wird in der GUI nirgens verwendet...
-    // TODO: Reset-Button: Entweder Sicherheits-Abfrage (Wirklich?) oder Undo-Button!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,28 +40,32 @@ public class ManageShoppingList extends AppCompatActivity {
         m_RecyclerViewRecipes.setHasFixedSize(true);
         m_LayoutManagerRecipes = new LinearLayoutManager(this);
         m_RecyclerViewRecipes.setLayoutManager(m_LayoutManagerRecipes);
-        m_AdapterRecipes = new ShoppingRecipesAdapter(m_GroceryPlanning.m_ShoppingList);
+        m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
         ItemClickSupport.addTo(m_RecyclerViewRecipes).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v)
                     {
-                        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)recyclerView.getAdapter();
-                        if(adapter.getActiveElement() != "")
-                        {
-                            View prevItem = recyclerView.getChildAt(adapter.getActiveElementIndex());
-                            prevItem.setBackgroundColor(Color.TRANSPARENT);
-                            prevItem.setActivated(false);
-                        }
-
+                        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter) recyclerView.getAdapter();
                         ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
-                        adapter.setActiveElement((String)vh.m_TextView.getText());
-                        v.setBackgroundColor(Color.GRAY);
-                        v.setActivated(true);
+
+                        if(vh.getID().equals(adapter.getActiveElement()))
+                        {
+                            adapter.setActiveElement(null);
+                        }
+                        else
+                        {
+                            adapter.setActiveElement(vh.getID());
+                        }
                     }
                 }
         );
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ShoppingRecipesAdapter)m_AdapterRecipes,
+                                                                                            m_RecyclerViewRecipes.getContext(),
+                                                                                            R.drawable.ic_delete_black_24dp,
+                                                                                            false));
+        itemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
     }
 
     @Override
@@ -90,7 +88,7 @@ public class ManageShoppingList extends AppCompatActivity {
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             ShoppingRecipesAdapter adapterItems = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-            if(adapterItems.containsItem(strName))
+            if(adapterItems.containsItem(new Pair<String, String>(strName, "")))
             {
                 continue;
             }
@@ -116,7 +114,7 @@ public class ManageShoppingList extends AppCompatActivity {
 
                 ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
                 adapter.notifyDataSetChanged();
-                adapter.setActiveElement(strRecipe);
+                adapter.setActiveElement(new Pair<String, String>(strRecipe, ""));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -129,68 +127,10 @@ public class ManageShoppingList extends AppCompatActivity {
         builder.show();
     }
 
-    public void onDelShoppingRecipe(View v)
-    {
-        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-        if(adapter.getActiveElement() == "")
-        {
-            // TODO: Eigentlich sollte stattdessen der Delete-Button deaktiviert sein, wenn kein Element ausgewählt ist.
-            Toast.makeText(v.getContext(), "No element selected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        View activeItem = m_RecyclerViewRecipes.getChildAt(adapter.getActiveElementIndex());
-        ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerViewRecipes.getChildViewHolder(activeItem);
-
-        Toast.makeText(v.getContext(), "Deleteing " + holder.m_TextView.getText(), Toast.LENGTH_SHORT).show();
-
-        m_GroceryPlanning.m_ShoppingList.removeShoppingRecipe((String)holder.m_TextView.getText());
-        adapter.notifyItemRemoved(adapter.getActiveElementIndex());
-        adapter.setActiveElement("");
-
-        if(m_RecyclerViewRecipes.getAdapter() != null)
-        {
-            m_RecyclerViewRecipes.getAdapter().notifyDataSetChanged();
-        }
-    }
-
-    public void onEditShoppingRecipe(View v)
-    {
-        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-        if(adapter.getActiveElement() == "")
-        {
-            return;
-        }
-
-        View activeItem = m_RecyclerViewRecipes.getChildAt(adapter.getActiveElementIndex());
-        ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerViewRecipes.getChildViewHolder(activeItem);
-
-        Intent intent = new Intent(this, EditShoppingListRecipe.class);
-        intent.putExtra(MainActivity.EXTRA_SAVEFILESPATH, m_SaveFilePath);
-        intent.putExtra(EXTRA_RECIPE_NAME, holder.m_TextView.getText().toString());
-        startActivityForResult(intent, REQUEST_CODE_EditShoppingListRecipe);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(resultCode != RESULT_OK)
-        {
-            return;
-        }
-
-        if(requestCode == REQUEST_CODE_EditShoppingListRecipe)
-        {
-            m_SaveFilePath = data.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
-            File file = new File(m_SaveFilePath, MainActivity.c_strSaveFilename);
-            m_GroceryPlanning = new GroceryPlanning(file, this);
-        }
-    }
-
     public void onResetList(View v)
     {
         m_GroceryPlanning.m_ShoppingList = new ShoppingList();
-        m_AdapterRecipes = new ShoppingRecipesAdapter(m_GroceryPlanning.m_ShoppingList);
+        m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
     }
 }
