@@ -214,6 +214,10 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             final String strRecipe = vh.m_strRecipe;
 
             ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
+            if(recipe == null)
+            {
+                return;
+            }
 
             Float f = recipe.m_fScalingFactor;
             String factor = f.toString();

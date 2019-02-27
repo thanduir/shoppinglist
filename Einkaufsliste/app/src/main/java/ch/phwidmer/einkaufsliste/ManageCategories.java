@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -23,6 +24,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     private String          m_SaveFilePath;
 
     private Spinner                    m_SpinnerSortOrders;
+    private Button                     m_ButtonDelSortOrder;
     private RecyclerView               m_RecyclerView;
     private RecyclerView.Adapter       m_Adapter;
     private RecyclerView.LayoutManager m_LayoutManager;
@@ -41,6 +43,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         // Manage SortOrders
 
         m_SpinnerSortOrders = (Spinner) findViewById(R.id.spinnerSortOrder);
+        m_ButtonDelSortOrder = (Button) findViewById(R.id.buttonDelSortOrder);
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
         for(String strName : m_GroceryPlanning.m_Categories.getAllSortOrders())
@@ -55,6 +58,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
+
+        m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
     }
 
     @Override
@@ -115,6 +120,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
                 ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
                 adapter.add(input.getText().toString());
                 m_SpinnerSortOrders.setSelection(adapter.getCount() - 1);
+
+                m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -129,10 +136,17 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
     public void onDeleteSortOrder(View v)
     {
+        if(m_SpinnerSortOrders.getSelectedItem() == null)
+        {
+            return;
+        }
+
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
         m_GroceryPlanning.m_Categories.removeSortOrder(strName);
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
         adapter.remove((CharSequence)m_SpinnerSortOrders.getSelectedItem());
+        m_SpinnerSortOrders.setAdapter(adapter);
+        m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)

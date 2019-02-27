@@ -14,8 +14,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.io.File;
 
@@ -26,6 +28,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     private Spinner     m_SpinnerRecipes;
     private EditText    m_EditTextNrPersons;
+    private TextView    m_textViewNrPersons;
+
+    private Button      m_ButtonDelRecipe;
 
     private RecyclerView                m_RecyclerView;
     private RecyclerView.Adapter        m_Adapter;
@@ -42,7 +47,10 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_GroceryPlanning = new GroceryPlanning(file, this);
 
         m_EditTextNrPersons = (EditText) findViewById(R.id.editText_NrPersons);
+        m_textViewNrPersons = (TextView) findViewById(R.id.textViewNrPersons);
         m_SpinnerRecipes = (Spinner) findViewById(R.id.spinnerRecipes);
+
+        m_ButtonDelRecipe = (Button) findViewById(R.id.buttonDelRecipe);
 
         m_EditTextNrPersons.addTextChangedListener(new TextWatcher() {
 
@@ -81,6 +89,29 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
+
+        updateVisibility();
+    }
+
+    private void updateVisibility()
+    {
+        if(m_SpinnerRecipes.getAdapter().getCount() > 0)
+        {
+            m_EditTextNrPersons.setVisibility(View.VISIBLE);
+            m_textViewNrPersons.setVisibility(View.VISIBLE);
+
+            m_ButtonDelRecipe.setEnabled(true);
+        }
+        else
+        {
+            m_EditTextNrPersons.setVisibility(View.INVISIBLE);
+            m_textViewNrPersons.setVisibility(View.INVISIBLE);
+
+            m_ButtonDelRecipe.setEnabled(false);
+
+            m_Adapter = null;
+            m_RecyclerView.setAdapter(null);
+        }
     }
 
     @Override
@@ -110,6 +141,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
                 adapter.add(input.getText().toString());
                 m_SpinnerRecipes.setSelection(adapter.getCount() - 1);
+                updateVisibility();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -124,10 +156,17 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     public void onDelRecipe(View v)
     {
+        if(m_SpinnerRecipes.getSelectedItem() == null)
+        {
+            return;
+        }
+
         String strName = (String)m_SpinnerRecipes.getSelectedItem();
         m_GroceryPlanning.m_Recipes.removeRecipe(strName);
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
         adapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
+        m_SpinnerRecipes.setAdapter(adapter);
+        updateVisibility();
     }
 
     public void onAddRecipeItem(View v)
