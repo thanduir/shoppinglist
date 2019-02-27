@@ -1,21 +1,20 @@
 TODO
 ====
 
-- Data synchronisation between different devices (in the same network?) possible?
-- BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
-- Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
-- StateLoad/Save (cf. Links).
-
-- STANDARD-DATASET ERSTELLEN!
+- STANDARD-DATASET ERSTELLEN UND MIT DER APP ZUSAMMEN INSTALLIEREN (ersetzt TestData)!
 - Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)! Remove Strings not used anymore!
 - Code-Doku, wo nötig / sinnvoll!
 - DesignDokuemnt.txt aktualisieren!
+
+- BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
+- Data synchronisation between different devices (in the same network?) possible?
+    -> Google App Folder API, Google App Engine, Amazon Web Services, Dropbox datastore API?
 
 - Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
             * Ingredients.Provenance -> Dynamische Liste, Daten definiert in Einstellungen
             * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
             * Std-Wert für Recipes.Recipe.m_NumberOfPersons
             * Default-SortOrder aus ShoppingList?
-- Manage ShoppingList: Del recipe with swipes?
 - Liste von nicht-abgehakten Ingredients der Einkaufsliste?
 - Provenance in GoShopping beachten (aber wie verbinde ich dies mit den SortOrders?)
+- Manage ShoppingList: Del recipe with swipes?

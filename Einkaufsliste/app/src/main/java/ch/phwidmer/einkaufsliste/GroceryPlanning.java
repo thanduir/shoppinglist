@@ -1,6 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.widget.Toast;
@@ -32,7 +33,7 @@ public class GroceryPlanning
         loadDataFromFile(file, context);
     }
 
-    public void saveDataToFile(File file)
+    public void saveDataToFile(File file, Context context)
     {
         try
         {
@@ -56,6 +57,8 @@ public class GroceryPlanning
 
             jw.close();
             fw.close();
+
+            scanFile(context, file);
         }
         catch(IOException e)
         {
@@ -125,5 +128,18 @@ public class GroceryPlanning
             m_ShoppingList = new ShoppingList();
             return;
         }
+    }
+
+    public void scanFile(Context context, File f)
+    {
+        if(context == null)
+        {
+            return;
+        }
+
+        MediaScannerConnection.scanFile(context,
+                new String[] {f.getAbsolutePath()},
+                new String[] {"application/json"},
+                null);
     }
 }

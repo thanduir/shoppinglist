@@ -35,9 +35,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        m_AppDataDirectory = getFilesDir();
-
-        writeTestDataFileIfNotPresent();
+        m_AppDataDirectory = getExternalFilesDir(null);
 
         File file = new File(m_AppDataDirectory, c_strSaveFilename);
         if(file.exists())
@@ -47,8 +45,10 @@ public class MainActivity extends AppCompatActivity
         else
         {
             m_GroceryPlanning = new GroceryPlanning();
-            m_GroceryPlanning.saveDataToFile(file);
+            m_GroceryPlanning.saveDataToFile(file, this);
         }
+
+        writeTestDataFileIfNotPresent();
     }
 
     private void writeTestDataFileIfNotPresent()
@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 output.close();
+
+                m_GroceryPlanning.scanFile(getBaseContext(), testDataFile);
             }
             catch(IOException exception)
             {
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 File file = new File(m_AppDataDirectory, strFilename);
-                m_GroceryPlanning.saveDataToFile(file);
+                m_GroceryPlanning.saveDataToFile(file, getBaseContext());
                 Toast.makeText(MainActivity.this, "Data saved to " + strFilename, Toast.LENGTH_SHORT).show();
             }
         });
@@ -180,7 +182,7 @@ public class MainActivity extends AppCompatActivity
                 m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
 
                 File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
-                m_GroceryPlanning.saveDataToFile(file2);
+                m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
 
                 Toast.makeText(MainActivity.this, "Data loaded from " + strFilename, Toast.LENGTH_SHORT).show();
             }

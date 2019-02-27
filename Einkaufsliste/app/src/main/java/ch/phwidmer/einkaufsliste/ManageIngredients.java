@@ -68,7 +68,7 @@ public class ManageIngredients extends AppCompatActivity
     protected void onPause()
     {
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file);
+        m_GroceryPlanning.saveDataToFile(file, null);
 
         super.onPause();
     }

@@ -72,7 +72,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         m_GroceryPlanning.m_Ingredients.updateCategories(m_GroceryPlanning.m_Categories);
 
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file);
+        m_GroceryPlanning.saveDataToFile(file, null);
 
         super.onPause();
     }
