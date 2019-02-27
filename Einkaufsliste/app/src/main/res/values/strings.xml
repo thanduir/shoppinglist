@@ -32,4 +32,5 @@
     <string name="button_export">Save as</string>
     <string name="button_import">Load</string>
     <string name="button_add_category">Add Category</string>
+    <string name="text_load_file_failed">Couldn\'t load data file.</string>
 </resources>

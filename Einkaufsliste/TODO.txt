@@ -1,15 +1,29 @@
 TODO
 ====
 
-- STANDARD-DATASET ERSTELLEN UND MIT DER APP ZUSAMMEN INSTALLIEREN (ersetzt TestData)!
+- BUG: ManageCategories: Alle SortORders löschen -> RecyclerView wird nicht gelöscht.
+
+- Besseres Icon! (Einkaufswagen o.ä.)
 - Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)! Remove Strings not used anymore!
-- Code-Doku, wo nötig / sinnvoll!
+    * Amount
+    * Alle Verwendungen von: RecipeItem.Size, Amount
+    * CategoriesAdapter
+    * ManageCategories
+    * ManageIngredients
+    * IngredientsAdapter
+    * MainActivity
+    * ManageRecipes
+    * ManageShoppingList
+    * RecipeItemsAdapter
+    * ShoppingRecipesAdapter
 - DesignDokuemnt.txt aktualisieren!
+- Code-Doku, wo nötig / sinnvoll!
+
+- STANDARD-DATASET ERSTELLEN UND MIT DER APP ZUSAMMEN INSTALLIEREN (ersetzt TestData)!
 
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Data synchronisation between different devices (in the same network?) possible?
     -> Google App Folder API, Google App Engine, Amazon Web Services, Dropbox datastore API?
-
 - Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
             * Ingredients.Provenance -> Dynamische Liste, Daten definiert in Einstellungen
             * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
@@ -17,4 +31,3 @@ TODO
             * Default-SortOrder aus ShoppingList?
 - Liste von nicht-abgehakten Ingredients der Einkaufsliste?
 - Provenance in GoShopping beachten (aber wie verbinde ich dies mit den SortOrders?)
-- Manage ShoppingList: Del recipe with swipes?

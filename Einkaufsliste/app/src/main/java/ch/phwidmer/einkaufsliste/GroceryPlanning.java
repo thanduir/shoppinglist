@@ -121,7 +121,7 @@ public class GroceryPlanning
         }
         catch(IOException e)
         {
-            Toast.makeText(context, "Couldn't load data file.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.text_load_file_failed, Toast.LENGTH_SHORT).show();
             m_Categories = new Categories();
             m_Ingredients = new Ingredients(m_Categories);
             m_Recipes = new Recipes();

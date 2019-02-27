@@ -153,9 +153,14 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         m_RecentlyDeletedSortOrder = m_GroceryPlanning.m_Categories.getSortOrder(strName);
         m_GroceryPlanning.m_Categories.removeSortOrder(strName);
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
-        adapter.remove((CharSequence)m_SpinnerSortOrders.getSelectedItem());
+        adapter.remove(strName);
         m_SpinnerSortOrders.setAdapter(adapter);
         m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
+        if(adapter.getCount() == 0)
+        {
+            m_Adapter = null;
+            m_RecyclerView.setAdapter(null);
+        }
 
         // Allow undo
 
