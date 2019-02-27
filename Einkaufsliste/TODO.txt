@@ -1,20 +1,16 @@
 TODO
 ====
 
-- Undo für delete (ManageCategories::deleteSortOrder, ManageRecipes::deleteRecipe) und ManageShoppingList::Reset Buttons!
-- Formating of number to strings should be moved into one global method (and rounding to at most two decimalplaces should be added!)
-    -> Is this only for Amounts? Then I could just move it there!
-    -> Also use this for input to EditText for scaling ShoppingRecipes!
-- Die AlertDialog.Builder-Abfragen beim Hinzufügen von Elementen sollte ich noch besser designen (Abstände, Ausrichtungen)!
 - Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
     -> Löschen ist nicht erlaubt, solange das Datum noch irgendwo sonst verwendet wird (-> msg mit hinweis, wo es noch verwendet wird).
+    -> Zuerst (noch)mals Liste machen, was noch wo überall verwendet wird (von den löschbaren Items)!
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 
 - Data synchronisation between different devices (in the same network?) possible?
 - Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
 - StateLoad/Save (cf. Links).
 
--> STANDARD-DATASET ERSTELLEN!
+- STANDARD-DATASET ERSTELLEN!
 - Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)! Remove Strings not used anymore!
 - Code-Doku, wo nötig / sinnvoll!
 - DesignDokuemnt.txt aktualisieren!

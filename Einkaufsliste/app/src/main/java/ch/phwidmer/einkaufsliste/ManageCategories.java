@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,9 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     private RecyclerView               m_RecyclerView;
     private RecyclerView.Adapter       m_Adapter;
     private RecyclerView.LayoutManager m_LayoutManager;
+
+    private String                      m_strRecentlyDeletedSortOrder;
+    private Categories.SortOrder        m_RecentlyDeletedSortOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -81,7 +85,6 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         // Set up the input
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
 
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -99,7 +102,9 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 
     public void onAddSortOrder(View v)
@@ -131,7 +136,9 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 
     public void onDeleteSortOrder(View v)
@@ -142,11 +149,35 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         }
 
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
+        m_strRecentlyDeletedSortOrder = strName;
+        m_RecentlyDeletedSortOrder = m_GroceryPlanning.m_Categories.getSortOrder(strName);
         m_GroceryPlanning.m_Categories.removeSortOrder(strName);
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
         adapter.remove((CharSequence)m_SpinnerSortOrders.getSelectedItem());
         m_SpinnerSortOrders.setAdapter(adapter);
         m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
+
+        // Allow undo
+
+        Snackbar snackbar = Snackbar.make(m_SpinnerSortOrders, "SortOrder deleted", Snackbar.LENGTH_LONG);
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m_GroceryPlanning.m_Categories.addSortOrder(m_strRecentlyDeletedSortOrder, m_RecentlyDeletedSortOrder);
+                ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
+                adapter.add(m_strRecentlyDeletedSortOrder);
+                m_SpinnerSortOrders.setSelection(adapter.getCount() - 1);
+
+                m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
+
+                m_strRecentlyDeletedSortOrder = "";
+                m_RecentlyDeletedSortOrder = null;
+
+                Snackbar snackbar1 = Snackbar.make(m_SpinnerSortOrders, "SortOrder restored", Snackbar.LENGTH_SHORT);
+                snackbar1.show();
+            }
+        });
+        snackbar.show();
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)

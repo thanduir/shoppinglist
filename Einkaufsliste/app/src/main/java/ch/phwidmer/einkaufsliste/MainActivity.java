@@ -142,7 +142,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 
     public void onImport(View v)
@@ -190,6 +192,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 20 ,20,0);
+        d.show();
     }
 }

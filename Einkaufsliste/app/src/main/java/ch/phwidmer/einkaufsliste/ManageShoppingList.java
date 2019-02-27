@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,8 @@ public class ManageShoppingList extends AppCompatActivity
 {
     private GroceryPlanning m_GroceryPlanning;
     private String          m_SaveFilePath;
+
+    private ShoppingList    m_RecentlyDeletedShoppingList;
 
     private RecyclerView                m_RecyclerViewRecipes;
     private RecyclerView.Adapter        m_AdapterRecipes;
@@ -99,10 +102,8 @@ public class ManageShoppingList extends AppCompatActivity
             Toast.makeText(v.getContext(), "Nothing to add, all recipes already added.", Toast.LENGTH_SHORT).show();
             return;
         }
-
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         input.setAdapter(adapter);
-        builder.setView(input);
 
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -124,13 +125,35 @@ public class ManageShoppingList extends AppCompatActivity
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 20 ,20,0);
+        d.show();
     }
 
     public void onResetList(View v)
     {
+        m_RecentlyDeletedShoppingList = m_GroceryPlanning.m_ShoppingList;
+
         m_GroceryPlanning.m_ShoppingList = new ShoppingList();
         m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
+
+        // Allow undo
+
+        Snackbar snackbar = Snackbar.make(m_RecyclerViewRecipes, "Shoppinglist reset", Snackbar.LENGTH_LONG);
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m_GroceryPlanning.m_ShoppingList = m_RecentlyDeletedShoppingList;
+                m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
+                m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
+
+                m_RecentlyDeletedShoppingList = null;
+
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerViewRecipes, "Shoppinglist restored", Snackbar.LENGTH_SHORT);
+                snackbar1.show();
+            }
+        });
+        snackbar.show();
     }
 }

@@ -66,14 +66,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         public void setDescription(RecipeItem item)
         {
-            Float f = item.m_Amount.m_Quantity;
-            String amount = f.toString();
-            if(f == Math.round(f))
-            {
-                amount = String.valueOf(f.intValue());
-            }
-
-            String text = " (" + amount + " " + Amount.shortForm(item.m_Amount.m_Unit);
+            String text = " (" + NumberFormatter.format(item.m_Amount.m_Quantity) + " " + Amount.shortForm(item.m_Amount.m_Unit);
             if(item.m_Size != RecipeItem.Size.Normal)
             {
                 text += ", " + item.m_Size.toString();

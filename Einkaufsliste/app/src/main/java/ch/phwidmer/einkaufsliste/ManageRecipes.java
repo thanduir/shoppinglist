@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +32,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     private TextView    m_textViewNrPersons;
 
     private Button      m_ButtonDelRecipe;
+
+    private String                      m_strRecentlyDeletedRecipe;
+    private Recipes.Recipe              m_RecentlyDeletedRecipe;
 
     private RecyclerView                m_RecyclerView;
     private RecyclerView.Adapter        m_Adapter;
@@ -151,7 +155,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 
     public void onDelRecipe(View v)
@@ -162,11 +168,36 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         }
 
         String strName = (String)m_SpinnerRecipes.getSelectedItem();
+
+        m_strRecentlyDeletedRecipe = strName;
+        m_RecentlyDeletedRecipe = m_GroceryPlanning.m_Recipes.getRecipe(strName);
+
         m_GroceryPlanning.m_Recipes.removeRecipe(strName);
         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
         adapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
         m_SpinnerRecipes.setAdapter(adapter);
         updateVisibility();
+
+        // Allow undo
+
+        Snackbar snackbar = Snackbar.make(m_RecyclerView, "Recipe deleted", Snackbar.LENGTH_LONG);
+        snackbar.setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m_GroceryPlanning.m_Recipes.addRecipe(m_strRecentlyDeletedRecipe, m_RecentlyDeletedRecipe);
+                ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
+                adapter.add(m_strRecentlyDeletedRecipe);
+                m_SpinnerRecipes.setSelection(adapter.getCount() - 1);
+                updateVisibility();
+
+                m_strRecentlyDeletedRecipe = "";
+                m_RecentlyDeletedRecipe = null;
+
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Recipe restored", Snackbar.LENGTH_SHORT);
+                snackbar1.show();
+            }
+        });
+        snackbar.show();
     }
 
     public void onAddRecipeItem(View v)
@@ -216,7 +247,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 20 ,20,0);
+        d.show();
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)

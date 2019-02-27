@@ -57,14 +57,8 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         if(!m_SortedList.isCategory(position))
         {
             SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
-            Float f = item.getAmount().m_Quantity;
-            String amount = f.toString();
-            if(f == Math.round(f))
-            {
-                amount = String.valueOf(f.intValue());
-            }
 
-            String text = amount + " " + Amount.shortForm(item.getAmount().m_Unit) + " " + holder.m_id;
+            String text = NumberFormatter.format(item.getAmount().m_Quantity) + " " + Amount.shortForm(item.getAmount().m_Unit) + " " + holder.m_id;
             if(item.getSize() != RecipeItem.Size.Normal)
             {
                 text += " (" + item.getSize().toString() + ")";

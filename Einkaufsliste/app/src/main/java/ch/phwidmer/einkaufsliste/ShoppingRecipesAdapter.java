@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -89,14 +90,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 return;
             }
 
-            Float f = m_RecipeItem.m_Amount.m_Quantity;
-            String amount = f.toString();
-            if(f == Math.round(f))
-            {
-                amount = String.valueOf(f.intValue());
-            }
-
-            String text = " (" + amount + " " + Amount.shortForm(m_RecipeItem.m_Amount.m_Unit);
+            String text = " (" + NumberFormatter.format(m_RecipeItem.m_Amount.m_Quantity) + " " + Amount.shortForm(m_RecipeItem.m_Amount.m_Unit);
             if(m_RecipeItem.m_Size != RecipeItem.Size.Normal)
             {
                 text += ", " + m_RecipeItem.m_Size.toString();
@@ -219,13 +213,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 return;
             }
 
-            Float f = recipe.m_fScalingFactor;
-            String factor = f.toString();
-            if(f == Math.round(f))
-            {
-                factor = String.valueOf(f.intValue());
-            }
-            vh.m_TextViewDesc.setText(" (" + factor + " Pers. [+] )");
+            vh.m_TextViewDesc.setText(" (" + NumberFormatter.format(recipe.m_fScalingFactor) + " Pers. [+] )");
 
             vh.m_TextViewDesc.setOnClickListener(new View.OnClickListener() {
                                                      @Override
@@ -515,9 +503,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         input.setAdapter(adapter);
-        builder.setView(input);
 
-        // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -540,8 +526,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 dialog.cancel();
             }
         });
-
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 20 ,20,0);
+        d.show();
     }
 
     private void onDelShoppingRecipe(final String strRecipe)
@@ -592,7 +579,6 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
     private void onChangeRecipeScaling(final String strRecipe)
     {
-        // TODO!
         int index = getShoppingRecipes().indexOf(new Pair<String, String>(strRecipe, ""));
         View v = m_RecyclerView.getChildAt(index);
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
@@ -605,9 +591,6 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         final EditText input = new EditText(v.getContext());
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         input.setText(recipe.m_fScalingFactor.toString());
-        builder.setView(input);
-
-        // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -628,7 +611,8 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 dialog.cancel();
             }
         });
-
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 }

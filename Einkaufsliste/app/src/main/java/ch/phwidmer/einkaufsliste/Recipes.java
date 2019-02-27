@@ -31,6 +31,15 @@ public class Recipes {
         m_Recipies.put(strName, recipe);
     }
 
+    public void addRecipe(String strName, Recipe r)
+    {
+        if(m_Recipies.containsKey(strName))
+        {
+            return;
+        }
+        m_Recipies.put(strName, r);
+    }
+
     public Recipe getRecipe(String strName)
     {
         return m_Recipies.get(strName);

@@ -76,7 +76,7 @@ public class ManageIngredients extends AppCompatActivity
     public void onAddIngredient(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add category");
+        builder.setTitle("Add ingredient");
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -100,6 +100,8 @@ public class ManageIngredients extends AppCompatActivity
             }
         });
 
-        builder.show();
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 }

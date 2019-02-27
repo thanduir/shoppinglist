@@ -111,6 +111,15 @@ public class Categories
         m_SortOrders.put(strName, order);
     }
 
+    public void addSortOrder(String strName, SortOrder order)
+    {
+        if(order.m_CategoriesOrder.size() != m_Categories.size())
+        {
+            return;
+        }
+        m_SortOrders.put(strName, order);
+    }
+
     public SortOrder getSortOrder(String strName)
     {
         return m_SortOrders.get(strName);
