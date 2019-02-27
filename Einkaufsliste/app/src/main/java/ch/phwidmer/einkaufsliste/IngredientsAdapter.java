@@ -1,7 +1,9 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -230,11 +232,28 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         View activeItem = m_RecyclerView.getChildAt(position);
         IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
+        String strIngredient = (String)holder.m_TextView.getText();
 
-        m_strRecentlyDeleted = (String)holder.m_TextView.getText();
-        m_RecentlyDeleted = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
+        if(m_GroceryPlanning.m_Recipes.isIngredientInUse(strIngredient) || m_GroceryPlanning.m_ShoppingList.isIngredientInUse(strIngredient))
+        {
+            notifyItemChanged(position);
+            AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
+            builder.setTitle("Deleting ingredient not allowed");
+            builder.setMessage("Ingredient \"" + strIngredient + "\" cannot be deleted because it is still in use.");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-        m_GroceryPlanning.m_Ingredients.removeIngredient(m_strRecentlyDeleted);
+                }
+            });
+            builder.show();
+            return;
+        }
+
+        m_strRecentlyDeleted = strIngredient;
+        m_RecentlyDeleted = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient);
+
+        m_GroceryPlanning.m_Ingredients.removeIngredient(strIngredient);
         notifyItemRemoved(position);
         setActiveElement("");
 

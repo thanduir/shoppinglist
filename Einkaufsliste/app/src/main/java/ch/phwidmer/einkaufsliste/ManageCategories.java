@@ -185,7 +185,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
         Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
 
-        m_Adapter = new CategoriesAdapter(m_RecyclerView, m_GroceryPlanning.m_Categories, order);
+        m_Adapter = new CategoriesAdapter(m_RecyclerView, m_GroceryPlanning.m_Categories, order, m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((CategoriesAdapter)m_Adapter,
                                                                                                 m_RecyclerView.getContext(),

@@ -97,6 +97,21 @@ public class ShoppingList
         m_Items.put(strName, recipe);
     }
 
+    public boolean isIngredientInUse(String strIngredient)
+    {
+        for(ShoppingRecipe sr : m_Items.values())
+        {
+            for(ShoppingListItem sli : sr.m_Items)
+            {
+                if (sli.m_Ingredient.equals(strIngredient))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Serializing
 
     public void saveToJson(JsonWriter writer) throws IOException

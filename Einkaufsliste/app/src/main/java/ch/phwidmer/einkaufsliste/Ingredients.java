@@ -72,6 +72,18 @@ public class Ingredients
         m_Ingredients.remove(strName);
     }
 
+    public boolean isCategoryInUse(Categories.Category category)
+    {
+        for(Ingredient i : m_Ingredients.values())
+        {
+            if(i.m_Category.equals(category))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Serializing
 
     public void saveToJson(JsonWriter writer) throws IOException

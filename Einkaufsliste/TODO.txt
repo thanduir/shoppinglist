@@ -1,12 +1,8 @@
 TODO
 ====
 
-- Handling von gelöschten Daten in späteren Activites (i.e. wenn eine ID (String) nicht mehr existiert)!
-    -> Löschen ist nicht erlaubt, solange das Datum noch irgendwo sonst verwendet wird (-> msg mit hinweis, wo es noch verwendet wird).
-    -> Zuerst (noch)mals Liste machen, was noch wo überall verwendet wird (von den löschbaren Items)!
-- BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
-
 - Data synchronisation between different devices (in the same network?) possible?
+- BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Speicherort der Dateien? (MainActivity.m_AppDataDirectory: Ich sollte das am Besten durch getExternalFilesDir ersetzen, dann habe ich aber keinen Zugriff mehr im Device Explorer! -> Korrektur suchen!)
 - StateLoad/Save (cf. Links).
 

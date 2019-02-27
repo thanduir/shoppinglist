@@ -61,6 +61,21 @@ public class Recipes {
         return vec;
     }
 
+    public boolean isIngredientInUse(String strIngredient)
+    {
+        for(Recipe r : m_Recipies.values())
+        {
+            for(RecipeItem ri : r.m_Items)
+            {
+                if (ri.m_Ingredient.equals(strIngredient))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Serializing
 
     public void saveToJson(JsonWriter writer) throws IOException

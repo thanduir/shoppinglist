@@ -1,7 +1,8 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.graphics.Color;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 {
     private Categories m_Categories;
     private Categories.SortOrder m_SortOrder;
+
+    private Ingredients m_Ingredients;
 
     private Categories.Category m_RecentlyDeleted;
     private RecyclerView m_RecyclerView;
@@ -34,11 +37,12 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         }
     }
 
-    public CategoriesAdapter(RecyclerView recyclerView, Categories categories, Categories.SortOrder sortOrder)
+    public CategoriesAdapter(RecyclerView recyclerView, Categories categories, Categories.SortOrder sortOrder, Ingredients ingredients)
     {
         m_Categories = categories;
         m_SortOrder = sortOrder;
         m_RecyclerView = recyclerView;
+        m_Ingredients = ingredients;
     }
 
 
@@ -87,6 +91,23 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         // Remove element
 
         Categories.Category category = m_SortOrder.m_CategoriesOrder.get(position);
+
+        if(m_Ingredients.isCategoryInUse(category))
+        {
+            notifyItemChanged(position);
+            AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
+            builder.setTitle("Deleting category not allowed");
+            builder.setMessage("Category \"" + category.getName() + "\" cannot be deleted because it is still in use.");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.show();
+            return;
+        }
+
         m_Categories.removeCategory(category.getName());
         notifyItemRemoved(position);
 

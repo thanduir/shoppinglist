@@ -47,7 +47,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         m_SpinnerSortOrders.setAdapter(adapter);
         m_SpinnerSortOrders.setOnItemSelectedListener(this);
         String strCurrentSortOrder = m_GroceryPlanning.m_ShoppingList.getCurrentSortOrder();
-        if(!strCurrentSortOrder.isEmpty())
+        if(!strCurrentSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strCurrentSortOrder))
         {
             m_SpinnerSortOrders.setSelection(adapter.getPosition(strCurrentSortOrder));
         }
