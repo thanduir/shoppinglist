@@ -300,15 +300,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private Vector<String> getSortedIngredients()
     {
         Vector<String> vec = m_GroceryPlanning.m_Ingredients.getAllIngredients();
-        Collections.sort(vec, new SortIgnoreCase());
         return vec;
-    }
-
-    private class SortIgnoreCase implements Comparator<Object> {
-        public int compare(Object o1, Object o2) {
-            String s1 = (String) o1;
-            String s2 = (String) o2;
-            return s1.toLowerCase().compareTo(s2.toLowerCase());
-        }
     }
 }
