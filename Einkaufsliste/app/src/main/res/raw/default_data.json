@@ -1,0 +1,276 @@
+[
+  {
+    "id": "ch.phwidmer.einkaufsliste",
+    "version": 1
+  },
+  {
+    "id": "Categories",
+    "all categories": [
+      "Brot",
+      "Veganer Fleischersatz",
+      "Früchte und Gemüse",
+      "Salate",
+      "Eier",
+      "Milchprodukte",
+      "Fertigteig",
+      "Fleisch",
+      "Tiefgefrohrenes",
+      "Oele und Saucen",
+      "Konserven",
+      "Restliches",
+      "Teigwaren, Reis und Kartoffelprodukte"
+    ],
+    "sortOrders": {
+      "Migros": [
+        "Veganer Fleischersatz",
+        "Brot",
+        "Fertigteig",
+        "Früchte und Gemüse",
+        "Eier",
+        "Salate",
+        "Milchprodukte",
+        "Fleisch",
+        "Tiefgefrohrenes",
+        "Oele und Saucen",
+        "Konserven",
+        "Teigwaren, Reis und Kartoffelprodukte",
+        "Restliches"
+      ]
+    }
+  },
+  {
+    "id": "Ingredients",
+    "Apfel": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Banane": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "3. Frucht": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Tofu": {
+      "category": "Veganer Fleischersatz",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Falafel": {
+      "category": "Veganer Fleischersatz",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Zopf": {
+      "category": "Brot",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Toast": {
+      "category": "Brot",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Pizzateig": {
+      "category": "Fertigteig",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Flammkuchenteig": {
+      "category": "Fertigteig",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Erdbeeren": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Aubergine": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Zucchetti": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Tomaten": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Orangen": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Eier": {
+      "category": "Eier",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Salat (Kopf) ": {
+      "category": "Salate",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Salat (Nüssler) ": {
+      "category": "Salate",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Karotten": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Kartoffel": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Kilogram"
+    },
+    "Parmesan": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Nature Joghurt": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Mokka Joghurt": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Mozzarella": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Halbrahm": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Peperoni": {
+      "category": "Früchte und Gemüse",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Champignon": {
+      "category": "Salate",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Saurer Halbrahm": {
+      "category": "Brot",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Milch": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Liter"
+    },
+    "Fleisch": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Poulet geschnetzeltes": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Schweinsschnitzel": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Schweinsgeschnetzeltes": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Gehacktes (gemischt) ": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Gehacktes (Rind) ": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Spinatplätzli": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Spinat (gehackt, gefrohren) ": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Spinat (gefrohren) ": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Rahmspinat": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Tomatenpüree": {
+      "category": "Konserven",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Ananas": {
+      "category": "Konserven",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Apfelmus": {
+      "category": "Konserven",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Chrömli": {
+      "category": "Restliches",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Kartoffelstock": {
+      "category": "Teigwaren, Reis und Kartoffelprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Unitless"
+    },
+    "Spaghetti": {
+      "category": "Teigwaren, Reis und Kartoffelprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Teigwaren (Hörnli) ": {
+      "category": "Brot",
+      "provenance": "Everywhere",
+      "default-unit": "Unitless"
+    }
+  },
+  {
+    "id": "Recipes"
+  },
+  {
+    "id": "Shoppinglist",
+    "currentSortOrder": ""
+  }
+]

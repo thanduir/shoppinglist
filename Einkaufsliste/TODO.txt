@@ -1,7 +1,6 @@
 TODO
 ====
 
-- Selection+Scrolling doesn't quite work correctly... (indices verschoben, wenn scrolled down... d.h. scrolling wird nicht einbezogen, evtl. fehler im itemclicksupport)
 - STANDARD-DATASET ERSTELLEN UND MIT DER APP ZUSAMMEN INSTALLIEREN (ersetzt TestData)!
 - test on my phone! (insb. länge der deutschen texte...)d
 

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         if(!testDataFile.exists())
         {
             try {
-                InputStream dataInputStream = getResources().openRawResource(R.raw.testdata);
+                InputStream dataInputStream = getResources().openRawResource(R.raw.default_data);
                 OutputStream output = new FileOutputStream(testDataFile);
 
                 int read = 0;
