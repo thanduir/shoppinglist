@@ -150,7 +150,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     {
         if(m_iActiveElement != -1)
         {
-            View v = m_RecyclerView.getChildAt(m_iActiveElement);
+            View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(v != null)
             {
                 RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
@@ -166,7 +166,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         {
             m_iActiveElement = getRecipeItemsList().indexOf(strElement);
 
-            View child = m_RecyclerView.getChildAt(m_iActiveElement);
+            View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(child == null)
             {
                 return;
@@ -221,7 +221,8 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             vh.m_CheckBoxOptional.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
-                    RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                    RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
                     RecipeItem item = getRecipeItem(vh.getID());
                     if(item == null)
                     {
@@ -237,7 +238,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             vh.m_EditTextAmount.addTextChangedListener(new TextWatcher() {
 
                 public void afterTextChanged(Editable s) {
-                    View child = m_RecyclerView.getChildAt(m_iActiveElement);
+                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
                     if(child == null)
                     {
                         // Item not visible (yet) -> nothing to do
@@ -268,7 +269,8 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+        View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+        RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
         RecipeItem item = getRecipeItem(vh.getID());
 
         if(parent == vh.m_SpinnerAmount)
@@ -293,14 +295,14 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     {
         // Remove element
 
-        View activeItem = m_RecyclerView.getChildAt(position);
+        View activeItem = m_RecyclerView.getLayoutManager().findViewByPosition(position);
         RecipeItemsAdapter.ViewHolder holder = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
 
         m_RecentlyDeleted = getRecipeItem(holder.m_id);
         m_RecentlyDeletedIndex = position;
         m_Recipe.m_Items.remove(m_RecentlyDeleted);
 
-        notifyItemRemoved(position);
+        notifyDataSetChanged();
         setActiveElement("");
 
         // Allow undo

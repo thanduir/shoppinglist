@@ -142,7 +142,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     {
         if(m_iActiveElement != -1)
         {
-            View v = m_RecyclerView.getChildAt(m_iActiveElement);
+            View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(v != null)
             {
                 ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
@@ -158,7 +158,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         {
             m_iActiveElement = getShoppingRecipes().indexOf(element);
 
-            View child = m_RecyclerView.getChildAt(m_iActiveElement);
+            View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(child == null)
             {
                 return;
@@ -305,7 +305,8 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             vh.m_CheckBoxOptional.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
-                    ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+                    View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                    ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
                     ShoppingListItem item = vh.m_RecipeItem;
                     if(item == null)
                     {
@@ -321,7 +322,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             vh.m_EditTextAmount.addTextChangedListener(new TextWatcher() {
 
                 public void afterTextChanged(Editable s) {
-                    View child = m_RecyclerView.getChildAt(m_iActiveElement);
+                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
                     if(child == null)
                     {
                         // Item not visible (yet) -> nothing to do
@@ -352,7 +353,8 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+        ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
         ShoppingListItem item = vh.m_RecipeItem;
 
         if(parent == vh.m_SpinnerAmount)
@@ -382,7 +384,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     {
         // Remove ShoppingListItem at this position
 
-        View activeItem = m_RecyclerView.getChildAt(position);
+        View activeItem = m_RecyclerView.getLayoutManager().findViewByPosition(position);
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
 
         if(holder.m_RecipeItem == null)
@@ -397,7 +399,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         m_RecentlyDeletedItem = holder.m_RecipeItem;
         recipe.m_Items.remove(holder.m_RecipeItem);
 
-        notifyItemRemoved(position);
+        notifyDataSetChanged();
         setActiveElement(null);
 
         // Allow undo
@@ -487,7 +489,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     private void onAddShoppingListItem(final String strRecipe)
     {
         int index = getShoppingRecipes().indexOf(new Pair<String, String>(strRecipe, ""));
-        View v = m_RecyclerView.getChildAt(index);
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(index);
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -537,7 +539,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     private void onDelShoppingRecipe(final String strRecipe)
     {
         int index = getShoppingRecipes().indexOf(new Pair<String, String>(strRecipe, ""));
-        View v = m_RecyclerView.getChildAt(index);
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(index);
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
 
         if(holder.m_RecipeItem != null)
@@ -583,7 +585,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     private void onChangeRecipeScaling(final String strRecipe)
     {
         int index = getShoppingRecipes().indexOf(new Pair<String, String>(strRecipe, ""));
-        View v = m_RecyclerView.getChildAt(index);
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(index);
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
 

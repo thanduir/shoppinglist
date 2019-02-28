@@ -109,7 +109,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         }
 
         m_Categories.removeCategory(category.getName());
-        notifyItemRemoved(position);
+        notifyDataSetChanged();
 
         // Allow undo
 

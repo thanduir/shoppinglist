@@ -117,7 +117,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     {
         if(m_iActiveElement != -1)
         {
-            View v = m_RecyclerView.getChildAt(m_iActiveElement);
+            View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(v != null)
             {
                 IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
@@ -133,7 +133,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             m_iActiveElement = getSortedIngredients().indexOf(strElement);
 
-            View child = m_RecyclerView.getChildAt(m_iActiveElement);
+            View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(child == null)
             {
                 return;
@@ -204,7 +204,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             return;
         }
-        IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
+
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+        if(v == null)
+        {
+            return;
+        }
+        IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
         Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
 
         if(parent == vh.m_SpinnerCategory)
@@ -233,7 +239,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     {
         // Remove element
 
-        View activeItem = m_RecyclerView.getChildAt(position);
+        View activeItem = m_RecyclerView.getLayoutManager().findViewByPosition(position);
         IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
         String strIngredient = (String)holder.m_TextView.getText();
 
@@ -257,7 +263,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         m_RecentlyDeleted = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient);
 
         m_GroceryPlanning.m_Ingredients.removeIngredient(strIngredient);
-        notifyItemRemoved(position);
+        notifyDataSetChanged();
         setActiveElement("");
 
         // Allow undo
