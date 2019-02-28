@@ -6,10 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
+// Generates the list of ingredients sorted by categories according to a sort order from the ShoppingList.
 public class SortedShoppingList
 {
     private LinkedHashMap<String, LinkedList<CategoryShoppingItem>>  m_UnorderdList;
-    private LinkedList<CategoryItem>                                 m_SortedList;
+    private LinkedList<CategoryItem>                                 m_SortedList;  // Ingredientslist sorted by category. Same ingredients have been combined.
 
     public class CategoryShoppingItem
     {

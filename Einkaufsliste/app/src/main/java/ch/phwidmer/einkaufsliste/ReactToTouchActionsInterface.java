@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.support.v7.widget.RecyclerView;
 
+// Interface related to ReactToTouchActionsCallback. Allows reactions to touch events
 public interface ReactToTouchActionsInterface
 {
     public void reactToSwipe(int position);

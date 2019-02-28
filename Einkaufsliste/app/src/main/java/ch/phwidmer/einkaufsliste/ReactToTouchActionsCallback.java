@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
+// Add touch reactions to a adapter. The adapter must implement ReactToTouchActionsInterface in order to be able to react to the events.
 public class ReactToTouchActionsCallback<Myadapter extends ReactToTouchActionsInterface> extends ItemTouchHelper.Callback
 {
     private Boolean m_bAllowDrag;

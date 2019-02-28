@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity
 
     private GroceryPlanning m_GroceryPlanning;
 
-    private final String c_strTestDataFilename = "testData.json";
+    private final String c_strStdDataFilename = "default.json";
 
     public static final String c_strSaveFilename = "einkaufsliste.json";
     private File m_AppDataDirectory = null;
@@ -48,12 +48,12 @@ public class MainActivity extends AppCompatActivity
             m_GroceryPlanning.saveDataToFile(file, this);
         }
 
-        writeTestDataFileIfNotPresent();
+        writeStdDataFileIfNotPresent();
     }
 
-    private void writeTestDataFileIfNotPresent()
+    private void writeStdDataFileIfNotPresent()
     {
-        File testDataFile = new File(m_AppDataDirectory, c_strTestDataFilename);
+        File testDataFile = new File(m_AppDataDirectory, c_strStdDataFilename);
         if(!testDataFile.exists())
         {
             try {

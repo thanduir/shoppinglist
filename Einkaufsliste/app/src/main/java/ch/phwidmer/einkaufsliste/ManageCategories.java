@@ -187,6 +187,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
+        // Sort order selected -> fill corresponding RecyclerView
+
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
         Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
 

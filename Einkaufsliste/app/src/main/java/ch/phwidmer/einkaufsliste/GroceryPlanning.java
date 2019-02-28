@@ -130,6 +130,7 @@ public class GroceryPlanning
         }
     }
 
+    // Make file known to the MedaiScanner so that it apears when the device is mount e.g. on windows.
     public void scanFile(Context context, File f)
     {
         if(context == null)
