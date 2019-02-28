@@ -1,5 +1,6 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,12 +19,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Vector;
 
@@ -81,7 +80,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             return new Pair<String, String>(m_strRecipe, strItem);
         }
 
-        private void updateDescription()
+        private void updateDescription(Context context)
         {
             if(m_RecipeItem == null)
             {
@@ -90,10 +89,10 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 return;
             }
 
-            String text = " (" + NumberFormatter.format(m_RecipeItem.m_Amount.m_Quantity) + " " + Amount.shortForm(m_RecipeItem.m_Amount.m_Unit);
+            String text = " (" + NumberFormatter.format(m_RecipeItem.m_Amount.m_Quantity) + " " + Amount.shortForm(context, m_RecipeItem.m_Amount.m_Unit);
             if(m_RecipeItem.m_Size != RecipeItem.Size.Normal)
             {
-                text += ", " + m_RecipeItem.m_Size.toString();
+                text += ", " + RecipeItem.toUIString(context, m_RecipeItem.m_Size);
             }
             text += ")";
 
@@ -189,7 +188,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             holder.m_RecipeItem = getShoppingListItem(recipe, strItem.second);
         }
 
-        holder.updateDescription();
+        holder.updateDescription(holder.itemView.getContext());
         updateViewHolder(holder, m_iActiveElement == position);
     }
 
@@ -213,7 +212,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 return;
             }
 
-            vh.m_TextViewDesc.setText(" (" + NumberFormatter.format(recipe.m_fScalingFactor) + " Pers. [+] )");
+            vh.m_TextViewDesc.setText(vh.itemView.getContext().getResources().getString(R.string.text_nrpersons_listvariant, NumberFormatter.format(recipe.m_fScalingFactor)));
 
             vh.m_TextViewDesc.setOnClickListener(new View.OnClickListener() {
                                                      @Override
@@ -280,9 +279,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             ShoppingListItem item = vh.m_RecipeItem;
 
             ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(int i = 0; i < Amount.Unit.values().length; ++i)
+            for(Amount.Unit u : Amount.Unit.values())
             {
-                adapterAmount.add(Amount.Unit.values()[i].toString());
+                adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
             }
             adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             vh.m_SpinnerAmount.setAdapter(adapterAmount);
@@ -290,9 +289,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
 
             ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(int i = 0; i < RecipeItem.Size.values().length; ++i)
+            for(RecipeItem.Size size : RecipeItem.Size.values())
             {
-                adapterSize.add(RecipeItem.Size.values()[i].toString());
+                adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
             }
             adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             vh.m_SpinnerSize.setAdapter(adapterSize);
@@ -310,7 +309,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                     }
 
                     item.m_Optional = isChecked;
-                    vh.updateDescription();
+                    vh.updateDescription(vh.itemView.getContext());
                 }
             });
             vh.m_CheckBoxOptional.setChecked(item.m_Optional);
@@ -336,7 +335,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                         item.m_Amount.m_Quantity = Float.valueOf(s.toString());
                     }
 
-                    vh.updateDescription();
+                    vh.updateDescription(vh.itemView.getContext());
                 }
 
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -362,7 +361,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             item.m_Size = RecipeItem.Size.values()[vh.m_SpinnerSize.getSelectedItemPosition()];
         }
 
-        vh.updateDescription();
+        vh.updateDescription(vh.itemView.getContext());
     }
 
     @Override
@@ -399,8 +398,8 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, "Item deleted", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(m_RecentlyDeletedItem == null)
@@ -415,7 +414,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 m_RecentlyDeleted = null;
                 m_RecentlyDeletedItem = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Item restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });
@@ -488,7 +487,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-        builder.setTitle("Add ingredient");
+        builder.setTitle(R.string.text_add_ingredient);
 
         // Set up the input
         final Spinner input = new Spinner(v.getContext());
@@ -504,7 +503,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         input.setAdapter(adapter);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String strIngredient = input.getSelectedItem().toString();
@@ -520,7 +519,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 setActiveElement(newItem);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -554,8 +553,8 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, "Item deleted", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(m_RecentlyDeletedItem != null)
@@ -570,7 +569,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 m_RecentlyDeleted = null;
                 m_RecentlyDeletedItem = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Item restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });
@@ -585,13 +584,13 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-        builder.setTitle("Change number of persons of recipe \"" + strRecipe + "\"");
+        builder.setTitle(v.getContext().getResources().getString(R.string.text_change_nrpersons, strRecipe));
 
         // Set up the input
         final EditText input = new EditText(v.getContext());
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         input.setText(recipe.m_fScalingFactor.toString());
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(input.getText().toString().isEmpty())
@@ -605,7 +604,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 notifyDataSetChanged();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

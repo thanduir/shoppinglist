@@ -76,7 +76,7 @@ public class ManageIngredients extends AppCompatActivity
     public void onAddIngredient(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add ingredient");
+        builder.setTitle(R.string.text_add_ingredient);
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -84,7 +84,7 @@ public class ManageIngredients extends AppCompatActivity
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 m_GroceryPlanning.m_Ingredients.addIngredient(input.getText().toString());
@@ -93,7 +93,7 @@ public class ManageIngredients extends AppCompatActivity
                 adapter.notifyDataSetChanged();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

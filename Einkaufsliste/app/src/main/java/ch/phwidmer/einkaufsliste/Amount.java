@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.Context;
+
 public class Amount {
     public enum Unit {
         Count,
@@ -36,32 +38,64 @@ public class Amount {
         }
     }
 
-    public static String shortForm(Unit unit)
+    public static String toUIString(Context context, Unit unit)
     {
         switch(unit)
         {
             case Count:
-                return "Piece";
+                return context.getResources().getString(R.string.unit_count_long);
 
             case Kilogram:
-                return "kg";
+                return context.getResources().getString(R.string.unit_kilogram_long);
             case Gram:
-                return "g";
+                return context.getResources().getString(R.string.unit_gram_long);
 
             case Liter:
-                return "L";
+                return context.getResources().getString(R.string.unit_liter_long);
             case Deciliter:
-                return "dl";
+                return context.getResources().getString(R.string.unit_deciliter_long);
             case Milliliter:
-                return "ml";
+                return context.getResources().getString(R.string.unit_mililiter_long);
 
             case Dessertspoon:
-                return "ds";
+                return context.getResources().getString(R.string.unit_dessertspoon_long);
             case Teaspoon:
-                return "ts";
+                return context.getResources().getString(R.string.unit_teaspoon_long);
 
             case Unitless:
-                return "";
+                return context.getResources().getString(R.string.unit_unitless_long);
+
+            default:
+                return unit.toString();
+        }
+    }
+
+    public static String shortForm(Context context, Unit unit)
+    {
+        switch(unit)
+        {
+            case Count:
+                return context.getResources().getString(R.string.unit_count_short);
+
+            case Kilogram:
+                return context.getResources().getString(R.string.unit_kilogram_short);
+            case Gram:
+                return context.getResources().getString(R.string.unit_gram_short);
+
+            case Liter:
+                return context.getResources().getString(R.string.unit_liter_short);
+            case Deciliter:
+                return context.getResources().getString(R.string.unit_deciliter_short);
+            case Milliliter:
+                return context.getResources().getString(R.string.unit_mililiter_short);
+
+            case Dessertspoon:
+                return context.getResources().getString(R.string.unit_dessertspoon_short);
+            case Teaspoon:
+                return context.getResources().getString(R.string.unit_teaspoon_short);
+
+            case Unitless:
+                return context.getResources().getString(R.string.unit_unitless_short);
 
             default:
                 return unit.toString();

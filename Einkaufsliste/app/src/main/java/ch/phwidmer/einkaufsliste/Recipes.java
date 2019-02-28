@@ -11,7 +11,7 @@ import java.util.Vector;
 public class Recipes {
 
     public class Recipe {
-        public Integer m_NumberOfPersons = 4;
+        public Integer m_NumberOfPersons = 2;
         public LinkedList<RecipeItem> m_Items = new LinkedList<RecipeItem>();
     }
     private LinkedHashMap<String, Recipe> m_Recipies;

@@ -96,9 +96,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         {
             notifyItemChanged(position);
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
-            builder.setTitle("Deleting category not allowed");
-            builder.setMessage("Category \"" + category.getName() + "\" cannot be deleted because it is still in use.");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_category_disallowed_header));
+            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_category_disallowed_desc, category.getName()));
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
@@ -114,8 +114,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         // Allow undo
 
         m_RecentlyDeleted = category;
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, "Item deleted", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 m_Categories.addCategory(m_RecentlyDeleted.getName());
@@ -123,7 +123,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
                 m_RecentlyDeleted = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Item restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });

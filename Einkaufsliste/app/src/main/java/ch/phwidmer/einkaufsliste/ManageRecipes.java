@@ -130,7 +130,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     public void onAddRecipe(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add recipe");
+        builder.setTitle(R.string.text_add_recipe);
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -138,7 +138,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 m_GroceryPlanning.m_Recipes.addRecipe(input.getText().toString());
@@ -148,7 +148,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 updateVisibility();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -180,8 +180,8 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, "Recipe deleted", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_recipe_deleted, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 m_GroceryPlanning.m_Recipes.addRecipe(m_strRecentlyDeletedRecipe, m_RecentlyDeletedRecipe);
@@ -193,7 +193,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 m_strRecentlyDeletedRecipe = "";
                 m_RecentlyDeletedRecipe = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Recipe restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_recipe_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });
@@ -203,7 +203,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     public void onAddRecipeItem(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add ingredient");
+        builder.setTitle(R.string.text_add_ingredient);
 
         // Set up the input
         final Spinner input = new Spinner(this);
@@ -222,7 +222,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
@@ -240,7 +240,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 adapter.setActiveElement(strIngredient);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

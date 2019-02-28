@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     public void onExport(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Save as");
+        builder.setTitle(R.string.alert_saveas);
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String strFilename = input.getText().toString();
@@ -134,10 +134,10 @@ public class MainActivity extends AppCompatActivity
 
                 File file = new File(m_AppDataDirectory, strFilename);
                 m_GroceryPlanning.saveDataToFile(file, getBaseContext());
-                Toast.makeText(MainActivity.this, "Data saved to " + strFilename, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity
     public void onImport(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Import file");
+        builder.setTitle(R.string.alert_load);
 
         // Set up the input
         final Spinner input = new Spinner(this);
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String strFilename = input.getSelectedItem().toString();
@@ -184,10 +184,10 @@ public class MainActivity extends AppCompatActivity
                 File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
                 m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
 
-                Toast.makeText(MainActivity.this, "Data loaded from " + strFilename, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded,  strFilename), Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

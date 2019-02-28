@@ -2,7 +2,6 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
@@ -83,7 +82,7 @@ public class ManageShoppingList extends AppCompatActivity
     public void onAddShoppingRecipe(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Import recipe");
+        builder.setTitle(R.string.text_import_recipe);
 
         // Set up the input
         final Spinner input = new Spinner(this);
@@ -99,14 +98,14 @@ public class ManageShoppingList extends AppCompatActivity
         }
         if(adapter.isEmpty())
         {
-            Toast.makeText(v.getContext(), "Nothing to add, all recipes already added.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(v.getContext(), R.string.text_all_recipes_alreay_added, Toast.LENGTH_SHORT).show();
             return;
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         input.setAdapter(adapter);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String strRecipe = input.getSelectedItem().toString();
@@ -118,7 +117,7 @@ public class ManageShoppingList extends AppCompatActivity
                 adapter.setActiveElement(new Pair<String, String>(strRecipe, ""));
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -140,8 +139,8 @@ public class ManageShoppingList extends AppCompatActivity
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerViewRecipes, "Shoppinglist reset", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_RecyclerViewRecipes, R.string.text_shoppnglist_reset, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 m_GroceryPlanning.m_ShoppingList = m_RecentlyDeletedShoppingList;
@@ -150,7 +149,7 @@ public class ManageShoppingList extends AppCompatActivity
 
                 m_RecentlyDeletedShoppingList = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerViewRecipes, "Shoppinglist restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerViewRecipes, R.string.text_shoppnglist_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });

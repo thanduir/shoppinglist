@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ShoppingList</string>
+    <string name="button_start_shoppinglist">Einkaufsliste erstellen</string>
+    <string name="button_manage_recipies">Rezepte verwalten</string>
+    <string name="button_manage_categories">Kategorien verwalten</string>
+    <string name="button_manage_ingredients">Zutaten verwalten</string>
+    <string name="button_go_shopping">Go Shopping!</string>
+    <string name="button_add">Add</string>
+    <string name="button_delete">Del</string>
+    <string name="activity_ingredients">Zutaten verwalten</string>
+    <string name="activity_categories">Sortierreihenfolge der Kategorien</string>
+    <string name="activity_recipes">Rezepte verwalten</string>
+    <string name="activity_manage_shoppinglist">Einkaufsliste erstellen</string>
+    <string name="activity_go_shopping">Go Shopping!</string>
+    <string name="text_category">Kategorie</string>
+    <string name="text_provenance">Herkunft</string>
+    <string name="text_numberofpersons"># Personen</string>
+    <string name="text_amount">Menge</string>
+    <string name="text_size">Grösse</string>
+    <string name="text_optional">Optional</string>
+    <string name="text_std_unit">Standardeinheit</string>
+    <string name="button_reset">Zurücksetzen</string>
+    <string name="text_sort_order">Sortierreihenfolge</string>
+    <string name="button_export">Speichern als</string>
+    <string name="button_import">Laden</string>
+    <string name="alert_saveas">Speichern als...</string>
+    <string name="alert_load">Datei importieren</string>
+    <string name="text_data_saved">Daten gespeichert in %s</string>
+    <string name="text_data_loaded">Daen geladen aus %s</string>
+    <string name="button_add_category">Kategorie hinzufügen</string>
+    <string name="text_load_file_failed">Datei konnte nicht geladen werden.</string>
+    <string name="text_delete_category_disallowed_header">Kategorie kann nicht gelöscht werden</string>
+    <string name="text_delete_category_disallowed_desc">Die Kategorie \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
+    <string name="text_delete_ingredient_disallowed_header">Zutat kann nicht gelöscht werden</string>
+    <string name="text_delete_ingredient_disallowed_desc">Die Zutat \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
+    <string name="text_item_deleted">Element gelöscht</string>
+    <string name="text_item_restored">Element wiederhergestellt</string>
+    <string name="text_undo">Rückgängig machen</string>
+    <string name="text_nrpersons_listvariant"> (%s Pers. [+] )</string>
+    <string name="text_add_ingredient">Zutat hinzufügen</string>
+    <string name="text_add_recipe">Rezept hinzufügen</string>
+    <string name="text_change_nrpersons">Anzahl Personen des Rezept \"%s\" anpassen.</string>
+    <string name="text_recipe_deleted">Rezept gelöscht</string>
+    <string name="text_recipe_restored">Rezept wiederhergestellt</string>
+    <string name="text_import_recipe">Rezept importieren</string>
+    <string name="text_all_recipes_alreay_added">Kein Rezept zum hinzufügen verfügbar, weil alle Rezept schon hinzugefügt wurden.</string>
+    <string name="text_shoppnglist_reset">Einkaufsliste zurücksetzen</string>
+    <string name="text_shoppnglist_restored">Einkaufsliste wiederhergestellt</string>
+    <string name="text_add_sortorder">Sortierreihenfolge hinzufügen</string>
+    <string name="text_sortorder_deleted">Sortierreihenfolge gelöscht</string>
+    <string name="text_sortorder_restored">Sortierreihenfolge wiederhergestellt</string>
+
+    <string name="unit_count_long">Anzahl</string>
+    <string name="unit_kilogram_long">Kilogramm</string>
+    <string name="unit_gram_long">Gramm</string>
+    <string name="unit_liter_long">Liter</string>
+    <string name="unit_deciliter_long">Deziliter</string>
+    <string name="unit_mililiter_long">Milliliter</string>
+    <string name="unit_dessertspoon_long">Esslöffel</string>
+    <string name="unit_teaspoon_long">Teelöffel</string>
+    <string name="unit_unitless_long">Einheitenlos</string>
+
+    <string name="unit_count_short">Stück</string>
+    <string name="unit_kilogram_short">kg</string>
+    <string name="unit_gram_short">g</string>
+    <string name="unit_liter_short">L</string>
+    <string name="unit_deciliter_short">dl</string>
+    <string name="unit_mililiter_short">ml</string>
+    <string name="unit_dessertspoon_short">el</string>
+    <string name="unit_teaspoon_short">tl</string>
+    <string name="unit_unitless_short"></string>
+
+    <string name="size_small">Klein</string>
+    <string name="size_normal">Normal</string>
+    <string name="size_large">Gross</string>
+</resources>

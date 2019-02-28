@@ -1,25 +1,11 @@
 TODO
 ====
 
-- BUG: ManageCategories: Alle SortORders löschen -> RecyclerView wird nicht gelöscht.
-
-- Besseres Icon! (Einkaufswagen o.ä.)
-- Make sure all UI strings are in strings.xml (esp. those used directly from code instead of xml)! Remove Strings not used anymore!
-    * Amount
-    * Alle Verwendungen von: RecipeItem.Size, Amount
-    * CategoriesAdapter
-    * ManageCategories
-    * ManageIngredients
-    * IngredientsAdapter
-    * MainActivity
-    * ManageRecipes
-    * ManageShoppingList
-    * RecipeItemsAdapter
-    * ShoppingRecipesAdapter
 - DesignDokuemnt.txt aktualisieren!
 - Code-Doku, wo nötig / sinnvoll!
-
+- test on my phone! (insb. länge der deutschen texte...)d
 - STANDARD-DATASET ERSTELLEN UND MIT DER APP ZUSAMMEN INSTALLIEREN (ersetzt TestData)!
+- White background for app icon! (cf. app on tablet)
 
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Data synchronisation between different devices (in the same network?) possible?

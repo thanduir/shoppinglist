@@ -58,10 +58,10 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         {
             SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
 
-            String text = NumberFormatter.format(item.getAmount().m_Quantity) + " " + Amount.shortForm(item.getAmount().m_Unit) + " " + holder.m_id;
+            String text = NumberFormatter.format(item.getAmount().m_Quantity) + " " + Amount.shortForm(holder.itemView.getContext(), item.getAmount().m_Unit) + " " + holder.m_id;
             if(item.getSize() != RecipeItem.Size.Normal)
             {
-                text += " (" + item.getSize().toString() + ")";
+                text += " (" + RecipeItem.toUIString(holder.itemView.getContext(), item.getSize()) + ")";
             }
             holder.m_CheckBox.setText(text);
         }

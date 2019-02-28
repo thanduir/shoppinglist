@@ -80,14 +80,14 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     public void onAddCategory(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add category");
+        builder.setTitle(R.string.button_add_category);
 
         // Set up the input
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 m_GroceryPlanning.m_Categories.addCategory(input.getText().toString());
@@ -95,7 +95,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
                 adapter.notifyItemInserted(adapter.getItemCount()-1);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -110,7 +110,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     public void onAddSortOrder(View v)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add sort order");
+        builder.setTitle(R.string.text_add_sortorder);
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -118,7 +118,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 m_GroceryPlanning.m_Categories.addSortOrder(input.getText().toString());
@@ -129,7 +129,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
                 m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -164,8 +164,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_SpinnerSortOrders, "SortOrder deleted", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_SpinnerSortOrders, R.string.text_sortorder_deleted, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 m_GroceryPlanning.m_Categories.addSortOrder(m_strRecentlyDeletedSortOrder, m_RecentlyDeletedSortOrder);
@@ -178,7 +178,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
                 m_strRecentlyDeletedSortOrder = "";
                 m_RecentlyDeletedSortOrder = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_SpinnerSortOrders, "SortOrder restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_SpinnerSortOrders, R.string.text_sortorder_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });

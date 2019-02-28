@@ -1,5 +1,6 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.design.widget.Snackbar;
@@ -64,12 +65,12 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             return m_id;
         }
 
-        public void setDescription(RecipeItem item)
+        public void setDescription(Context context, RecipeItem item)
         {
-            String text = " (" + NumberFormatter.format(item.m_Amount.m_Quantity) + " " + Amount.shortForm(item.m_Amount.m_Unit);
+            String text = " (" + NumberFormatter.format(item.m_Amount.m_Quantity) + " " + Amount.shortForm(context, item.m_Amount.m_Unit);
             if(item.m_Size != RecipeItem.Size.Normal)
             {
-                text += ", " + item.m_Size.toString();
+                text += ", " + RecipeItem.toUIString(context, item.m_Size);
             }
             text += ")";
 
@@ -125,7 +126,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         holder.m_TextView.setText(strRecipeItem);
 
         RecipeItem item = m_Recipe.m_Items.get(position);
-        holder.setDescription(item);
+        holder.setDescription(holder.itemView.getContext(), item);
 
         updateViewHolder(holder, m_iActiveElement == position);
     }
@@ -194,9 +195,9 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             RecipeItem item = getRecipeItem(vh.m_id);
 
             ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(int i = 0; i < Amount.Unit.values().length; ++i)
+            for(Amount.Unit u : Amount.Unit.values())
             {
-                adapterAmount.add(Amount.Unit.values()[i].toString());
+                adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
             }
             adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             vh.m_SpinnerAmount.setAdapter(adapterAmount);
@@ -204,9 +205,9 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
 
             ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(int i = 0; i < RecipeItem.Size.values().length; ++i)
+            for(RecipeItem.Size size : RecipeItem.Size.values())
             {
-                adapterSize.add(RecipeItem.Size.values()[i].toString());
+                adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
             }
             adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             vh.m_SpinnerSize.setAdapter(adapterSize);
@@ -224,7 +225,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                     }
 
                     item.m_Optional = isChecked;
-                    vh.setDescription(item);
+                    vh.setDescription(vh.itemView.getContext(), item);
                 }
             });
             vh.m_CheckBoxOptional.setChecked(item.m_Optional);
@@ -250,7 +251,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                         item.m_Amount.m_Quantity = Float.valueOf(s.toString());
                     }
 
-                    vh.setDescription(item);
+                    vh.setDescription(vh.itemView.getContext(), item);
                 }
 
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -276,7 +277,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             item.m_Size = RecipeItem.Size.values()[vh.m_SpinnerSize.getSelectedItemPosition()];
         }
 
-        vh.setDescription(item);
+        vh.setDescription(view.getContext(), item);
     }
 
     @Override
@@ -300,8 +301,8 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, "Item deleted", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 m_Recipe.m_Items.add(m_RecentlyDeletedIndex, m_RecentlyDeleted);
@@ -311,7 +312,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                 m_RecentlyDeleted = null;
                 m_RecentlyDeletedIndex = -1;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Item restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });

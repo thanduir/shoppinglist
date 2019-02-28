@@ -185,7 +185,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
             for(Amount.Unit u : Amount.Unit.values())
             {
-                adapterStdUnit.add(u.toString());
+                adapterStdUnit.add(Amount.toUIString(vh.itemView.getContext(), u));
             }
             adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             vh.m_SpinnerStdUnit.setAdapter(adapterStdUnit);
@@ -215,8 +215,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
         else if(parent == vh.m_SpinnerStdUnit)
         {
-            String provenance = (String)vh.m_SpinnerStdUnit.getSelectedItem();
-            ingredient.m_DefaultUnit = Amount.Unit.valueOf(provenance);
+            ingredient.m_DefaultUnit = Amount.Unit.values()[vh.m_SpinnerStdUnit.getSelectedItemPosition()];
         }
 
         vh.setDescription(ingredient);
@@ -238,9 +237,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             notifyItemChanged(position);
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
-            builder.setTitle("Deleting ingredient not allowed");
-            builder.setMessage("Ingredient \"" + strIngredient + "\" cannot be deleted because it is still in use.");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setTitle(R.string.text_delete_ingredient_disallowed_header);
+            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_ingredient_disallowed_desc, strIngredient));
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
@@ -259,8 +258,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, "Item deleted", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted);
@@ -274,7 +273,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                 m_strRecentlyDeleted = "";
                 m_RecentlyDeleted = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, "Item restored", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
             }
         });
