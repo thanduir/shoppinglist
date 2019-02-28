@@ -7,6 +7,7 @@ TODO
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?
+    -> Merges of different datasets?
     -> Google App Folder API, Google App Engine, Amazon Web Services, Dropbox datastore API?
 - Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
             * Ingredients.Provenance -> Dynamische Liste, Daten definiert in Einstellungen

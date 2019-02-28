@@ -117,8 +117,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     {
         if(m_iActiveElement != -1)
         {
-            IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
-            updateViewHolder(vh, false);
+            View v = m_RecyclerView.getChildAt(m_iActiveElement);
+            if(v != null)
+            {
+                IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
+                updateViewHolder(vh, false);
+            }
         }
 
         if(strElement == "")

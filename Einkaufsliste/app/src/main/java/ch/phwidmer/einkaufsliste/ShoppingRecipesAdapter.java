@@ -142,8 +142,12 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     {
         if(m_iActiveElement != -1)
         {
-            ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
-            updateViewHolder(vh, false);
+            View v = m_RecyclerView.getChildAt(m_iActiveElement);
+            if(v != null)
+            {
+                ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
+                updateViewHolder(vh, false);
+            }
         }
 
         if(element == null)

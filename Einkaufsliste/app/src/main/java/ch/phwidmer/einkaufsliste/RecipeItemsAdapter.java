@@ -150,8 +150,12 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     {
         if(m_iActiveElement != -1)
         {
-            RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(m_RecyclerView.getChildAt(m_iActiveElement));
-            updateViewHolder(vh, false);
+            View v = m_RecyclerView.getChildAt(m_iActiveElement);
+            if(v != null)
+            {
+                RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
+                updateViewHolder(vh, false);
+            }
         }
 
         if(strElement == "")
