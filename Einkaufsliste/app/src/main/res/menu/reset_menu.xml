@@ -5,5 +5,5 @@
         android:id="@+id/actionbar_button_reset"
         android:title="@string/button_reset"
         app:showAsAction="always"
-        android:icon="@drawable/ic_cancel_black_24dp" />
+        android:icon="@drawable/ic_undo_6" />
 </menu>

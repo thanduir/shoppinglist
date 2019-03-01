@@ -1,6 +1,7 @@
 TODO
 ====
 
+- Besseres Icon für Reset in ShoppingList
 - Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
             * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
             * Std-Wert für Recipes.Recipe.m_NumberOfPersons
