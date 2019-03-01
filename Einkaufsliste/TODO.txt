@@ -1,8 +1,6 @@
 TODO
 ====
 
-- Deutsche Texte z.T. zu lang bzw. Controls zu klein!
-
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Amount range (e.g. 300 - 400g Teigwaren)?
 - Data synchronisation between different devices (in the same network?) possible?
