@@ -1,17 +1,17 @@
 TODO
 ====
 
+- Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
+            * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
+            * Std-Wert für Recipes.Recipe.m_NumberOfPersons
+            * Default-SortOrder aus ShoppingList?
+- Allow renaming of "everything" (categories, sortorders, ingredients, ...). Activated by long click on said item?
+- Provenance in GoShopping beachten
+    -> Aber wie verbinde ich dies mit den SortOrders?
+    -> man wählt eine (ODER MEHERERE!) SortOrder als provenance aus, es sollte keine unabhängige Liste mehr sein!
+    -> Was passiert dann damit im GoShopping genau? Liste mit Dingen, die woanders besorgt werden müssen?
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
-- Amount range (e.g. 300 - 400g Teigwaren)?
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?
     -> Merges of different datasets?
     -> Google App Folder API, Google App Engine, Amazon Web Services, Dropbox datastore API?
-- Allow renaming of "everything" (categories, sortorders, ingredients, ...)
-- Nötige Werte in Configuration (ALLE SUCHEN!): -> sollte ich evtl. einfach (mit Tabs) das jetzige ManageCategories in eine Art Configuration umbauen?
-            * Ingredients.Provenance -> Dynamische Liste, Daten definiert in Einstellungen
-            * Std.-Wert für Ingredient.Ingredient.m_DefaultUnit
-            * Std-Wert für Recipes.Recipe.m_NumberOfPersons
-            * Default-SortOrder aus ShoppingList?
-- Liste von nicht-abgehakten Ingredients der Einkaufsliste?
-- Provenance in GoShopping beachten (aber wie verbinde ich dies mit den SortOrders?)
