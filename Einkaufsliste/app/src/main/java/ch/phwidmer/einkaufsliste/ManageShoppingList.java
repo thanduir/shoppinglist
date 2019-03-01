@@ -115,6 +115,7 @@ public class ManageShoppingList extends AppCompatActivity
                 ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
                 adapter.notifyDataSetChanged();
                 adapter.setActiveElement(new Pair<String, String>(strRecipe, ""));
+                m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

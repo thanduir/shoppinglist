@@ -172,6 +172,11 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
     }
 
+    public int getIndexOfActiveElement()
+    {
+        return m_iActiveElement;
+    }
+
     @Override
     public ShoppingRecipesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                 int viewType)

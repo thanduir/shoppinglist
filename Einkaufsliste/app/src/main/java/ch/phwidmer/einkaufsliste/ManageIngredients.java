@@ -87,10 +87,12 @@ public class ManageIngredients extends AppCompatActivity
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_GroceryPlanning.m_Ingredients.addIngredient(input.getText().toString());
+                String strIngredient = input.getText().toString();
+                m_GroceryPlanning.m_Ingredients.addIngredient(strIngredient);
                 IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
-                adapter.setActiveElement(input.getText().toString());
+                adapter.setActiveElement(strIngredient);
                 adapter.notifyDataSetChanged();
+                m_RecyclerView.scrollToPosition(m_GroceryPlanning.m_Ingredients.getAllIngredients().indexOf(strIngredient));
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

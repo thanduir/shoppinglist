@@ -1,9 +1,7 @@
 TODO
 ====
 
-- ScrollToPosition after adding elements to (large) lists
 - Deutsche Texte z.T. zu lang bzw. Controls zu klein!
-- Reset-Button in ManageShoppingList verschieben (evtl. rechts oben in Header-Zeile?)
 
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Amount range (e.g. 300 - 400g Teigwaren)?
