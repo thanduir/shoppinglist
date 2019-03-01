@@ -1,10 +1,12 @@
 TODO
 ====
 
+- ScrollToPosition after adding elements to (large) lists
 - Deutsche Texte z.T. zu lang bzw. Controls zu klein!
-- standard-Dataset fertigstellen und danach aktualisieren!
+- Reset-Button in ManageShoppingList verschieben (evtl. rechts oben in Header-Zeile?)
 
 - BUG: Swipe + loslassen (ohne delete) löscht Highlight-Color!
+- Amount range (e.g. 300 - 400g Teigwaren)?
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?
     -> Merges of different datasets?

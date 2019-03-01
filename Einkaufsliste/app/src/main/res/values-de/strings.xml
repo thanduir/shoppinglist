@@ -19,7 +19,7 @@
     <string name="text_amount">Menge</string>
     <string name="text_size">Grösse</string>
     <string name="text_optional">Optional</string>
-    <string name="text_std_unit">Standardeinheit</string>
+    <string name="text_std_unit">Einheit</string>
     <string name="button_reset">Zurücksetzen</string>
     <string name="text_sort_order">Sortierreihenfolge</string>
     <string name="button_export">Speichern als</string>
@@ -37,7 +37,7 @@
     <string name="text_item_deleted">Element gelöscht</string>
     <string name="text_item_restored">Element wiederhergestellt</string>
     <string name="text_undo">Rückgängig machen</string>
-    <string name="text_nrpersons_listvariant"> (%s Pers. [+] )</string>
+    <string name="text_nrpersons_listvariant">\u0020(%s Pers. [+] )</string>
     <string name="text_add_ingredient">Zutat hinzufügen</string>
     <string name="text_add_recipe">Rezept hinzufügen</string>
     <string name="text_change_nrpersons">Anzahl Personen des Rezept \"%s\" anpassen.</string>
@@ -70,6 +70,16 @@
     <string name="unit_dessertspoon_short">el</string>
     <string name="unit_teaspoon_short">tl</string>
     <string name="unit_unitless_short"></string>
+
+    <string name="unit_count_short_prefix">Stück</string>
+    <string name="unit_kilogram_short_prefix">kg</string>
+    <string name="unit_gram_short_prefix">g</string>
+    <string name="unit_liter_short_prefix">L</string>
+    <string name="unit_deciliter_short_prefix">dl</string>
+    <string name="unit_mililiter_short_prefix">ml</string>
+    <string name="unit_dessertspoon_short_prefix">el</string>
+    <string name="unit_teaspoon_short_prefix">tl</string>
+    <string name="unit_unitless_short_prefix"></string>
 
     <string name="size_small">Klein</string>
     <string name="size_normal">Normal</string>

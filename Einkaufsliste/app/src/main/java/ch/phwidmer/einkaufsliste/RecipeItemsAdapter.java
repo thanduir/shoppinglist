@@ -67,7 +67,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         public void setDescription(Context context, RecipeItem item)
         {
-            String text = " (" + NumberFormatter.format(item.m_Amount.m_Quantity) + " " + Amount.shortForm(context, item.m_Amount.m_Unit);
+            String text = " (" + Helper.formatNumber(item.m_Amount.m_Quantity) + " " + Amount.shortForm(context, item.m_Amount.m_Unit);
             if(item.m_Size != RecipeItem.Size.Normal)
             {
                 text += ", " + RecipeItem.toUIString(context, item.m_Size);

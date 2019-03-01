@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder> implements ReactToTouchActionsInterface {
@@ -58,7 +57,12 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         {
             SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
 
-            String text = NumberFormatter.format(item.getAmount().m_Quantity) + " " + Amount.shortForm(holder.itemView.getContext(), item.getAmount().m_Unit) + " " + holder.m_id;
+            String text = "";
+            if(item.getAmount().m_Unit != Amount.Unit.Unitless)
+            {
+                text = Helper.formatNumber(item.getAmount().m_Quantity) + " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.getAmount().m_Unit) + " ";
+            }
+            text += holder.m_id;
             if(item.getSize() != RecipeItem.Size.Normal)
             {
                 text += " (" + RecipeItem.toUIString(holder.itemView.getContext(), item.getSize()) + ")";

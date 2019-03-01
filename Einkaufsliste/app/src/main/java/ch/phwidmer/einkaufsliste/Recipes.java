@@ -4,6 +4,7 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -58,6 +59,7 @@ public class Recipes {
             String str = (String)obj;
             vec.add(str);
         }
+        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 

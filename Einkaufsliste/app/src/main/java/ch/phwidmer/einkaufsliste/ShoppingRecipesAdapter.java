@@ -86,10 +86,13 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             {
                 m_TextView.setTextColor(Color.BLACK);
                 m_TextView.setTypeface(m_TextView.getTypeface(), Typeface.BOLD);
+
+                m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
+                m_TextViewDesc.setTextColor(Color.GRAY);
                 return;
             }
 
-            String text = " (" + NumberFormatter.format(m_RecipeItem.m_Amount.m_Quantity) + " " + Amount.shortForm(context, m_RecipeItem.m_Amount.m_Unit);
+            String text = " (" + Helper.formatNumber(m_RecipeItem.m_Amount.m_Quantity) + " " + Amount.shortForm(context, m_RecipeItem.m_Amount.m_Unit);
             if(m_RecipeItem.m_Size != RecipeItem.Size.Normal)
             {
                 text += ", " + RecipeItem.toUIString(context, m_RecipeItem.m_Size);
@@ -216,7 +219,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 return;
             }
 
-            vh.m_TextViewDesc.setText(vh.itemView.getContext().getResources().getString(R.string.text_nrpersons_listvariant, NumberFormatter.format(recipe.m_fScalingFactor)));
+            vh.m_TextViewDesc.setText(vh.itemView.getContext().getResources().getString(R.string.text_nrpersons_listvariant, Helper.formatNumber(recipe.m_fScalingFactor)));
 
             vh.m_TextViewDesc.setOnClickListener(new View.OnClickListener() {
                                                      @Override

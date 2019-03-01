@@ -18,7 +18,8 @@
       "Oele und Saucen",
       "Konserven",
       "Restliches",
-      "Teigwaren, Reis und Kartoffelprodukte"
+      "Teigwaren, Reis und Kartoffelprodukte",
+      "Alkohol"
     ],
     "sortOrders": {
       "Migros": [
@@ -34,7 +35,24 @@
         "Oele und Saucen",
         "Konserven",
         "Teigwaren, Reis und Kartoffelprodukte",
-        "Restliches"
+        "Restliches",
+        "Alkohol"
+      ],
+      "Coop": [
+        "Restliches",
+        "Alkohol",
+        "Teigwaren, Reis und Kartoffelprodukte",
+        "Oele und Saucen",
+        "Konserven",
+        "Eier",
+        "Milchprodukte",
+        "Veganer Fleischersatz",
+        "Fleisch",
+        "Fertigteig",
+        "Brot",
+        "Früchte und Gemüse",
+        "Salate",
+        "Tiefgefrohrenes"
       ]
     }
   },
@@ -264,10 +282,401 @@
       "category": "Brot",
       "provenance": "Everywhere",
       "default-unit": "Unitless"
+    },
+    "Cordon Bleu": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Butter": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Kochwein (rot) ": {
+      "category": "Alkohol",
+      "provenance": "Coop",
+      "default-unit": "Deciliter"
+    },
+    "Kochwein (weiss) ": {
+      "category": "Alkohol",
+      "provenance": "Coop",
+      "default-unit": "Deciliter"
+    },
+    "Blumenkohl": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Brokkoli": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Rindsgeschnetzeltes": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Waschmittel (Schwarz) ": {
+      "category": "Restliches",
+      "provenance": "Everywhere",
+      "default-unit": "Unitless"
+    },
+    "Waschmittel (farbig) ": {
+      "category": "Restliches",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Pommes Frites": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Speck": {
+      "category": "Fleisch",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Reis": {
+      "category": "Teigwaren, Reis und Kartoffelprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Gram"
+    },
+    "Suess-Sauer Sauce": {
+      "category": "Brot",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Pelati": {
+      "category": "Oele und Saucen",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Bouillon (Rind) ": {
+      "category": "Oele und Saucen",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Philadelphia": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Salat": {
+      "category": "Salate",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Mozzarellaperlen": {
+      "category": "Milchprodukte",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
+    },
+    "Schokolade": {
+      "category": "Restliches",
+      "provenance": "Everywhere",
+      "default-unit": "Count"
     }
   },
   {
-    "id": "Recipes"
+    "id": "Recipes",
+    "Diverses": {
+      "NrPersons": 2,
+      "Chrömli": {
+        "amount": [
+          3.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Milch": {
+        "amount": [
+          1.0,
+          "Liter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Mokka Joghurt": {
+        "amount": [
+          10.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Muesli": {
+      "NrPersons": 2,
+      "3. Frucht": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Apfel": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Banane": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Nature Joghurt": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Mozzarella + Tomaten": {
+      "NrPersons": 1,
+      "Mozzarella": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Small",
+        "optional": false
+      },
+      "Tomaten": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Pommes + Cordon bleu": {
+      "NrPersons": 2,
+      "Cordon Bleu": {
+        "amount": [
+          300.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Brokkoli": {
+        "amount": [
+          0.0,
+          "Unitless"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Pommes Frites": {
+        "amount": [
+          0.5,
+          "Kilogram"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Zopf + Spiegeleier + Speck": {
+      "NrPersons": 2,
+      "Zopf": {
+        "amount": [
+          0.5,
+          "Kilogram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Eier": {
+        "amount": [
+          4.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Speck": {
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Suess-Sauer": {
+      "NrPersons": 2,
+      "Reis": {
+        "amount": [
+          180.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Poulet geschnetzeltes": {
+        "amount": [
+          300.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Peperoni": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Zucchetti": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Ananas": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Suess-Sauer Sauce": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Spaghetti Bolognese": {
+      "NrPersons": 2,
+      "Spaghetti": {
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Gehacktes (gemischt) ": {
+        "amount": [
+          500.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Pelati": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Tomatenpüree": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Karotten": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Peperoni": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Aubergine": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Large",
+        "optional": false
+      },
+      "Zucchetti": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Large",
+        "optional": false
+      },
+      "Bouillon (Rind) ": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Parmesan": {
+        "amount": [
+          1.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Salzkartoffeln mit gefuellten Pilzen": {
+      "NrPersons": 2,
+      "Kartoffel": {
+        "amount": [
+          0.6,
+          "Kilogram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Champignon": {
+        "amount": [
+          5.5,
+          "Count"
+        ],
+        "size": "Large",
+        "optional": false
+      },
+      "Philadelphia": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    }
   },
   {
     "id": "Shoppinglist",

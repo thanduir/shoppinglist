@@ -36,7 +36,7 @@
     <string name="text_item_deleted">Item deleted</string>
     <string name="text_item_restored">Item restored</string>
     <string name="text_undo">Undo</string>
-    <string name="text_nrpersons_listvariant"> (%s Pers. [+] )</string>
+    <string name="text_nrpersons_listvariant">\u0020(%s Pers. [+] )</string>
     <string name="text_add_ingredient">Add ingredient</string>
     <string name="text_add_recipe">Add recipe</string>
     <string name="text_change_nrpersons">Change number of persons of recipe \"%s\"</string>
@@ -69,6 +69,16 @@
     <string name="unit_dessertspoon_short">ds</string>
     <string name="unit_teaspoon_short">ts</string>
     <string name="unit_unitless_short"></string>
+
+    <string name="unit_count_short_prefix"></string>
+    <string name="unit_kilogram_short_prefix">kg</string>
+    <string name="unit_gram_short_prefix">g</string>
+    <string name="unit_liter_short_prefix">L</string>
+    <string name="unit_deciliter_short_prefix">dl</string>
+    <string name="unit_mililiter_short_prefix">ml</string>
+    <string name="unit_dessertspoon_short_prefix">ds</string>
+    <string name="unit_teaspoon_short_prefix">ts</string>
+    <string name="unit_unitless_short_prefix"></string>
 
     <string name="size_small">Small</string>
     <string name="size_normal">Normal</string>
