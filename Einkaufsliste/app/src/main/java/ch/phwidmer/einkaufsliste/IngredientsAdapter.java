@@ -270,11 +270,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted);
+                m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit);
                 Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
                 ingredient.m_Category = m_RecentlyDeleted.m_Category;
                 ingredient.m_Provenance = m_RecentlyDeleted.m_Provenance;
-                ingredient.m_DefaultUnit = m_RecentlyDeleted.m_DefaultUnit;
 
                 notifyDataSetChanged();
 

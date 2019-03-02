@@ -6,6 +6,7 @@
     <string name="button_manage_categories">Kategorien verwalten</string>
     <string name="button_manage_ingredients">Zutaten verwalten</string>
     <string name="button_go_shopping">Go Shopping!</string>
+    <string name="button_settings">Einstellungen</string>
     <string name="button_add">Add</string>
     <string name="button_delete">Del</string>
     <string name="activity_ingredients">Zutaten verwalten</string>
@@ -13,6 +14,7 @@
     <string name="activity_recipes">Rezepte verwalten</string>
     <string name="activity_manage_shoppinglist">Einkaufsliste erstellen</string>
     <string name="activity_go_shopping">Go Shopping!</string>
+    <string name="activity_settings">Einstellungen</string>
     <string name="text_category">Kategorie</string>
     <string name="text_provenance">Herkunft</string>
     <string name="text_numberofpersons"># Personen</string>
@@ -50,6 +52,9 @@
     <string name="text_add_sortorder">Sortierreihenfolge hinzufügen</string>
     <string name="text_sortorder_deleted">Sortierreihenfolge gelöscht</string>
     <string name="text_sortorder_restored">Sortierreihenfolge wiederhergestellt</string>
+    <string name="text_default_unit">Standardeinheit</string>
+    <string name="text_default_nrpersons">Standard # Personen</string>
+    <string name="text_default_sortorder">Standard-Sortierreihenfolge</string>
 
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>

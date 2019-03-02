@@ -6,6 +6,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -17,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -197,5 +200,24 @@ public class MainActivity extends AppCompatActivity
         AlertDialog d = builder.create();
         d.setView(input, 50, 20 ,20,0);
         d.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.actionbar_button_settings)
+        {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

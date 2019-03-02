@@ -12,7 +12,7 @@ import java.util.Vector;
 public class Recipes {
 
     public class Recipe {
-        public Integer m_NumberOfPersons = 2;
+        public Integer m_NumberOfPersons = 0;
         public LinkedList<RecipeItem> m_Items = new LinkedList<RecipeItem>();
     }
     private LinkedHashMap<String, Recipe> m_Recipies;
@@ -22,13 +22,14 @@ public class Recipes {
         m_Recipies = new LinkedHashMap<String, Recipe>();
     }
 
-    public void addRecipe(String strName)
+    public void addRecipe(String strName, Integer iNrPersons)
     {
         if(m_Recipies.containsKey(strName))
         {
             return;
         }
         Recipe recipe = new Recipe();
+        recipe.m_NumberOfPersons = iNrPersons;
         m_Recipies.put(strName, recipe);
     }
 

@@ -2,6 +2,8 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -137,11 +139,14 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final Integer iNrPersons = preferences.getInt(SettingsActivity.KEY_DEFAULT_NRPERSONS, 4);
+
         // Set up the buttons
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_GroceryPlanning.m_Recipes.addRecipe(input.getText().toString());
+                m_GroceryPlanning.m_Recipes.addRecipe(input.getText().toString(), iNrPersons);
                 ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
                 adapter.add(input.getText().toString());
                 m_SpinnerRecipes.setSelection(adapter.getCount() - 1);

@@ -27,7 +27,7 @@ public class Ingredients
     {
         public Categories.Category m_Category;
         public Provenance m_Provenance = Provenance.Everywhere;
-        public Amount.Unit m_DefaultUnit = Amount.Unit.Count;
+        public Amount.Unit m_DefaultUnit;
     }
     private LinkedHashMap<String, Ingredient>  m_Ingredients;
 
@@ -42,13 +42,14 @@ public class Ingredients
         m_Categories = categories;
     }
 
-    public void addIngredient(String strName)
+    public void addIngredient(String strName, Amount.Unit defaultUnit)
     {
         if(m_Ingredients.containsKey(strName))
         {
             return;
         }
         Ingredient i = new Ingredient();
+        i.m_DefaultUnit = defaultUnit;
         i.m_Category = m_Categories.getCategory(m_Categories.getAllCategories().firstElement());
         m_Ingredients.put(strName, i);
     }

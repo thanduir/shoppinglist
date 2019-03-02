@@ -1,6 +1,8 @@
 package ch.phwidmer.einkaufsliste;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,6 +52,15 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         if(!strCurrentSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strCurrentSortOrder))
         {
             m_SpinnerSortOrders.setSelection(adapter.getPosition(strCurrentSortOrder));
+        }
+        else
+        {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            final String strDefaultSortOrder = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, "");
+            if(!strDefaultSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strDefaultSortOrder))
+            {
+                m_SpinnerSortOrders.setSelection(adapter.getPosition(strDefaultSortOrder));
+            }
         }
 
         m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewShoppingListItems);
