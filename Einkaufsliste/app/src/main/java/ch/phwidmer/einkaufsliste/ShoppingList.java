@@ -112,6 +112,20 @@ public class ShoppingList
         return false;
     }
 
+    public void onIngredientRenamed(String strIngredient, String strNewName)
+    {
+        for(ShoppingRecipe sr : m_Items.values())
+        {
+            for(ShoppingListItem sli : sr.m_Items)
+            {
+                if (sli.m_Ingredient.equals(strIngredient))
+                {
+                    sli.m_Ingredient = strNewName;
+                }
+            }
+        }
+    }
+
     // Serializing
 
     public void saveToJson(JsonWriter writer) throws IOException

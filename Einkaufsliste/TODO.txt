@@ -1,12 +1,12 @@
 TODO
 ====
 
-- Allow renaming of "everything" (categories, sortorders, ingredients, ...). Activated by long click on said item?
 - Provenance in GoShopping beachten!
     -> man wählt eine SortOrder als provenance aus (oder einen standardwert "everywhere", es sollte keine unabhängige Liste mehr sein!
     -> Was passiert dann damit im GoShopping genau? Liste mit Dingen, die woanders besorgt werden müssen! (-> wie am Besten darstellen?)
     -> Provenance in Ingredients (und anderen Activities, if any) nur anzeigen, wenn nicht "Everwhere"!
 
+- Make it possible to rename recipes in app? How should the UI for this work?
 - Bug: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?

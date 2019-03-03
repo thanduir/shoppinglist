@@ -5,14 +5,17 @@ import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Vector;
 
@@ -144,10 +147,20 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     private void updateViewHolder(IngredientsAdapter.ViewHolder vh, boolean bActive)
     {
+        final View view = vh.itemView;
+        vh.m_TextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.performClick();
+            }
+        });
+
         if(!bActive)
         {
             vh.m_TableLayout.setVisibility(View.GONE);
             vh.m_TextViewDesc.setVisibility(View.VISIBLE);
+
+            vh.m_TextView.setOnLongClickListener(null);
 
             vh.m_SpinnerCategory.setAdapter(null);
             vh.m_SpinnerProvenance.setAdapter(null);
@@ -162,7 +175,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
             vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
 
-            Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
+            final String strIngredient = vh.m_id;
+
+            vh.m_TextView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    renameIngredient(strIngredient);
+                    return true;
+                }
+            });
+
+            final Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
 
             ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
             for(String strCategory : m_GroceryPlanning.m_Categories.getAllCategories())
@@ -298,5 +321,42 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     {
         Vector<String> vec = m_GroceryPlanning.m_Ingredients.getAllIngredients();
         return vec;
+    }
+
+    private void renameIngredient(final String strIngredient)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
+        builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_ingredient, strIngredient));
+
+        // Set up the input
+        final EditText input = new EditText(m_RecyclerView.getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(strIngredient);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strNewName = input.getText().toString();
+
+                m_GroceryPlanning.m_Ingredients.renameIngredient(strIngredient, strNewName);
+                m_GroceryPlanning.m_Recipes.onIngredientRenamed(strIngredient, strNewName);
+                m_GroceryPlanning.m_ShoppingList.onIngredientRenamed(strIngredient, strNewName);
+
+                setActiveElement(strNewName);
+                notifyDataSetChanged();
+                Toast.makeText(m_RecyclerView.getContext(), m_RecyclerView.getContext().getResources().getString(R.string.text_ingredient_renamed, strIngredient, strNewName), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 }

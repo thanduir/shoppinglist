@@ -14,7 +14,7 @@ public class Categories
     {
         private CharSequence m_Category;
 
-        public Category(String strName)
+        private Category(String strName)
         {
             m_Category = strName;
         }
@@ -96,6 +96,27 @@ public class Categories
         for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
         {
             e.getValue().m_CategoriesOrder.remove(new Category(strName));
+        }
+    }
+
+    public void renameCategory(Category category, String strNewName)
+    {
+        if(!m_Categories.contains(category.getName()))
+        {
+            return;
+        }
+
+        m_Categories.remove(category.getName());
+        m_Categories.add(strNewName);
+
+        Category newCategory = new Category(strNewName);
+        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
+        {
+            Vector<Category> vec = e.getValue().m_CategoriesOrder;
+
+            int index = vec.indexOf(category);
+            vec.remove(index);
+            vec.insertElementAt(newCategory, index);
         }
     }
 

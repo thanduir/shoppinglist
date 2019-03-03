@@ -79,6 +79,20 @@ public class Recipes {
         return false;
     }
 
+    public void onIngredientRenamed(String strIngredient, String strNewName)
+    {
+        for(Recipe r : m_Recipies.values())
+        {
+            for(RecipeItem ri : r.m_Items)
+            {
+                if (ri.m_Ingredient.equals(strIngredient))
+                {
+                    ri.m_Ingredient = strNewName;
+                }
+            }
+        }
+    }
+
     // Serializing
 
     public void saveToJson(JsonWriter writer) throws IOException

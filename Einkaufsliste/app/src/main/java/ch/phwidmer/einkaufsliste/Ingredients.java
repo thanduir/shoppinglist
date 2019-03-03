@@ -76,6 +76,18 @@ public class Ingredients
         m_Ingredients.remove(strName);
     }
 
+    public void renameIngredient(String strIngredient, String strNewName)
+    {
+        if(!m_Ingredients.containsKey(strIngredient))
+        {
+            return;
+        }
+
+        Ingredient ingredient = m_Ingredients.get(strIngredient);
+        m_Ingredients.remove(strIngredient);
+        m_Ingredients.put(strNewName, ingredient);
+    }
+
     public boolean isCategoryInUse(Categories.Category category)
     {
         for(Ingredient i : m_Ingredients.values())
@@ -86,6 +98,17 @@ public class Ingredients
             }
         }
         return false;
+    }
+
+    public void onCategoryRenamed(Categories.Category category, Categories.Category newCategory)
+    {
+        for(Ingredient i : m_Ingredients.values())
+        {
+            if(i.m_Category.equals(category))
+            {
+                i.m_Category = newCategory;
+            }
+        }
     }
 
     // Serializing
