@@ -64,6 +64,18 @@ public class Recipes {
         return vec;
     }
 
+    public void renameRecipe(String strRecipe, String strNewName)
+    {
+        if(!m_Recipies.containsKey(strRecipe))
+        {
+            return;
+        }
+
+        Recipe recipe = m_Recipies.get(strRecipe);
+        m_Recipies.remove(strRecipe);
+        m_Recipies.put(strNewName, recipe);
+    }
+
     public boolean isIngredientInUse(String strIngredient)
     {
         for(Recipe r : m_Recipies.values())

@@ -59,6 +59,8 @@
     <string name="text_category_renamed">Kategorie \"%s\" umbenannt zu \"%s\".</string>
     <string name="text_rename_ingredient">Zutat \"%s\" umbenennen</string>
     <string name="text_ingredient_renamed">Zutat \"%s\" umbenannt zu \"%s\".</string>
+    <string name="text_rename_recipe">Rezept \"%s\" umbenennen</string>
+    <string name="text_recipe_renamed">Rezept \"%s\" umbenannt zu \"%s\".</string>
 
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>

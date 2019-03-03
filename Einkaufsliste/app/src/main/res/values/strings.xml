@@ -58,6 +58,8 @@
     <string name="text_category_renamed">Category \"%s\" renamed to \"%s\".</string>
     <string name="text_rename_ingredient">Rename ingredient \"%s\"</string>
     <string name="text_ingredient_renamed">Ingredient \"%s\" renamed to \"%s\".</string>
+    <string name="text_rename_recipe">Rename recipe \"%s\"</string>
+    <string name="text_recipe_renamed">Recipe \"%s\" renamed to \"%s\".</string>
 
     <string name="unit_count_long">Count</string>
     <string name="unit_kilogram_long">Kilogram</string>

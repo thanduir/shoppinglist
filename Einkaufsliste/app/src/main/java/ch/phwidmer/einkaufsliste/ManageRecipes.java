@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -203,6 +204,47 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             }
         });
         snackbar.show();
+    }
+
+    public void onRenameRecipeRecipe(View v)
+    {
+        final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe));
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(strCurrentRecipe);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strNewName = input.getText().toString();
+
+                m_GroceryPlanning.m_Recipes.renameRecipe(strCurrentRecipe, strNewName);
+
+                int index = m_SpinnerRecipes.getSelectedItemPosition();
+                ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
+                adapter.remove(strCurrentRecipe);
+                adapter.insert(strNewName, index);
+                m_SpinnerRecipes.setSelection(index);
+
+                Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strNewName), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog d = builder.create();
+        d.setView(input, 50, 0 ,50,0);
+        d.show();
     }
 
     public void onAddRecipeItem(View v)
