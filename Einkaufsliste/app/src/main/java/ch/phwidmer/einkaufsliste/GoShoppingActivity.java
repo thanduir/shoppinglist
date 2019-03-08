@@ -84,7 +84,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
         m_GroceryPlanning.m_ShoppingList.setCurrentSortOrder(strSortOrder);
 
-        m_SortedShoppingList.setSortOrder(order);
+        m_SortedShoppingList.setSortOrder(strSortOrder, order);
         m_Adapter = new GoShoppingAdapter(m_RecyclerView, m_SortedShoppingList);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(

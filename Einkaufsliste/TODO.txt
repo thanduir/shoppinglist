@@ -1,7 +1,7 @@
 TODO
 ====
 
-- Provenance in GoShopping beachten: Liste mit Dingen, die woanders besorgt werden müssen! (-> zweite RecyclerView unterhalb der ersten?)
+- Provenance in GoShopping beachten: Testen!
 
 - Bug: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Data synchronisation between different devices (in the same network?) possible?

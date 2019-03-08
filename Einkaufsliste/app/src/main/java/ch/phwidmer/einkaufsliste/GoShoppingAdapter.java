@@ -82,6 +82,16 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
 
             holder.m_CheckBox.setVisibility(View.GONE);
             holder.m_TextView.setVisibility(View.VISIBLE);
+
+            if(m_SortedList.isIncompatibleItemsList(position))
+            {
+                holder.m_TextView.setTextColor(Color.RED);
+            }
+            else
+            {
+                holder.m_TextView.setTextColor(Color.BLACK);
+            }
+
         }
         else
         {
