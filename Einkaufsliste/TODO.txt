@@ -2,9 +2,10 @@ TODO
 ====
 
 - Provenance in GoShopping beachten!
-    -> man wählt eine SortOrder als provenance aus (oder einen standardwert "everywhere", es sollte keine unabhängige Liste mehr sein!
+    -> man wählt eine SortOrder als provenance aus (oder einen standardwert "everywhere", es sollte keine unabhängige Liste mehr sein!)
     -> Was passiert dann damit im GoShopping genau? Liste mit Dingen, die woanders besorgt werden müssen! (-> wie am Besten darstellen?)
-    -> Provenance in Ingredients (und anderen Activities, if any) nur anzeigen, wenn nicht "Everwhere"!
+    -> Provenance in Recipes (und anderen Activities, if any) nur anzeigen, wenn nicht "Everywhere"!
+    -> Übergang von alten zu neuen Daten beachten! (am Besten wohl alle nicht erkannten auf "Everywhere" setzen)
 - Bug: Swipe + loslassen (ohne delete) löscht Highlight-Color!
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?

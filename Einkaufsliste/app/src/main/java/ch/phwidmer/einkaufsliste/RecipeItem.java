@@ -5,8 +5,8 @@ import android.content.Context;
 public class RecipeItem {
     public enum Size
     {
-        Normal,
         Small,
+        Normal,
         Large;
     }
 

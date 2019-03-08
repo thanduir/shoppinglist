@@ -82,7 +82,7 @@
     <string name="unit_teaspoon_short">tl</string>
     <string name="unit_unitless_short"></string>
 
-    <string name="unit_count_short_prefix">Stück</string>
+    <string name="unit_count_short_prefix"></string>
     <string name="unit_kilogram_short_prefix">kg</string>
     <string name="unit_gram_short_prefix">g</string>
     <string name="unit_liter_short_prefix">L</string>
