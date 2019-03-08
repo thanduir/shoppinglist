@@ -65,10 +65,10 @@ public class ManageShoppingList extends AppCompatActivity
                     }
                 }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ShoppingRecipesAdapter)m_AdapterRecipes,
-                                                                                            m_RecyclerViewRecipes.getContext(),
-                                                                                            R.drawable.ic_delete_black_24dp,
-                                                                                            false));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<ShoppingRecipesAdapter>(m_RecyclerViewRecipes,
+                                                                            m_RecyclerViewRecipes.getContext(),
+                                                                            R.drawable.ic_delete_black_24dp,
+                                                                             false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
     }
 

@@ -327,7 +327,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                     }
                 }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((RecipeItemsAdapter)m_Adapter,
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<RecipeItemsAdapter>(m_RecyclerView,
                                                                                                 m_RecyclerView.getContext(),
                                                                                                 R.drawable.ic_delete_black_24dp,
                                                                                                 false));

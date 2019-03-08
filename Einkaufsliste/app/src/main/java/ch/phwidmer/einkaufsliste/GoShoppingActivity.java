@@ -106,7 +106,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
                     }
                 }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((GoShoppingAdapter)m_Adapter,
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<GoShoppingAdapter>(m_RecyclerView,
                                                                                                 m_RecyclerView.getContext(),
                                                                                                 R.drawable.ic_check_black_24dp,
                                                                                                 false));

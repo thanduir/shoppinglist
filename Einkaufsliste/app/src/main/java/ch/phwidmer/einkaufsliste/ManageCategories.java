@@ -210,7 +210,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
         m_Adapter = new CategoriesAdapter(m_RecyclerView, m_GroceryPlanning.m_Categories, order, m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((CategoriesAdapter)m_Adapter,
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<CategoriesAdapter>(m_RecyclerView,
                                                                                                 m_RecyclerView.getContext(),
                                                                                                 R.drawable.ic_delete_black_24dp,
                                                                                                 true));

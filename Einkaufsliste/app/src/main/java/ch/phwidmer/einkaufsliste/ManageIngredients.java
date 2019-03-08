@@ -59,7 +59,7 @@ public class ManageIngredients extends AppCompatActivity
                             }
                         }
                 );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((IngredientsAdapter)m_Adapter,
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<IngredientsAdapter>(m_RecyclerView,
                                                                                               m_RecyclerView.getContext(),
                                                                                               R.drawable.ic_delete_black_24dp,
                                                                                               false));
