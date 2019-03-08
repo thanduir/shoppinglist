@@ -63,7 +63,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         public void setDescription(Ingredients.Ingredient ingredient)
         {
-            String text = " (" + ingredient.m_Category.getName() + ", " + ingredient.m_Provenance.toString() + ", " + ingredient.m_DefaultUnit.toString() + ")";
+            String text = " (" + ingredient.m_Category.getName();
+            if(!ingredient.m_strProvenance.equals(Ingredients.c_strProvenanceEverywhere)) {
+                text += ", " + ingredient.m_strProvenance;
+            }
+            text += ", " + ingredient.m_DefaultUnit.toString() + ")";
             m_TextViewDesc.setText(text);
         }
     }
@@ -198,14 +202,22 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category.getName()));
 
             ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(int i = 0; i < Ingredients.Provenance.values().length; ++i)
+            adapterProvenance.add(m_RecyclerView.getContext().getResources().getString(R.string.provenance_everywhere));
+            for(String strSortOrder : m_GroceryPlanning.m_Categories.getAllSortOrders())
             {
-                adapterProvenance.add(Ingredients.Provenance.values()[i].toString());
+                adapterProvenance.add(strSortOrder);
             }
             adapterProvenance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             vh.m_SpinnerProvenance.setAdapter(adapterProvenance);
             vh.m_SpinnerProvenance.setOnItemSelectedListener(this);
-            vh.m_SpinnerProvenance.setSelection(ingredient.m_Provenance.ordinal());
+            if(ingredient.m_strProvenance.equals(Ingredients.c_strProvenanceEverywhere))
+            {
+                vh.m_SpinnerProvenance.setSelection(0);
+            }
+            else
+            {
+                vh.m_SpinnerProvenance.setSelection(adapterProvenance.getPosition(ingredient.m_strProvenance));
+            }
 
             ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
             for(Amount.Unit u : Amount.Unit.values())
@@ -241,8 +253,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
         else if(parent == vh.m_SpinnerProvenance)
         {
-            String provenance = (String)vh.m_SpinnerProvenance.getSelectedItem();
-            ingredient.m_Provenance = Ingredients.Provenance.valueOf(provenance);
+            if(vh.m_SpinnerProvenance.getSelectedItemPosition() == 0)
+            {
+                ingredient.m_strProvenance = Ingredients.c_strProvenanceEverywhere;
+            }
+            else
+            {
+                ingredient.m_strProvenance = (String) vh.m_SpinnerProvenance.getSelectedItem();
+            }
         }
         else if(parent == vh.m_SpinnerStdUnit)
         {
@@ -296,7 +314,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                 m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit);
                 Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
                 ingredient.m_Category = m_RecentlyDeleted.m_Category;
-                ingredient.m_Provenance = m_RecentlyDeleted.m_Provenance;
+                ingredient.m_strProvenance = m_RecentlyDeleted.m_strProvenance;
 
                 notifyDataSetChanged();
 

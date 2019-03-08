@@ -149,6 +149,22 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         }
 
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
+
+        if(m_GroceryPlanning.m_Ingredients.isSortOrderInUse(strName))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
+            builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_sortorder_disallowed_header));
+            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_sortorder_disallowed_desc, strName));
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.show();
+            return;
+        }
+
         m_strRecentlyDeletedSortOrder = strName;
         m_RecentlyDeletedSortOrder = m_GroceryPlanning.m_Categories.getSortOrder(strName);
         m_GroceryPlanning.m_Categories.removeSortOrder(strName);

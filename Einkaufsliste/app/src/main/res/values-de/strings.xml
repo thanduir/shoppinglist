@@ -36,6 +36,8 @@
     <string name="text_delete_category_disallowed_desc">Die Kategorie \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
     <string name="text_delete_ingredient_disallowed_header">Zutat kann nicht gelöscht werden</string>
     <string name="text_delete_ingredient_disallowed_desc">Die Zutat \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
+    <string name="text_delete_sortorder_disallowed_header">Sortierreihenfolge kann nicht gelöscht werden</string>
+    <string name="text_delete_sortorder_disallowed_desc">Die Sortierreihenfolge \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
     <string name="text_item_deleted">Element gelöscht</string>
     <string name="text_item_restored">Element wiederhergestellt</string>
     <string name="text_undo">Rückgängig machen</string>
@@ -61,6 +63,7 @@
     <string name="text_ingredient_renamed">Zutat \"%s\" umbenannt zu \"%s\".</string>
     <string name="text_rename_recipe">Rezept \"%s\" umbenennen</string>
     <string name="text_recipe_renamed">Rezept \"%s\" umbenannt zu \"%s\".</string>
+    <string name="provenance_everywhere">Überall</string>
 
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>

@@ -13,20 +13,12 @@ public class Ingredients
 {
     private Categories m_Categories;
 
-    public enum Provenance
-    {
-        Everywhere,
-        Migros,
-        Coop,
-        Denner,
-        Aldi,
-        Lidl;
-    }
+    public static String c_strProvenanceEverywhere = "*EVERYWHERE*";
 
     public class Ingredient
     {
         public Categories.Category m_Category;
-        public Provenance m_Provenance = Provenance.Everywhere;
+        public String m_strProvenance = c_strProvenanceEverywhere;
         public Amount.Unit m_DefaultUnit;
     }
     private LinkedHashMap<String, Ingredient>  m_Ingredients;
@@ -111,6 +103,18 @@ public class Ingredients
         }
     }
 
+    public boolean isSortOrderInUse(String strSortOrder)
+    {
+        for(Ingredient i : m_Ingredients.values())
+        {
+            if(i.m_strProvenance.equals(strSortOrder))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Serializing
 
     public void saveToJson(JsonWriter writer) throws IOException
@@ -123,7 +127,7 @@ public class Ingredients
             writer.name(e.getKey());
             writer.beginObject();
             writer.name("category").value(e.getValue().m_Category.getName());
-            writer.name("provenance").value(e.getValue().m_Provenance.toString());
+            writer.name("provenance").value(e.getValue().m_strProvenance);
             writer.name("default-unit").value(e.getValue().m_DefaultUnit.toString());
 
             writer.endObject();
@@ -160,8 +164,12 @@ public class Ingredients
                     }
                     else if(currentName.equals("provenance"))
                     {
-                        String provenance = reader.nextString();
-                        in.m_Provenance = Provenance.valueOf(provenance);
+                        in.m_strProvenance = reader.nextString();
+                        if(m_Categories.getSortOrder(in.m_strProvenance) == null && !in.m_strProvenance.equals(c_strProvenanceEverywhere))
+                        {
+                            // Provenance doesn't exist as a SortOrder -> set default provenance.
+                            in.m_strProvenance = c_strProvenanceEverywhere;
+                        }
                     }
                     else if(currentName.equals("default-unit"))
                     {

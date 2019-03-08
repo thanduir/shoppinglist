@@ -35,6 +35,8 @@
     <string name="text_delete_category_disallowed_desc">Category \"%s\" cannot be deleted because it is still in use.</string>
     <string name="text_delete_ingredient_disallowed_header">Deleting ingredient not allowed</string>
     <string name="text_delete_ingredient_disallowed_desc">Ingredient \"%s\" cannot be deleted because it is still in use.</string>
+    <string name="text_delete_sortorder_disallowed_header">Deleting sort order not allowed</string>
+    <string name="text_delete_sortorder_disallowed_desc">Sort order \"%s\" cannot be deleted because it is still in use.</string>
     <string name="text_item_deleted">Item deleted</string>
     <string name="text_item_restored">Item restored</string>
     <string name="text_undo">Undo</string>
@@ -60,6 +62,7 @@
     <string name="text_ingredient_renamed">Ingredient \"%s\" renamed to \"%s\".</string>
     <string name="text_rename_recipe">Rename recipe \"%s\"</string>
     <string name="text_recipe_renamed">Recipe \"%s\" renamed to \"%s\".</string>
+    <string name="provenance_everywhere">Everywhere</string>
 
     <string name="unit_count_long">Count</string>
     <string name="unit_kilogram_long">Kilogram</string>
