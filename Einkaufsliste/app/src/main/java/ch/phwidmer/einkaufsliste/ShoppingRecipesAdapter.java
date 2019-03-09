@@ -628,4 +628,24 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         d.setView(input, 50, 0 ,50,0);
         d.show();
     }
+
+    public void clearViewBackground(RecyclerView.ViewHolder vh)
+    {
+        if(m_iActiveElement == -1)
+        {
+            vh.itemView.setBackgroundColor(0);
+            return;
+        }
+
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+
+        if(v != null && m_RecyclerView.getChildViewHolder(v) == vh)
+        {
+            vh.itemView.setBackgroundColor(vh.itemView.getResources().getColor(R.color.colorHighlightedBackground));
+        }
+        else
+        {
+            vh.itemView.setBackgroundColor(0);
+        }
+    }
 }

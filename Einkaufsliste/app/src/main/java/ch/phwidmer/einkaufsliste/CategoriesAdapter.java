@@ -190,4 +190,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         d.setView(input, 50, 0 ,50,0);
         d.show();
     }
+
+    public void clearViewBackground(RecyclerView.ViewHolder vh)
+    {
+        vh.itemView.setBackgroundColor(0);
+    }
 }

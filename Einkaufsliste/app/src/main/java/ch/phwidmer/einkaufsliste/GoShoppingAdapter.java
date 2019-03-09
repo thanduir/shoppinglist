@@ -148,5 +148,8 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         return false;
     }
 
-
+    public void clearViewBackground(RecyclerView.ViewHolder vh)
+    {
+        vh.itemView.setBackgroundColor(0);
+    }
 }

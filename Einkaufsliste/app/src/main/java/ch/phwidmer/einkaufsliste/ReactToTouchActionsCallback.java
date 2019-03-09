@@ -114,6 +114,7 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
                           RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 
-        viewHolder.itemView.setBackgroundColor(0);
+        MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
+        adapter.clearViewBackground(viewHolder);
     }
 }
