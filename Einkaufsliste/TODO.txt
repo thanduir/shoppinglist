@@ -1,6 +1,11 @@
 TODO
 ====
 
+- Bug: Small (4 inch) / rotated screen: Main activity too large / not scrollable!
+- Bug: Data lost when turning screen while input field (+ keyboard) active
+- Suggestion: "Add ingredient to recipe": List very long -> auswählen schwierig. Bessere Variante? (Textsuchemöglichkeit?)
+- Focus element when entering activity or set element active (when element expands)
+
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?
     -> Merges of different datasets?

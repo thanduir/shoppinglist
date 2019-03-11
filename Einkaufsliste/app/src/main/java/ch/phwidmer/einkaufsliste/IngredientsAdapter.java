@@ -190,6 +190,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             });
 
             final Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
+            if(ingredient == null)
+            {
+                // This case should only be possible if a renamed object is sorted into the same position as
+                // the previous one (then vh.m_id is still the old id which doesn't exist anymore in m_Ingredients)
+                return;
+            }
 
             ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
             for(String strCategory : m_GroceryPlanning.m_Categories.getAllCategories())
