@@ -174,6 +174,8 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
             RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
             updateViewHolder(vh, true);
+
+            child.requestFocus();
         }
     }
 

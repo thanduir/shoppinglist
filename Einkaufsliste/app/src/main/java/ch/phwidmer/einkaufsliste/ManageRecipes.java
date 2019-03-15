@@ -135,6 +135,10 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             m_Adapter = null;
             m_RecyclerView.setAdapter(null);
         }
+
+        m_FAB.setFocusable(true);
+        m_FAB.setFocusableInTouchMode(true);
+        m_FAB.requestFocus();
     }
 
     @Override

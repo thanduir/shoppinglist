@@ -2,12 +2,15 @@ TODO
 ====
 
 - Bug: Data lost when turning screen while input field (+ keyboard) active. ("Handling Configuration Changes")
+    -> https://stackoverflow.com/questions/7557265/prevent-dialog-dismissal-on-screen-rotation-in-android
 - Suggestion: "Add ingredient to recipe": List very long -> auswählen schwierig. Bessere Variante? (Textsuchemöglichkeit?)
-- Focus element when entering activity or set element active (when element expands)
+    -> https://stackoverflow.com/questions/13394054/android-restrict-user-from-selecting-other-than-autocompletion-suggestions
+    -> https://ux.stackexchange.com/questions/79113/android-spinner-with-many-items
 
 - Sometimes you don't want things to get add (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
     -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
+
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?
     -> Merges of different datasets?
