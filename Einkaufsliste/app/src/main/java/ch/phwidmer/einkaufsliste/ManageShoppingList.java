@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
@@ -30,6 +31,8 @@ public class ManageShoppingList extends AppCompatActivity
     private RecyclerView.Adapter        m_AdapterRecipes;
     private RecyclerView.LayoutManager  m_LayoutManagerRecipes;
 
+    private FloatingActionButton m_FAB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,8 @@ public class ManageShoppingList extends AppCompatActivity
         m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
         File file = new File(m_SaveFilePath, MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
+
+        m_FAB = (FloatingActionButton)findViewById(R.id.fab);
 
         m_RecyclerViewRecipes = (RecyclerView) findViewById(R.id.recyclerViewShoppingRecipe);
         m_RecyclerViewRecipes.setHasFixedSize(true);
@@ -70,6 +75,18 @@ public class ManageShoppingList extends AppCompatActivity
                                                                             R.drawable.ic_delete_black_24dp,
                                                                              false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
+
+        m_RecyclerViewRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
+                    m_FAB.hide();
+                } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
+                    m_FAB.show();
+                }
+            }
+        });
     }
 
     @Override

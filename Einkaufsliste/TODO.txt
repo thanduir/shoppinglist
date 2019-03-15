@@ -1,7 +1,6 @@
 TODO
 ====
 
-- Manage categories: Category-Move-Handle is below "add category" button if enough categories are present
 - Bug: Data lost when turning screen while input field (+ keyboard) active. ("Handling Configuration Changes")
 - Suggestion: "Add ingredient to recipe": List very long -> auswählen schwierig. Bessere Variante? (Textsuchemöglichkeit?)
 - Focus element when entering activity or set element active (when element expands)

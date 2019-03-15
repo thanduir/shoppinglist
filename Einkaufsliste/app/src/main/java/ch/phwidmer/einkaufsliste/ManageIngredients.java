@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ public class ManageIngredients extends AppCompatActivity
     private RecyclerView.Adapter       m_Adapter;
     private RecyclerView.LayoutManager m_LayoutManager;
 
+    private FloatingActionButton m_FAB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,8 @@ public class ManageIngredients extends AppCompatActivity
         m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
+
+        m_FAB = (FloatingActionButton)findViewById(R.id.fab);
 
         m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewIngredients);
         m_RecyclerView.setHasFixedSize(true);
@@ -64,6 +69,18 @@ public class ManageIngredients extends AppCompatActivity
                                                                                               R.drawable.ic_delete_black_24dp,
                                                                                               false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerView);
+
+        m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
+                    m_FAB.hide();
+                } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
+                    m_FAB.show();
+                }
+            }
+        });
     }
 
     @Override

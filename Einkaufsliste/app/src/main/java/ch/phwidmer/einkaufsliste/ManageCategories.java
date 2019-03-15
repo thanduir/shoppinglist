@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     private RecyclerView.Adapter       m_Adapter;
     private RecyclerView.LayoutManager m_LayoutManager;
 
+    private FloatingActionButton       m_FAB;
+
     private String                      m_strRecentlyDeletedSortOrder;
     private Categories.SortOrder        m_RecentlyDeletedSortOrder;
 
@@ -43,6 +46,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
+
+        m_FAB = (FloatingActionButton)findViewById(R.id.fab);
 
         // Manage SortOrders
 
@@ -62,6 +67,18 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
+
+        m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
+                    m_FAB.hide();
+                } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
+                    m_FAB.show();
+                }
+            }
+        });
 
         m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
     }
