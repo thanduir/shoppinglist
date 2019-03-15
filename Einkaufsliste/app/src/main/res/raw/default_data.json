@@ -6,7 +6,6 @@
   {
     "id": "Categories",
     "all categories": [
-      "Brot",
       "Veganer Fleischersatz",
       "Früchte und Gemüse",
       "Salate",
@@ -20,7 +19,8 @@
       "Teigwaren, Reis und Kartoffelprodukte",
       "Alkohol",
       "Fleisch und Fisch",
-      "Gewürze"
+      "Gewürze",
+      "Brot"
     ],
     "sortOrders": {
       "Migros": [
@@ -63,237 +63,232 @@
     "id": "Ingredients",
     "Apfel": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Banane": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "3. Frucht": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Tofu": {
       "category": "Veganer Fleischersatz",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Falafel": {
       "category": "Veganer Fleischersatz",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Zopf": {
       "category": "Brot",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Toast": {
       "category": "Brot",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Pizzateig": {
       "category": "Fertigteig",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Flammkuchenteig": {
       "category": "Fertigteig",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Erdbeeren": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Aubergine": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Zucchetti": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Tomaten": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Orangen": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Eier": {
       "category": "Eier",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Salat (Kopf) ": {
       "category": "Salate",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Salat (Nüssler) ": {
       "category": "Salate",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Karotten": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Kartoffel": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Kilogram"
     },
     "Parmesan": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Nature Joghurt": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Mokka Joghurt": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Mozzarella": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Halbrahm": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Deciliter"
     },
     "Peperoni": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Champignon": {
       "category": "Salate",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Saurer Halbrahm": {
       "category": "Brot",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Milch": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Liter"
     },
     "Fleisch": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Poulet geschnetzeltes": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
-      "default-unit": "Gram"
-    },
-    "Schweinsschnitzel": {
-      "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Schweinsgeschnetzeltes": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Gehacktes (gemischt) ": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Gehacktes (Rind) ": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Spinatplätzli": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Spinat (gehackt, gefrohren) ": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Spinat (gefrohren) ": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Rahmspinat": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Tomatenpüree": {
       "category": "Konserven",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Ananas": {
       "category": "Konserven",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Apfelmus": {
       "category": "Konserven",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Chrömli": {
       "category": "Restliches",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Kartoffelstock": {
       "category": "Teigwaren, Reis und Kartoffelprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Unitless"
     },
     "Spaghetti": {
       "category": "Teigwaren, Reis und Kartoffelprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Teigwaren (Hörnli) ": {
       "category": "Teigwaren, Reis und Kartoffelprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Unitless"
     },
     "Cordon Bleu": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Butter": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Kochwein (rot) ": {
@@ -308,107 +303,107 @@
     },
     "Blumenkohl": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Brokkoli": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Rindsgeschnetzeltes": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Waschmittel (Schwarz) ": {
       "category": "Restliches",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Unitless"
     },
     "Waschmittel (farbig) ": {
       "category": "Restliches",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Pommes Frites": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Speck": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Reis": {
       "category": "Teigwaren, Reis und Kartoffelprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Pelati": {
       "category": "Oele und Saucen",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Bouillon (Rind) ": {
       "category": "Oele und Saucen",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Philadelphia": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Salat": {
       "category": "Salate",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Mozzarellaperlen": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Schokolade": {
       "category": "Restliches",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Lachs": {
       "category": "Fleisch und Fisch",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Zitrone": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Weissmehl": {
       "category": "Restliches",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Brot": {
       "category": "Brot",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Gram"
     },
     "Zimt": {
       "category": "Gewürze",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Unitless"
     },
     "Abfallsack (blau) ": {
       "category": "Restliches",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Unitless"
     },
     "Bratensauce": {
       "category": "Oele und Saucen",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Tortillas (Vollkorn) ": {
@@ -418,53 +413,103 @@
     },
     "Tortillas (Weizen) ": {
       "category": "Restliches",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Tortillasauce (mild) ": {
       "category": "Oele und Saucen",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Unitless"
     },
     "Creme Fraiche": {
       "category": "Milchprodukte",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Milliliter"
     },
     "Avocado": {
       "category": "Früchte und Gemüse",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Mais (Dose) ": {
       "category": "Konserven",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Salat (Eisberg, Kopf) ": {
       "category": "Salate",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Salat (Eisberg) ": {
       "category": "Salate",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Tortillasauce (scharf) ": {
       "category": "Oele und Saucen",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Unitless"
     },
     "Süss-Sauer Sauce": {
       "category": "Brot",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
     "Tomatenplätzli": {
       "category": "Tiefgefrohrenes",
-      "provenance": "Everywhere",
+      "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
+    },
+    "Schweinsschnitzel": {
+      "category": "Fleisch und Fisch",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Gemahlene Mandeln": {
+      "category": "Restliches",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Fruechte": {
+      "category": "Früchte und Gemüse",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Schinkenwuerfel": {
+      "category": "Fleisch und Fisch",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Gnocchi": {
+      "category": "Teigwaren, Reis und Kartoffelprodukte",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Krautstiel": {
+      "category": "Salate",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Saucen-Halbrahm": {
+      "category": "Milchprodukte",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Deciliter"
+    },
+    "Buendnerfleisch": {
+      "category": "Fleisch und Fisch",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Magerquark": {
+      "category": "Milchprodukte",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
+    },
+    "Gefrohrene Zwetschgen": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
     }
   },
   {
@@ -976,6 +1021,162 @@
         "size": "Normal",
         "optional": false
       }
+    },
+    "Clafuti": {
+      "NrPersons": 2,
+      "Brot": {
+        "amount": [
+          150.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Milch": {
+        "amount": [
+          1.0,
+          "Deciliter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Eier": {
+        "amount": [
+          3.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Gemahlene Mandeln": {
+        "amount": [
+          100.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Fruechte": {
+        "amount": [
+          500.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Zitrone": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Salzkartoffeln mit Fleisch": {
+      "NrPersons": 2,
+      "Kartoffel": {
+        "amount": [
+          700.0,
+          "Kilogram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Fleisch": {
+        "amount": [
+          300.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Spaghetti Carbonara": {
+      "NrPersons": 2,
+      "Spaghetti": {
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Schinkenwuerfel": {
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Eier": {
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Halbrahm": {
+        "amount": [
+          0.0,
+          "Unitless"
+        ],
+        "size": "Small",
+        "optional": false
+      },
+      "Parmesan": {
+        "amount": [
+          50.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Peperoni": {
+        "amount": [
+          1.5,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Gnocchi mit Krautstiel": {
+      "NrPersons": 2,
+      "Gnocchi": {
+        "amount": [
+          550.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Krautstiel": {
+        "amount": [
+          500.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Saucen-Halbrahm": {
+        "amount": [
+          2.0,
+          "Deciliter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Buendnerfleisch": {
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
     }
   },
   {
@@ -984,46 +1185,34 @@
     "Diverses": {
       "ScalingFactor": 2.0,
       "Chrömli": {
-        "status": "Taken",
+        "status": "None",
         "amount": [
-          2.0,
+          3.0,
           "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Milch": {
-        "status": "Taken",
-        "amount": [
-          2.0,
-          "Liter"
         ],
         "size": "Normal",
         "optional": false
       },
       "Mokka Joghurt": {
-        "status": "Taken",
+        "status": "None",
         "amount": [
-          6.0,
+          8.0,
           "Count"
         ],
         "size": "Normal",
         "optional": false
       },
-      "Abfallsack (blau) ": {
-        "status": "Taken",
+      "Avocado": {
+        "status": "None",
         "amount": [
-          0.0,
-          "Unitless"
+          1.0,
+          "Count"
         ],
         "size": "Normal",
         "optional": false
-      }
-    },
-    "Mozzarella + Tomaten": {
-      "ScalingFactor": 1.0,
+      },
       "Mozzarella": {
-        "status": "Taken",
+        "status": "None",
         "amount": [
           1.0,
           "Count"
@@ -1031,11 +1220,86 @@
         "size": "Small",
         "optional": false
       },
-      "Tomaten": {
-        "status": "Taken",
+      "Tomatenplätzli": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Magerquark": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Orangen": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Peperoni": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Milch": {
+        "status": "None",
+        "amount": [
+          3.0,
+          "Liter"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Clafuti": {
+      "ScalingFactor": 2.0,
+      "Milch": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Deciliter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Eier": {
+        "status": "None",
         "amount": [
           2.0,
           "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Gemahlene Mandeln": {
+        "status": "None",
+        "amount": [
+          100.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Gefrohrene Zwetschgen": {
+        "status": "None",
+        "amount": [
+          250.0,
+          "Gram"
         ],
         "size": "Normal",
         "optional": false
@@ -1044,7 +1308,7 @@
     "Muesli": {
       "ScalingFactor": 2.0,
       "3. Frucht": {
-        "status": "Taken",
+        "status": "None",
         "amount": [
           1.0,
           "Count"
@@ -1053,7 +1317,7 @@
         "optional": false
       },
       "Apfel": {
-        "status": "Taken",
+        "status": "None",
         "amount": [
           1.0,
           "Count"
@@ -1062,7 +1326,7 @@
         "optional": false
       },
       "Banane": {
-        "status": "Taken",
+        "status": "None",
         "amount": [
           1.0,
           "Count"
@@ -1071,190 +1335,28 @@
         "optional": false
       },
       "Nature Joghurt": {
-        "status": "Taken",
+        "status": "None",
         "amount": [
-          2.0,
+          1.0,
           "Count"
         ],
         "size": "Normal",
         "optional": false
       }
     },
-    "Fotzelschnitten": {
+    "Salzkartoffeln mit Fleisch": {
       "ScalingFactor": 2.0,
-      "Eier": {
-        "status": "Taken",
-        "amount": [
-          3.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Milch": {
-        "status": "Taken",
-        "amount": [
-          2.0,
-          "Deciliter"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Apfelmus": {
-        "status": "Taken",
-        "amount": [
-          2.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Zopf": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Small",
-        "optional": false
-      }
-    },
-    "Hoernli + Ghackets": {
-      "ScalingFactor": 3.0,
-      "Teigwaren (Hörnli) ": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Bratensauce": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Gehacktes (gemischt) ": {
-        "status": "Taken",
+      "Kartoffel": {
+        "status": "None",
         "amount": [
           500.0,
-          "Gram"
+          "Kilogram"
         ],
         "size": "Normal",
         "optional": false
       },
-      "Tomaten": {
-        "status": "Taken",
-        "amount": [
-          2.0,
-          "Count"
-        ],
-        "size": "Small",
-        "optional": false
-      },
-      "Peperoni": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      }
-    },
-    "Wraps": {
-      "ScalingFactor": 2.0,
-      "Tortillas (Vollkorn) ": {
-        "status": "Taken",
-        "amount": [
-          3.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Tortillas (Weizen) ": {
-        "status": "Taken",
-        "amount": [
-          3.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Creme Fraiche": {
-        "status": "Taken",
-        "amount": [
-          250.0,
-          "Milliliter"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Poulet geschnetzeltes": {
-        "status": "Taken",
-        "amount": [
-          200.0,
-          "Gram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Mozzarella": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Small",
-        "optional": false
-      },
-      "Peperoni": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Tomaten": {
-        "status": "Taken",
-        "amount": [
-          2.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Avocado": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Salat (Eisberg, Kopf) ": {
-        "status": "Taken",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      }
-    },
-    "Lachs mit Salzkartoffeln": {
-      "ScalingFactor": 2.0,
-      "Lachs": {
-        "status": "Taken",
+      "Fleisch": {
+        "status": "None",
         "amount": [
           300.0,
           "Gram"
@@ -1262,17 +1364,8 @@
         "size": "Normal",
         "optional": false
       },
-      "Kartoffel": {
-        "status": "Taken",
-        "amount": [
-          0.4,
-          "Kilogram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Zitrone": {
-        "status": "Taken",
+      "Zucchetti": {
+        "status": "None",
         "amount": [
           1.0,
           "Count"
@@ -1280,20 +1373,80 @@
         "size": "Normal",
         "optional": false
       },
-      "Halbrahm": {
-        "status": "Taken",
+      "Tomaten": {
+        "status": "None",
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Large",
+        "optional": false
+      }
+    },
+    "Spaghetti Carbonara": {
+      "ScalingFactor": 2.0,
+      "Schinkenwuerfel": {
+        "status": "None",
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Eier": {
+        "status": "None",
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Peperoni": {
+        "status": "None",
         "amount": [
           1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Gnocchi mit Krautstiel": {
+      "ScalingFactor": 2.0,
+      "Gnocchi": {
+        "status": "None",
+        "amount": [
+          550.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Krautstiel": {
+        "status": "None",
+        "amount": [
+          500.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Saucen-Halbrahm": {
+        "status": "None",
+        "amount": [
+          2.0,
           "Deciliter"
         ],
         "size": "Normal",
         "optional": false
       },
-      "Spinat (gehackt, gefrohren) ": {
-        "status": "Taken",
+      "Buendnerfleisch": {
+        "status": "None",
         "amount": [
-          1.0,
-          "Count"
+          200.0,
+          "Gram"
         ],
         "size": "Normal",
         "optional": false

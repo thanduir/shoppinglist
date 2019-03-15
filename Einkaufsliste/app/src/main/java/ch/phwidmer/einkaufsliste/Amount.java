@@ -209,6 +209,7 @@ public class Amount {
                     result.m_Quantity /= 100.0f;
                     result.m_Unit = Unit.Deciliter;
                 }
+                else
                 {
                     result.m_Unit = Unit.Milliliter;
                 }

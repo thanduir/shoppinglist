@@ -1,11 +1,14 @@
 TODO
 ====
 
-- Bug: Small (4 inch) / rotated screen: Main activity too large / not scrollable!
-- Bug: Data lost when turning screen while input field (+ keyboard) active
+- Manage categories: Category-Move-Handle is below "add category" button if enough categories are present
+- Bug: Data lost when turning screen while input field (+ keyboard) active. ("Handling Configuration Changes")
 - Suggestion: "Add ingredient to recipe": List very long -> auswählen schwierig. Bessere Variante? (Textsuchemöglichkeit?)
 - Focus element when entering activity or set element active (when element expands)
 
+- Sometimes you don't want things to get add (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
+    -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
+- Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
 - Data synchronisation between different devices (in the same network?) possible?
     -> Synchronisation between (partial?) data of different users?
     -> Merges of different datasets?

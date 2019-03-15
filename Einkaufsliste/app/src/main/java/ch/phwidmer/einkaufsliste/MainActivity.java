@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    public void onExport(View v)
+    public void onExport()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alert_saveas);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity
         d.show();
     }
 
-    public void onImport(View v)
+    public void onImport()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alert_load);
@@ -217,6 +217,14 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
             startActivity(intent);
+        }
+        else if (id == R.id.actionbar_button_import)
+        {
+            onImport();
+        }
+        else if (id == R.id.actionbar_button_export)
+        {
+            onExport();
         }
         return super.onOptionsItemSelected(item);
     }
