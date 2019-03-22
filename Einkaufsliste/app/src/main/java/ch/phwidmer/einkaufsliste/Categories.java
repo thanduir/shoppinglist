@@ -4,6 +4,7 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Vector;
@@ -47,10 +48,23 @@ public class Categories
     }
     private LinkedHashMap<String, SortOrder>  m_SortOrders;
 
+    private String m_ActiveSortOrder;
+
     public Categories()
     {
         m_Categories = new LinkedHashSet<String>();
         m_SortOrders = new LinkedHashMap<String, SortOrder>();
+        m_ActiveSortOrder = "";
+    }
+
+    public void setActiveSortOrder(String strOrder)
+    {
+        m_ActiveSortOrder = strOrder;
+    }
+
+    public String getActiveSortOrder()
+    {
+        return m_ActiveSortOrder;
     }
 
     // Categories methods
@@ -86,6 +100,7 @@ public class Categories
         {
             vec.add((String)obj);
         }
+        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 
@@ -168,6 +183,7 @@ public class Categories
     {
         writer.beginObject();
         writer.name("id").value("Categories");
+        writer.name("activeSortOrder").value(m_ActiveSortOrder);
 
         writer.name("all categories");
         writer.beginArray();
@@ -207,6 +223,10 @@ public class Categories
                 {
                     throw new IOException();
                 }
+            }
+            else if(name.equals("activeSortOrder"))
+            {
+                m_ActiveSortOrder = reader.nextString();
             }
             else if (name.equals("all categories"))
             {

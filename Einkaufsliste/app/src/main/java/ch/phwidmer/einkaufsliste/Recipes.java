@@ -11,6 +11,8 @@ import java.util.Vector;
 
 public class Recipes {
 
+    private String m_ActiveRecipe;
+
     public class Recipe {
         public Integer m_NumberOfPersons = 0;
         public LinkedList<RecipeItem> m_Items = new LinkedList<RecipeItem>();
@@ -20,6 +22,17 @@ public class Recipes {
     public Recipes()
     {
         m_Recipies = new LinkedHashMap<String, Recipe>();
+        m_ActiveRecipe = "";
+    }
+
+    public void setActiveRecipe(String strRecipe)
+    {
+        m_ActiveRecipe = strRecipe;
+    }
+
+    public String getActiveRecipe()
+    {
+        return m_ActiveRecipe;
     }
 
     public void addRecipe(String strName, Integer iNrPersons)
@@ -111,6 +124,7 @@ public class Recipes {
     {
         writer.beginObject();
         writer.name("id").value("Recipes");
+        writer.name("activeRecipe").value(m_ActiveRecipe);
 
         for(LinkedHashMap.Entry<String, Recipe> e : m_Recipies.entrySet())
         {
@@ -151,6 +165,10 @@ public class Recipes {
                 {
                     throw new IOException();
                 }
+            }
+            else if(name.equals("activeRecipe"))
+            {
+                m_ActiveRecipe = reader.nextString();
             }
             else
             {

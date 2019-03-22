@@ -3,11 +3,15 @@ TODO
 
 - Bug: Data lost when turning screen while input field (+ keyboard) active. ("Handling Configuration Changes")
     -> https://stackoverflow.com/questions/7557265/prevent-dialog-dismissal-on-screen-rotation-in-android
+- Bug: ActiveElement lost on screen rotate (what else is not saved?)
 - Suggestion: "Add ingredient to recipe": List very long -> auswählen schwierig. Bessere Variante? (Textsuchemöglichkeit?)
     -> https://stackoverflow.com/questions/13394054/android-restrict-user-from-selecting-other-than-autocompletion-suggestions
     -> https://ux.stackexchange.com/questions/79113/android-spinner-with-many-items
+- Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
+    -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?
+    -> Oder +/- Buttons auch e.g. für Gramm, welche jeweils um \pm 50 den Wert verändern (+ immer noch die Möglichkeit, manuell eine Zahl einzugeben)
 
-- Sometimes you don't want things to get add (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
+- Sometimes you don't want things to get add up together (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
     -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
 

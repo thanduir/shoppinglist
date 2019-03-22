@@ -62,6 +62,11 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerSortOrders.setAdapter(adapter);
         m_SpinnerSortOrders.setOnItemSelectedListener(this);
+        String strActiveSortOrder = m_GroceryPlanning.m_Categories.getActiveSortOrder();
+        if(!strActiveSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strActiveSortOrder))
+        {
+            m_SpinnerSortOrders.setSelection(adapter.getPosition(strActiveSortOrder));
+        }
 
         m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewSortOrders);
         m_RecyclerView.setHasFixedSize(true);
@@ -224,6 +229,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
         Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
+        m_GroceryPlanning.m_Categories.setActiveSortOrder(strSortOrder);
 
         m_Adapter = new CategoriesAdapter(m_RecyclerView, m_GroceryPlanning.m_Categories, order, m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);

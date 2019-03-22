@@ -96,6 +96,11 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerRecipes.setAdapter(adapter);
         m_SpinnerRecipes.setOnItemSelectedListener(this);
+        String strActiveRecipe = m_GroceryPlanning.m_Recipes.getActiveRecipe();
+        if(!strActiveRecipe.isEmpty() && m_GroceryPlanning.m_Recipes.getAllRecipes().contains(strActiveRecipe))
+        {
+            m_SpinnerRecipes.setSelection(adapter.getPosition(strActiveRecipe));
+        }
 
         m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewRecipeItems);
         m_RecyclerView.setHasFixedSize(true);
@@ -323,6 +328,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     {
         String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
         Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
+        m_GroceryPlanning.m_Recipes.setActiveRecipe(strRecipe);
 
         m_EditTextNrPersons.setText(recipe.m_NumberOfPersons.toString());
 
