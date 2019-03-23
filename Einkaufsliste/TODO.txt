@@ -10,6 +10,7 @@ TODO
 
 - Bug: ActiveElement lost on screen rotate (what else is not saved?)
     -> Schauen, welche gespeichert werden müssen, dann diese per Bundle und savedState wiederherstellen! (Analog InputStringDialogFragment?)
+- Bug: "Ok" Button from DialogFragment too small on small screens
 
 - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
     -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?

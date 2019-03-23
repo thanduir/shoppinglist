@@ -67,7 +67,6 @@ public class InputStringDialogFragment extends DialogFragment {
     {
         final View mainView = inflater.inflate(R.layout.overlay_input_string, container, false);
         TextView textView = (TextView)mainView.findViewById(R.id.textViewTitle);
-        textView.setInputType(m_InputType);
         textView.setText(m_Title);
 
         Button buttonCancel = (Button)mainView.findViewById(R.id.ButtonCancel);
@@ -88,6 +87,7 @@ public class InputStringDialogFragment extends DialogFragment {
         });
 
         EditText editText = (EditText)mainView.findViewById(R.id.editTextInput);
+        editText.setInputType(m_InputType);
         if(!m_DefaultValue.isEmpty())
         {
             editText.setText(m_DefaultValue);
