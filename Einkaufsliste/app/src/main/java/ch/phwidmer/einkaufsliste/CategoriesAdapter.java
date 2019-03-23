@@ -2,18 +2,17 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> implements ReactToTouchActionsInterface
 {
@@ -158,37 +157,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     private void renameCategory(final Categories.Category category)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
-        builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_category, category.getName()));
-
-        // Set up the input
-        final EditText input = new EditText(m_RecyclerView.getContext());
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setText(category.getName());
-
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strNewName = input.getText().toString();
-
-                m_Categories.renameCategory(category, strNewName);
-                m_Ingredients.onCategoryRenamed(category, m_Categories.getCategory(strNewName));
-
-                notifyDataSetChanged();
-                Toast.makeText(m_RecyclerView.getContext(), m_RecyclerView.getContext().getResources().getString(R.string.text_category_renamed, category.getName(), strNewName), Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 0 ,50,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_category, category.getName()), category.getName());
+        newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameCategory");
     }
 
     public void clearViewBackground(RecyclerView.ViewHolder vh)

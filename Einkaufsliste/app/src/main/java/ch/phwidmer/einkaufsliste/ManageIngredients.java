@@ -1,23 +1,21 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.InputType;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.File;
 
-public class ManageIngredients extends AppCompatActivity
+public class ManageIngredients extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
     private String          m_SaveFilePath;
@@ -94,38 +92,36 @@ public class ManageIngredients extends AppCompatActivity
 
     public void onAddIngredient(View v)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.text_add_ingredient);
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient), "");
+        newFragment.show(getSupportFragmentManager(), "addIngredient");
+    }
 
-        // Set up the input
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
+    {
+        if(tag.equals("addIngredient"))
+        {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
+            String strIngredient = strInput;
+            m_GroceryPlanning.m_Ingredients.addIngredient(strIngredient, Amount.Unit.valueOf(strDefaultUnit));
+            IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
+            adapter.setActiveElement(strIngredient);
+            adapter.notifyDataSetChanged();
+            m_RecyclerView.scrollToPosition(m_GroceryPlanning.m_Ingredients.getAllIngredients().indexOf(strIngredient));
+        }
+        else if(tag.equals("renameIngredient")) // See IngredientsAdapter
+        {
+            String strNewName = strInput;
 
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strIngredient = input.getText().toString();
-                m_GroceryPlanning.m_Ingredients.addIngredient(strIngredient, Amount.Unit.valueOf(strDefaultUnit));
-                IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
-                adapter.setActiveElement(strIngredient);
-                adapter.notifyDataSetChanged();
-                m_RecyclerView.scrollToPosition(m_GroceryPlanning.m_Ingredients.getAllIngredients().indexOf(strIngredient));
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+            m_GroceryPlanning.m_Ingredients.renameIngredient(strAdditonalInformation, strNewName);
+            m_GroceryPlanning.m_Recipes.onIngredientRenamed(strAdditonalInformation, strNewName);
+            m_GroceryPlanning.m_ShoppingList.onIngredientRenamed(strAdditonalInformation, strNewName);
 
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 0 ,50,0);
-        d.show();
+            IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
+            adapter.setActiveElement(strNewName);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(m_RecyclerView.getContext(), m_RecyclerView.getContext().getResources().getString(R.string.text_ingredient_renamed, strAdditonalInformation, strNewName), Toast.LENGTH_SHORT).show();
+        }
     }
 }

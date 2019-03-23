@@ -117,7 +117,7 @@
                     android:id="@+id/buttonRenameRecipe"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:onClick="onRenameRecipeRecipe"
+                    android:onClick="onRenameRecipe"
                     android:text="Rename"
                     tools:layout_editor_absoluteX="338dp"
                     tools:layout_editor_absoluteY="16dp" />

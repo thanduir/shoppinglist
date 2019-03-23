@@ -4,23 +4,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.File;
 
-public class ManageCategories extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class ManageCategories extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
     private String          m_SaveFilePath;
@@ -101,66 +101,44 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
     public void onAddCategory(View v)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.button_add_category);
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                m_GroceryPlanning.m_Categories.addCategory(input.getText().toString());
-                CategoriesAdapter adapter = (CategoriesAdapter)m_RecyclerView.getAdapter();
-                adapter.notifyItemInserted(adapter.getItemCount()-1);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 0 ,50,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.button_add_category), "");
+        newFragment.show(getSupportFragmentManager(), "addCategory");
     }
 
     public void onAddSortOrder(View v)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.text_add_sortorder);
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_sortorder), "");
+        newFragment.show(getSupportFragmentManager(), "addSortOrder");
+    }
 
-        // Set up the input
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
+    {
+        if(tag.equals("addCategory"))
+        {
+            m_GroceryPlanning.m_Categories.addCategory(strInput);
+            CategoriesAdapter adapter = (CategoriesAdapter) m_RecyclerView.getAdapter();
+            adapter.notifyItemInserted(adapter.getItemCount() - 1);
+        }
+        else if(tag.equals("addSortOrder"))
+        {
+            m_GroceryPlanning.m_Categories.addSortOrder(strInput);
+            ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
+            adapter.add(strInput);
+            m_SpinnerSortOrders.setSelection(adapter.getCount() - 1);
 
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                m_GroceryPlanning.m_Categories.addSortOrder(input.getText().toString());
-                ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerSortOrders.getAdapter();
-                adapter.add(input.getText().toString());
-                m_SpinnerSortOrders.setSelection(adapter.getCount() - 1);
+            m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
+        }
+        else if(tag.equals("renameCategory")) // See CategoriesAdapter
+        {
+            String strNewName = strInput;
+            Categories.Category category = m_GroceryPlanning.m_Categories.getCategory(strAdditonalInformation);
 
-                m_ButtonDelSortOrder.setEnabled(adapter.getCount() > 0);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+            m_GroceryPlanning.m_Categories.renameCategory(category, strNewName);
+            m_GroceryPlanning.m_Ingredients.onCategoryRenamed(category, m_GroceryPlanning.m_Categories.getCategory(strNewName));
 
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 0 ,50,0);
-        d.show();
+            m_RecyclerView.getAdapter().notifyDataSetChanged();
+            Toast.makeText(this, getResources().getString(R.string.text_category_renamed, category.getName(), strNewName), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onDeleteSortOrder(View v)

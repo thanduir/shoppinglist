@@ -3,19 +3,18 @@ package ch.phwidmer.einkaufsliste;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Vector;
 
@@ -349,39 +348,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     private void renameIngredient(final String strIngredient)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
-        builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_ingredient, strIngredient));
-
-        // Set up the input
-        final EditText input = new EditText(m_RecyclerView.getContext());
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setText(strIngredient);
-
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strNewName = input.getText().toString();
-
-                m_GroceryPlanning.m_Ingredients.renameIngredient(strIngredient, strNewName);
-                m_GroceryPlanning.m_Recipes.onIngredientRenamed(strIngredient, strNewName);
-                m_GroceryPlanning.m_ShoppingList.onIngredientRenamed(strIngredient, strNewName);
-
-                setActiveElement(strNewName);
-                notifyDataSetChanged();
-                Toast.makeText(m_RecyclerView.getContext(), m_RecyclerView.getContext().getResources().getString(R.string.text_ingredient_renamed, strIngredient, strNewName), Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 0 ,50,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_ingredient, strIngredient), strIngredient);
+        newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameIngredient");
     }
 
     public void clearViewBackground(RecyclerView.ViewHolder vh)

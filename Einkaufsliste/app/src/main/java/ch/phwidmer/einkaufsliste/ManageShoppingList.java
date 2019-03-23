@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
-public class ManageShoppingList extends AppCompatActivity
+public class ManageShoppingList extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
     private String          m_SaveFilePath;
@@ -100,6 +100,7 @@ public class ManageShoppingList extends AppCompatActivity
 
     public void onAddShoppingRecipe(View v)
     {
+        // TODO Replace AlertDialog (list)
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.text_import_recipe);
 
@@ -147,6 +148,18 @@ public class ManageShoppingList extends AppCompatActivity
         AlertDialog d = builder.create();
         d.setView(input, 50, 20 ,20,0);
         d.show();
+    }
+
+    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
+    {
+        if(tag.equals("changeRecipeScaling")) // See IngredientsAdapter
+        {
+            float fNewValue = Float.valueOf(strInput);
+
+            ShoppingList.ShoppingRecipe recipe = m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strAdditonalInformation);
+            recipe.changeScalingFactor(fNewValue);
+            m_RecyclerViewRecipes.getAdapter().notifyDataSetChanged();
+        }
     }
 
     public void onResetList(View v)

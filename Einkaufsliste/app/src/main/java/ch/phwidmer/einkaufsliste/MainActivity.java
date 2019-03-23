@@ -2,15 +2,14 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -19,9 +18,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Set;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
     public static final String EXTRA_SAVEFILESPATH = "ch.phwidmer.einkaufsliste.SAVEFILESPATH";
 
@@ -117,43 +115,13 @@ public class MainActivity extends AppCompatActivity
 
     public void onExport()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.alert_saveas);
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strFilename = input.getText().toString();
-                if(!strFilename.endsWith(".json"))
-                {
-                    strFilename += ".json";
-                }
-
-                File file = new File(m_AppDataDirectory, strFilename);
-                m_GroceryPlanning.saveDataToFile(file, getBaseContext());
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 0 ,50,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_saveas), "");
+        newFragment.show(getSupportFragmentManager(), "onExport");
     }
 
     public void onImport()
     {
+        // TODO Replace AlertDialog (list)
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alert_load);
 
@@ -200,6 +168,22 @@ public class MainActivity extends AppCompatActivity
         AlertDialog d = builder.create();
         d.setView(input, 50, 20 ,20,0);
         d.show();
+    }
+
+    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
+    {
+        if(tag.equals("onExport"))
+        {
+            String strFilename = strInput;
+            if(!strFilename.endsWith(".json"))
+            {
+                strFilename += ".json";
+            }
+
+            File file = new File(m_AppDataDirectory, strFilename);
+            m_GroceryPlanning.saveDataToFile(file, getBaseContext());
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
