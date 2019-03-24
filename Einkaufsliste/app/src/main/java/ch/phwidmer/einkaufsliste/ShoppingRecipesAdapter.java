@@ -1,13 +1,11 @@
 package ch.phwidmer.einkaufsliste;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -26,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipesAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
@@ -502,49 +501,21 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         View v = m_RecyclerView.getLayoutManager().findViewByPosition(index);
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
-        // TODO Replace AlertDialog (list)
-        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-        builder.setTitle(R.string.text_add_ingredient);
 
-        // Set up the input
-        final Spinner input = new Spinner(v.getContext());
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(v.getContext(), android.R.layout.simple_spinner_item);
+        ArrayList<String> inputList = new ArrayList<String>();
         for(String strName : m_Ingredients.getAllIngredients())
         {
             if(getShoppingListItem(recipe, strName) != null)
             {
                 continue;
             }
-            adapter.add(strName);
+            inputList.add(strName);
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        input.setAdapter(adapter);
 
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strIngredient = input.getSelectedItem().toString();
-
-                ShoppingListItem item = new ShoppingListItem();
-                item.m_Ingredient = strIngredient;
-                item.m_Amount.m_Unit = m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
-                m_ShoppingList.getShoppingRecipe(strRecipe).m_Items.add(item);
-
-                Pair<String, String> newItem = new Pair<String, String>(strRecipe, strIngredient);
-
-                notifyItemInserted(getShoppingRecipes().indexOf(newItem));
-                setActiveElement(newItem);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 20 ,20,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient),
+                                                                            strRecipe,
+                                                                            inputList);
+        newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "addRecipeItem");
     }
 
     private void onDelShoppingRecipe(final String strRecipe)

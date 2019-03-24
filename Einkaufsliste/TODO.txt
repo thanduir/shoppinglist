@@ -1,13 +1,7 @@
 TODO
 ====
 
-- Bug: Data lost when turning screen while input field (+ keyboard) active. ("Handling Configuration Changes")
-    -> DialogFragment umsetzen für Listen (zusammen mit dem nachfolgenden Punkt! Lässt sich das als Alternative zum EditText im DialogFragment einbauen oder braucht es eine neue Klasse?)
-- Suggestion: "Add ingredient to recipe": List very long -> auswählen schwierig. Bessere Variante? (Textsuchemöglichkeit?)
-    -> https://stackoverflow.com/questions/13394054/android-restrict-user-from-selecting-other-than-autocompletion-suggestions
-    -> https://ux.stackexchange.com/questions/79113/android-spinner-with-many-items
-    -> DialogFragment damit schreiben! (siehe InputStringDialogFragment)
-
+- Bug(?): Input for Lists in InputStringDialogFragment is case-sensitive! But should this really be changed?
 - Bug: ActiveElement lost on screen rotate (what else is not saved?)
     -> Schauen, welche gespeichert werden müssen, dann diese per Bundle und savedState wiederherstellen! (Analog InputStringDialogFragment?)
 - Bug: "Ok" Button from DialogFragment too small on small screens

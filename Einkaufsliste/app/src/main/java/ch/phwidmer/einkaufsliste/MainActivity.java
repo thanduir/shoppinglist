@@ -1,16 +1,12 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
@@ -18,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
@@ -121,14 +118,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
     public void onImport()
     {
-        // TODO Replace AlertDialog (list)
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.alert_load);
-
-        // Set up the input
-        final Spinner input = new Spinner(this);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-
+        ArrayList<String> inputList = new ArrayList<String>();
         File directory = m_AppDataDirectory;
         for(File f : directory.listFiles())
         {
@@ -137,37 +127,11 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
                 continue;
             }
 
-            adapter.add(f.getName());
+            inputList.add(f.getName());
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        input.setAdapter(adapter);
-        builder.setView(input);
 
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strFilename = input.getSelectedItem().toString();
-
-                File file = new File(m_AppDataDirectory, strFilename);
-                m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
-
-                File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
-                m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
-
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded,  strFilename), Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 20 ,20,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_load), "", inputList);
+        newFragment.show(getSupportFragmentManager(), "onImport");
     }
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
@@ -183,6 +147,18 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
             File file = new File(m_AppDataDirectory, strFilename);
             m_GroceryPlanning.saveDataToFile(file, getBaseContext());
             Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
+        }
+        else if(tag.equals("onImport"))
+        {
+            String strFilename = strInput;
+
+            File file = new File(m_AppDataDirectory, strFilename);
+            m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
+
+            File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
+            m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
+
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded,  strFilename), Toast.LENGTH_SHORT).show();
         }
     }
 

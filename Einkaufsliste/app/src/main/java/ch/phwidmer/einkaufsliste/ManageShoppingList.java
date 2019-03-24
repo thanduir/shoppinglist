@@ -1,11 +1,10 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,11 +13,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ManageShoppingList extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
@@ -100,13 +98,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
     public void onAddShoppingRecipe(View v)
     {
-        // TODO Replace AlertDialog (list)
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.text_import_recipe);
-
-        // Set up the input
-        final Spinner input = new Spinner(this);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayList<String> inputList = new ArrayList<String>();
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             ShoppingRecipesAdapter adapterItems = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
@@ -114,51 +106,54 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
             {
                 continue;
             }
-            adapter.add(strName);
+            inputList.add(strName);
         }
-        if(adapter.isEmpty())
+        if(inputList.isEmpty())
         {
             Toast.makeText(v.getContext(), R.string.text_all_recipes_alreay_added, Toast.LENGTH_SHORT).show();
             return;
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        input.setAdapter(adapter);
 
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strRecipe = input.getSelectedItem().toString();
-
-                m_GroceryPlanning.m_ShoppingList.addFromRecipe(strRecipe, m_GroceryPlanning.m_Recipes.getRecipe(strRecipe));
-
-                ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-                adapter.notifyDataSetChanged();
-                adapter.setActiveElement(new Pair<String, String>(strRecipe, ""));
-                m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 20 ,20,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_import_recipe), "", inputList);
+        newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
     }
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
     {
-        if(tag.equals("changeRecipeScaling")) // See IngredientsAdapter
+        if(tag.equals("addRecipeItem")) // See ShoppingRecipesAdapter
+        {
+            String strIngredient = strInput;
+            String strRecipe = strAdditonalInformation;
+
+            ShoppingListItem item = new ShoppingListItem();
+            item.m_Ingredient = strIngredient;
+            item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
+            m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strRecipe).m_Items.add(item);
+
+            Pair<String, String> newItem = new Pair<String, String>(strRecipe, strIngredient);
+
+            ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
+            adapter.notifyDataSetChanged(); //.notifyItemInserted(getShoppingRecipes().indexOf(newItem));
+            adapter.setActiveElement(newItem);
+        }
+        else if(tag.equals("changeRecipeScaling")) // See ShoppingRecipesAdapter
         {
             float fNewValue = Float.valueOf(strInput);
 
             ShoppingList.ShoppingRecipe recipe = m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strAdditonalInformation);
             recipe.changeScalingFactor(fNewValue);
             m_RecyclerViewRecipes.getAdapter().notifyDataSetChanged();
+        }
+        else if(tag.equals("changeRecipeScaling"))
+        {
+            String strRecipe = strInput;
+
+            m_GroceryPlanning.m_ShoppingList.addFromRecipe(strRecipe, m_GroceryPlanning.m_Recipes.getRecipe(strRecipe));
+
+            ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
+            adapter.notifyDataSetChanged();
+            adapter.setActiveElement(new Pair<String, String>(strRecipe, ""));
+            m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
         }
     }
 

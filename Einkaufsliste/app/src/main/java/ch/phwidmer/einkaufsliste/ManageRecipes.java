@@ -1,13 +1,11 @@
 package ch.phwidmer.einkaufsliste;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ManageRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
 
@@ -211,13 +210,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     public void onAddRecipeItem(View v)
     {
-        // TODO Replace AlertDialog (list)
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.text_add_ingredient);
-
-        // Set up the input
-        final Spinner input = new Spinner(this);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayList<String> inputList = new ArrayList<String>();
         for(String strName : m_GroceryPlanning.m_Ingredients.getAllIngredients())
         {
             RecipeItemsAdapter adapterItems = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
@@ -225,41 +218,11 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             {
                 continue;
             }
-            adapter.add(strName);
+            inputList.add(strName);
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        input.setAdapter(adapter);
-        builder.setView(input);
 
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
-
-                String strIngredient = input.getSelectedItem().toString();
-
-                RecipeItem item = new RecipeItem();
-                item.m_Ingredient = strIngredient;
-                item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
-                recipe.m_Items.add(item);
-
-                RecipeItemsAdapter adapter = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
-                adapter.notifyItemInserted(recipe.m_Items.size()-1);
-                adapter.setActiveElement(strIngredient);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog d = builder.create();
-        d.setView(input, 50, 20 ,20,0);
-        d.show();
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient), "", inputList);
+        newFragment.show(getSupportFragmentManager(), "addRecipeItem");
     }
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
@@ -290,6 +253,22 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             m_SpinnerRecipes.setSelection(index);
 
             Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strNewName), Toast.LENGTH_SHORT).show();
+        }
+        else if(tag.equals("addRecipeItem"))
+        {
+            String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
+            Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
+
+            String strIngredient = strInput;
+
+            RecipeItem item = new RecipeItem();
+            item.m_Ingredient = strIngredient;
+            item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
+            recipe.m_Items.add(item);
+
+            RecipeItemsAdapter adapter = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
+            adapter.notifyItemInserted(recipe.m_Items.size()-1);
+            adapter.setActiveElement(strIngredient);
         }
     }
 
