@@ -144,7 +144,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
             recipe.changeScalingFactor(fNewValue);
             m_RecyclerViewRecipes.getAdapter().notifyDataSetChanged();
         }
-        else if(tag.equals("changeRecipeScaling"))
+        else if(tag.equals("addShoppingRecipe"))
         {
             String strRecipe = strInput;
 

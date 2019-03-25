@@ -4,7 +4,10 @@ TODO
 - Bug(?): Input for Lists in InputStringDialogFragment is case-sensitive! But should this really be changed?
 - Bug: ActiveElement lost on screen rotate (what else is not saved?)
     -> Schauen, welche gespeichert werden müssen, dann diese per Bundle und savedState wiederherstellen! (Analog InputStringDialogFragment?)
-- Bug: "Ok" Button from DialogFragment too small on small screens
+- Bug: "Ok" and "rename" (Manage Recipes) Buttons from DialogFragment too small on small screens
+- Bug: "Rename"(Manage Recipes) not translated!
+- Bug(?): When adding a new recipe, setActiveRecipe seems to not be called (and therefore not restored)!
+- Bug: "Manage Recipes" sometimes there seem to be two active elements. Nicole: "add item to recipe, scroll, then add another item -> two open"
 
 - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
     -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?
