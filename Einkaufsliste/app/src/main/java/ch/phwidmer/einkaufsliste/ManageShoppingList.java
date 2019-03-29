@@ -26,7 +26,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
     private ShoppingList    m_RecentlyDeletedShoppingList;
 
     private RecyclerView                m_RecyclerViewRecipes;
-    private RecyclerView.Adapter        m_AdapterRecipes;
+    private ShoppingRecipesAdapter      m_AdapterRecipes;
     private RecyclerView.LayoutManager  m_LayoutManagerRecipes;
 
     private FloatingActionButton m_FAB;
@@ -41,9 +41,9 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         File file = new File(m_SaveFilePath, MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
 
-        m_FAB = (FloatingActionButton)findViewById(R.id.fab);
+        m_FAB = findViewById(R.id.fab);
 
-        m_RecyclerViewRecipes = (RecyclerView) findViewById(R.id.recyclerViewShoppingRecipe);
+        m_RecyclerViewRecipes = findViewById(R.id.recyclerViewShoppingRecipe);
         m_RecyclerViewRecipes.setHasFixedSize(true);
         m_LayoutManagerRecipes = new LinearLayoutManager(this);
         m_RecyclerViewRecipes.setLayoutManager(m_LayoutManagerRecipes);
@@ -74,6 +74,16 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                                                                              false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
 
+        if(savedInstanceState != null)
+        {
+            String strActiveElementFirst = savedInstanceState.getString("AdapterActiveElementFirst");
+            String strActiveElementSecond = savedInstanceState.getString("AdapterActiveElementSecond");
+            if(strActiveElementFirst != null)
+            {
+                m_AdapterRecipes.setActiveElement(new Pair<String, String>(strActiveElementFirst, strActiveElementSecond));
+            }
+        }
+
         m_RecyclerViewRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -96,13 +106,25 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         super.onPause();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        if(m_AdapterRecipes != null && m_AdapterRecipes.getActiveElement() != null)
+        {
+            savedInstanceState.putString("AdapterActiveElementFirst", m_AdapterRecipes.getActiveElement().first);
+            savedInstanceState.putString("AdapterActiveElementSecond", m_AdapterRecipes.getActiveElement().second);
+        }
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     public void onAddShoppingRecipe(View v)
     {
         ArrayList<String> inputList = new ArrayList<String>();
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             ShoppingRecipesAdapter adapterItems = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-            if(adapterItems.containsItem(new Pair<String, String>(strName, "")))
+            if(adapterItems.containsItem(new Pair<>(strName, "")))
             {
                 continue;
             }
@@ -133,7 +155,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
             Pair<String, String> newItem = new Pair<String, String>(strRecipe, strIngredient);
 
             ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-            adapter.notifyDataSetChanged(); //.notifyItemInserted(getShoppingRecipes().indexOf(newItem));
+            adapter.notifyDataSetChanged();
             adapter.setActiveElement(newItem);
         }
         else if(tag.equals("changeRecipeScaling")) // See ShoppingRecipesAdapter
@@ -152,7 +174,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
             ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
             adapter.notifyDataSetChanged();
-            adapter.setActiveElement(new Pair<String, String>(strRecipe, ""));
+            adapter.setActiveElement(new Pair<>(strRecipe, ""));
             m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
         }
     }

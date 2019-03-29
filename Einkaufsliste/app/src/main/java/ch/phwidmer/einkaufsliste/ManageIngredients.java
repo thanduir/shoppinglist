@@ -21,7 +21,7 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
     private String          m_SaveFilePath;
 
     private RecyclerView               m_RecyclerView;
-    private RecyclerView.Adapter       m_Adapter;
+    private IngredientsAdapter         m_Adapter;
     private RecyclerView.LayoutManager m_LayoutManager;
 
     private FloatingActionButton m_FAB;
@@ -68,6 +68,12 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
                                                                                               false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerView);
 
+        if(savedInstanceState != null)
+        {
+            String strActiveElement = savedInstanceState.getString("AdapterActiveElement");
+            m_Adapter.setActiveElement(strActiveElement);
+        }
+
         m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -88,6 +94,17 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
         m_GroceryPlanning.saveDataToFile(file, null);
 
         super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        if(m_Adapter != null)
+        {
+            savedInstanceState.putString("AdapterActiveElement", m_Adapter.getActiveElement());
+        }
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     public void onAddIngredient(View v)

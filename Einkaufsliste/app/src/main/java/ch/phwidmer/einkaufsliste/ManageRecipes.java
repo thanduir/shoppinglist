@@ -40,8 +40,11 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     private Recipes.Recipe              m_RecentlyDeletedRecipe;
 
     private RecyclerView                m_RecyclerView;
-    private RecyclerView.Adapter        m_Adapter;
+    private RecipeItemsAdapter          m_Adapter;
     private RecyclerView.LayoutManager  m_LayoutManager;
+
+    private String                      m_SavedActiveRecipe;
+    private String                      m_SavedActiveElement;
 
     private FloatingActionButton m_FAB;
 
@@ -55,13 +58,13 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
 
-        m_FAB = (FloatingActionButton)findViewById(R.id.fab);
+        m_FAB = findViewById(R.id.fab);
 
-        m_EditTextNrPersons = (EditText) findViewById(R.id.editText_NrPersons);
-        m_textViewNrPersons = (TextView) findViewById(R.id.textViewNrPersons);
-        m_SpinnerRecipes = (Spinner) findViewById(R.id.spinnerRecipes);
+        m_EditTextNrPersons = findViewById(R.id.editText_NrPersons);
+        m_textViewNrPersons = findViewById(R.id.textViewNrPersons);
+        m_SpinnerRecipes = findViewById(R.id.spinnerRecipes);
 
-        m_ButtonDelRecipe = (Button) findViewById(R.id.buttonDelRecipe);
+        m_ButtonDelRecipe = findViewById(R.id.buttonDelRecipe);
 
         m_EditTextNrPersons.addTextChangedListener(new TextWatcher() {
 
@@ -101,7 +104,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             m_SpinnerRecipes.setSelection(adapter.getPosition(strActiveRecipe));
         }
 
-        m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewRecipeItems);
+        m_RecyclerView = findViewById(R.id.recyclerViewRecipeItems);
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
@@ -116,6 +119,12 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 }
             }
         });
+
+        if(savedInstanceState != null)
+        {
+            m_SavedActiveRecipe = savedInstanceState.getString("AdapterActiveRecipe");
+            m_SavedActiveElement = savedInstanceState.getString("AdapterActiveElement");
+        }
 
         updateVisibility();
     }
@@ -152,6 +161,18 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_GroceryPlanning.saveDataToFile(file, null);
 
         super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        if(m_Adapter != null)
+        {
+            savedInstanceState.putString("AdapterActiveRecipe", (String)m_SpinnerRecipes.getSelectedItem());
+            savedInstanceState.putString("AdapterActiveElement", m_Adapter.getActiveElement());
+        }
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     public void onAddRecipe(View v)
@@ -296,7 +317,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                         }
                         else
                         {
-                            adapter.setActiveElement((String) vh.getID());
+                            adapter.setActiveElement(vh.getID());
                         }
                     }
                 }
@@ -306,6 +327,19 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                                                                                                 R.drawable.ic_delete_black_24dp,
                                                                                                 false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerView);
+
+        if(m_SavedActiveElement != null && m_SavedActiveRecipe != null)
+        {
+            if(m_SavedActiveRecipe.equals(strRecipe))
+            {
+                m_Adapter.setActiveElement(m_SavedActiveElement);
+            }
+            else
+            {
+                m_SavedActiveRecipe = null;
+                m_SavedActiveElement = null;
+            }
+        }
     }
 
     public void onNothingSelected(AdapterView<?> parent)
