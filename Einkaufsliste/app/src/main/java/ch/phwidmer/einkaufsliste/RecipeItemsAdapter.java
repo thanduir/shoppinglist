@@ -146,6 +146,12 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         return getRecipeItemsList().get(m_iActiveElement);
     }
 
+    @Override
+    public void onViewAttachedToWindow (RecipeItemsAdapter.ViewHolder holder)
+    {
+        updateViewHolder(holder, m_iActiveElement == holder.getAdapterPosition());
+    }
+
     public void setActiveElement(String strElement)
     {
         if(m_iActiveElement != -1)

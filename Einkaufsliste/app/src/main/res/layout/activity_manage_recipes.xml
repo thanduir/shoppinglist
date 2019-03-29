@@ -118,7 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:onClick="onRenameRecipe"
-                    android:text="Rename"
+                    android:text="@string/button_rename"
                     tools:layout_editor_absoluteX="338dp"
                     tools:layout_editor_absoluteY="16dp" />
             </TableRow>>

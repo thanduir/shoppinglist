@@ -25,6 +25,7 @@
     <string name="text_sort_order">Sort order</string>
     <string name="button_export">Save as</string>
     <string name="button_import">Load</string>
+    <string name="button_rename">Rename</string>
     <string name="alert_saveas">Save as</string>
     <string name="alert_load">Import file</string>
     <string name="text_data_saved">Data saved to %s</string>

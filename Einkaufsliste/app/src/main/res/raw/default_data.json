@@ -5,6 +5,7 @@
   },
   {
     "id": "Categories",
+    "activeSortOrder": "Migros",
     "all categories": [
       "Veganer Fleischersatz",
       "Früchte und Gemüse",
@@ -455,7 +456,7 @@
       "default-unit": "Unitless"
     },
     "Süss-Sauer Sauce": {
-      "category": "Brot",
+      "category": "Oele und Saucen",
       "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
     },
@@ -603,10 +604,76 @@
       "category": "Brot",
       "provenance": "*EVERYWHERE*",
       "default-unit": "Count"
+    },
+    "Brie": {
+      "category": "Milchprodukte",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
+    },
+    "Steinofenbroetli": {
+      "category": "Brot",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
+    },
+    "Ricotta": {
+      "category": "Milchprodukte",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Blattspinat (gefrohren) ": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Tomaten (getrocknet) ": {
+      "category": "Konserven",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Teigwaren (Penne) ": {
+      "category": "Teigwaren, Reis und Kartoffelprodukte",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Toastschinken": {
+      "category": "Fleisch und Fisch",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Gram"
+    },
+    "Basilikum (getrocknet) ": {
+      "category": "Gewürze",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Unitless"
+    },
+    "Gemuese-Mix": {
+      "category": "Tiefgefrohrenes",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
+    },
+    "Klostein": {
+      "category": "Restliches",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
+    },
+    "Shampoo": {
+      "category": "Restliches",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
+    },
+    "Pfeffer (weiss) ": {
+      "category": "Gewürze",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
+    },
+    "Ahornsirup (Alnatura) ": {
+      "category": "Gewürze",
+      "provenance": "*EVERYWHERE*",
+      "default-unit": "Count"
     }
   },
   {
     "id": "Recipes",
+    "activeRecipe": "Stocki mit Plaetzli",
     "Diverses": {
       "NrPersons": 2,
       "Chrömli": {
@@ -1514,11 +1581,220 @@
         "size": "Normal",
         "optional": false
       }
+    },
+    "Zopf mit Brie und Confiture": {
+      "NrPersons": 2,
+      "Zopf": {
+        "amount": [
+          500.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Confiture": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Brie": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Ricotta-Spinat-Penne": {
+      "NrPersons": 2,
+      "Teigwaren (Penne) ": {
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Blattspinat (gefrohren) ": {
+        "amount": [
+          250.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Tomaten (getrocknet) ": {
+        "amount": [
+          150.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Gehacktes (gemischt) ": {
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Halbrahm": {
+        "amount": [
+          1.0,
+          "Deciliter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Ricotta": {
+        "amount": [
+          125.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Basilikum (getrocknet) ": {
+        "amount": [
+          0.0,
+          "Unitless"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Pizza Hawaii": {
+      "NrPersons": 2,
+      "Pizzateig": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Peperoni": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Toastschinken": {
+        "amount": [
+          0.0,
+          "Unitless"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Mozzarella": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Large",
+        "optional": false
+      },
+      "Pelati": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Tomatenpüree": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Ananas": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Stocki mit Plaetzli": {
+      "NrPersons": 2,
+      "Kartoffelstock": {
+        "amount": [
+          0.0,
+          "Unitless"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Milch": {
+        "amount": [
+          0.4,
+          "Liter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Fleisch": {
+        "amount": [
+          1.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Bratensauce": {
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Schweinsschnitzel": {
+        "amount": [
+          350.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
     }
   },
   {
     "id": "Shoppinglist",
-    "currentSortOrder": "",
+    "currentSortOrder": "Migros",
+    "Mozzarella + Tomaten": {
+      "ScalingFactor": 1.0,
+      "Mozzarella": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Small",
+        "optional": false
+      },
+      "Tomaten": {
+        "status": "None",
+        "amount": [
+          2.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
     "Muesli": {
       "ScalingFactor": 2.0,
       "3. Frucht": {
@@ -1558,27 +1834,84 @@
         "optional": false
       }
     },
-    "Omelette": {
+    "Zopf mit Brie und Confiture": {
       "ScalingFactor": 2.0,
-      "Milch": {
+      "Zopf": {
         "status": "None",
         "amount": [
-          1.5,
-          "Deciliter"
+          300.0,
+          "Gram"
         ],
         "size": "Normal",
         "optional": false
       },
-      "Eier": {
+      "Brie": {
         "status": "None",
         "amount": [
-          4.0,
+          1.0,
           "Count"
         ],
         "size": "Normal",
         "optional": false
       },
-      "Schinken": {
+      "Steinofenbroetli": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Erdbeeren": {
+        "status": "None",
+        "amount": [
+          500.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Ricotta-Spinat-Penne": {
+      "ScalingFactor": 2.0,
+      "Tomaten (getrocknet) ": {
+        "status": "None",
+        "amount": [
+          150.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Gehacktes (gemischt) ": {
+        "status": "None",
+        "amount": [
+          200.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Halbrahm": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Deciliter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Ricotta": {
+        "status": "None",
+        "amount": [
+          125.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Basilikum (getrocknet) ": {
         "status": "None",
         "amount": [
           0.0,
@@ -1588,30 +1921,105 @@
         "optional": false
       }
     },
-    "Mozzarella + Tomaten": {
-      "ScalingFactor": 1.0,
+    "Pizza Hawaii": {
+      "ScalingFactor": 2.0,
+      "Pizzateig": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Peperoni": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Toastschinken": {
+        "status": "None",
+        "amount": [
+          0.0,
+          "Unitless"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
       "Mozzarella": {
         "status": "None",
         "amount": [
           1.0,
           "Count"
         ],
-        "size": "Small",
+        "size": "Large",
         "optional": false
       },
-      "Tomaten": {
+      "Tomatenpüree": {
         "status": "None",
         "amount": [
-          2.0,
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Ananas": {
+        "status": "None",
+        "amount": [
+          1.0,
           "Count"
         ],
         "size": "Normal",
         "optional": false
       }
     },
-    "Broccoli-Peperoni-Nudeln": {
+    "Stocki mit Plaetzli": {
       "ScalingFactor": 2.0,
-      "Brokkoli": {
+      "Milch": {
+        "status": "None",
+        "amount": [
+          0.4,
+          "Liter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Bratensauce": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Schweinsschnitzel": {
+        "status": "None",
+        "amount": [
+          350.0,
+          "Gram"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Gemuese-Mix": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Suess-Sauer": {
+      "ScalingFactor": 2.0,
+      "Poulet geschnetzeltes": {
         "status": "None",
         "amount": [
           300.0,
@@ -1629,163 +2037,10 @@
         "size": "Normal",
         "optional": false
       },
-      "Orangensaft": {
-        "status": "None",
-        "amount": [
-          0.3,
-          "Liter"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Walnuesse": {
-        "status": "None",
-        "amount": [
-          80.0,
-          "Gram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Sojasauce": {
-        "status": "None",
-        "amount": [
-          3.0,
-          "Dessertspoon"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Teigwaren (Nudeln) ": {
-        "status": "None",
-        "amount": [
-          160.0,
-          "Gram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Falafel": {
+      "Zucchetti": {
         "status": "None",
         "amount": [
           1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      }
-    },
-    "Diverses": {
-      "ScalingFactor": 2.0,
-      "Chrömli": {
-        "status": "None",
-        "amount": [
-          2.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Milch": {
-        "status": "None",
-        "amount": [
-          1.0,
-          "Liter"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Mokka Joghurt": {
-        "status": "None",
-        "amount": [
-          8.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Tomatenplätzli": {
-        "status": "None",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Ketchup": {
-        "status": "None",
-        "amount": [
-          1.0,
-          "Count"
-        ],
-        "size": "Normal",
-        "optional": false
-      }
-    },
-    "Rosenkohl-Lauch-Kartoffeln": {
-      "ScalingFactor": 2.0,
-      "Kartoffel": {
-        "status": "None",
-        "amount": [
-          0.7,
-          "Kilogram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Rosenkohl": {
-        "status": "None",
-        "amount": [
-          250.0,
-          "Gram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Lauch": {
-        "status": "None",
-        "amount": [
-          250.0,
-          "Gram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Speckwuerfel": {
-        "status": "None",
-        "amount": [
-          150.0,
-          "Gram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Halbrahm": {
-        "status": "None",
-        "amount": [
-          2.0,
-          "Deciliter"
-        ],
-        "size": "Normal",
-        "optional": false
-      }
-    },
-    "Riz Casimir": {
-      "ScalingFactor": 2.0,
-      "Poulet geschnetzeltes": {
-        "status": "None",
-        "amount": [
-          250.0,
-          "Gram"
-        ],
-        "size": "Normal",
-        "optional": false
-      },
-      "Curry-Sauce": {
-        "status": "None",
-        "amount": [
-          2.0,
           "Count"
         ],
         "size": "Normal",
@@ -1800,7 +2055,46 @@
         "size": "Normal",
         "optional": false
       },
-      "Fruechte-Cocktail": {
+      "Süss-Sauer Sauce": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      }
+    },
+    "Diverses": {
+      "ScalingFactor": 2.0,
+      "Chrömli": {
+        "status": "None",
+        "amount": [
+          3.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Milch": {
+        "status": "None",
+        "amount": [
+          2.0,
+          "Liter"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Mokka Joghurt": {
+        "status": "None",
+        "amount": [
+          10.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Klostein": {
         "status": "None",
         "amount": [
           1.0,
@@ -1809,16 +2103,25 @@
         "size": "Normal",
         "optional": false
       },
-      "Banane": {
+      "Pfeffer (weiss) ": {
         "status": "None",
         "amount": [
-          2.0,
+          1.0,
           "Count"
         ],
         "size": "Normal",
         "optional": false
       },
-      "Apfel": {
+      "Ahornsirup (Alnatura) ": {
+        "status": "None",
+        "amount": [
+          1.0,
+          "Count"
+        ],
+        "size": "Normal",
+        "optional": false
+      },
+      "Shampoo": {
         "status": "None",
         "amount": [
           1.0,
