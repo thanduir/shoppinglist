@@ -225,7 +225,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe), "");
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe), strCurrentRecipe);
         newFragment.show(getSupportFragmentManager(), "renameRecipe");
     }
 

@@ -5,6 +5,14 @@ TODO
     -> Synchronisation between (partial?) data of different users?
     -> Merges of different datasets?
     -> Google App Folder API, Google App Engine, Amazon Web Services, Dropbox datastore API?
+    -> Or use direct connections? See e.g.:
+        - https://stackoverflow.com/questions/9608832/android-communicating-between-two-devices
+        - https://developer.android.com/training/connect-devices-wirelessly
+        - https://developer.android.com/guide/topics/connectivity/wifip2p.html
+        - https://developer.android.com/training/connect-devices-wirelessly/wifi-direct.html
+        - https://developers.google.com/nearby/connections/overview
+    -> Should actually implement both potentially: direct connection is between users, online is device independence for one user
+    * hier bräuchte auch einen "data consistency check" und wenn möglich eine Merge-Methode!
 
 - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
     -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?
@@ -12,3 +20,4 @@ TODO
 - Sometimes you don't want things to get add up together (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
     -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
+- Synonyme? (Sultaninen, Rosinen, ...)
