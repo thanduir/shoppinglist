@@ -1,19 +1,27 @@
 TODO
 ====
 
-- Data synchronisation between different devices (in the same network?) possible?
-    -> Synchronisation between (partial?) data of different users?
-    -> Merges of different datasets?
-    -> Google App Folder API, Google App Engine, Amazon Web Services, Dropbox datastore API?
-    -> Or use direct connections? See e.g.:
-        - https://stackoverflow.com/questions/9608832/android-communicating-between-two-devices
-        - https://developer.android.com/training/connect-devices-wirelessly
-        - https://developer.android.com/guide/topics/connectivity/wifip2p.html
-        - https://developer.android.com/training/connect-devices-wirelessly/wifi-direct.html
-        - https://developers.google.com/nearby/connections/overview
-    -> Should actually implement both potentially: direct connection is between users, online is device independence for one user
-    * hier bräuchte auch einen "data consistency check" und wenn möglich eine Merge-Methode!
+- Data synchronisation:
+    1. New Activity for synchronisation:
+        - connect to near by devices
+            * https://stackoverflow.com/questions/9608832/android-communicating-between-two-devices
+            * https://developer.android.com/training/connect-devices-wirelessly
+            * https://developer.android.com/guide/topics/connectivity/wifip2p.html
+            * https://developer.android.com/training/connect-devices-wirelessly/wifi-direct.html
+            * https://developers.google.com/nearby/connections/overview
+        -> list of files
+        -> user choses file to copy (incl. possible rename?) / overwrite / (simple) merge (i.e. add everything not present on phone)
+        -> button to sync all, with option to choose between copy (+rename) / overwrite / merge on conflicts (-> default setting)
+        -> "data consistency check" for merge? Or is this implicitly part of the merge functionality?
+    2. improve merge
+    3. two-way auto-sync with merge
+    4. [optional] Connect to Google App Folder API / Google App Engine / Amazon Web Services / Dropbox datastore API / something similar (or some of them)
 
+- Allow adding a recipe more than once to a shoppinglist? (-> e.g. twice müesli, maybe as "Müesli 2"?)
+- Bug(?): Nicole konnte eine Zutat in der ShoppingList zweimal zu einem Rezept hinzufügen!
+
+- slow loading of some screens (probably because file gets always read newly)
+- Rezept-Kopier-Funktion
 - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
     -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?
     -> Oder +/- Buttons auch e.g. für Gramm, welche jeweils um \pm 50 den Wert verändern (+ immer noch die Möglichkeit, manuell eine Zahl einzugeben)
