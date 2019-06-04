@@ -186,6 +186,12 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         {
             onExport();
         }
+        else if (id == R.id.actionbar_button_datasynchronization)
+        {
+            Intent intent = new Intent(this, DataSynchronizationActivity.class);
+            intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

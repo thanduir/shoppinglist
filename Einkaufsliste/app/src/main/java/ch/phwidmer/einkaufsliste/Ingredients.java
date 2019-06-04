@@ -4,37 +4,35 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import java.util.Vector;
 
-public class Ingredients
+class Ingredients
 {
     private Categories m_Categories;
 
-    public static String c_strProvenanceEverywhere = "*EVERYWHERE*";
+    static String c_strProvenanceEverywhere = "*EVERYWHERE*";
 
-    public class Ingredient
+    class Ingredient
     {
-        public Categories.Category m_Category;
-        public String m_strProvenance = c_strProvenanceEverywhere;
-        public Amount.Unit m_DefaultUnit;
+        Categories.Category m_Category;
+        String m_strProvenance = c_strProvenanceEverywhere;
+        Amount.Unit m_DefaultUnit;
     }
-    private LinkedHashMap<String, Ingredient>  m_Ingredients;
+    private TreeMap<String, Ingredient> m_Ingredients;
 
-    public Ingredients(Categories categories)
-    {
-        m_Categories = categories;
-        m_Ingredients = new LinkedHashMap<String, Ingredient>();
-    }
-
-    public void updateCategories(Categories categories)
+    Ingredients(Categories categories)
     {
         m_Categories = categories;
+        m_Ingredients = new TreeMap<>(new Helper.SortIgnoreCase());
     }
 
-    public void addIngredient(String strName, Amount.Unit defaultUnit)
+    void updateCategories(Categories categories)
+    {
+        m_Categories = categories;
+    }
+
+    void addIngredient(String strName, Amount.Unit defaultUnit)
     {
         if(m_Ingredients.containsKey(strName))
         {
@@ -46,29 +44,28 @@ public class Ingredients
         m_Ingredients.put(strName, i);
     }
 
-    public Ingredient getIngredient(String strName)
+    Ingredient getIngredient(String strName)
     {
         return m_Ingredients.get(strName);
     }
 
-    public Vector<String> getAllIngredients()
+    Vector<String> getAllIngredients()
     {
-        Vector<String> vec = new Vector<String>();
+        Vector<String> vec = new Vector<>();
         for(Object obj : m_Ingredients.keySet())
         {
             String str = (String)obj;
             vec.add(str);
         }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 
-    public void removeIngredient(String strName)
+    void removeIngredient(String strName)
     {
         m_Ingredients.remove(strName);
     }
 
-    public void renameIngredient(String strIngredient, String strNewName)
+    void renameIngredient(String strIngredient, String strNewName)
     {
         if(!m_Ingredients.containsKey(strIngredient))
         {
@@ -80,7 +77,7 @@ public class Ingredients
         m_Ingredients.put(strNewName, ingredient);
     }
 
-    public boolean isCategoryInUse(Categories.Category category)
+    boolean isCategoryInUse(Categories.Category category)
     {
         for(Ingredient i : m_Ingredients.values())
         {
@@ -92,7 +89,7 @@ public class Ingredients
         return false;
     }
 
-    public void onCategoryRenamed(Categories.Category category, Categories.Category newCategory)
+    void onCategoryRenamed(Categories.Category category, Categories.Category newCategory)
     {
         for(Ingredient i : m_Ingredients.values())
         {
@@ -103,7 +100,7 @@ public class Ingredients
         }
     }
 
-    public boolean isSortOrderInUse(String strSortOrder)
+    boolean isSortOrderInUse(String strSortOrder)
     {
         for(Ingredient i : m_Ingredients.values())
         {
@@ -117,26 +114,26 @@ public class Ingredients
 
     // Serializing
 
-    public void saveToJson(JsonWriter writer) throws IOException
+    void saveToJson(JsonWriter writer) throws IOException
     {
         writer.beginObject();
         writer.name("id").value("Ingredients");
 
-        for(LinkedHashMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
+        for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
         {
             writer.name(e.getKey());
+
             writer.beginObject();
             writer.name("category").value(e.getValue().m_Category.getName());
             writer.name("provenance").value(e.getValue().m_strProvenance);
             writer.name("default-unit").value(e.getValue().m_DefaultUnit.toString());
-
             writer.endObject();
         }
 
         writer.endObject();
     }
 
-    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader, int iVersion) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext())

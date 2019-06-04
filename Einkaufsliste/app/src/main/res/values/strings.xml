@@ -8,6 +8,7 @@
     <string name="button_settings">Settings</string>
     <string name="button_add">Add</string>
     <string name="button_delete">Del</string>
+    <string name="button_datasynchronization">Data synchronisation</string>
     <string name="activity_ingredients">Manage ingredients</string>
     <string name="activity_categories">Manage category sort orders</string>
     <string name="activity_recipes">Manage recipes</string>
@@ -58,11 +59,11 @@
     <string name="text_default_nrpersons">Default # persons</string>
     <string name="text_default_sortorder">Default sort order</string>
     <string name="text_rename_category">Rename category \"%s\"</string>
-    <string name="text_category_renamed">Category \"%s\" renamed to \"%s\".</string>
+    <string name="text_category_renamed">Category \"%1$s\" renamed to \"%2$s\".</string>
     <string name="text_rename_ingredient">Rename ingredient \"%s\"</string>
-    <string name="text_ingredient_renamed">Ingredient \"%s\" renamed to \"%s\".</string>
+    <string name="text_ingredient_renamed">Ingredient \"%1$s\" renamed to \"%2$s\".</string>
     <string name="text_rename_recipe">Rename recipe \"%s\"</string>
-    <string name="text_recipe_renamed">Recipe \"%s\" renamed to \"%s\".</string>
+    <string name="text_recipe_renamed">Recipe \"%1$s\" renamed to \"%2$s\".</string>
     <string name="provenance_everywhere">Everywhere</string>
 
     <string name="unit_count_long">Count</string>

@@ -4,38 +4,37 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.TreeMap;
 import java.util.Vector;
 
-public class Recipes {
+class Recipes {
 
     private String m_ActiveRecipe;
 
-    public class Recipe {
-        public Integer m_NumberOfPersons = 0;
-        public LinkedList<RecipeItem> m_Items = new LinkedList<RecipeItem>();
+    class Recipe {
+        Integer m_NumberOfPersons = 0;
+        LinkedList<RecipeItem> m_Items = new LinkedList<>();
     }
-    private LinkedHashMap<String, Recipe> m_Recipies;
+    private TreeMap<String, Recipe> m_Recipies;
 
-    public Recipes()
+    Recipes()
     {
-        m_Recipies = new LinkedHashMap<String, Recipe>();
+        m_Recipies = new TreeMap<>(new Helper.SortIgnoreCase());
         m_ActiveRecipe = "";
     }
 
-    public void setActiveRecipe(String strRecipe)
+    void setActiveRecipe(String strRecipe)
     {
         m_ActiveRecipe = strRecipe;
     }
 
-    public String getActiveRecipe()
+    String getActiveRecipe()
     {
         return m_ActiveRecipe;
     }
 
-    public void addRecipe(String strName, Integer iNrPersons)
+    void addRecipe(String strName, Integer iNrPersons)
     {
         if(m_Recipies.containsKey(strName))
         {
@@ -46,7 +45,7 @@ public class Recipes {
         m_Recipies.put(strName, recipe);
     }
 
-    public void addRecipe(String strName, Recipe r)
+    void addRecipe(String strName, Recipe r)
     {
         if(m_Recipies.containsKey(strName))
         {
@@ -55,29 +54,28 @@ public class Recipes {
         m_Recipies.put(strName, r);
     }
 
-    public Recipe getRecipe(String strName)
+    Recipe getRecipe(String strName)
     {
         return m_Recipies.get(strName);
     }
 
-    public void removeRecipe(String strName)
+    void removeRecipe(String strName)
     {
         m_Recipies.remove(strName);
     }
 
-    public Vector<String> getAllRecipes()
+    Vector<String> getAllRecipes()
     {
-        Vector<String> vec = new Vector<String>();
+        Vector<String> vec = new Vector<>();
         for(Object obj : m_Recipies.keySet())
         {
             String str = (String)obj;
             vec.add(str);
         }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 
-    public void renameRecipe(String strRecipe, String strNewName)
+    void renameRecipe(String strRecipe, String strNewName)
     {
         if(!m_Recipies.containsKey(strRecipe))
         {
@@ -89,7 +87,7 @@ public class Recipes {
         m_Recipies.put(strNewName, recipe);
     }
 
-    public boolean isIngredientInUse(String strIngredient)
+    boolean isIngredientInUse(String strIngredient)
     {
         for(Recipe r : m_Recipies.values())
         {
@@ -104,7 +102,7 @@ public class Recipes {
         return false;
     }
 
-    public void onIngredientRenamed(String strIngredient, String strNewName)
+    void onIngredientRenamed(String strIngredient, String strNewName)
     {
         for(Recipe r : m_Recipies.values())
         {
@@ -120,13 +118,13 @@ public class Recipes {
 
     // Serializing
 
-    public void saveToJson(JsonWriter writer) throws IOException
+    void saveToJson(JsonWriter writer) throws IOException
     {
         writer.beginObject();
         writer.name("id").value("Recipes");
         writer.name("activeRecipe").value(m_ActiveRecipe);
 
-        for(LinkedHashMap.Entry<String, Recipe> e : m_Recipies.entrySet())
+        for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
         {
             writer.name(e.getKey());
             writer.beginObject();
@@ -153,7 +151,7 @@ public class Recipes {
         writer.endObject();
     }
 
-    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader, int iVersion) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {

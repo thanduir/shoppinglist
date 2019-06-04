@@ -9,6 +9,7 @@
     <string name="button_settings">Einstellungen</string>
     <string name="button_add">Add</string>
     <string name="button_delete">Del</string>
+    <string name="button_datasynchronization">Daten synchronisieren</string>
     <string name="activity_ingredients">Zutaten verwalten</string>
     <string name="activity_categories">Sortierreihenfolge der Kategorien</string>
     <string name="activity_recipes">Rezepte verwalten</string>
@@ -59,11 +60,11 @@
     <string name="text_default_nrpersons">Standard # Personen</string>
     <string name="text_default_sortorder">Standard-Sortierreihenfolge</string>
     <string name="text_rename_category">Kategorie \"%s\" umbenennen</string>
-    <string name="text_category_renamed">Kategorie \"%s\" umbenannt zu \"%s\".</string>
+    <string name="text_category_renamed">Kategorie \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_rename_ingredient">Zutat \"%s\" umbenennen</string>
-    <string name="text_ingredient_renamed">Zutat \"%s\" umbenannt zu \"%s\".</string>
+    <string name="text_ingredient_renamed">Zutat \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_rename_recipe">Rezept \"%s\" umbenennen</string>
-    <string name="text_recipe_renamed">Rezept \"%s\" umbenannt zu \"%s\".</string>
+    <string name="text_recipe_renamed">Rezept \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="provenance_everywhere">Überall</string>
 
     <string name="unit_count_long">Anzahl</string>

@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Vector;
 
-public class Categories
+class Categories
 {
     public class Category
     {
@@ -42,34 +42,34 @@ public class Categories
     private LinkedHashSet<String> m_Categories;
 
     // CategorySortOrder
-    public class SortOrder
+    class SortOrder
     {
-        public Vector<Category> m_CategoriesOrder = new Vector<Category>();
+        Vector<Category> m_CategoriesOrder = new Vector<>();
     }
     private LinkedHashMap<String, SortOrder>  m_SortOrders;
 
     private String m_ActiveSortOrder;
 
-    public Categories()
+    Categories()
     {
-        m_Categories = new LinkedHashSet<String>();
-        m_SortOrders = new LinkedHashMap<String, SortOrder>();
+        m_Categories = new LinkedHashSet<>();
+        m_SortOrders = new LinkedHashMap<>();
         m_ActiveSortOrder = "";
     }
 
-    public void setActiveSortOrder(String strOrder)
+    void setActiveSortOrder(String strOrder)
     {
         m_ActiveSortOrder = strOrder;
     }
 
-    public String getActiveSortOrder()
+    String getActiveSortOrder()
     {
         return m_ActiveSortOrder;
     }
 
     // Categories methods
 
-    public void addCategory(String strName)
+    void addCategory(String strName)
     {
         if(m_Categories.contains(strName))
         {
@@ -83,7 +83,7 @@ public class Categories
         }
     }
 
-    public Category getCategory(String category)
+    Category getCategory(String category)
     {
         if(m_Categories.contains(category))
         {
@@ -93,9 +93,9 @@ public class Categories
         return null;
     }
 
-    public Vector<String> getAllCategories()
+    Vector<String> getAllCategories()
     {
-        Vector<String> vec = new Vector<String>();
+        Vector<String> vec = new Vector<>();
         for(Object obj : m_Categories.toArray())
         {
             vec.add((String)obj);
@@ -104,7 +104,7 @@ public class Categories
         return vec;
     }
 
-    public void removeCategory(String strName)
+    void removeCategory(String strName)
     {
         m_Categories.remove(strName);
 
@@ -114,7 +114,7 @@ public class Categories
         }
     }
 
-    public void renameCategory(Category category, String strNewName)
+    void renameCategory(Category category, String strNewName)
     {
         if(!m_Categories.contains(category.getName()))
         {
@@ -137,7 +137,7 @@ public class Categories
 
     // SortOrder methods
 
-    public void addSortOrder(String strName)
+    void addSortOrder(String strName)
     {
         SortOrder order = new SortOrder();
         for(Object obj : m_Categories.toArray())
@@ -147,7 +147,7 @@ public class Categories
         m_SortOrders.put(strName, order);
     }
 
-    public void addSortOrder(String strName, SortOrder order)
+    void addSortOrder(String strName, SortOrder order)
     {
         if(order.m_CategoriesOrder.size() != m_Categories.size())
         {
@@ -156,30 +156,24 @@ public class Categories
         m_SortOrders.put(strName, order);
     }
 
-    public SortOrder getSortOrder(String strName)
+    SortOrder getSortOrder(String strName)
     {
         return m_SortOrders.get(strName);
     }
 
-    public Vector<String> getAllSortOrders()
+    Vector<String> getAllSortOrders()
     {
-        Vector<String> vec = new Vector<String>();
-
-        for(String str : m_SortOrders.keySet())
-        {
-            vec.add(str);
-        }
-        return vec;
+        return new Vector<>(m_SortOrders.keySet());
     }
 
-    public void removeSortOrder(String strName)
+    void removeSortOrder(String strName)
     {
         m_SortOrders.remove(strName);
     }
 
     // Serializing
 
-    public void saveToJson(JsonWriter writer) throws IOException
+    void saveToJson(JsonWriter writer) throws IOException
     {
         writer.beginObject();
         writer.name("id").value("Categories");
@@ -210,13 +204,13 @@ public class Categories
         writer.endObject();
     }
 
-    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader, int iVersion) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext())
         {
             String name = reader.nextName();
-            if (name.equals("id"))
+            if(name.equals("id"))
             {
                 String id = reader.nextString();
                 if(!id.equals("Categories"))
@@ -260,7 +254,6 @@ public class Categories
                 reader.skipValue();
             }
         }
-
 
         reader.endObject();
     }
