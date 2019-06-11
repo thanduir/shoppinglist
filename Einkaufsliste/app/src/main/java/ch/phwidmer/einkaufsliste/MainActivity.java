@@ -110,13 +110,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         startActivity(intent);
     }
 
-    public void onExport()
-    {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_saveas), "");
-        newFragment.show(getSupportFragmentManager(), "onExport");
-    }
-
-    public void onImport()
+    private ArrayList<String> getListOfExistingFiles(boolean includeVersionWithoutEnding)
     {
         ArrayList<String> inputList = new ArrayList<>();
         File directory = m_AppDataDirectory;
@@ -128,9 +122,24 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
             }
 
             inputList.add(f.getName());
-        }
 
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_load), "", inputList);
+            if(includeVersionWithoutEnding)
+            {
+                inputList.add(f.getName().replace(".json", ""));
+            }
+        }
+        return inputList;
+    }
+
+    public void onExport()
+    {
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_saveas), "", "", getListOfExistingFiles(true));
+        newFragment.show(getSupportFragmentManager(), "onExport");
+    }
+
+    public void onImport()
+    {
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_load), "", getListOfExistingFiles(false));
         newFragment.show(getSupportFragmentManager(), "onImport");
     }
 
