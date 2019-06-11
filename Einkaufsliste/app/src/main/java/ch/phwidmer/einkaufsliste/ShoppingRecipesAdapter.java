@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
@@ -69,16 +70,16 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             m_ButtonAddRecipeItem = v.findViewById(R.id.button_addRecipeItem);
             m_ButtonDeleteRecipe = v.findViewById(R.id.button_deleteRecipe);
 
-            m_SpinnerAmount = (Spinner) v.findViewById(R.id.spinnerAmount);
-            m_EditTextAmount = (EditText) v.findViewById(R.id.editText_Amount);
-            m_SpinnerSize = (Spinner) v.findViewById(R.id.spinnerSize);
-            m_CheckBoxOptional = (CheckBox) v.findViewById(R.id.checkBoxOptional);
+            m_SpinnerAmount = v.findViewById(R.id.spinnerAmount);
+            m_EditTextAmount = v.findViewById(R.id.editText_Amount);
+            m_SpinnerSize = v.findViewById(R.id.spinnerSize);
+            m_CheckBoxOptional = v.findViewById(R.id.checkBoxOptional);
         }
 
-        public Pair<String, String> getID()
+        Pair<String, String> getID()
         {
             String strItem = m_RecipeItem != null ? m_RecipeItem.m_Ingredient : "";
-            return new Pair<String, String>(m_strRecipe, strItem);
+            return new Pair<>(m_strRecipe, strItem);
         }
 
         private void updateDescription(Context context)
@@ -125,7 +126,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
     }
 
-    public ShoppingRecipesAdapter(RecyclerView recyclerView, Ingredients ingredients, ShoppingList shoppingList)
+    ShoppingRecipesAdapter(RecyclerView recyclerView, Ingredients ingredients, ShoppingList shoppingList)
     {
         m_iActiveElement = -1;
         m_ShoppingList = shoppingList;
@@ -133,7 +134,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         m_RecyclerView = recyclerView;
     }
 
-    public Pair<String, String> getActiveElement()
+    Pair<String, String> getActiveElement()
     {
         if(m_iActiveElement == -1)
         {
@@ -142,7 +143,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         return getShoppingRecipes().get(m_iActiveElement);
     }
 
-    public void setActiveElement(Pair<String, String> element)
+    void setActiveElement(Pair<String, String> element)
     {
         if(m_iActiveElement != -1)
         {
@@ -178,19 +179,18 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         return m_iActiveElement;
     }
 
-    @Override
-    public ShoppingRecipesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    @Override @NonNull
+    public ShoppingRecipesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                                 int viewType)
     {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_item_shoppinglist_recipe, parent, false);
 
-        ShoppingRecipesAdapter.ViewHolder vh = new ShoppingRecipesAdapter.ViewHolder(v);
-        return vh;
+        return new ShoppingRecipesAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ShoppingRecipesAdapter.ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull ShoppingRecipesAdapter.ViewHolder holder, int position)
     {
         Pair<String, String> strItem = getShoppingRecipes().get(position);
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strItem.first);
@@ -231,7 +231,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                                                      @Override
                                                      public void onClick(View view) {
                                                        onChangeRecipeScaling(strRecipe);
-                                                     };
+                                                     }
                                                  }
 
             );
@@ -384,7 +384,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     {
     }
 
-    public boolean containsItem(Pair<String, String> strName)
+    boolean containsItem(Pair<String, String> strName)
     {
         return getShoppingRecipes().contains(strName);
     }
@@ -473,7 +473,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     {
         for(ShoppingListItem r : recipe.m_Items)
         {
-            if(r.m_Ingredient == strName)
+            if(r.m_Ingredient.equals(strName))
             {
                 return r;
             }

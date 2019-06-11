@@ -1,25 +1,25 @@
 package ch.phwidmer.einkaufsliste;
 
-public class ShoppingListItem {
+class ShoppingListItem {
     public enum Status
     {
         None,
         Taken;
     }
 
-    public Status           m_Status = Status.None;
+    Status           m_Status = Status.None;
 
-    public String           m_Ingredient;
-    public Amount           m_Amount;
-    public RecipeItem.Size  m_Size = RecipeItem.Size.Normal;
-    public Boolean          m_Optional = false;
+    String           m_Ingredient;
+    Amount           m_Amount;
+    RecipeItem.Size  m_Size = RecipeItem.Size.Normal;
+    Boolean          m_Optional = false;
 
-    public ShoppingListItem()
+    ShoppingListItem()
     {
         m_Amount = new Amount();
     }
 
-    public void invertStatus()
+    void invertStatus()
     {
         if(m_Status == Status.None)
         {

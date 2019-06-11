@@ -9,7 +9,9 @@ import android.graphics.Color;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.SimpleArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,14 +38,19 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class DataSynchronizationActivity extends AppCompatActivity
+public class DataSynchronizationActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    // Type: P2P_STAR or P2P_POINT_TO_POINT ?
+    // Type: P2P_STAR or P2P_POINT_TO_POINT
     private final Strategy m_Strategy = Strategy.P2P_POINT_TO_POINT;
     private final String m_ServiceID = "ch.phwidmer.einkaufsliste.Service";
+
+    private final String m_TagEKList = "EK-LIST";
+    private final String m_TagEKRequestFile = "EK-REQUESTFILE";
+    private final String m_TagEKFileInfo = "EK-FILEID";
 
     private String m_strSaveFilePath;
     private String m_DeviceName;
@@ -63,21 +70,125 @@ public class DataSynchronizationActivity extends AppCompatActivity
     private Button m_ButtonDiscover;
     private Button m_ButtonAdvertise;
 
-    static class PayloadListener extends PayloadCallback {
+    private String m_ConnectedEndpointId;
+
+    private class PayloadListener extends PayloadCallback {
+
+        private final SimpleArrayMap<Long, Payload> incomingFilePayloads = new SimpleArrayMap<>();
+        private final SimpleArrayMap<Long, Payload> completedFilePayloads = new SimpleArrayMap<>();
+        private final SimpleArrayMap<Long, String> filePayloadFilenames = new SimpleArrayMap<>();
 
         @Override
-        public void onPayloadReceived(@NonNull String endpointId, @NonNull Payload payload) {
-            // TODO
-            // This always gets the full data of the payload. Will be null if it's not a BYTES
-            // payload. You can check the payload type with payload.getType().
-            //byte[] receivedBytes = payload.asBytes();
+        public void onPayloadReceived(@NonNull String endpointId, @NonNull Payload payload)
+        {
+            if(payload.getType() == Payload.Type.BYTES)
+            {
+                byte[] receivedBytes = payload.asBytes();
+                String strResult = new String(receivedBytes);
+
+                if (strResult.startsWith(m_TagEKList))
+                {
+                    // Remove tag-element and split remainder
+                    String[] splitResult = strResult.replace(m_TagEKList + ";", "").split(";");
+                    ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) m_ListViewAvailableFiles.getAdapter();
+                    adapter.clear();
+                    adapter.addAll(splitResult);
+                }
+                else if(strResult.startsWith(m_TagEKRequestFile))
+                {
+                    String strFilename = strResult.replace(m_TagEKRequestFile + ";", "");
+                    File fileToSend = new File(m_strSaveFilePath, strFilename);
+
+                    Payload filePayload;
+                    try
+                    {
+                        filePayload = Payload.fromFile(fileToSend);
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        Toast.makeText(DataSynchronizationActivity.this, "ERROR: File not found \"" + strFilename + "\"", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String filenameMessage = m_TagEKFileInfo + ";" + filePayload.getId() + ";" + strFilename;
+                    Payload filenameBytesPayload = Payload.fromBytes(filenameMessage.getBytes());
+                    m_Connection.sendPayload(endpointId, filenameBytesPayload);
+
+                    m_Connection.sendPayload(m_ConnectedEndpointId, filePayload);
+                }
+                else if(strResult.startsWith(m_TagEKFileInfo))
+                {
+                    String payloadFilenameMessage = new String(payload.asBytes());
+
+                    String[] parts = payloadFilenameMessage.split(";");
+                    long payloadId = Long.parseLong(parts[1]);
+                    String filename = parts[2];
+                    filePayloadFilenames.put(payloadId, filename);
+
+                    processFilePayload(payloadId);
+                }
+                else
+                {
+                    Toast.makeText(DataSynchronizationActivity.this, "ERROR: Unknown request \"" + strResult + "\"", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else if(payload.getType() == Payload.Type.FILE)
+            {
+                incomingFilePayloads.put(payload.getId(), payload);
+            }
+        }
+
+        private void processFilePayload(long payloadId)
+        {
+            // BYTES and FILE could be received in any order, so we call when either the BYTES or the FILE
+            // payload is completely received. The file payload is considered complete only when both have
+            // been received.
+            Payload filePayload = completedFilePayloads.get(payloadId);
+            String filename = filePayloadFilenames.get(payloadId);
+            if (filePayload != null && filename != null)
+            {
+                completedFilePayloads.remove(payloadId);
+                filePayloadFilenames.remove(payloadId);
+
+                // Get the received file (which will be in the Downloads folder)
+                File payloadFile = filePayload.asFile().asJavaFile();
+
+                if(!existsFileAlready(filename))
+                {
+                    File newFile = new File(m_strSaveFilePath, filename);
+                    if(payloadFile.renameTo(newFile))
+                    {
+                        Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.file_received, newFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.file_copy_error, filename), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else
+                {
+                    DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.file_exists_already), payloadFile.getAbsolutePath(), filename, getListOfExistingFiles());
+                    newFragment.show(getSupportFragmentManager(), "onCopiedFileAlreayExists");
+                }
+            }
         }
 
         @Override
-        public void onPayloadTransferUpdate(@NonNull String endpointId, @NonNull PayloadTransferUpdate update) {
-            // TODO
-            // Bytes payloads are sent as a single chunk, so you'll receive a SUCCESS update immediately
-            // after the call to onPayloadReceived().
+        public void onPayloadTransferUpdate(@NonNull String endpointId, @NonNull PayloadTransferUpdate update)
+        {
+            if (update.getStatus() == PayloadTransferUpdate.Status.SUCCESS)
+            {
+                long payloadId = update.getPayloadId();
+                if(!incomingFilePayloads.containsKey(payloadId))
+                {
+                    return;
+                }
+                Payload payload = incomingFilePayloads.remove(payloadId);
+                completedFilePayloads.put(payloadId, payload);
+                if (payload.getType() == Payload.Type.FILE) {
+                    processFilePayload(payloadId);
+                }
+            }
         }
     }
 
@@ -87,7 +198,7 @@ public class DataSynchronizationActivity extends AppCompatActivity
         setContentView(R.layout.activity_data_synchronization);
 
         Intent intent = getIntent();
-        String strSaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+        m_strSaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
 
         m_ListViewDevices = findViewById(R.id.listviewOtherDevices);
         m_ListViewAvailableFiles = findViewById(R.id.listviewAvailableFiles);
@@ -98,17 +209,21 @@ public class DataSynchronizationActivity extends AppCompatActivity
 
         m_Devices = new LinkedHashMap<>();
 
+        m_ConnectedEndpointId = "";
+
         m_Connection = Nearby.getConnectionsClient(this);
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         m_ListViewDevices.setAdapter(adapter);
+
+        ArrayAdapter<CharSequence> adapterAvailableFiles = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        m_ListViewAvailableFiles.setAdapter(adapterAvailableFiles);
 
         m_EndpointDiscoveryCallback =
                 new EndpointDiscoveryCallback() {
                     @Override
                     public void onEndpointFound(@NonNull String endpointId, @NonNull DiscoveredEndpointInfo info) {
                         // An endpoint was found. Add it to the list of endpoints.
-                        Toast.makeText(DataSynchronizationActivity.this, "Endpoint found: " + info.getEndpointName(), Toast.LENGTH_SHORT).show();
                         m_Devices.put(endpointId, info.getEndpointName());
 
                         ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_ListViewDevices.getAdapter();
@@ -132,23 +247,19 @@ public class DataSynchronizationActivity extends AppCompatActivity
                     @Override
                     public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(DataSynchronizationActivity.this);
-                        builder.setTitle("Accept connection to " + connectionInfo.getEndpointName());
-                        builder.setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken());
+                        builder.setTitle(getResources().getString(R.string.accept_connection_header, connectionInfo.getEndpointName()));
+                        builder.setMessage(getResources().getString(R.string.accept_connection_confirm_code, connectionInfo.getAuthenticationToken()));
                         builder.setIcon(android.R.drawable.ic_dialog_alert);
-                        builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        builder.setPositiveButton(R.string.accept, (DialogInterface dialog, int which) ->
+                            {
                                 // The user confirmed, so we can accept the connection.
                                 m_Connection.acceptConnection(endpointId, new PayloadListener());
-                            }
-                        });
-                        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            });
+                        builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
+                            {
                                 // The user canceled, so we should reject the connection.
                                 m_Connection.rejectConnection(endpointId);
-                            }
-                        });
+                            });
                         builder.show();
                     }
 
@@ -157,7 +268,9 @@ public class DataSynchronizationActivity extends AppCompatActivity
                         switch (result.getStatus().getStatusCode()) {
                             case ConnectionsStatusCodes.STATUS_OK:
                                 // We're connected! Can now start sending and receiving data.
-                                Toast.makeText(DataSynchronizationActivity.this, "Connection successfully established", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.connection_established), Toast.LENGTH_SHORT).show();
+
+                                m_ConnectedEndpointId = endpointId;
 
                                 if(m_Advertising)
                                 {
@@ -173,13 +286,11 @@ public class DataSynchronizationActivity extends AppCompatActivity
                                 break;
                             case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                                 // The connection was rejected by one or both sides.
-                                Toast.makeText(DataSynchronizationActivity.this, "Connection rejected", Toast.LENGTH_SHORT).show();
-                                // TODO: How to proceed from here?
+                                Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.connection_rejected), Toast.LENGTH_SHORT).show();
                                 break;
                             case ConnectionsStatusCodes.STATUS_ERROR:
                                 // The connection broke before it was able to be accepted.
-                                Toast.makeText(DataSynchronizationActivity.this, "Connection error", Toast.LENGTH_SHORT).show();
-                                // TODO: How to proceed from here?
+                                Toast.makeText(DataSynchronizationActivity.this, "ERROR: Connection failed", Toast.LENGTH_SHORT).show();
                                 break;
                             default:
                                 // Unknown status code
@@ -193,15 +304,10 @@ public class DataSynchronizationActivity extends AppCompatActivity
                     }
                 };
 
-        m_ListViewDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        m_ListViewDevices.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
+            {
                 // Connect to other device
-                Toast.makeText(DataSynchronizationActivity.this, "Connecting to device " + m_ListViewDevices.getAdapter().getItem(position).toString(), Toast.LENGTH_SHORT).show();
-
                 String endpointId = (String)m_Devices.keySet().toArray()[position];
-
-                // TODO: Das sollte ich evtl. besser machen als nur per itemclicked?
 
                 m_Connection
                         .requestConnection(m_DeviceName, endpointId, m_ConnectionLifecycleCallback)
@@ -213,9 +319,22 @@ public class DataSynchronizationActivity extends AppCompatActivity
                         .addOnFailureListener(
                                 (Exception e) -> {
                                     // Nearby Connections failed to request the connection.
-                                    Toast.makeText(DataSynchronizationActivity.this, "Connection failed. Reason: " + e.getCause(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DataSynchronizationActivity.this, "ERROR: Connection failed. Reason: " + e.getCause(), Toast.LENGTH_SHORT).show();
                                 });
-            }
+            });
+
+        m_ListViewAvailableFiles.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
+        {
+            // Request file
+
+            String strFilename = m_ListViewAvailableFiles.getAdapter().getItem(position).toString();
+            Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.requesting_file, strFilename), Toast.LENGTH_SHORT).show();
+
+            String strRequest = m_TagEKRequestFile + ";" + strFilename;
+            byte[] bytesPayload = strRequest.getBytes();
+
+            Payload payload = Payload.fromBytes(bytesPayload);
+            m_Connection.sendPayload(m_ConnectedEndpointId, payload);
         });
     }
 
@@ -277,9 +396,28 @@ public class DataSynchronizationActivity extends AppCompatActivity
                         });
     }
 
+    @Override
+    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
+    {
+        if (tag.equals("onCopiedFileAlreayExists"))
+        {
+            File currentFile = new File(strAdditonalInformation);
+            File newFile = new File(m_strSaveFilePath, strInput);
+            if(currentFile.renameTo(newFile))
+            {
+                Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.file_received, newFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.file_copy_error, strInput), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private void sendFilesList()
     {
-        ArrayList<String> inputList = new ArrayList<String>();
+        String strPayload = m_TagEKList;
+
         File directory = new File(m_strSaveFilePath);
         for(File f : directory.listFiles())
         {
@@ -288,11 +426,37 @@ public class DataSynchronizationActivity extends AppCompatActivity
                 continue;
             }
 
-            inputList.add(f.getName());
+            strPayload += ";" + f.getName();
         }
 
-        // TODO: inputList senden als Payload!
+        byte[] bytesPayload = strPayload.getBytes();
 
+        Payload payload = Payload.fromBytes(bytesPayload);
+        m_Connection.sendPayload(m_ConnectedEndpointId, payload);
+    }
+
+    private boolean existsFileAlready(String strFilename)
+    {
+        File directory = new File(m_strSaveFilePath);
+        for(File f : directory.listFiles())
+        {
+            if(f.getName().equals(strFilename))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private ArrayList<String> getListOfExistingFiles()
+    {
+        ArrayList<String> fileList = new ArrayList<>();
+        File directory = new File(m_strSaveFilePath);
+        for(File f : directory.listFiles())
+        {
+            fileList.add(f.getName());
+        }
+        return fileList;
     }
 
     // Permissions
@@ -304,6 +468,8 @@ public class DataSynchronizationActivity extends AppCompatActivity
                     Manifest.permission.ACCESS_WIFI_STATE,
                     Manifest.permission.CHANGE_WIFI_STATE,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
             };
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
@@ -345,7 +511,7 @@ public class DataSynchronizationActivity extends AppCompatActivity
 
         for (int grantResult : grantResults) {
             if (grantResult == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this, "Permissions not granted", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getResources().getString(R.string.permission_not_granted), Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }

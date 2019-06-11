@@ -1,7 +1,10 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -18,9 +21,9 @@ import java.util.ArrayList;
 
 public class InputStringDialogFragment extends DialogFragment {
 
-    public static interface InputStringResponder
+    public interface InputStringResponder
     {
-        public void onStringInput(String tag, String strInput, String strAdditonalInformation);
+        void onStringInput(String tag, String strInput, String strAdditonalInformation);
     }
 
     private String m_Title;
@@ -28,7 +31,8 @@ public class InputStringDialogFragment extends DialogFragment {
     private String m_DefaultValue;
     private int m_InputType;
     private Boolean m_InputFromList;
-    private ArrayList<String> m_ListOfPossibleInputs;
+    private Boolean m_ConfirmElementsInList;
+    private ArrayList<String> m_ListOfSpecialInputs;
 
     static InputStringDialogFragment newInstance(String strTitle, String strAdditonalInformation)
     {
@@ -45,6 +49,24 @@ public class InputStringDialogFragment extends DialogFragment {
         args.putString("defaultValue", defaultValue);
         args.putInt("inputType", inputType);
         args.putBoolean("inputFromList", false);
+        args.putBoolean("confirmElementsInList", false);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    static InputStringDialogFragment newInstance(String strTitle, String strAdditonalInformation, String defaultValue, ArrayList<String> listOfInputsToConfirm)
+    {
+        InputStringDialogFragment f = new InputStringDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putString("title", strTitle);
+        args.putString("additionalInfo", strAdditonalInformation);
+        args.putString("defaultValue", defaultValue);
+        args.putInt("inputType", InputType.TYPE_CLASS_TEXT);
+        args.putBoolean("inputFromList", false);
+        args.putBoolean("confirmElementsInList", true);
+        args.putStringArrayList("listOfSpecialInputs", listOfInputsToConfirm);
         f.setArguments(args);
 
         return f;
@@ -60,7 +82,8 @@ public class InputStringDialogFragment extends DialogFragment {
         args.putString("defaultValue", strAdditonalInformation);
         args.putInt("inputType", InputType.TYPE_CLASS_TEXT);
         args.putBoolean("inputFromList", true);
-        args.putStringArrayList("listOfPossibleInputs", listOfPossibleInputs);
+        args.putBoolean("confirmElementsInList", false);
+        args.putStringArrayList("listOfSpecialInputs", listOfPossibleInputs);
         f.setArguments(args);
 
         return f;
@@ -75,9 +98,10 @@ public class InputStringDialogFragment extends DialogFragment {
         m_DefaultValue = getArguments().getString("defaultValue");
         m_InputType = getArguments().getInt("inputType");
         m_InputFromList = getArguments().getBoolean("inputFromList");
-        if(m_InputFromList)
+        m_ConfirmElementsInList = getArguments().getBoolean("confirmElementsInList");
+        if(m_InputFromList || m_ConfirmElementsInList)
         {
-            m_ListOfPossibleInputs = getArguments().getStringArrayList("listOfPossibleInputs");
+            m_ListOfSpecialInputs = getArguments().getStringArrayList("listOfSpecialInputs");
         }
     }
 
@@ -116,7 +140,7 @@ public class InputStringDialogFragment extends DialogFragment {
         final View mainView = inflater.inflate(R.layout.overlay_input_from_list, container, false);
 
         AutoCompleteTextView inputView = mainView.findViewById(R.id.inputListControl);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_dropdown_item_1line, m_ListOfPossibleInputs);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_dropdown_item_1line, m_ListOfSpecialInputs);
         inputView.setAdapter(adapter);
         inputView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -127,7 +151,7 @@ public class InputStringDialogFragment extends DialogFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
                 Button button = mainView.findViewById(R.id.ButtonOk);
-                button.setEnabled(m_ListOfPossibleInputs.contains(s.toString()));
+                button.setEnabled(m_ListOfSpecialInputs.contains(s.toString()));
             }
 
             @Override
@@ -151,9 +175,9 @@ public class InputStringDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = null;
+        View view;
         if(m_InputFromList)
         {
             view = setupInputFromStringList(inflater, container);
@@ -178,10 +202,34 @@ public class InputStringDialogFragment extends DialogFragment {
         buttonOk.setEnabled(!m_AdditonalInformation.isEmpty());
         buttonOk.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!m_InputFromList)
+                if(!m_InputFromList && !m_ConfirmElementsInList)
                 {
                     EditText editText = mainView.findViewById(R.id.editTextInput);
                     ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+                }
+                else if(m_ConfirmElementsInList && !m_InputFromList)
+                {
+                    EditText editText = mainView.findViewById(R.id.editTextInput);
+                    if(m_ListOfSpecialInputs.contains(editText.getText().toString()))
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getActivity().getResources().getString(R.string.file_exists_overwrite_header));
+                        builder.setMessage(getActivity().getResources().getString(R.string.file_exists_overwrite, editText.getText().toString()));
+                        builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
+                        {
+                            ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+                            dismiss();
+                        });
+                        builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
+                        {
+                        });
+                        builder.show();
+                        return;
+                    }
+                    else
+                    {
+                        ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+                    }
                 }
                 else
                 {

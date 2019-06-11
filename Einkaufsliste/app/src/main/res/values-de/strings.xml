@@ -31,9 +31,10 @@
     <string name="alert_saveas">Speichern als...</string>
     <string name="alert_load">Datei importieren</string>
     <string name="text_data_saved">Daten gespeichert in %s</string>
-    <string name="text_data_loaded">Daen geladen aus %s</string>
+    <string name="text_data_loaded">Daten geladen aus %s</string>
     <string name="button_add_category">Kategorie hinzufügen</string>
     <string name="text_load_file_failed">Datei konnte nicht geladen werden.</string>
+    <string name="text_save_file_failed">Datei konnte nicht gespeichert werden.</string>
     <string name="text_delete_category_disallowed_header">Kategorie kann nicht gelöscht werden</string>
     <string name="text_delete_category_disallowed_desc">Die Kategorie \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
     <string name="text_delete_ingredient_disallowed_header">Zutat kann nicht gelöscht werden</string>
@@ -65,7 +66,16 @@
     <string name="text_ingredient_renamed">Zutat \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_rename_recipe">Rezept \"%s\" umbenennen</string>
     <string name="text_recipe_renamed">Rezept \"%1$s\" umbenannt zu \"%2$s\".</string>
+    <string name="file_exists_overwrite_header">Datei existiert bereits.</string>
+    <string name="file_exists_overwrite">Die Datei %s existiert bereits. Soll sie überschrieben werden?</string>
     <string name="provenance_everywhere">Überall</string>
+    <string name="file_received">Datei %s erhalten</string>
+    <string name="file_copy_error">Fehler beim Kopieren der Datei %s</string>
+    <string name="file_exists_already">Datei existiert schon. Umbennen oder Bestätigen zum Überschreiben.</string>
+    <string name="connection_established">Verbindung erfolgreich hergestellt.</string>
+    <string name="connection_rejected">Verbindungsversuch zurückgewiesen.</string>
+    <string name="requesting_file">Fordere Datei %s an.</string>
+    <string name="permission_not_granted">Zugriffsrechte nicht erteilt.</string>
 
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>

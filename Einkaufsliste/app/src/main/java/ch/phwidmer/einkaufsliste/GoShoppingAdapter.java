@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,25 +32,24 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         }
     }
 
-    public GoShoppingAdapter(RecyclerView recyclerView, SortedShoppingList sortedList)
+    GoShoppingAdapter(RecyclerView recyclerView, SortedShoppingList sortedList)
     {
         m_RecyclerView = recyclerView;
         m_SortedList = sortedList;
     }
 
-    @Override
-    public GoShoppingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    @Override @NonNull
+    public GoShoppingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                            int viewType)
     {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.text_row_chkbox_item, parent, false);
 
-        GoShoppingAdapter.ViewHolder vh = new GoShoppingAdapter.ViewHolder(v);
-        return vh;
+        return new GoShoppingAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(GoShoppingAdapter.ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull GoShoppingAdapter.ViewHolder holder, int position)
     {
         holder.m_id = m_SortedList.getName(position);
 
@@ -74,7 +74,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         updateAppearance(holder, position);
     }
 
-    public void updateAppearance(GoShoppingAdapter.ViewHolder holder, int position)
+    void updateAppearance(GoShoppingAdapter.ViewHolder holder, int position)
     {
         if(m_SortedList.isCategory(position))
         {

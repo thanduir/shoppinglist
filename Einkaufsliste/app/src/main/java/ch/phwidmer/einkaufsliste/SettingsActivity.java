@@ -53,8 +53,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         String strDefaultUnit = preferences.getString(KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
         m_SpinnerDefaultUnit.setSelection(Amount.Unit.valueOf(strDefaultUnit).ordinal());
 
-        Integer iNrPersons = preferences.getInt(KEY_DEFAULT_NRPERSONS, 4);
-        m_EditTextDefaultNrPersons.setText(iNrPersons.toString());
+        int iNrPersons = preferences.getInt(KEY_DEFAULT_NRPERSONS, 4);
+        m_EditTextDefaultNrPersons.setText(Integer.toString(iNrPersons));
         m_EditTextDefaultNrPersons.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -69,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
-        ArrayAdapter<CharSequence> adapterDefSortOrder = new ArrayAdapter<CharSequence>(this, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> adapterDefSortOrder = new ArrayAdapter<>(this, R.layout.spinner_item);
         for(String strSortOrder : m_GroceryPlanning.m_Categories.getAllSortOrders())
         {
             adapterDefSortOrder.add(strSortOrder);
@@ -93,7 +93,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(KEY_DEFAULT_NRPERSONS, iNewValue);
-        editor.commit();
+        editor.apply();
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             editor.putString(KEY_DEFAULT_SORORDER, m_SpinnerDefaultSortOrder.getSelectedItem().toString());
         }
 
-        editor.commit();
+        editor.apply();
     }
 
     public void onNothingSelected(AdapterView<?> parent)

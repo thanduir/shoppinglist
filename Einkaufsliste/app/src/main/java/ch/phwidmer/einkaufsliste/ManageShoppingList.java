@@ -80,7 +80,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
             String strActiveElementSecond = savedInstanceState.getString("AdapterActiveElementSecond");
             if(strActiveElementFirst != null)
             {
-                m_AdapterRecipes.setActiveElement(new Pair<String, String>(strActiveElementFirst, strActiveElementSecond));
+                m_AdapterRecipes.setActiveElement(new Pair<>(strActiveElementFirst, strActiveElementSecond));
             }
         }
 
@@ -168,13 +168,11 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         }
         else if(tag.equals("addShoppingRecipe"))
         {
-            String strRecipe = strInput;
-
-            m_GroceryPlanning.m_ShoppingList.addFromRecipe(strRecipe, m_GroceryPlanning.m_Recipes.getRecipe(strRecipe));
+            m_GroceryPlanning.m_ShoppingList.addFromRecipe(strInput, m_GroceryPlanning.m_Recipes.getRecipe(strInput));
 
             ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
             adapter.notifyDataSetChanged();
-            adapter.setActiveElement(new Pair<>(strRecipe, ""));
+            adapter.setActiveElement(new Pair<>(strInput, ""));
             m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
         }
     }

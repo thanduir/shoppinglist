@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
                 InputStream dataInputStream = getResources().openRawResource(R.raw.default_data);
                 OutputStream output = new FileOutputStream(testDataFile);
 
-                int read = 0;
+                int read;
                 byte[] bytes = new byte[1024];
 
                 while ((read = dataInputStream.read(bytes)) != -1) {
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
     public void onImport()
     {
-        ArrayList<String> inputList = new ArrayList<String>();
+        ArrayList<String> inputList = new ArrayList<>();
         File directory = m_AppDataDirectory;
         for(File f : directory.listFiles())
         {
@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         newFragment.show(getSupportFragmentManager(), "onImport");
     }
 
+    @Override
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
     {
         if(tag.equals("onExport"))
@@ -150,15 +151,13 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         }
         else if(tag.equals("onImport"))
         {
-            String strFilename = strInput;
-
-            File file = new File(m_AppDataDirectory, strFilename);
+            File file = new File(m_AppDataDirectory, strInput);
             m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
 
             File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
             m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
 
-            Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded,  strFilename), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded,  strInput), Toast.LENGTH_SHORT).show();
         }
     }
 

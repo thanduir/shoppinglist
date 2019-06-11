@@ -13,12 +13,12 @@ import java.io.IOException;
 
 public class GroceryPlanning
 {
-    static int             SERIALIZING_VERSION = 1;
+    private static int     SERIALIZING_VERSION = 1;
 
-    public Categories      m_Categories;
-    public Ingredients     m_Ingredients;
-    public Recipes         m_Recipes;
-    public ShoppingList    m_ShoppingList;
+    Categories      m_Categories;
+    Ingredients     m_Ingredients;
+    Recipes         m_Recipes;
+    ShoppingList    m_ShoppingList;
 
     GroceryPlanning()
     {
@@ -33,7 +33,7 @@ public class GroceryPlanning
         loadDataFromFile(file, context);
     }
 
-    public void saveDataToFile(File file, Context context)
+    void saveDataToFile(File file, Context context)
     {
         try
         {
@@ -62,11 +62,11 @@ public class GroceryPlanning
         }
         catch(IOException e)
         {
-            return;
+            Toast.makeText(context, R.string.text_save_file_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void loadDataFromFile(File file, Context context)
+    void loadDataFromFile(File file, Context context)
     {
         try
         {
@@ -76,7 +76,7 @@ public class GroceryPlanning
             jr.beginArray();
 
             jr.beginObject();
-            Boolean bIDFound = false;
+            boolean bIDFound = false;
             int iVersion = -1;
             while (jr.hasNext()) {
                 String name = jr.nextName();
@@ -126,12 +126,11 @@ public class GroceryPlanning
             m_Ingredients = new Ingredients(m_Categories);
             m_Recipes = new Recipes();
             m_ShoppingList = new ShoppingList();
-            return;
         }
     }
 
-    // Make file known to the MedaiScanner so that it apears when the device is mount e.g. on windows.
-    public void scanFile(Context context, File f)
+    // Make file known to the MediaScanner so that it apears when the device is mount e.g. on windows.
+    void scanFile(Context context, File f)
     {
         if(context == null)
         {

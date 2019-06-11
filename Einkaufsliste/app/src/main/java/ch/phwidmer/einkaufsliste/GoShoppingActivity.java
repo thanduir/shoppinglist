@@ -63,7 +63,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
             }
         }
 
-        m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewShoppingListItems);
+        m_RecyclerView = findViewById(R.id.recyclerViewShoppingListItems);
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);

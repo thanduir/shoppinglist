@@ -2,7 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import java.util.Comparator;
 
-public class Helper {
+class Helper {
 
     public static class SortIgnoreCase implements Comparator<Object>
     {

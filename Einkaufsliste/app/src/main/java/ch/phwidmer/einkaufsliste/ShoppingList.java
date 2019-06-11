@@ -8,14 +8,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
-public class ShoppingList
+class ShoppingList
 {
-    public class ShoppingRecipe
+    class ShoppingRecipe
     {
-        public Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
-        public LinkedList<ShoppingListItem>    m_Items = new LinkedList<ShoppingListItem>();
+        Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
+        LinkedList<ShoppingListItem>    m_Items = new LinkedList<>();
 
-        public void changeScalingFactor(float f)
+        void changeScalingFactor(float f)
         {
             float fFactor = f / m_fScalingFactor;
             m_fScalingFactor = f;
@@ -29,23 +29,23 @@ public class ShoppingList
     private LinkedHashMap<String, ShoppingRecipe> m_Items;
     private String                                m_CurrentSortOrder;
 
-    public ShoppingList()
+    ShoppingList()
     {
-        m_Items = new LinkedHashMap<String, ShoppingRecipe>();
+        m_Items = new LinkedHashMap<>();
         m_CurrentSortOrder = "";
     }
 
-    public void setCurrentSortOrder(String strOrder)
+    void setCurrentSortOrder(String strOrder)
     {
         m_CurrentSortOrder = strOrder;
     }
 
-    public String getCurrentSortOrder()
+    String getCurrentSortOrder()
     {
         return m_CurrentSortOrder;
     }
 
-    public void addFromRecipe(String strName, Recipes.Recipe recipe)
+    void addFromRecipe(String strName, Recipes.Recipe recipe)
     {
         if(m_Items.containsKey(strName))
         {
@@ -66,14 +66,14 @@ public class ShoppingList
         m_Items.put(strName, item);
     }
 
-    public ShoppingRecipe getShoppingRecipe(String strName)
+    ShoppingRecipe getShoppingRecipe(String strName)
     {
         return m_Items.get(strName);
     }
 
-    public Vector<String> getAllShoppingRecipes()
+    Vector<String> getAllShoppingRecipes()
     {
-        Vector<String> vec = new Vector<String>();
+        Vector<String> vec = new Vector<>();
         for(Object obj : m_Items.keySet())
         {
             String str = (String)obj;
@@ -82,12 +82,12 @@ public class ShoppingList
         return vec;
     }
 
-    public void removeShoppingRecipe(String strName)
+    void removeShoppingRecipe(String strName)
     {
         m_Items.remove(strName);
     }
 
-    public void addExistingShoppingRecipe(String strName, ShoppingRecipe recipe)
+    void addExistingShoppingRecipe(String strName, ShoppingRecipe recipe)
     {
         if(m_Items.containsKey(strName))
         {
@@ -97,7 +97,7 @@ public class ShoppingList
         m_Items.put(strName, recipe);
     }
 
-    public boolean isIngredientInUse(String strIngredient)
+    boolean isIngredientInUse(String strIngredient)
     {
         for(ShoppingRecipe sr : m_Items.values())
         {
@@ -112,7 +112,7 @@ public class ShoppingList
         return false;
     }
 
-    public void onIngredientRenamed(String strIngredient, String strNewName)
+    void onIngredientRenamed(String strIngredient, String strNewName)
     {
         for(ShoppingRecipe sr : m_Items.values())
         {
@@ -128,7 +128,7 @@ public class ShoppingList
 
     // Serializing
 
-    public void saveToJson(JsonWriter writer) throws IOException
+    void saveToJson(JsonWriter writer) throws IOException
     {
         writer.beginObject();
         writer.name("id").value("Shoppinglist");
@@ -163,7 +163,7 @@ public class ShoppingList
         writer.endObject();
     }
 
-    public void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader, int iVersion) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {

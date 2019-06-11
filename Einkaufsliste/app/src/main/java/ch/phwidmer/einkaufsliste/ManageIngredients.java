@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -36,9 +37,9 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
 
-        m_FAB = (FloatingActionButton)findViewById(R.id.fab);
+        m_FAB = findViewById(R.id.fab);
 
-        m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewIngredients);
+        m_RecyclerView = findViewById(R.id.recyclerViewIngredients);
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
@@ -51,13 +52,13 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
                                 IngredientsAdapter adapter = (IngredientsAdapter) recyclerView.getAdapter();
                                 IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
 
-                                if(vh.getID() == adapter.getActiveElement())
+                                if(vh.getID().equals(adapter.getActiveElement()))
                                 {
                                     adapter.setActiveElement("");
                                 }
                                 else
                                 {
-                                    adapter.setActiveElement((String) vh.getID());
+                                    adapter.setActiveElement(vh.getID());
                                 }
                             }
                         }
@@ -76,7 +77,7 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
 
         m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
@@ -120,25 +121,22 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
 
-            String strIngredient = strInput;
-            m_GroceryPlanning.m_Ingredients.addIngredient(strIngredient, Amount.Unit.valueOf(strDefaultUnit));
+            m_GroceryPlanning.m_Ingredients.addIngredient(strInput, Amount.Unit.valueOf(strDefaultUnit));
             IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
-            adapter.setActiveElement(strIngredient);
+            adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();
-            m_RecyclerView.scrollToPosition(m_GroceryPlanning.m_Ingredients.getAllIngredients().indexOf(strIngredient));
+            m_RecyclerView.scrollToPosition(m_GroceryPlanning.m_Ingredients.getAllIngredients().indexOf(strInput));
         }
         else if(tag.equals("renameIngredient")) // See IngredientsAdapter
         {
-            String strNewName = strInput;
-
-            m_GroceryPlanning.m_Ingredients.renameIngredient(strAdditonalInformation, strNewName);
-            m_GroceryPlanning.m_Recipes.onIngredientRenamed(strAdditonalInformation, strNewName);
-            m_GroceryPlanning.m_ShoppingList.onIngredientRenamed(strAdditonalInformation, strNewName);
+            m_GroceryPlanning.m_Ingredients.renameIngredient(strAdditonalInformation, strInput);
+            m_GroceryPlanning.m_Recipes.onIngredientRenamed(strAdditonalInformation, strInput);
+            m_GroceryPlanning.m_ShoppingList.onIngredientRenamed(strAdditonalInformation, strInput);
 
             IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
-            adapter.setActiveElement(strNewName);
+            adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();
-            Toast.makeText(m_RecyclerView.getContext(), m_RecyclerView.getContext().getResources().getString(R.string.text_ingredient_renamed, strAdditonalInformation, strNewName), Toast.LENGTH_SHORT).show();
+            Toast.makeText(m_RecyclerView.getContext(), m_RecyclerView.getContext().getResources().getString(R.string.text_ingredient_renamed, strAdditonalInformation, strInput), Toast.LENGTH_SHORT).show();
         }
     }
 }

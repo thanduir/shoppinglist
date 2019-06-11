@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 // Generates the list of ingredients sorted by categories according to a sort order from the ShoppingList.
-public class SortedShoppingList
+class SortedShoppingList
 {
     private Ingredients m_Ingredients;
 
@@ -18,13 +18,13 @@ public class SortedShoppingList
     {
         private String                       m_Ingredient;
         private Amount                       m_Amount = new Amount();
-        private LinkedList<ShoppingListItem> m_ShoppingItems = new LinkedList<ShoppingListItem>();
+        private LinkedList<ShoppingListItem> m_ShoppingItems = new LinkedList<>();
 
-        public ShoppingListItem.Status getStatus()
+        ShoppingListItem.Status getStatus()
         {
             return m_ShoppingItems.getFirst().m_Status;
         }
-        public void invertStatus()
+        void invertStatus()
         {
             for(ShoppingListItem item : m_ShoppingItems)
             {
@@ -32,7 +32,7 @@ public class SortedShoppingList
             }
         }
 
-        public Boolean isOptional()
+        Boolean isOptional()
         {
             return m_ShoppingItems.getFirst().m_Optional;
         }
@@ -50,16 +50,16 @@ public class SortedShoppingList
 
     private class CategoryItem
     {
-        public String m_Name;
-        public boolean m_IncompatibleItemsList = false;
+        String m_Name;
+        boolean m_IncompatibleItemsList = false;
         LinkedList<CategoryShoppingItem> m_Items;
     }
 
-    public SortedShoppingList(ShoppingList shoppingList, Ingredients ingredients)
+    SortedShoppingList(ShoppingList shoppingList, Ingredients ingredients)
     {
         m_Ingredients = ingredients;
 
-        m_UnorderdList = new LinkedHashMap<String, LinkedList<CategoryShoppingItem>>();
+        m_UnorderdList = new LinkedHashMap<>();
 
         Vector<String> recipes = shoppingList.getAllShoppingRecipes();
         for(String strName : recipes)
@@ -71,7 +71,7 @@ public class SortedShoppingList
 
                 if(!m_UnorderdList.containsKey(strCategory))
                 {
-                    m_UnorderdList.put(strCategory, new LinkedList<CategoryShoppingItem>());
+                    m_UnorderdList.put(strCategory, new LinkedList<>());
                 }
 
                 addToCategoryItem(m_UnorderdList.get(strCategory), item);
@@ -119,11 +119,11 @@ public class SortedShoppingList
         }
     }
 
-    public void setSortOrder(String strSortOrderName, Categories.SortOrder sortOrder)
+    void setSortOrder(String strSortOrderName, Categories.SortOrder sortOrder)
     {
         LinkedList<CategoryItem> incompatibleItems = new LinkedList<>();
 
-        m_SortedList = new LinkedList<CategoryItem>();
+        m_SortedList = new LinkedList<>();
         for(Categories.Category category : sortOrder.m_CategoriesOrder)
         {
             String strCategory = category.getName();
@@ -184,7 +184,7 @@ public class SortedShoppingList
         incompatibleItems.add(otherItems);
     }
 
-    public Integer itemsCount()
+    Integer itemsCount()
     {
         int size = 0;
         for(CategoryItem e : m_SortedList)
@@ -194,7 +194,7 @@ public class SortedShoppingList
         return size;
     }
 
-    public String getName(int index)
+    String getName(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)
@@ -221,10 +221,10 @@ public class SortedShoppingList
                 i += 1 + e.m_Items.size();
             }
         }
-        return new String();
+        return "";
     }
 
-    public Boolean isCategory(int index)
+    Boolean isCategory(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)
@@ -245,7 +245,7 @@ public class SortedShoppingList
         return false;
     }
 
-    public Boolean isIncompatibleItemsList(int index)
+    Boolean isIncompatibleItemsList(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)
@@ -266,7 +266,7 @@ public class SortedShoppingList
         return false;
     }
 
-    public CategoryShoppingItem getListItem(int index)
+    CategoryShoppingItem getListItem(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)

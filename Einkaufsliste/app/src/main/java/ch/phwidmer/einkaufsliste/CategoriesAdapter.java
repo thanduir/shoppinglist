@@ -1,6 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -27,9 +28,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView m_TextView;
-        public View m_View;
-        public ImageView m_ReorderView;
+        TextView m_TextView;
+        View m_View;
+        ImageView m_ReorderView;
         public ViewHolder(View v)
         {
             super(v);
@@ -39,7 +40,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         }
     }
 
-    public CategoriesAdapter(RecyclerView recyclerView, Categories categories, Categories.SortOrder sortOrder, Ingredients ingredients)
+    CategoriesAdapter(RecyclerView recyclerView, Categories categories, Categories.SortOrder sortOrder, Ingredients ingredients)
     {
         m_Categories = categories;
         m_SortOrder = sortOrder;
@@ -49,24 +50,23 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
 
 
-    public void setTouchHelper(ItemTouchHelper touchHelper)
+    void setTouchHelper(ItemTouchHelper touchHelper)
     {
         m_TouchHelper = touchHelper;
     }
 
-    @Override
-    public CategoriesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    @Override @NonNull
+    public CategoriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                            int viewType)
     {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.text_row_item_drag, parent, false);
 
-        CategoriesAdapter.ViewHolder vh = new CategoriesAdapter.ViewHolder(v);
-        return vh;
+        return new CategoriesAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final CategoriesAdapter.ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull final CategoriesAdapter.ViewHolder holder, int position)
     {
         final Categories.Category category = m_SortOrder.m_CategoriesOrder.get(position);
         holder.m_TextView.setText(category.getName());

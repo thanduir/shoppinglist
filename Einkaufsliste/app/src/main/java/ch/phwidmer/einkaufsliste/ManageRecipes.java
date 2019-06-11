@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -90,7 +91,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             adapter.add(strName);
@@ -110,7 +111,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_RecyclerView.setLayoutManager(m_LayoutManager);
         m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
@@ -263,33 +264,33 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         {
             final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
-            String strNewName = strInput;
-
-            m_GroceryPlanning.m_Recipes.renameRecipe(strCurrentRecipe, strNewName);
+            m_GroceryPlanning.m_Recipes.renameRecipe(strCurrentRecipe, strInput);
 
             int index = m_SpinnerRecipes.getSelectedItemPosition();
             ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
             adapter.remove(strCurrentRecipe);
-            adapter.insert(strNewName, index);
+            adapter.insert(strInput, index);
             m_SpinnerRecipes.setSelection(index);
 
-            Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strNewName), Toast.LENGTH_SHORT).show();
+            Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strInput), Toast.LENGTH_SHORT).show();
         }
         else if(tag.equals("addRecipeItem"))
         {
             String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
             Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
 
-            String strIngredient = strInput;
-
             RecipeItem item = new RecipeItem();
-            item.m_Ingredient = strIngredient;
-            item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
+            item.m_Ingredient = strInput;
+            item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strInput).m_DefaultUnit;
             recipe.m_Items.add(item);
 
             RecipeItemsAdapter adapter = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
+            if(adapter == null)
+            {
+                return;
+            }
             adapter.notifyItemInserted(recipe.m_Items.size()-1);
-            adapter.setActiveElement(strIngredient);
+            adapter.setActiveElement(strInput);
         }
     }
 
@@ -311,7 +312,12 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                         RecipeItemsAdapter adapter = (RecipeItemsAdapter) recyclerView.getAdapter();
                         RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
 
-                        if(vh.getID() == adapter.getActiveElement())
+                        if(adapter == null)
+                        {
+                            return;
+                        }
+
+                        if(vh.getID().equals(adapter.getActiveElement()))
                         {
                             adapter.setActiveElement("");
                         }

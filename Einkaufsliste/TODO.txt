@@ -1,27 +1,17 @@
 TODO
 ====
 
-- Data synchronisation:
-    1. New Activity for synchronisation:
-        - connect to near by devices
-            * https://stackoverflow.com/questions/9608832/android-communicating-between-two-devices
-            * https://developer.android.com/training/connect-devices-wirelessly
-            * https://developer.android.com/guide/topics/connectivity/wifip2p.html
-            * https://developer.android.com/training/connect-devices-wirelessly/wifi-direct.html
-            * https://developers.google.com/nearby/connections/overview
-        -> list of files
-        -> user choses file to copy (incl. possible rename?) / overwrite / (simple) merge (i.e. add everything not present on phone)
-        -> button to sync all, with option to choose between copy (+rename) / overwrite / merge on conflicts (-> default setting)
-        -> "data consistency check" for merge? Or is this implicitly part of the merge functionality?
-    [possibly later (after everything below is done):]
-    2. improve merge
-    3. two-way auto-sync with merge
-    4. [optional] Connect to Google App Folder API / Google App Engine / Amazon Web Services / Dropbox datastore API / something similar (or some of them)
+- save file (under "new" name": Ask if file already exists (don't just overwrite) -> use newly added DialogFragment method!
 
+- Bug: Closing app (with android) during save may lead to incompletely written files!
+    -> I probably need a better saving / loading concept! Additionally i should switch again to the official data exchange between activities thingy ;)
+        (this might solve the problem and would incidentially also speed up the application)
+- slow loading of some screens (probably because file gets always read newly)
+
+- data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHNAGES!)
 - Code cleanup (cf. gelbe balken)
 - Allow adding a recipe more than once to a shoppinglist? (-> e.g. twice müesli, maybe as "Müesli 2"?)
-- "é", "è", bei der suche in liste gleichbehandeln wie normale "e" (+ dasselbe für andere buchstaben)
-- slow loading of some screens (probably because file gets always read newly)
+- "é", "è", bei der suche in liste gleichbehandeln wie normale "e" (+ dasselbe für andere buchstaben. Umlaute haben dasselbe Problem!)
 - Rezept-Kopier-Funktion
 - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
     -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?
@@ -29,5 +19,12 @@ TODO
 - Sometimes you don't want things to get add up together (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
     -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
+- Annotations / remarks for shoppinglist items? (d.h. zusatzinformationen)
 - Alternativen in Rezepten (e.g. Poulet oder Tofu)! Wie könnte dies gehandhabt werden?
 - Synonyme? (Sultaninen, Rosinen, ...)
+- wenn etwas nicht gelöscht werden kann: schreiben, wo es noch verwendet wird!
+
+- Data synchronisation - part 2:
+    2. merge-functionality (-> "data consistency check"?)
+    3. two-way auto-sync with merge
+    4. [optional] Connect to Google App Folder API / Google App Engine / Amazon Web Services / Dropbox datastore API / something similar (or some of them)

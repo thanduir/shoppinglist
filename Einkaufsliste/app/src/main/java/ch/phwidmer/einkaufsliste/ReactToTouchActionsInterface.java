@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 // Interface related to ReactToTouchActionsCallback. Allows reactions to touch events
 public interface ReactToTouchActionsInterface
 {
-    public void reactToSwipe(int position);
-    public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target);
-    public boolean swipeAllowed(RecyclerView.ViewHolder vh);
-    public void clearViewBackground(RecyclerView.ViewHolder vh);
+    void reactToSwipe(int position);
+    boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target);
+    boolean swipeAllowed(RecyclerView.ViewHolder vh);
+    void clearViewBackground(RecyclerView.ViewHolder vh);
 }

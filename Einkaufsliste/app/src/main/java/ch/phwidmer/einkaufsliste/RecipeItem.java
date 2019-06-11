@@ -7,20 +7,20 @@ public class RecipeItem {
     {
         Small,
         Normal,
-        Large;
+        Large
     }
 
-    public String   m_Ingredient;
-    public Amount   m_Amount;
-    public Size     m_Size = Size.Normal;
-    public Boolean  m_Optional = false;
+    String   m_Ingredient;
+    Amount   m_Amount;
+    Size     m_Size = Size.Normal;
+    Boolean  m_Optional = false;
 
-    public RecipeItem()
+    RecipeItem()
     {
         m_Amount = new Amount();
     }
 
-    public static String toUIString(Context context, Size size)
+    static String toUIString(Context context, Size size)
     {
         switch(size)
         {

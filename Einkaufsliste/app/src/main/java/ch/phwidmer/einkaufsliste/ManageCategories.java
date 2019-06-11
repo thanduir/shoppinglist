@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -47,14 +48,14 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
         m_GroceryPlanning = new GroceryPlanning(file, this);
 
-        m_FAB = (FloatingActionButton)findViewById(R.id.fab);
+        m_FAB = findViewById(R.id.fab);
 
         // Manage SortOrders
 
-        m_SpinnerSortOrders = (Spinner) findViewById(R.id.spinnerSortOrder);
-        m_ButtonDelSortOrder = (Button) findViewById(R.id.buttonDelSortOrder);
+        m_SpinnerSortOrders = findViewById(R.id.spinnerSortOrder);
+        m_ButtonDelSortOrder = findViewById(R.id.buttonDelSortOrder);
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         for(String strName : m_GroceryPlanning.m_Categories.getAllSortOrders())
         {
             adapter.add(strName);
@@ -68,14 +69,14 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
             m_SpinnerSortOrders.setSelection(adapter.getPosition(strActiveSortOrder));
         }
 
-        m_RecyclerView = (RecyclerView) findViewById(R.id.recyclerViewSortOrders);
+        m_RecyclerView = findViewById(R.id.recyclerViewSortOrders);
         m_RecyclerView.setHasFixedSize(true);
         m_LayoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(m_LayoutManager);
 
         m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
@@ -130,14 +131,13 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         }
         else if(tag.equals("renameCategory")) // See CategoriesAdapter
         {
-            String strNewName = strInput;
             Categories.Category category = m_GroceryPlanning.m_Categories.getCategory(strAdditonalInformation);
 
-            m_GroceryPlanning.m_Categories.renameCategory(category, strNewName);
-            m_GroceryPlanning.m_Ingredients.onCategoryRenamed(category, m_GroceryPlanning.m_Categories.getCategory(strNewName));
+            m_GroceryPlanning.m_Categories.renameCategory(category, strInput);
+            m_GroceryPlanning.m_Ingredients.onCategoryRenamed(category, m_GroceryPlanning.m_Categories.getCategory(strInput));
 
             m_RecyclerView.getAdapter().notifyDataSetChanged();
-            Toast.makeText(this, getResources().getString(R.string.text_category_renamed, category.getName(), strNewName), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.text_category_renamed, category.getName(), strInput), Toast.LENGTH_SHORT).show();
         }
     }
 

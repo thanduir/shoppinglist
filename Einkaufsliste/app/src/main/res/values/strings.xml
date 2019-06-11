@@ -33,6 +33,7 @@
     <string name="text_data_loaded">Data loaded from %s</string>
     <string name="button_add_category">Add Category</string>
     <string name="text_load_file_failed">Couldn\'t load data file.</string>
+    <string name="text_save_file_failed">Couldn\'t save file.</string>
     <string name="text_delete_category_disallowed_header">Deleting category not allowed</string>
     <string name="text_delete_category_disallowed_desc">Category \"%s\" cannot be deleted because it is still in use.</string>
     <string name="text_delete_ingredient_disallowed_header">Deleting ingredient not allowed</string>
@@ -64,7 +65,20 @@
     <string name="text_ingredient_renamed">Ingredient \"%1$s\" renamed to \"%2$s\".</string>
     <string name="text_rename_recipe">Rename recipe \"%s\"</string>
     <string name="text_recipe_renamed">Recipe \"%1$s\" renamed to \"%2$s\".</string>
+    <string name="file_exists_overwrite_header">File already exists.</string>
+    <string name="file_exists_overwrite">The file %s already exists. Do you want to overwrite it?</string>
     <string name="provenance_everywhere">Everywhere</string>
+    <string name="file_received">File %s received</string>
+    <string name="file_copy_error">Error copying file %s</string>
+    <string name="file_exists_already">File already exists. Rename or don\'t change if it should be overwritten.</string>
+    <string name="connection_established">Connection successfully established.</string>
+    <string name="connection_rejected">Connection rejected.</string>
+    <string name="requesting_file">Requesting file %s</string>
+    <string name="permission_not_granted">Permissions not granted.</string>
+
+    <string name="accept_connection_header">Accept connection to %s</string>
+    <string name="accept_connection_confirm_code">Confirm the code matches on both devices: %s</string>
+    <string name="accept">Accept</string>
 
     <string name="unit_count_long">Count</string>
     <string name="unit_kilogram_long">Kilogram</string>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -18,7 +19,7 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     private Drawable  m_SwipeIcon;
 
     // Remark: We save the recyclerView instead of the adapter in order to still work correctly if the adapter gets reset.
-    public ReactToTouchActionsCallback(RecyclerView recyclerView, Context context, int swipeIcon, boolean bAllowDrag)
+    ReactToTouchActionsCallback(RecyclerView recyclerView, Context context, int swipeIcon, boolean bAllowDrag)
     {
         m_bAllowDrag = bAllowDrag;
         m_RecyclerView = recyclerView;
@@ -27,7 +28,7 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     }
 
     @Override
-    public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
+    public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder)
     {
         MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
         boolean bSwipeAlloed = adapter.swipeAllowed(viewHolder);
@@ -37,7 +38,7 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     }
 
     @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
         MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
         adapter.reactToSwipe(position);
@@ -49,14 +50,14 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     }
 
     @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
+    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder vh, @NonNull RecyclerView.ViewHolder target)
     {
         MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
         return adapter.reactToDrag(vh, target);
     }
 
     @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive)
+    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive)
     {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
@@ -110,8 +111,8 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     }
 
     @Override
-    public void clearView(RecyclerView recyclerView,
-                          RecyclerView.ViewHolder viewHolder) {
+    public void clearView(@NonNull RecyclerView recyclerView,
+                          @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 
         MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();

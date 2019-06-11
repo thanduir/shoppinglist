@@ -16,13 +16,13 @@ public class Amount {
         Dessertspoon,
         Teaspoon,
 
-        Unitless;
+        Unitless
     }
 
-    public Float m_Quantity = 1.0f;
-    public Unit m_Unit = Unit.Count;
+    Float m_Quantity = 1.0f;
+    Unit m_Unit = Unit.Count;
 
-    public void scaleAmount(float fFactor)
+    void scaleAmount(float fFactor)
     {
         switch(m_Unit)
         {
@@ -38,7 +38,7 @@ public class Amount {
         }
     }
 
-    public static String toUIString(Context context, Unit unit)
+    static String toUIString(Context context, Unit unit)
     {
         switch(unit)
         {
@@ -70,7 +70,7 @@ public class Amount {
         }
     }
 
-    public static String shortForm(Context context, Unit unit)
+    static String shortForm(Context context, Unit unit)
     {
         switch(unit)
         {
@@ -103,7 +103,7 @@ public class Amount {
     }
 
     // asPrefix: Is it used in front of the corresponding item? Then we don't need to write "1 Piece Apple", but can use another form.
-    public static String shortFormAsPrefix(Context context, Unit unit)
+    static String shortFormAsPrefix(Context context, Unit unit)
     {
         switch(unit)
         {
@@ -135,7 +135,7 @@ public class Amount {
         }
     }
 
-    public static Amount addUp(Amount m1, Amount m2)
+    static Amount addUp(Amount m1, Amount m2)
     {
         if(!canBeAddedUp(m1, m2))
         {
@@ -222,7 +222,7 @@ public class Amount {
         return result;
     }
 
-    public static boolean canBeAddedUp(Amount m1, Amount m2)
+    static boolean canBeAddedUp(Amount m1, Amount m2)
     {
         switch(m1.m_Unit)
         {
