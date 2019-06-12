@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> implements ReactToTouchActionsInterface
 {
     private Categories m_Categories;
@@ -71,13 +73,10 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         final Categories.Category category = m_SortOrder.m_CategoriesOrder.get(position);
         holder.m_TextView.setText(category.getName());
 
-        final View view = holder.itemView;
-        holder.m_TextView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
+        holder.m_TextView.setOnLongClickListener((View v) ->
+        {
                 renameCategory(category);
                 return true;
-            }
         });
 
         holder.m_ReorderView.setOnTouchListener(new View.OnTouchListener() {
@@ -103,18 +102,16 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
         Categories.Category category = m_SortOrder.m_CategoriesOrder.get(position);
 
-        if(m_Ingredients.isCategoryInUse(category))
+        ArrayList<String> ingredientsUsingCategory = new ArrayList<>();
+        if(m_Ingredients.isCategoryInUse(category, ingredientsUsingCategory))
         {
             notifyItemChanged(position);
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
             builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_category_disallowed_header));
-            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_category_disallowed_desc, category.getName()));
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
+            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_category_disallowed_desc,
+                                                                                    category.getName(),
+                                                                                    ingredientsUsingCategory.toString()));
+            builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) -> {});
             builder.show();
             return;
         }
@@ -126,17 +123,15 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
         m_RecentlyDeleted = category;
         Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m_Categories.addCategory(m_RecentlyDeleted.getName());
-                notifyDataSetChanged();
+        snackbar.setAction(R.string.text_undo, (View view) ->
+        {
+            m_Categories.addCategory(m_RecentlyDeleted.getName());
+            notifyDataSetChanged();
 
-                m_RecentlyDeleted = null;
+            m_RecentlyDeleted = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
-                snackbar1.show();
-            }
+            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
+            snackbar1.show();
         });
         snackbar.show();
     }

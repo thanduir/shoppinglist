@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
@@ -49,9 +50,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             m_TableLayout = v.findViewById(R.id.tableLayoutEditIntegrdient);
             m_TableLayout.setVisibility(View.GONE);
 
-            m_SpinnerCategory = (Spinner) v.findViewById(R.id.spinnerCategory);
-            m_SpinnerProvenance = (Spinner) v.findViewById(R.id.spinnerProvenance);
-            m_SpinnerStdUnit = (Spinner) v.findViewById(R.id.spinnerStdUnit);
+            m_SpinnerCategory = v.findViewById(R.id.spinnerCategory);
+            m_SpinnerProvenance = v.findViewById(R.id.spinnerProvenance);
+            m_SpinnerStdUnit = v.findViewById(R.id.spinnerStdUnit);
 
             m_id = "";
         }
@@ -151,12 +152,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private void updateViewHolder(IngredientsAdapter.ViewHolder vh, boolean bActive)
     {
         final View view = vh.itemView;
-        vh.m_TextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                view.performClick();
-            }
-        });
+        vh.m_TextView.setOnClickListener((View v) -> view.performClick());
 
         if(!bActive)
         {
@@ -180,12 +176,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
             final String strIngredient = vh.m_id;
 
-            vh.m_TextView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    renameIngredient(strIngredient);
-                    return true;
-                }
+            vh.m_TextView.setOnLongClickListener((View v) ->
+            {
+                renameIngredient(strIngredient);
+                return true;
             });
 
             final Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
@@ -287,18 +281,18 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
         String strIngredient = (String)holder.m_TextView.getText();
 
-        if(m_GroceryPlanning.m_Recipes.isIngredientInUse(strIngredient) || m_GroceryPlanning.m_ShoppingList.isIngredientInUse(strIngredient))
+        ArrayList<String> recipesUsingIngredient = new ArrayList<>();
+        ArrayList<String> shoppinglistUsingIngredient = new ArrayList<>();
+        if(m_GroceryPlanning.m_Recipes.isIngredientInUse(strIngredient, recipesUsingIngredient) || m_GroceryPlanning.m_ShoppingList.isIngredientInUse(strIngredient, shoppinglistUsingIngredient))
         {
             notifyItemChanged(position);
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
             builder.setTitle(R.string.text_delete_ingredient_disallowed_header);
-            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_ingredient_disallowed_desc, strIngredient));
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
+            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_ingredient_disallowed_desc,
+                                                                                    strIngredient,
+                                                                                    recipesUsingIngredient.toString(),
+                                                                                    shoppinglistUsingIngredient.toString()));
+            builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) -> {});
             builder.show();
             return;
         }
@@ -313,22 +307,19 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         // Allow undo
 
         Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit);
-                Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
-                ingredient.m_Category = m_RecentlyDeleted.m_Category;
-                ingredient.m_strProvenance = m_RecentlyDeleted.m_strProvenance;
+        snackbar.setAction(R.string.text_undo, (View view) -> {
+            m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit);
+            Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
+            ingredient.m_Category = m_RecentlyDeleted.m_Category;
+            ingredient.m_strProvenance = m_RecentlyDeleted.m_strProvenance;
 
-                notifyDataSetChanged();
+            notifyDataSetChanged();
 
-                m_strRecentlyDeleted = "";
-                m_RecentlyDeleted = null;
+            m_strRecentlyDeleted = "";
+            m_RecentlyDeleted = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
-                snackbar1.show();
-            }
+            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
+            snackbar1.show();
         });
         snackbar.show();
     }

@@ -35,11 +35,11 @@
     <string name="text_load_file_failed">Couldn\'t load data file.</string>
     <string name="text_save_file_failed">Couldn\'t save file.</string>
     <string name="text_delete_category_disallowed_header">Deleting category not allowed</string>
-    <string name="text_delete_category_disallowed_desc">Category \"%s\" cannot be deleted because it is still in use.</string>
+    <string name="text_delete_category_disallowed_desc">Category \"%1$s\" cannot be deleted because it is still being used by the following ingredients:\n%2$s</string>
     <string name="text_delete_ingredient_disallowed_header">Deleting ingredient not allowed</string>
-    <string name="text_delete_ingredient_disallowed_desc">Ingredient \"%s\" cannot be deleted because it is still in use.</string>
+    <string name="text_delete_ingredient_disallowed_desc">Ingredient \"%1$s\" cannot be deleted because it is still being used in the following items.\n\nRecipes:\n%2$s\n\nShoppinglist items:\n%3$s</string>
     <string name="text_delete_sortorder_disallowed_header">Deleting sort order not allowed</string>
-    <string name="text_delete_sortorder_disallowed_desc">Sort order \"%s\" cannot be deleted because it is still in use.</string>
+    <string name="text_delete_sortorder_disallowed_desc">Sort order \"%s\" cannot be deleted because it is still being used by the following ingredients:\n%2$s</string>
     <string name="text_item_deleted">Item deleted</string>
     <string name="text_item_restored">Item restored</string>
     <string name="text_undo">Undo</string>

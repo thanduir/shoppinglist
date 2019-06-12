@@ -1,9 +1,11 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -77,16 +79,18 @@ class Ingredients
         m_Ingredients.put(strNewName, ingredient);
     }
 
-    boolean isCategoryInUse(Categories.Category category)
+    boolean isCategoryInUse(Categories.Category category, @NonNull ArrayList<String> ingredientsUsingCategory)
     {
-        for(Ingredient i : m_Ingredients.values())
+        boolean stillInUse = false;
+        for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
         {
-            if(i.m_Category.equals(category))
+            if(e.getValue().m_Category.equals(category))
             {
-                return true;
+                ingredientsUsingCategory.add(e.getKey());
+                stillInUse = true;
             }
         }
-        return false;
+        return stillInUse;
     }
 
     void onCategoryRenamed(Categories.Category category, Categories.Category newCategory)
@@ -100,16 +104,18 @@ class Ingredients
         }
     }
 
-    boolean isSortOrderInUse(String strSortOrder)
+    boolean isSortOrderInUse(String strSortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)
     {
-        for(Ingredient i : m_Ingredients.values())
+        boolean stillInUse = false;
+        for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
         {
-            if(i.m_strProvenance.equals(strSortOrder))
+            if(e.getValue().m_strProvenance.equals(strSortOrder))
             {
-                return true;
+                ingredientsUsingSortOrder.add(e.getKey());
+                stillInUse = true;
             }
         }
-        return false;
+        return stillInUse;
     }
 
     // Serializing

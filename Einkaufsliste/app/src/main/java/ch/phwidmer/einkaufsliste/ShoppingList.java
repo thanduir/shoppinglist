@@ -1,9 +1,11 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -97,19 +99,24 @@ class ShoppingList
         m_Items.put(strName, recipe);
     }
 
-    boolean isIngredientInUse(String strIngredient)
+    boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> shoppingListItemUsingIngredient)
     {
-        for(ShoppingRecipe sr : m_Items.values())
+        boolean stillInUse = false;
+        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
         {
-            for(ShoppingListItem sli : sr.m_Items)
+            for(ShoppingListItem sli : e.getValue().m_Items)
             {
                 if (sli.m_Ingredient.equals(strIngredient))
                 {
-                    return true;
+                    if(!shoppingListItemUsingIngredient.contains(e.getKey()))
+                    {
+                        shoppingListItemUsingIngredient.add(e.getKey());
+                    }
+                    stillInUse = true;
                 }
             }
         }
-        return false;
+        return stillInUse;
     }
 
     void onIngredientRenamed(String strIngredient, String strNewName)

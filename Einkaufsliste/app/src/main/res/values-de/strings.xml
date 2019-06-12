@@ -28,7 +28,7 @@
     <string name="button_export">Speichern als</string>
     <string name="button_import">Laden</string>
     <string name="button_rename">Umbenennen</string>
-    <string name="alert_saveas">Speichern als...</string>
+    <string name="alert_saveas">Speichern als&#8230;</string>
     <string name="alert_load">Datei importieren</string>
     <string name="text_data_saved">Daten gespeichert in %s</string>
     <string name="text_data_loaded">Daten geladen aus %s</string>
@@ -36,11 +36,11 @@
     <string name="text_load_file_failed">Datei konnte nicht geladen werden.</string>
     <string name="text_save_file_failed">Datei konnte nicht gespeichert werden.</string>
     <string name="text_delete_category_disallowed_header">Kategorie kann nicht gelöscht werden</string>
-    <string name="text_delete_category_disallowed_desc">Die Kategorie \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
+    <string name="text_delete_category_disallowed_desc">Die Kategorie \"%1$s\" kann nicht gelöscht werden, da sie noch von den folgenden Zutaten verwendet wird:\n%2$s</string>
     <string name="text_delete_ingredient_disallowed_header">Zutat kann nicht gelöscht werden</string>
-    <string name="text_delete_ingredient_disallowed_desc">Die Zutat \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
+    <string name="text_delete_ingredient_disallowed_desc">Die Zutat \"%s\" kann nicht gelöscht werden, da sie noch an folgenden Stellen verwendet wird:\n\nRezepte:\n%2$s\n\nEinkaufsliste:\n%3$s</string>
     <string name="text_delete_sortorder_disallowed_header">Sortierreihenfolge kann nicht gelöscht werden</string>
-    <string name="text_delete_sortorder_disallowed_desc">Die Sortierreihenfolge \"%s\" kann nicht gelöscht werden, da sie noch verwendet wird.</string>
+    <string name="text_delete_sortorder_disallowed_desc">Die Sortierreihenfolge \"%s\" kann nicht gelöscht werden, da sie noch von den folgenden Zutaten verwendet wird:\n%2$s</string>
     <string name="text_item_deleted">Element gelöscht</string>
     <string name="text_item_restored">Element wiederhergestellt</string>
     <string name="text_undo">Rückgängig machen</string>
@@ -71,7 +71,7 @@
     <string name="provenance_everywhere">Überall</string>
     <string name="file_received">Datei %s erhalten</string>
     <string name="file_copy_error">Fehler beim Kopieren der Datei %s</string>
-    <string name="file_exists_already">Datei existiert schon. Umbennen oder Bestätigen zum Überschreiben.</string>
+    <string name="file_exists_already">Datei existiert schon. Umbenennen oder Bestätigen zum Überschreiben.</string>
     <string name="connection_established">Verbindung erfolgreich hergestellt.</string>
     <string name="connection_rejected">Verbindungsversuch zurückgewiesen.</string>
     <string name="requesting_file">Fordere Datei %s an.</string>
@@ -95,9 +95,9 @@
     <string name="unit_mililiter_short">ml</string>
     <string name="unit_dessertspoon_short">el</string>
     <string name="unit_teaspoon_short">tl</string>
-    <string name="unit_unitless_short"></string>
+    <string name="unit_unitless_short"/>
 
-    <string name="unit_count_short_prefix"></string>
+    <string name="unit_count_short_prefix"/>
     <string name="unit_kilogram_short_prefix">kg</string>
     <string name="unit_gram_short_prefix">g</string>
     <string name="unit_liter_short_prefix">L</string>
@@ -105,7 +105,7 @@
     <string name="unit_mililiter_short_prefix">ml</string>
     <string name="unit_dessertspoon_short_prefix">el</string>
     <string name="unit_teaspoon_short_prefix">tl</string>
-    <string name="unit_unitless_short_prefix"></string>
+    <string name="unit_unitless_short_prefix"/>
 
     <string name="size_small">Klein</string>
     <string name="size_normal">Normal</string>

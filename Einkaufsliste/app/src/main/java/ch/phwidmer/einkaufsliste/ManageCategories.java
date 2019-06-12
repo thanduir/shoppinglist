@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ManageCategories extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
 {
@@ -150,17 +151,13 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
 
-        if(m_GroceryPlanning.m_Ingredients.isSortOrderInUse(strName))
+        ArrayList<String> ingredientsUsingSortOrder = new ArrayList<>();
+        if(m_GroceryPlanning.m_Ingredients.isSortOrderInUse(strName, ingredientsUsingSortOrder))
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
             builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_sortorder_disallowed_header));
-            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_sortorder_disallowed_desc, strName));
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
+            builder.setMessage(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_sortorder_disallowed_desc, strName, ingredientsUsingSortOrder.toString()));
+            builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) -> {});
             builder.show();
             return;
         }
