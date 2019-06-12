@@ -1,5 +1,6 @@
 package ch.phwidmer.einkaufsliste;
 
+import java.text.Collator;
 import java.util.Comparator;
 
 class Helper {
@@ -9,7 +10,11 @@ class Helper {
         public int compare(Object o1, Object o2) {
             String s1 = (String) o1;
             String s2 = (String) o2;
-            return s1.toLowerCase().compareTo(s2.toLowerCase());
+
+            final Collator instance = Collator.getInstance();
+            // This strategy mean it'll ignore the accents
+            instance.setStrength(Collator.NO_DECOMPOSITION);
+            return instance.compare(s1.toLowerCase(), s2.toLowerCase());
         }
     }
 
