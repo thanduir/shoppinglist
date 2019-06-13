@@ -440,6 +440,11 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
         File directory = new File(m_strSaveFilePath);
         for(File f : directory.listFiles())
         {
+            if(!f.getName().endsWith(".json"))
+            {
+                continue;
+            }
+
             if(f.getName().equals(strFilename))
             {
                 return true;
@@ -454,6 +459,11 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
         File directory = new File(m_strSaveFilePath);
         for(File f : directory.listFiles())
         {
+            if(!f.getName().endsWith(".json"))
+            {
+                continue;
+            }
+
             fileList.add(f.getName());
         }
         return fileList;

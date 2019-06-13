@@ -33,11 +33,29 @@ public class GroceryPlanning
         loadDataFromFile(file, context);
     }
 
-    void saveDataToFile(File file, Context context)
+    void saveDataToFile(File fileToBeCreated, Context context)
     {
+        boolean moveFilesFirst = fileToBeCreated.exists();
+
+        // Concept if the file already exists:
+        //      * write to filename.new
+        //      * move existing to filename.old
+        //      * move filename.new to filename
+        //      * delete filename.old
+
+        File fileNew;
+        if(moveFilesFirst)
+        {
+            fileNew = new File(fileToBeCreated.getAbsolutePath() + ".new");
+        }
+        else
+        {
+            fileNew = fileToBeCreated;
+        }
+
         try
         {
-            FileWriter fw = new FileWriter(file, false);
+            FileWriter fw = new FileWriter(fileNew, false);
             JsonWriter jw = new JsonWriter(fw);
             jw.setIndent("  ");
 
@@ -57,13 +75,31 @@ public class GroceryPlanning
 
             jw.close();
             fw.close();
-
-            scanFile(context, file);
         }
         catch(IOException e)
         {
             Toast.makeText(context, R.string.text_save_file_failed, Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        if(moveFilesFirst)
+        {
+            File fileOld = new File(fileToBeCreated.getAbsolutePath() + ".old");
+            if(!fileToBeCreated.renameTo(fileOld))
+            {
+                fileNew.delete();
+                Toast.makeText(context, R.string.text_save_file_failed, Toast.LENGTH_SHORT).show();
+            }
+            if(!fileNew.renameTo(fileToBeCreated))
+            {
+                fileOld.renameTo(fileToBeCreated);
+                Toast.makeText(context, R.string.text_save_file_failed, Toast.LENGTH_SHORT).show();
+            }
+
+            fileOld.delete();
+        }
+
+        scanFile(context, fileToBeCreated);
     }
 
     void loadDataFromFile(File file, Context context)

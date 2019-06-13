@@ -1,12 +1,10 @@
 TODO
 ====
 
-- Bug: Closing app (with android) during save may lead to incompletely written files!
-    -> I probably need a better saving / loading concept! Additionally i should switch again to the official data exchange between activities thingy ;)
-        (this might solve the problem and would incidentially also speed up the application)
 - slow loading of some screens (probably because file gets always read newly)
-
-- "é", "è", bei der suche in liste gleichbehandeln wie normale "e" (+ dasselbe für andere buchstaben. Umlaute haben dasselbe Problem!)
+    -> I should switch again to the official data exchange between activities thingy ;)
+        (this might solve the problem and would incidentially also speed up the application)
+- Suchen in Liste (z.B. zum Hinzufügen von Rezepten): Es sollte auch nach Wortteilen u/o Sachen in klammern gesucht werden können! (z.B. Tagliatelle)
 - Allow adding a recipe more than once to a shoppinglist? (-> e.g. twice müesli, maybe as "Müesli 2"?)
     -> Also allow renaming of recipes in ShoppingList? Not important, but might be usefull.
 - Rezept-Kopier-Funktion
