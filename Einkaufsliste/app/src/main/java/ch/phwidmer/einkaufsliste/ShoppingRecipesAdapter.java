@@ -490,7 +490,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
         else
         {
-            vh.m_EditTextAmount.setText(item.m_Amount.m_Quantity.toString());
+            vh.m_EditTextAmount.setText(Float.toString(item.m_Amount.m_Quantity));
             vh.m_EditTextAmount.setVisibility(View.VISIBLE);
         }
     }

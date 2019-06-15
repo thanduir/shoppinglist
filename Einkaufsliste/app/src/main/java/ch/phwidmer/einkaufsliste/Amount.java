@@ -19,8 +19,20 @@ public class Amount {
         Unitless
     }
 
-    Float m_Quantity = 1.0f;
+    float m_Quantity = 1.0f;
     Unit m_Unit = Unit.Count;
+
+    public Amount()
+    {
+        m_Quantity = 1.0f;
+        m_Unit = Unit.Count;
+    }
+
+    public Amount(Amount other)
+    {
+        m_Quantity = other.m_Quantity;
+        m_Unit = other.m_Unit;
+    }
 
     void scaleAmount(float fFactor)
     {
