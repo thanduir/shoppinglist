@@ -11,15 +11,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import java.io.File;
 
 public class ManageIngredients extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
-    private String          m_SaveFilePath;
 
     private RecyclerView               m_RecyclerView;
     private IngredientsAdapter         m_Adapter;
@@ -33,9 +31,7 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
         setContentView(R.layout.activity_manage_ingredients);
 
         Intent intent = getIntent();
-        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning = new GroceryPlanning(file, this);
+        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_FAB = findViewById(R.id.fab);
 
@@ -89,12 +85,24 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
     }
 
     @Override
-    protected void onPause()
+    public boolean onOptionsItemSelected(MenuItem item)
     {
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file, null);
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        super.onPause();
+    @Override
+    public void finish()
+    {
+        Intent data = new Intent();
+        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        setResult(RESULT_OK, data);
+
+        super.finish();
     }
 
     @Override

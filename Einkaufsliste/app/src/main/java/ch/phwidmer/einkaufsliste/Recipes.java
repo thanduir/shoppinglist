@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
@@ -10,8 +12,8 @@ import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.Vector;
 
-class Recipes {
-
+class Recipes implements Parcelable
+{
     private String m_ActiveRecipe;
 
     class Recipe {
@@ -158,7 +160,7 @@ class Recipes {
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -230,4 +232,66 @@ class Recipes {
 
         reader.endObject();
     }
+
+    // Parcelable
+
+    @Override
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeInt(m_Recipies.size());
+        for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
+        {
+            out.writeString(e.getKey());
+            out.writeInt(e.getValue().m_NumberOfPersons);
+
+            out.writeInt(e.getValue().m_Items.size());
+            for(RecipeItem recipe : e.getValue().m_Items)
+            {
+                recipe.writeToParcel(out, flags);
+            }
+        }
+
+        out.writeString(m_ActiveRecipe);
+    }
+
+    private Recipes(Parcel in)
+    {
+        int size = in.readInt();
+        m_Recipies = new TreeMap<>();
+        for(int i = 0; i < size; i++)
+        {
+            String strName = in.readString();
+            Recipe recipe = new Recipe();
+            recipe.m_NumberOfPersons = in.readInt();
+
+            int sizeItem = in.readInt();
+            for(int j = 0; j < sizeItem; j++)
+            {
+                RecipeItem item = RecipeItem.CREATOR.createFromParcel(in);
+                recipe.m_Items.add(item);
+            }
+            m_Recipies.put(strName, recipe);
+        }
+
+        m_ActiveRecipe = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Recipes> CREATOR
+            = new Parcelable.Creator<Recipes>() {
+
+        @Override
+        public Recipes createFromParcel(Parcel in) {
+            return new Recipes(in);
+        }
+
+        @Override
+        public Recipes[] newArray(int size) {
+            return new Recipes[size];
+        }
+    };
 }

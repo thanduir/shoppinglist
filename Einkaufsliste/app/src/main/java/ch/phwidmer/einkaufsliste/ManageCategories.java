@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,21 +20,19 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ManageCategories extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
 {
-    private GroceryPlanning m_GroceryPlanning;
-    private String          m_SaveFilePath;
+    private GroceryPlanning             m_GroceryPlanning;
 
-    private Spinner                    m_SpinnerSortOrders;
-    private Button                     m_ButtonDelSortOrder;
-    private RecyclerView               m_RecyclerView;
-    private RecyclerView.Adapter       m_Adapter;
-    private RecyclerView.LayoutManager m_LayoutManager;
+    private Spinner                     m_SpinnerSortOrders;
+    private Button                      m_ButtonDelSortOrder;
+    private RecyclerView                m_RecyclerView;
+    private RecyclerView.Adapter        m_Adapter;
+    private RecyclerView.LayoutManager  m_LayoutManager;
 
-    private FloatingActionButton       m_FAB;
+    private FloatingActionButton        m_FAB;
 
     private String                      m_strRecentlyDeletedSortOrder;
     private Categories.SortOrder        m_RecentlyDeletedSortOrder;
@@ -45,9 +44,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_manage_categories);
 
         Intent intent = getIntent();
-        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning = new GroceryPlanning(file, this);
+        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_FAB = findViewById(R.id.fab);
 
@@ -91,14 +88,26 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    protected void onPause()
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void finish()
     {
         m_GroceryPlanning.m_Ingredients.updateCategories(m_GroceryPlanning.m_Categories);
 
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file, null);
+        Intent data = new Intent();
+        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        setResult(RESULT_OK, data);
 
-        super.onPause();
+        super.finish();
     }
 
     public void onAddCategory(View v)

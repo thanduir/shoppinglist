@@ -18,13 +18,20 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    public static final String EXTRA_SAVEFILESPATH = "ch.phwidmer.einkaufsliste.SAVEFILESPATH";
+    public static final String EXTRA_GROCERYPLANNING = "ch.phwidmer.einkaufsliste.GROCERYPLANNING";
+    public static final String EXTRA_SAVEDFILESPATH = "ch.phwidmer.einkaufsliste.SAVEDFILESPATH";
+
+    private final int REQUEST_CODE_ManageCategories = 1;
+    private final int REQUEST_CODE_ManageIngredients = 2;
+    private final int REQUEST_CODE_ManageRecipes = 3;
+    private final int REQUEST_CODE_ManageShoppingList = 4;
+    private final int REQUEST_CODE_GoShopping = 5;
 
     private GroceryPlanning m_GroceryPlanning;
 
-    private final String c_strStdDataFilename = "default.json";
+    private static final String c_strStdDataFilename = "default.json";
+    private static final String c_strSaveFilename = "einkaufsliste.json";
 
-    public static final String c_strSaveFilename = "einkaufsliste.json";
     private File m_AppDataDirectory = null;
 
     @Override
@@ -69,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
                 m_GroceryPlanning.scanFile(getBaseContext(), testDataFile);
             }
-            catch(IOException exception)
+            catch(IOException ignore)
             {
             }
         }
@@ -78,36 +85,36 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     public void manageCategories(View view)
     {
         Intent intent = new Intent(this, ManageCategories.class);
-        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
-        startActivity(intent);
+        intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        startActivityForResult(intent, REQUEST_CODE_ManageCategories);
     }
 
     public void manageIngredients(View view)
     {
         Intent intent = new Intent(this, ManageIngredients.class);
-        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
-        startActivity(intent);
+        intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        startActivityForResult(intent, REQUEST_CODE_ManageIngredients);
     }
 
     public void manageRecipies(View view)
     {
         Intent intent = new Intent(this, ManageRecipes.class);
-        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
-        startActivity(intent);
+        intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        startActivityForResult(intent, REQUEST_CODE_ManageRecipes);
     }
 
     public void editShoppingList(View view)
     {
         Intent intent = new Intent(this, ManageShoppingList.class);
-        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
-        startActivity(intent);
+        intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        startActivityForResult(intent, REQUEST_CODE_ManageShoppingList);
     }
 
     public void goShopping(View view)
     {
         Intent intent = new Intent(this, GoShoppingActivity.class);
-        intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
-        startActivity(intent);
+        intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        startActivityForResult(intent, REQUEST_CODE_GoShopping);
     }
 
     private ArrayList<String> getListOfExistingFiles(boolean includeVersionWithoutEnding)
@@ -116,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         File directory = m_AppDataDirectory;
         for(File f : directory.listFiles())
         {
-            if(!f.getName().endsWith(".json") || f.getName().equals(c_strSaveFilename))
+            if(!f.getName().endsWith(".json") || f.getName().equals(c_strSaveFilename) || f.getName().equals(c_strStdDataFilename))
             {
                 continue;
             }
@@ -141,6 +148,27 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     {
         DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_load), "", getListOfExistingFiles(false));
         newFragment.show(getSupportFragmentManager(), "onImport");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(resultCode != RESULT_OK)
+        {
+            return;
+        }
+
+        if(requestCode == REQUEST_CODE_ManageCategories
+           || requestCode == REQUEST_CODE_ManageIngredients
+           || requestCode == REQUEST_CODE_ManageRecipes
+           || requestCode == REQUEST_CODE_ManageShoppingList
+           || requestCode == REQUEST_CODE_GoShopping)
+        {
+            m_GroceryPlanning = data.getParcelableExtra(EXTRA_GROCERYPLANNING);
+
+            File file = new File(m_AppDataDirectory, c_strSaveFilename);
+            m_GroceryPlanning.saveDataToFile(file, null);
+        }
     }
 
     @Override
@@ -183,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         if (id == R.id.actionbar_button_settings)
         {
             Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+            intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
             startActivity(intent);
         }
         else if (id == R.id.actionbar_button_import)
@@ -197,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         else if (id == R.id.actionbar_button_datasynchronization)
         {
             Intent intent = new Intent(this, DataSynchronizationActivity.class);
-            intent.putExtra(EXTRA_SAVEFILESPATH, m_AppDataDirectory.getPath());
+            intent.putExtra(EXTRA_SAVEDFILESPATH, m_AppDataDirectory.getPath());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

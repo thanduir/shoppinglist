@@ -198,7 +198,7 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
         setContentView(R.layout.activity_data_synchronization);
 
         Intent intent = getIntent();
-        m_strSaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
+        m_strSaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEDFILESPATH);
 
         m_ListViewDevices = findViewById(R.id.listviewOtherDevices);
         m_ListViewAvailableFiles = findViewById(R.id.listviewAvailableFiles);

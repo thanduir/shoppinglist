@@ -15,13 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ManageShoppingList extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
-    private String          m_SaveFilePath;
 
     private ShoppingList    m_RecentlyDeletedShoppingList;
 
@@ -37,9 +35,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         setContentView(R.layout.activity_manage_shopping_list);
 
         Intent intent = getIntent();
-        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
-        File file = new File(m_SaveFilePath, MainActivity.c_strSaveFilename);
-        m_GroceryPlanning = new GroceryPlanning(file, this);
+        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_FAB = findViewById(R.id.fab);
 
@@ -98,12 +94,13 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
     }
 
     @Override
-    protected void onPause()
+    public void finish()
     {
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file, null);
+        Intent data = new Intent();
+        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        setResult(RESULT_OK, data);
 
-        super.onPause();
+        super.finish();
     }
 
     @Override
@@ -217,6 +214,11 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         if (id == R.id.actionbar_button_reset)
         {
             onResetList(null);
+        }
+        else if(id == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

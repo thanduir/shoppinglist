@@ -8,12 +8,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
-import java.io.File;
 
 public class GoShoppingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private GroceryPlanning m_GroceryPlanning;
@@ -32,9 +31,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_go_shopping);
 
         Intent intent = getIntent();
-        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning = new GroceryPlanning(file, this);
+        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_SortedShoppingList = new SortedShoppingList(m_GroceryPlanning.m_ShoppingList, m_GroceryPlanning.m_Ingredients);
 
@@ -70,12 +67,24 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
     }
 
     @Override
-    protected void onPause()
+    public boolean onOptionsItemSelected(MenuItem item)
     {
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file, null);
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        super.onPause();
+    @Override
+    public void finish()
+    {
+        Intent data = new Intent();
+        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        setResult(RESULT_OK, data);
+
+        super.finish();
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)

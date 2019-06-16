@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
@@ -9,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Vector;
 
-class Categories
+class Categories implements Parcelable
 {
     public class Category
     {
@@ -28,6 +30,10 @@ class Categories
         @Override
         public boolean equals(Object other)
         {
+            if(!(other instanceof Category))
+            {
+                return false;
+            }
             Category c = (Category)other;
             return m_Category.equals(c.m_Category);
         }
@@ -204,7 +210,7 @@ class Categories
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext())
@@ -257,4 +263,77 @@ class Categories
 
         reader.endObject();
     }
+
+    // Parcelable
+
+    @Override
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeInt(m_Categories.size());
+        for(String str : m_Categories)
+        {
+            out.writeString(str);
+        }
+
+        out.writeInt(m_SortOrders.size());
+        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
+        {
+            out.writeString(e.getKey());
+
+            out.writeInt(e.getValue().m_CategoriesOrder.size());
+            for(Category cat : e.getValue().m_CategoriesOrder)
+            {
+                out.writeString(cat.getName());
+            }
+        }
+
+        out.writeString(m_ActiveSortOrder);
+
+    }
+
+    private Categories(Parcel in)
+    {
+        int categoriesSize = in.readInt();
+        m_Categories = new LinkedHashSet<>(categoriesSize);
+        for(int i = 0; i <categoriesSize; ++i)
+        {
+            m_Categories.add(in.readString());
+        }
+
+        int sortOrdersSize = in.readInt();
+        m_SortOrders = new LinkedHashMap<>(sortOrdersSize);
+        for(int i = 0; i <sortOrdersSize; ++i)
+        {
+            String str = in.readString();
+
+            int sortOrderSize = in.readInt();
+            SortOrder s = new SortOrder();
+            for(int j = 0; j < sortOrderSize; ++j)
+            {
+                s.m_CategoriesOrder.add(new Category(in.readString()));
+            }
+            m_SortOrders.put(str, s);
+        }
+
+        m_ActiveSortOrder = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Categories> CREATOR
+            = new Parcelable.Creator<Categories>() {
+
+        @Override
+        public Categories createFromParcel(Parcel in) {
+            return new Categories(in);
+        }
+
+        @Override
+        public Categories[] newArray(int size) {
+            return new Categories[size];
+        }
+    };
 }

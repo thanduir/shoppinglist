@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
@@ -10,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
-class ShoppingList
+class ShoppingList implements Parcelable
 {
     class ShoppingRecipe
     {
@@ -247,4 +249,66 @@ class ShoppingList
 
         reader.endObject();
     }
+
+    // Parcelable
+
+    @Override
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeString(m_CurrentSortOrder);
+
+        out.writeInt(m_Items.size());
+        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
+        {
+            out.writeString(e.getKey());
+            out.writeFloat(e.getValue().m_fScalingFactor);
+
+            out.writeInt(e.getValue().m_Items.size());
+            for(ShoppingListItem item : e.getValue().m_Items)
+            {
+                item.writeToParcel(out, flags);
+            }
+        }
+    }
+
+    private ShoppingList(Parcel in)
+    {
+        m_CurrentSortOrder = in.readString();
+
+        int size = in.readInt();
+        m_Items = new LinkedHashMap<>();
+        for(int i = 0; i < size; i++)
+        {
+            String strName = in.readString();
+            ShoppingRecipe recipe = new ShoppingRecipe();
+            recipe.m_fScalingFactor = in.readFloat();
+
+            int sizeItem = in.readInt();
+            for(int j = 0; j < sizeItem; j++)
+            {
+                ShoppingListItem item = ShoppingListItem.CREATOR.createFromParcel(in);
+                recipe.m_Items.add(item);
+            }
+            m_Items.put(strName, recipe);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<ShoppingList> CREATOR
+            = new Parcelable.Creator<ShoppingList>() {
+
+        @Override
+        public ShoppingList createFromParcel(Parcel in) {
+            return new ShoppingList(in);
+        }
+
+        @Override
+        public ShoppingList[] newArray(int size) {
+            return new ShoppingList[size];
+        }
+    };
 }

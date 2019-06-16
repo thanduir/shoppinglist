@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.Vector;
 
-class Ingredients
+class Ingredients implements Parcelable
 {
     private Categories m_Categories;
 
@@ -139,7 +141,7 @@ class Ingredients
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext())
@@ -191,4 +193,55 @@ class Ingredients
         }
         reader.endObject();
     }
+
+    // Parcelable
+
+    @Override
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeInt(m_Ingredients.size());
+        for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
+        {
+            out.writeString(e.getKey());
+            out.writeString(e.getValue().m_Category.getName());
+            out.writeString(e.getValue().m_strProvenance);
+            out.writeInt(e.getValue().m_DefaultUnit.ordinal());
+        }
+    }
+
+    Ingredients(Parcel in, Categories categories)
+    {
+        m_Categories = categories;
+
+        int size = in.readInt();
+        m_Ingredients = new TreeMap<>();
+        for(int i = 0; i < size; i++)
+        {
+            String strName = in.readString();
+            Ingredient order = new Ingredient();
+            order.m_Category = m_Categories.getCategory(in.readString());
+            order.m_strProvenance = in.readString();
+            order.m_DefaultUnit = Amount.Unit.values()[in.readInt()];
+            m_Ingredients.put(strName, order);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Ingredients> CREATOR
+            = new Parcelable.Creator<Ingredients>() {
+
+        @Override
+        public Ingredients createFromParcel(Parcel in) {
+            return new Ingredients(in, new Categories());
+        }
+
+        @Override
+        public Ingredients[] newArray(int size) {
+            return new Ingredients[size];
+        }
+    };
 }

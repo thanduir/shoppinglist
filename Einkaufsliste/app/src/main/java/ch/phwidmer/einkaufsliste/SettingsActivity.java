@@ -13,15 +13,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.io.File;
-
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static String KEY_DEFAULT_NRPERSONS = "ch.phwidmer.einkaufsliste.DEF_NRPERSONS";
     public static String KEY_DEFAULT_UNIT = "ch.phwidmer.einkaufsliste.DEF_UNIT";
     public static String KEY_DEFAULT_SORORDER = "ch.phwidmer.einkaufsliste.DEF_SORORDER";
 
-    private GroceryPlanning m_GroceryPlanning;
     private Spinner         m_SpinnerDefaultUnit;
     private EditText        m_EditTextDefaultNrPersons;
     private Spinner         m_SpinnerDefaultSortOrder;
@@ -32,9 +29,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_settings);
 
         Intent intent = getIntent();
-        String strSaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
-        File file = new File(new File(strSaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning = new GroceryPlanning(file, this);
+        GroceryPlanning m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_SpinnerDefaultUnit = findViewById(R.id.spinnerDefaultUnit);
         m_EditTextDefaultNrPersons = findViewById(R.id.editTextDefaultNrPersons);

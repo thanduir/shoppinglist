@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,13 +24,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ManageRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
 
     private GroceryPlanning m_GroceryPlanning;
-    private String          m_SaveFilePath;
 
     private Spinner     m_SpinnerRecipes;
     private EditText    m_EditTextNrPersons;
@@ -55,9 +54,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_manage_recipes);
 
         Intent intent = getIntent();
-        m_SaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEFILESPATH);
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning = new GroceryPlanning(file, this);
+        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_FAB = findViewById(R.id.fab);
 
@@ -156,12 +153,24 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     }
 
     @Override
-    protected void onPause()
+    public boolean onOptionsItemSelected(MenuItem item)
     {
-        File file = new File(new File(m_SaveFilePath), MainActivity.c_strSaveFilename);
-        m_GroceryPlanning.saveDataToFile(file, null);
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        super.onPause();
+    @Override
+    public void finish()
+    {
+        Intent data = new Intent();
+        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
+        setResult(RESULT_OK, data);
+
+        super.finish();
     }
 
     @Override
