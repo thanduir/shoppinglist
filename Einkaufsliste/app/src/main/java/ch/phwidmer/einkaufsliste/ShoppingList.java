@@ -77,13 +77,7 @@ class ShoppingList implements Parcelable
 
     Vector<String> getAllShoppingRecipes()
     {
-        Vector<String> vec = new Vector<>();
-        for(Object obj : m_Items.keySet())
-        {
-            String str = (String)obj;
-            vec.add(str);
-        }
-        return vec;
+        return new Vector<>(m_Items.keySet());
     }
 
     void removeShoppingRecipe(String strName)
@@ -172,7 +166,7 @@ class ShoppingList implements Parcelable
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader, int iVersion) throws IOException
+    void readFromJson(JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -210,29 +204,39 @@ class ShoppingList implements Parcelable
                         while (reader.hasNext())
                         {
                             String itemName = reader.nextName();
-                            if(itemName.equals("status"))
+                            switch(itemName)
                             {
-                                String str = reader.nextString();
-                                item.m_Status = ShoppingListItem.Status.valueOf(str);
-                            }
-                            else if(itemName.equals("amount"))
-                            {
-                                reader.beginArray();
+                                case "status":
+                                {
+                                    String str = reader.nextString();
+                                    item.m_Status = ShoppingListItem.Status.valueOf(str);
+                                    break;
+                                }
 
-                                item.m_Amount.m_Quantity = (float)reader.nextDouble();
-                                String str = reader.nextString();
-                                item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+                                case "amount":
+                                {
+                                    reader.beginArray();
 
-                                reader.endArray();
-                            }
-                            else if(itemName.equals("size"))
-                            {
-                                String size = reader.nextString();
-                                item.m_Size = RecipeItem.Size.valueOf(size);
-                            }
-                            else if(itemName.equals("optional"))
-                            {
-                                item.m_Optional = reader.nextBoolean();
+                                    item.m_Amount.m_Quantity = (float)reader.nextDouble();
+                                    String str = reader.nextString();
+                                    item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+
+                                    reader.endArray();
+                                    break;
+                                }
+
+                                case "size":
+                                {
+                                    String size = reader.nextString();
+                                    item.m_Size = RecipeItem.Size.valueOf(size);
+                                    break;
+                                }
+
+                                case "optional":
+                                {
+                                    item.m_Optional = reader.nextBoolean();
+                                    break;
+                                }
                             }
                         }
                         reader.endObject();

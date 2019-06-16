@@ -150,7 +150,7 @@ public class GroceryPlanning implements Parcelable
             m_Recipes.readFromJson(jr);
 
             m_ShoppingList = new ShoppingList();
-            m_ShoppingList.readFromJson(jr, iVersion);
+            m_ShoppingList.readFromJson(jr);
 
             jr.endArray();
 

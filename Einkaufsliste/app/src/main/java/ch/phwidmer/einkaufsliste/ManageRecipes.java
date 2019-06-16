@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ManageRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
 
@@ -34,14 +35,15 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     private EditText    m_EditTextNrPersons;
     private TextView    m_textViewNrPersons;
 
-    private Button      m_ButtonDelRecipe;
+    private ArrayAdapter<CharSequence>  m_SpinnerRecipesAdapter;
+
+    private Button                      m_ButtonDelRecipe;
 
     private String                      m_strRecentlyDeletedRecipe;
     private Recipes.Recipe              m_RecentlyDeletedRecipe;
 
     private RecyclerView                m_RecyclerView;
     private RecipeItemsAdapter          m_Adapter;
-    private RecyclerView.LayoutManager  m_LayoutManager;
 
     private String                      m_SavedActiveRecipe;
     private String                      m_SavedActiveElement;
@@ -88,24 +90,23 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        m_SpinnerRecipesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
-            adapter.add(strName);
+            m_SpinnerRecipesAdapter.add(strName);
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        m_SpinnerRecipes.setAdapter(adapter);
+        m_SpinnerRecipesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        m_SpinnerRecipes.setAdapter(m_SpinnerRecipesAdapter);
         m_SpinnerRecipes.setOnItemSelectedListener(this);
         String strActiveRecipe = m_GroceryPlanning.m_Recipes.getActiveRecipe();
         if(!strActiveRecipe.isEmpty() && m_GroceryPlanning.m_Recipes.getAllRecipes().contains(strActiveRecipe))
         {
-            m_SpinnerRecipes.setSelection(adapter.getPosition(strActiveRecipe));
+            m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getPosition(strActiveRecipe));
         }
 
         m_RecyclerView = findViewById(R.id.recyclerViewRecipeItems);
         m_RecyclerView.setHasFixedSize(true);
-        m_LayoutManager = new LinearLayoutManager(this);
-        m_RecyclerView.setLayoutManager(m_LayoutManager);
+        m_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
         m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -204,29 +205,24 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_RecentlyDeletedRecipe = m_GroceryPlanning.m_Recipes.getRecipe(strName);
 
         m_GroceryPlanning.m_Recipes.removeRecipe(strName);
-        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
-        adapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
-        m_SpinnerRecipes.setAdapter(adapter);
+        m_SpinnerRecipesAdapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
         updateVisibility();
 
         // Allow undo
 
         Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_recipe_deleted, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m_GroceryPlanning.m_Recipes.addRecipe(m_strRecentlyDeletedRecipe, m_RecentlyDeletedRecipe);
-                ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
-                adapter.add(m_strRecentlyDeletedRecipe);
-                m_SpinnerRecipes.setSelection(adapter.getCount() - 1);
-                updateVisibility();
+        snackbar.setAction(R.string.text_undo, (View view) ->
+        {
+            m_GroceryPlanning.m_Recipes.addRecipe(m_strRecentlyDeletedRecipe, m_RecentlyDeletedRecipe);
+            m_SpinnerRecipesAdapter.add(m_strRecentlyDeletedRecipe);
+            m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getCount() - 1);
+            updateVisibility();
 
-                m_strRecentlyDeletedRecipe = "";
-                m_RecentlyDeletedRecipe = null;
+            m_strRecentlyDeletedRecipe = "";
+            m_RecentlyDeletedRecipe = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_recipe_restored, Snackbar.LENGTH_SHORT);
-                snackbar1.show();
-            }
+            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_recipe_restored, Snackbar.LENGTH_SHORT);
+            snackbar1.show();
         });
         snackbar.show();
     }
@@ -241,11 +237,11 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     public void onAddRecipeItem(View v)
     {
-        ArrayList<String> inputList = new ArrayList<String>();
+        ArrayList<String> inputList = new ArrayList<>();
         for(String strName : m_GroceryPlanning.m_Ingredients.getAllIngredients())
         {
             RecipeItemsAdapter adapterItems = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
-            if(adapterItems.containsItem(strName))
+            if(adapterItems == null || adapterItems.containsItem(strName))
             {
                 continue;
             }
@@ -258,48 +254,52 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
     {
-        if(tag.equals("addRecipe"))
-        {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            final Integer iNrPersons = preferences.getInt(SettingsActivity.KEY_DEFAULT_NRPERSONS, 4);
-
-            m_GroceryPlanning.m_Recipes.addRecipe(strInput, iNrPersons);
-            ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
-            adapter.add(strInput);
-            m_SpinnerRecipes.setSelection(adapter.getCount() - 1);
-            updateVisibility();
-        }
-        else if(tag.equals("renameRecipe"))
-        {
-            final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-
-            m_GroceryPlanning.m_Recipes.renameRecipe(strCurrentRecipe, strInput);
-
-            int index = m_SpinnerRecipes.getSelectedItemPosition();
-            ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_SpinnerRecipes.getAdapter();
-            adapter.remove(strCurrentRecipe);
-            adapter.insert(strInput, index);
-            m_SpinnerRecipes.setSelection(index);
-
-            Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strInput), Toast.LENGTH_SHORT).show();
-        }
-        else if(tag.equals("addRecipeItem"))
-        {
-            String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-            Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
-
-            RecipeItem item = new RecipeItem();
-            item.m_Ingredient = strInput;
-            item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strInput).m_DefaultUnit;
-            recipe.m_Items.add(item);
-
-            RecipeItemsAdapter adapter = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
-            if(adapter == null)
+        switch(tag) {
+            case "addRecipe":
             {
-                return;
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                final Integer iNrPersons = preferences.getInt(SettingsActivity.KEY_DEFAULT_NRPERSONS, 4);
+
+                m_GroceryPlanning.m_Recipes.addRecipe(strInput, iNrPersons);
+                m_SpinnerRecipesAdapter.add(strInput);
+                m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getCount() - 1);
+                updateVisibility();
+                break;
             }
-            adapter.notifyItemInserted(recipe.m_Items.size()-1);
-            adapter.setActiveElement(strInput);
+
+            case "renameRecipe":
+            {
+                final String strCurrentRecipe = (String) m_SpinnerRecipes.getSelectedItem();
+
+                m_GroceryPlanning.m_Recipes.renameRecipe(strCurrentRecipe, strInput);
+
+                int index = m_SpinnerRecipes.getSelectedItemPosition();
+                m_SpinnerRecipesAdapter.remove(strCurrentRecipe);
+                m_SpinnerRecipesAdapter.insert(strInput, index);
+                m_SpinnerRecipes.setSelection(index);
+
+                Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strInput), Toast.LENGTH_SHORT).show();
+                break;
+            }
+
+            case "addRecipeItem":
+            {
+                String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
+
+                RecipeItem item = new RecipeItem();
+                item.m_Ingredient = strInput;
+                item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strInput).m_DefaultUnit;
+                recipe.m_Items.add(item);
+
+                RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
+                if (adapter == null) {
+                    return;
+                }
+                adapter.notifyItemInserted(recipe.m_Items.size() - 1);
+                adapter.setActiveElement(strInput);
+                break;
+            }
         }
     }
 
@@ -309,38 +309,35 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
         m_GroceryPlanning.m_Recipes.setActiveRecipe(strRecipe);
 
-        m_EditTextNrPersons.setText(recipe.m_NumberOfPersons.toString());
+        m_EditTextNrPersons.setText(String.format(Locale.getDefault(), "%d", recipe.m_NumberOfPersons));
 
         m_Adapter = new RecipeItemsAdapter(m_RecyclerView, recipe);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v)
-                    {
-                        RecipeItemsAdapter adapter = (RecipeItemsAdapter) recyclerView.getAdapter();
-                        RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
+            (RecyclerView recyclerView, int position, View v) ->
+            {
+                RecipeItemsAdapter adapter = (RecipeItemsAdapter) recyclerView.getAdapter();
+                RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
 
-                        if(adapter == null)
-                        {
-                            return;
-                        }
-
-                        if(vh.getID().equals(adapter.getActiveElement()))
-                        {
-                            adapter.setActiveElement("");
-                        }
-                        else
-                        {
-                            adapter.setActiveElement(vh.getID());
-                        }
-                    }
+                if(adapter == null)
+                {
+                    return;
                 }
+
+                if(vh.getID().equals(adapter.getActiveElement()))
+                {
+                    adapter.setActiveElement("");
+                }
+                else
+                {
+                    adapter.setActiveElement(vh.getID());
+                }
+            }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<RecipeItemsAdapter>(m_RecyclerView,
-                                                                                                m_RecyclerView.getContext(),
-                                                                                                R.drawable.ic_delete_black_24dp,
-                                                                                                false));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
+                                                                                              this,
+                                                                                              R.drawable.ic_delete_black_24dp,
+                                                                                              false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerView);
 
         if(m_SavedActiveElement != null && m_SavedActiveRecipe != null)

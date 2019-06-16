@@ -45,12 +45,12 @@ import java.util.LinkedHashMap;
 public class DataSynchronizationActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
     // Type: P2P_STAR or P2P_POINT_TO_POINT
-    private final Strategy m_Strategy = Strategy.P2P_POINT_TO_POINT;
-    private final String m_ServiceID = "ch.phwidmer.einkaufsliste.Service";
+    private static final Strategy m_Strategy = Strategy.P2P_POINT_TO_POINT;
+    private static final String m_ServiceID = "ch.phwidmer.einkaufsliste.Service";
 
-    private final String m_TagEKList = "EK-LIST";
-    private final String m_TagEKRequestFile = "EK-REQUESTFILE";
-    private final String m_TagEKFileInfo = "EK-FILEID";
+    private static final String m_TagEKList = "EK-LIST";
+    private static final String m_TagEKRequestFile = "EK-REQUESTFILE";
+    private static final String m_TagEKFileInfo = "EK-FILEID";
 
     private String m_strSaveFilePath;
     private String m_DeviceName;
@@ -65,10 +65,12 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
 
     private LinkedHashMap<String, String>   m_Devices;
 
-    private ListView m_ListViewDevices;
     private ListView m_ListViewAvailableFiles;
     private Button m_ButtonDiscover;
     private Button m_ButtonAdvertise;
+
+    private ArrayAdapter<CharSequence> m_AdapterListViewDevices;
+    private ArrayAdapter<CharSequence> m_AdapterAvailableFiles;
 
     private String m_ConnectedEndpointId;
 
@@ -90,9 +92,8 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                 {
                     // Remove tag-element and split remainder
                     String[] splitResult = strResult.replace(m_TagEKList + ";", "").split(";");
-                    ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) m_ListViewAvailableFiles.getAdapter();
-                    adapter.clear();
-                    adapter.addAll(splitResult);
+                    m_AdapterAvailableFiles.clear();
+                    m_AdapterAvailableFiles.addAll(splitResult);
                 }
                 else if(strResult.startsWith(m_TagEKRequestFile))
                 {
@@ -151,7 +152,16 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                 filePayloadFilenames.remove(payloadId);
 
                 // Get the received file (which will be in the Downloads folder)
-                File payloadFile = filePayload.asFile().asJavaFile();
+                Payload.File file = filePayload.asFile();
+                if(file == null)
+                {
+                    return;
+                }
+                File payloadFile = file.asJavaFile();
+                if(payloadFile == null)
+                {
+                    return;
+                }
 
                 if(!existsFileAlready(filename))
                 {
@@ -184,6 +194,10 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                     return;
                 }
                 Payload payload = incomingFilePayloads.remove(payloadId);
+                if(payload == null)
+                {
+                    return;
+                }
                 completedFilePayloads.put(payloadId, payload);
                 if (payload.getType() == Payload.Type.FILE) {
                     processFilePayload(payloadId);
@@ -200,7 +214,7 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
         Intent intent = getIntent();
         m_strSaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEDFILESPATH);
 
-        m_ListViewDevices = findViewById(R.id.listviewOtherDevices);
+        ListView listViewDevices = findViewById(R.id.listviewOtherDevices);
         m_ListViewAvailableFiles = findViewById(R.id.listviewAvailableFiles);
         m_ButtonAdvertise = findViewById(R.id.buttonAdvertise);
         m_ButtonDiscover = findViewById(R.id.buttonDiscover);
@@ -213,11 +227,11 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
 
         m_Connection = Nearby.getConnectionsClient(this);
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        m_ListViewDevices.setAdapter(adapter);
+        m_AdapterListViewDevices = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        listViewDevices.setAdapter(m_AdapterListViewDevices);
 
-        ArrayAdapter<CharSequence> adapterAvailableFiles = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        m_ListViewAvailableFiles.setAdapter(adapterAvailableFiles);
+        m_AdapterAvailableFiles = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        m_ListViewAvailableFiles.setAdapter(m_AdapterAvailableFiles);
 
         m_EndpointDiscoveryCallback =
                 new EndpointDiscoveryCallback() {
@@ -226,9 +240,7 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                         // An endpoint was found. Add it to the list of endpoints.
                         m_Devices.put(endpointId, info.getEndpointName());
 
-                        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_ListViewDevices.getAdapter();
-                        adapter.add(info.getEndpointName());
-                        m_ListViewDevices.setAdapter(adapter);
+                        m_AdapterListViewDevices.add(info.getEndpointName());
                     }
 
                     @Override
@@ -236,9 +248,7 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                         // A previously discovered endpoint has gone away.
                         m_Devices.remove(endpointId);
 
-                        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)m_ListViewDevices.getAdapter();
-                        adapter.remove(m_Devices.get(endpointId));
-                        m_ListViewDevices.setAdapter(adapter);
+                        m_AdapterListViewDevices.remove(m_Devices.get(endpointId));
                     }
                 };
 
@@ -304,10 +314,14 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                     }
                 };
 
-        m_ListViewDevices.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
+        listViewDevices.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
             {
                 // Connect to other device
-                String endpointId = (String)m_Devices.keySet().toArray()[position];
+                String endpointId = (String)m_AdapterListViewDevices.getItem(position);
+                if(endpointId == null)
+                {
+                    return;
+                }
 
                 m_Connection
                         .requestConnection(m_DeviceName, endpointId, m_ConnectionLifecycleCallback)
@@ -416,9 +430,9 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
 
     private void sendFilesList()
     {
-        String strPayload = m_TagEKList;
-
         File directory = new File(m_strSaveFilePath);
+        StringBuilder builder = new StringBuilder();
+        builder.append(m_TagEKList);
         for(File f : directory.listFiles())
         {
             if(!f.getName().endsWith(".json"))
@@ -426,10 +440,11 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                 continue;
             }
 
-            strPayload += ";" + f.getName();
+            builder.append(";");
+            builder.append(f.getName());
         }
 
-        byte[] bytesPayload = strPayload.getBytes();
+        byte[] bytesPayload = builder.toString().getBytes();
 
         Payload payload = Payload.fromBytes(bytesPayload);
         m_Connection.sendPayload(m_ConnectedEndpointId, payload);

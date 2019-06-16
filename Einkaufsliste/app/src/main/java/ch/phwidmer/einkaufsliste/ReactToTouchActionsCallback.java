@@ -11,18 +11,18 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 // Add touch reactions to a adapter. The adapter must implement ReactToTouchActionsInterface in order to be able to react to the events.
-public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsInterface> extends ItemTouchHelper.Callback
+public class ReactToTouchActionsCallback extends ItemTouchHelper.Callback
 {
     private Boolean m_bAllowDrag;
-    private RecyclerView m_RecyclerView;
+    private ReactToTouchActionsInterface m_Adapter;
 
     private Drawable  m_SwipeIcon;
 
     // Remark: We save the recyclerView instead of the adapter in order to still work correctly if the adapter gets reset.
-    ReactToTouchActionsCallback(RecyclerView recyclerView, Context context, int swipeIcon, boolean bAllowDrag)
+    ReactToTouchActionsCallback(ReactToTouchActionsInterface adapter, Context context, int swipeIcon, boolean bAllowDrag)
     {
         m_bAllowDrag = bAllowDrag;
-        m_RecyclerView = recyclerView;
+        m_Adapter = adapter;
 
         m_SwipeIcon = ContextCompat.getDrawable(context, swipeIcon);
     }
@@ -30,8 +30,7 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder)
     {
-        MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
-        boolean bSwipeAlloed = adapter.swipeAllowed(viewHolder);
+        boolean bSwipeAlloed = m_Adapter.swipeAllowed(viewHolder);
         final int swipeFlags = bSwipeAlloed ? ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT : 0;
         final int dragFlags = m_bAllowDrag ? ItemTouchHelper.UP | ItemTouchHelper.DOWN : 0;
         return makeMovementFlags(dragFlags, swipeFlags);
@@ -40,8 +39,7 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
-        adapter.reactToSwipe(position);
+        m_Adapter.reactToSwipe(position);
     }
 
     @Override
@@ -52,8 +50,7 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder vh, @NonNull RecyclerView.ViewHolder target)
     {
-        MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
-        return adapter.reactToDrag(vh, target);
+        return m_Adapter.reactToDrag(vh, target);
     }
 
     @Override
@@ -112,10 +109,9 @@ public class ReactToTouchActionsCallback<MyAdapter extends ReactToTouchActionsIn
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView,
-                          @NonNull RecyclerView.ViewHolder viewHolder) {
+                          @NonNull RecyclerView.ViewHolder viewHolder)
+    {
         super.clearView(recyclerView, viewHolder);
-
-        MyAdapter adapter = (MyAdapter) m_RecyclerView.getAdapter();
-        adapter.clearViewBackground(viewHolder);
+        m_Adapter.clearViewBackground(viewHolder);
     }
 }

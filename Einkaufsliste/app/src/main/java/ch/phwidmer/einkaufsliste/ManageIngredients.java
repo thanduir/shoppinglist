@@ -21,7 +21,6 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
 
     private RecyclerView               m_RecyclerView;
     private IngredientsAdapter         m_Adapter;
-    private RecyclerView.LayoutManager m_LayoutManager;
 
     private FloatingActionButton m_FAB;
 
@@ -37,30 +36,32 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
 
         m_RecyclerView = findViewById(R.id.recyclerViewIngredients);
         m_RecyclerView.setHasFixedSize(true);
-        m_LayoutManager = new LinearLayoutManager(this);
-        m_RecyclerView.setLayoutManager(m_LayoutManager);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        m_RecyclerView.setLayoutManager(layoutManager);
         m_Adapter = new IngredientsAdapter(m_RecyclerView, m_GroceryPlanning);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
-                        new ItemClickSupport.OnItemClickListener() {
-                            @Override
-                            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                                IngredientsAdapter adapter = (IngredientsAdapter) recyclerView.getAdapter();
-                                IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
+            (RecyclerView recyclerView, int position, View v) ->
+            {
+                IngredientsAdapter adapter = (IngredientsAdapter) recyclerView.getAdapter();
+                IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
+                if(adapter == null)
+                {
+                    return;
+                }
 
-                                if(vh.getID().equals(adapter.getActiveElement()))
-                                {
-                                    adapter.setActiveElement("");
-                                }
-                                else
-                                {
-                                    adapter.setActiveElement(vh.getID());
-                                }
-                            }
-                        }
-                );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<IngredientsAdapter>(m_RecyclerView,
-                                                                                              m_RecyclerView.getContext(),
+                if(vh.getID().equals(adapter.getActiveElement()))
+                {
+                    adapter.setActiveElement("");
+                }
+                else
+                {
+                    adapter.setActiveElement(vh.getID());
+                }
+            }
+        );
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
+                                                                                              this,
                                                                                               R.drawable.ic_delete_black_24dp,
                                                                                               false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerView);
@@ -124,13 +125,19 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
     {
+        IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
+        if(adapter == null)
+        {
+            return;
+        }
+
         if(tag.equals("addIngredient"))
         {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
 
             m_GroceryPlanning.m_Ingredients.addIngredient(strInput, Amount.Unit.valueOf(strDefaultUnit));
-            IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
+
             adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();
             m_RecyclerView.scrollToPosition(m_GroceryPlanning.m_Ingredients.getAllIngredients().indexOf(strInput));
@@ -141,7 +148,6 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
             m_GroceryPlanning.m_Recipes.onIngredientRenamed(strAdditonalInformation, strInput);
             m_GroceryPlanning.m_ShoppingList.onIngredientRenamed(strAdditonalInformation, strInput);
 
-            IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
             adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();
             Toast.makeText(m_RecyclerView.getContext(), m_RecyclerView.getContext().getResources().getString(R.string.text_ingredient_renamed, strAdditonalInformation, strInput), Toast.LENGTH_SHORT).show();

@@ -16,14 +16,11 @@ import android.widget.Spinner;
 
 public class GoShoppingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private GroceryPlanning m_GroceryPlanning;
-    private String          m_SaveFilePath;
 
     private SortedShoppingList m_SortedShoppingList;
 
     private Spinner                     m_SpinnerSortOrders;
     private RecyclerView                m_RecyclerView;
-    private RecyclerView.Adapter        m_Adapter;
-    private RecyclerView.LayoutManager  m_LayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +32,9 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
 
         m_SortedShoppingList = new SortedShoppingList(m_GroceryPlanning.m_ShoppingList, m_GroceryPlanning.m_Ingredients);
 
-        m_SpinnerSortOrders = (Spinner) findViewById(R.id.spinnerSortOrder);
+        m_SpinnerSortOrders = findViewById(R.id.spinnerSortOrder);
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         for(String strName : m_GroceryPlanning.m_Categories.getAllSortOrders())
         {
             adapter.add(strName);
@@ -54,7 +51,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final String strDefaultSortOrder = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, "");
-            if(!strDefaultSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strDefaultSortOrder))
+            if(strDefaultSortOrder != null && !strDefaultSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strDefaultSortOrder))
             {
                 m_SpinnerSortOrders.setSelection(adapter.getPosition(strDefaultSortOrder));
             }
@@ -62,8 +59,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
 
         m_RecyclerView = findViewById(R.id.recyclerViewShoppingListItems);
         m_RecyclerView.setHasFixedSize(true);
-        m_LayoutManager = new LinearLayoutManager(this);
-        m_RecyclerView.setLayoutManager(m_LayoutManager);
+        m_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -94,31 +90,32 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         m_GroceryPlanning.m_ShoppingList.setCurrentSortOrder(strSortOrder);
 
         m_SortedShoppingList.setSortOrder(strSortOrder, order);
-        m_Adapter = new GoShoppingAdapter(m_RecyclerView, m_SortedShoppingList);
-        m_RecyclerView.setAdapter(m_Adapter);
+        RecyclerView.Adapter adapter = new GoShoppingAdapter(m_RecyclerView, m_SortedShoppingList);
+        m_RecyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v)
-                    {
-                        if(m_SortedShoppingList.isCategory(position))
-                        {
-                            return;
-                        }
-
-                        SortedShoppingList.CategoryShoppingItem item = m_SortedShoppingList.getListItem(position);
-                        item.invertStatus();
-
-                        GoShoppingAdapter adapter = (GoShoppingAdapter)recyclerView.getAdapter();
-                        GoShoppingAdapter.ViewHolder vh = (GoShoppingAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
-                        adapter.updateAppearance(vh, position);
-                    }
+            (RecyclerView recyclerView, int position, View v) ->
+            {
+                if(m_SortedShoppingList.isCategory(position))
+                {
+                    return;
                 }
+
+                SortedShoppingList.CategoryShoppingItem item = m_SortedShoppingList.getListItem(position);
+                item.invertStatus();
+
+                GoShoppingAdapter goShoppingAdapter = (GoShoppingAdapter)recyclerView.getAdapter();
+                if(goShoppingAdapter == null)
+                {
+                    return;
+                }
+                GoShoppingAdapter.ViewHolder vh = (GoShoppingAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
+                goShoppingAdapter.updateAppearance(vh, position);
+            }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<GoShoppingAdapter>(m_RecyclerView,
-                                                                                                m_RecyclerView.getContext(),
-                                                                                                R.drawable.ic_check_black_24dp,
-                                                                                                false));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
+                                                                                              this,
+                                                                                              R.drawable.ic_check_black_24dp,
+                                                                                              false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerView);
     }
 

@@ -16,7 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class ItemClickSupport {
+class ItemClickSupport {
     private final RecyclerView mRecyclerView;
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
@@ -94,8 +94,8 @@ public class ItemClickSupport {
         view.setTag(R.id.item_click_support, null);
     }
 
-    public interface OnItemClickListener {
-
+    public interface OnItemClickListener
+    {
         void onItemClicked(RecyclerView recyclerView, int position, View v);
     }
 

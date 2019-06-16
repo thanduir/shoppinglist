@@ -98,9 +98,9 @@
     <string name="unit_mililiter_short">ml</string>
     <string name="unit_dessertspoon_short">ds</string>
     <string name="unit_teaspoon_short">ts</string>
-    <string name="unit_unitless_short"></string>
+    <string name="unit_unitless_short"/>
 
-    <string name="unit_count_short_prefix"></string>
+    <string name="unit_count_short_prefix"/>
     <string name="unit_kilogram_short_prefix">kg</string>
     <string name="unit_gram_short_prefix">g</string>
     <string name="unit_liter_short_prefix">L</string>
@@ -108,7 +108,7 @@
     <string name="unit_mililiter_short_prefix">ml</string>
     <string name="unit_dessertspoon_short_prefix">ds</string>
     <string name="unit_teaspoon_short_prefix">ts</string>
-    <string name="unit_unitless_short_prefix"></string>
+    <string name="unit_unitless_short_prefix"/>
 
     <string name="size_small">Small</string>
     <string name="size_normal">Normal</string>

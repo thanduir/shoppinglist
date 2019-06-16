@@ -17,6 +17,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:clickable="true"
+        android:focusable="true"
         android:paddingLeft="10dp"
         android:paddingTop="0dp"
         android:paddingRight="10dp"
@@ -35,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:text="@string/text_default_unit" />
 
@@ -53,6 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/text_default_nrpersons" />
 
             <EditText
@@ -71,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:text="@string/text_default_sortorder" />
 

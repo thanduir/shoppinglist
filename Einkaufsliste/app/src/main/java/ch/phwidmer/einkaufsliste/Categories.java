@@ -146,9 +146,9 @@ class Categories implements Parcelable
     void addSortOrder(String strName)
     {
         SortOrder order = new SortOrder();
-        for(Object obj : m_Categories.toArray())
+        for(String str : m_Categories)
         {
-            order.m_CategoriesOrder.add(new Category((String)obj));
+            order.m_CategoriesOrder.add(new Category(str));
         }
         m_SortOrders.put(strName, order);
     }
@@ -216,48 +216,55 @@ class Categories implements Parcelable
         while (reader.hasNext())
         {
             String name = reader.nextName();
-            if(name.equals("id"))
-            {
-                String id = reader.nextString();
-                if(!id.equals("Categories"))
+            switch(name) {
+                case "id":
                 {
-                    throw new IOException();
+                    String id = reader.nextString();
+                    if (!id.equals("Categories")) {
+                        throw new IOException();
+                    }
+                    break;
                 }
-            }
-            else if(name.equals("activeSortOrder"))
-            {
-                m_ActiveSortOrder = reader.nextString();
-            }
-            else if (name.equals("all categories"))
-            {
-                reader.beginArray();
-                while (reader.hasNext())
-                {
-                    addCategory(reader.nextString());
-                }
-                reader.endArray();
-            }
-            else if (name.equals("sortOrders"))
-            {
-                reader.beginObject();
-                while (reader.hasNext())
-                {
-                    String orderName = reader.nextName();
-                    SortOrder order = new SortOrder();
 
+                case ("activeSortOrder"):
+                {
+                    m_ActiveSortOrder = reader.nextString();
+                    break;
+                }
+
+                case ("all categories"):
+                {
                     reader.beginArray();
-                    while (reader.hasNext())
-                    {
-                        order.m_CategoriesOrder.add(getCategory(reader.nextString()));
+                    while (reader.hasNext()) {
+                        addCategory(reader.nextString());
                     }
                     reader.endArray();
-                    m_SortOrders.put(orderName, order);
+                    break;
                 }
-                reader.endObject();
-            }
-            else
-            {
-                reader.skipValue();
+
+                case ("sortOrders"):
+                {
+                    reader.beginObject();
+                    while (reader.hasNext()) {
+                        String orderName = reader.nextName();
+                        SortOrder order = new SortOrder();
+
+                        reader.beginArray();
+                        while (reader.hasNext()) {
+                            order.m_CategoriesOrder.add(getCategory(reader.nextString()));
+                        }
+                        reader.endArray();
+                        m_SortOrders.put(orderName, order);
+                    }
+                    reader.endObject();
+                    break;
+                }
+
+                default:
+                {
+                    reader.skipValue();
+                    break;
+                }
             }
         }
 

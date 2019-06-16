@@ -77,6 +77,10 @@
     <string name="requesting_file">Fordere Datei %s an.</string>
     <string name="permission_not_granted">Zugriffsrechte nicht erteilt.</string>
 
+    <string name="accept_connection_header">Verbindung zu %s akzeptieren</string>
+    <string name="accept_connection_confirm_code">Bitte bestätigen, dass der Code auf beiden Geräten derselbe ist: %s</string>
+    <string name="accept">Akzeptieren</string>
+
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>
     <string name="unit_gram_long">Gramm</string>

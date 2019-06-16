@@ -93,6 +93,10 @@ public class InputStringDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(getArguments() == null)
+        {
+            return;
+        }
         m_Title = getArguments().getString("title");
         m_AdditonalInformation = getArguments().getString("additionalInfo");
         m_DefaultValue = getArguments().getString("defaultValue");
@@ -140,7 +144,11 @@ public class InputStringDialogFragment extends DialogFragment {
         final View mainView = inflater.inflate(R.layout.overlay_input_from_list, container, false);
 
         AutoCompleteTextView inputView = mainView.findViewById(R.id.inputListControl);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_dropdown_item_1line, m_ListOfSpecialInputs);
+        if(getContext() == null)
+        {
+            return null;
+        }
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, m_ListOfSpecialInputs);
         inputView.setAdapter(adapter);
         inputView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -158,15 +166,13 @@ public class InputStringDialogFragment extends DialogFragment {
             public void afterTextChanged(Editable s) {
             }
         });
-        inputView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    AutoCompleteTextView view = mainView.findViewById(R.id.inputListControl);
-                    if (view.getText().toString().length() == 0) {
-                        // We want to trigger the drop down, replace the text.
-                        view.setText("");
-                    }
+        inputView.setOnFocusChangeListener((View v, boolean hasFocus) ->
+        {
+            if (hasFocus) {
+                AutoCompleteTextView view = mainView.findViewById(R.id.inputListControl);
+                if (view.getText().toString().length() == 0) {
+                    // We want to trigger the drop down, replace the text.
+                    view.setText("");
                 }
             }
         });
@@ -177,6 +183,11 @@ public class InputStringDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        if(getActivity() == null)
+        {
+            return null;
+        }
+
         View view;
         if(m_InputFromList)
         {
@@ -187,57 +198,67 @@ public class InputStringDialogFragment extends DialogFragment {
             view = setupStringInput(inflater, container);
         }
 
+        if(view == null)
+        {
+            return null;
+        }
+
         TextView textView = view.findViewById(R.id.textViewTitle);
         textView.setText(m_Title);
 
         Button buttonCancel = view.findViewById(R.id.ButtonCancel);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        buttonCancel.setOnClickListener((View v) -> dismiss());
 
         final View mainView = view;
         Button buttonOk = mainView.findViewById(R.id.ButtonOk);
         buttonOk.setEnabled(!m_AdditonalInformation.isEmpty());
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(!m_InputFromList && !m_ConfirmElementsInList)
+        buttonOk.setOnClickListener((View v) ->
+        {
+            if(!m_InputFromList && !m_ConfirmElementsInList)
+            {
+                EditText editText = mainView.findViewById(R.id.editTextInput);
+                InputStringResponder activity = (InputStringResponder) getActivity();
+                if(activity == null)
                 {
-                    EditText editText = mainView.findViewById(R.id.editTextInput);
-                    ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+                    return;
                 }
-                else if(m_ConfirmElementsInList && !m_InputFromList)
+                activity.onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+            }
+            else if(m_ConfirmElementsInList && !m_InputFromList)
+            {
+                EditText editText = mainView.findViewById(R.id.editTextInput);
+                if(m_ListOfSpecialInputs.contains(editText.getText().toString()))
                 {
-                    EditText editText = mainView.findViewById(R.id.editTextInput);
-                    if(m_ListOfSpecialInputs.contains(editText.getText().toString()))
-                    {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(getActivity().getResources().getString(R.string.file_exists_overwrite_header));
-                        builder.setMessage(getActivity().getResources().getString(R.string.file_exists_overwrite, editText.getText().toString()));
-                        builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
-                        {
-                            ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
-                            dismiss();
-                        });
-                        builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
-                        {
-                        });
-                        builder.show();
-                        return;
-                    }
-                    else
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(getActivity().getResources().getString(R.string.file_exists_overwrite_header));
+                    builder.setMessage(getActivity().getResources().getString(R.string.file_exists_overwrite, editText.getText().toString()));
+                    builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
                     {
                         ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
-                    }
+                        dismiss();
+                    });
+                    builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
+                    {
+                    });
+                    builder.show();
+                    return;
                 }
                 else
                 {
-                    AutoCompleteTextView view = mainView.findViewById(R.id.inputListControl);
-                    ((InputStringResponder) getActivity()).onStringInput(getTag(), view.getText().toString(), m_AdditonalInformation);
+                    ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
                 }
-                dismiss();
             }
+            else
+            {
+                AutoCompleteTextView inputView = mainView.findViewById(R.id.inputListControl);
+                InputStringResponder activity = (InputStringResponder) getActivity();
+                if(activity == null)
+                {
+                    return;
+                }
+                activity.onStringInput(getTag(), inputView.getText().toString(), m_AdditonalInformation);
+            }
+            dismiss();
         });
 
         return mainView;

@@ -81,6 +81,11 @@ class SortedShoppingList
 
     private void addToCategoryItem(LinkedList<CategoryShoppingItem> categoryItems, ShoppingListItem item)
     {
+        if(categoryItems == null)
+        {
+            return;
+        }
+
         for(CategoryShoppingItem csi : categoryItems)
         {
             if(!csi.m_Ingredient.equals(item.m_Ingredient))

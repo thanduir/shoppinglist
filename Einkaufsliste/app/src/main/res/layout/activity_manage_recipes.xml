@@ -22,7 +22,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TableLayout
-            android:layout_centerInParent="true"
             android:id="@+id/tableLayoutEditIntegrdient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,9 +32,12 @@
             android:layout_marginBottom="0dp"
             android:paddingTop="0dp"
             android:paddingLeft="0dp"
+            android:paddingStart="0dp"
             android:paddingRight="10dp"
+            android:paddingEnd="10dp"
             android:paddingBottom="0dp"
             android:clickable="true"
+            android:focusable="true"
             android:stretchColumns="0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +123,7 @@
                     android:text="@string/button_rename"
                     tools:layout_editor_absoluteX="338dp"
                     tools:layout_editor_absoluteY="16dp" />
-            </TableRow>>
+            </TableRow>
         </TableLayout>
 
         <android.support.v7.widget.RecyclerView

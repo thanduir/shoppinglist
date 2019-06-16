@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import java.text.Collator;
 import java.util.Comparator;
+import java.util.Locale;
 
 class Helper {
 
@@ -27,11 +28,11 @@ class Helper {
         }
         else if(f * 10 == Math.round(f * 10))
         {
-            return String.format("%.1f", f);
+            return String.format(Locale.getDefault(), "%.1f", f);
         }
         else
         {
-            return String.format("%.2f", f);
+            return String.format(Locale.getDefault(), "%.2f", f);
         }
     }
 }

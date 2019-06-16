@@ -70,13 +70,7 @@ class Recipes implements Parcelable
 
     Vector<String> getAllRecipes()
     {
-        Vector<String> vec = new Vector<>();
-        for(Object obj : m_Recipies.keySet())
-        {
-            String str = (String)obj;
-            vec.add(str);
-        }
-        return vec;
+        return new Vector<>(m_Recipies.keySet());
     }
 
     void renameRecipe(String strRecipe, String strNewName)
@@ -198,24 +192,32 @@ class Recipes implements Parcelable
                         while (reader.hasNext())
                         {
                             String itemName = reader.nextName();
-                            if(itemName.equals("amount"))
+                            switch(itemName)
                             {
-                                reader.beginArray();
+                                case "amount":
+                                {
+                                    reader.beginArray();
 
-                                item.m_Amount.m_Quantity = (float)reader.nextDouble();
-                                String str = reader.nextString();
-                                item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+                                    item.m_Amount.m_Quantity = (float)reader.nextDouble();
+                                    String str = reader.nextString();
+                                    item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
 
-                                reader.endArray();
-                            }
-                            else if(itemName.equals("size"))
-                            {
-                                String size = reader.nextString();
-                                item.m_Size = RecipeItem.Size.valueOf(size);
-                            }
-                            else if(itemName.equals("optional"))
-                            {
-                                item.m_Optional = reader.nextBoolean();
+                                    reader.endArray();
+                                    break;
+                                }
+
+                                case "size":
+                                {
+                                    String size = reader.nextString();
+                                    item.m_Size = RecipeItem.Size.valueOf(size);
+                                    break;
+                                }
+
+                                case "optional":
+                                {
+                                    item.m_Optional = reader.nextBoolean();
+                                    break;
+                                }
                             }
                         }
                         reader.endObject();

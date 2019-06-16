@@ -19,8 +19,8 @@ public class Amount {
         Unitless
     }
 
-    float m_Quantity = 1.0f;
-    Unit m_Unit = Unit.Count;
+    float m_Quantity;
+    Unit m_Unit;
 
     public Amount()
     {
@@ -36,18 +36,11 @@ public class Amount {
 
     void scaleAmount(float fFactor)
     {
-        switch(m_Unit)
+        if(m_Unit == Unit.Unitless)
         {
-            case Unitless:
-            {
-                break;
-            }
-
-            default:
-            {
-                m_Quantity *= fFactor;
-            }
+            return;
         }
+        m_Quantity *= fFactor;
     }
 
     static String toUIString(Context context, Unit unit)

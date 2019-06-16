@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.Locale;
 import java.util.Vector;
 
 public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
@@ -153,6 +154,11 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
     void setActiveElement(String strElement)
     {
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
+
         if(m_iActiveElement != -1)
         {
             View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
@@ -204,6 +210,10 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
 
             RecipeItem item = getRecipeItem(vh.m_id);
+            if(item == null)
+            {
+                return;
+            }
 
             ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
             for(Amount.Unit u : Amount.Unit.values())
@@ -215,7 +225,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             vh.m_SpinnerAmount.setOnItemSelectedListener(this);
             vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
 
-            ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<CharSequence>(vh.m_View.getContext(), R.layout.spinner_item);
+            ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
             for(RecipeItem.Size size : RecipeItem.Size.values())
             {
                 adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
@@ -225,24 +235,27 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             vh.m_SpinnerSize.setOnItemSelectedListener(this);
             vh.m_SpinnerSize.setSelection(item.m_Size.ordinal());
 
-            vh.m_CheckBoxOptional.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                {
-                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-                    if(child == null)
-                    {
-                        return;
-                    }
-                    RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-                    RecipeItem item = getRecipeItem(vh.getID());
-                    if(item == null)
-                    {
-                        return;
-                    }
+            if(m_RecyclerView.getLayoutManager() == null)
+            {
+                return;
+            }
 
-                    item.m_Optional = isChecked;
-                    vh.setDescription(vh.itemView.getContext(), item);
+            vh.m_CheckBoxOptional.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) ->
+            {
+                View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                if(child == null)
+                {
+                    return;
                 }
+                RecipeItemsAdapter.ViewHolder viewHolder = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+                RecipeItem recipeItem = getRecipeItem(viewHolder.getID());
+                if(recipeItem == null)
+                {
+                    return;
+                }
+
+                recipeItem.m_Optional = isChecked;
+                viewHolder.setDescription(viewHolder.itemView.getContext(), recipeItem);
             });
             vh.m_CheckBoxOptional.setChecked(item.m_Optional);
 
@@ -284,6 +297,11 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
+
         View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
         if(child == null)
         {
@@ -318,7 +336,16 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     {
         // Remove element
 
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
+
         View activeItem = m_RecyclerView.getLayoutManager().findViewByPosition(position);
+        if(activeItem == null)
+        {
+            return;
+        }
         RecipeItemsAdapter.ViewHolder holder = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
 
         m_RecentlyDeleted = getRecipeItem(holder.m_id);
@@ -331,19 +358,17 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         // Allow undo
 
         Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m_Recipe.m_Items.add(m_RecentlyDeletedIndex, m_RecentlyDeleted);
+        snackbar.setAction(R.string.text_undo, (View view) ->
+        {
+            m_Recipe.m_Items.add(m_RecentlyDeletedIndex, m_RecentlyDeleted);
 
-                notifyDataSetChanged();
+            notifyDataSetChanged();
 
-                m_RecentlyDeleted = null;
-                m_RecentlyDeletedIndex = -1;
+            m_RecentlyDeleted = null;
+            m_RecentlyDeletedIndex = -1;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
-                snackbar1.show();
-            }
+            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
+            snackbar1.show();
         });
         snackbar.show();
     }
@@ -362,10 +387,9 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
     private Vector<String> getRecipeItemsList()
     {
-        Vector<String> vec = new Vector<String>();
-        for(Object obj : m_Recipe.m_Items.toArray())
+        Vector<String> vec = new Vector<>();
+        for(RecipeItem item : m_Recipe.m_Items)
         {
-            RecipeItem item = (RecipeItem) obj;
             vec.add(item.m_Ingredient);
         }
         return vec;
@@ -392,7 +416,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         }
         else
         {
-            vh.m_EditTextAmount.setText(Float.toString(item.m_Amount.m_Quantity));
+            vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%f", item.m_Amount.m_Quantity));
             vh.m_EditTextAmount.setVisibility(View.VISIBLE);
         }
     }
@@ -402,6 +426,11 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         if(m_iActiveElement == -1)
         {
             vh.itemView.setBackgroundColor(0);
+            return;
+        }
+
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
             return;
         }
 

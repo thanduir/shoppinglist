@@ -21,11 +21,9 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         private TextView m_TextView;
         private CheckBox m_CheckBox;
         private String m_id;
-        private View m_View;
         public ViewHolder(View v)
         {
             super(v);
-            m_View = v;
             m_TextView = v.findViewById(R.id.textView);
             m_CheckBox = v.findViewById(R.id.checkBox);
             m_id = "";

@@ -53,15 +53,11 @@ class Ingredients implements Parcelable
         return m_Ingredients.get(strName);
     }
 
+    int getIngredientsCount() { return m_Ingredients.size(); }
+
     Vector<String> getAllIngredients()
     {
-        Vector<String> vec = new Vector<>();
-        for(Object obj : m_Ingredients.keySet())
-        {
-            String str = (String)obj;
-            vec.add(str);
-        }
-        return vec;
+        return new Vector<>(m_Ingredients.keySet());
     }
 
     void removeIngredient(String strName)
@@ -163,27 +159,38 @@ class Ingredients implements Parcelable
                 while (reader.hasNext())
                 {
                     String currentName = reader.nextName();
-                    if (currentName.equals("category"))
+                    switch(currentName)
                     {
-                        in.m_Category = m_Categories.getCategory(reader.nextString());
-                    }
-                    else if(currentName.equals("provenance"))
-                    {
-                        in.m_strProvenance = reader.nextString();
-                        if(m_Categories.getSortOrder(in.m_strProvenance) == null && !in.m_strProvenance.equals(c_strProvenanceEverywhere))
+                        case "category":
                         {
-                            // Provenance doesn't exist as a SortOrder -> set default provenance.
-                            in.m_strProvenance = c_strProvenanceEverywhere;
+                            in.m_Category = m_Categories.getCategory(reader.nextString());
+                            break;
                         }
-                    }
-                    else if(currentName.equals("default-unit"))
-                    {
-                        String unit = reader.nextString();
-                        in.m_DefaultUnit = Amount.Unit.valueOf(unit);
-                    }
-                    else
-                    {
-                        reader.skipValue();
+
+
+                        case "provenance":
+                        {
+                            in.m_strProvenance = reader.nextString();
+                            if(m_Categories.getSortOrder(in.m_strProvenance) == null && !in.m_strProvenance.equals(c_strProvenanceEverywhere))
+                            {
+                                // Provenance doesn't exist as a SortOrder -> set default provenance.
+                                in.m_strProvenance = c_strProvenanceEverywhere;
+                            }
+                            break;
+                        }
+
+                        case "default-unit":
+                        {
+                            String unit = reader.nextString();
+                            in.m_DefaultUnit = Amount.Unit.valueOf(unit);
+                            break;
+                        }
+
+                        default:
+                        {
+                            reader.skipValue();
+                            break;
+                        }
                     }
                 }
                 reader.endObject();

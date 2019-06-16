@@ -8,7 +8,7 @@ class ShoppingListItem implements Parcelable
     public enum Status
     {
         None,
-        Taken;
+        Taken
     }
 
     Status           m_Status = Status.None;

@@ -106,7 +106,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public int getItemCount()
     {
-        return getSortedIngredients().size();
+        return m_GroceryPlanning.m_Ingredients.getIngredientsCount();
     }
 
     String getActiveElement()
@@ -120,6 +120,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     void setActiveElement(String strElement)
     {
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
+
         if(m_iActiveElement != -1)
         {
             View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
@@ -232,7 +237,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        if(m_iActiveElement == -1)
+        if(m_iActiveElement == -1 || m_RecyclerView.getLayoutManager() == null)
         {
             return;
         }
@@ -277,7 +282,15 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     {
         // Remove element
 
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
         View activeItem = m_RecyclerView.getLayoutManager().findViewByPosition(position);
+        if(activeItem == null)
+        {
+            return;
+        }
         IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
         String strIngredient = (String)holder.m_TextView.getText();
 
@@ -347,6 +360,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         if(m_iActiveElement == -1)
         {
             vh.itemView.setBackgroundColor(0);
+            return;
+        }
+
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
             return;
         }
 

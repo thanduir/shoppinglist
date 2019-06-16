@@ -1,6 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -25,7 +26,6 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
     private RecyclerView                m_RecyclerViewRecipes;
     private ShoppingRecipesAdapter      m_AdapterRecipes;
-    private RecyclerView.LayoutManager  m_LayoutManagerRecipes;
 
     private FloatingActionButton m_FAB;
 
@@ -41,33 +41,34 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
         m_RecyclerViewRecipes = findViewById(R.id.recyclerViewShoppingRecipe);
         m_RecyclerViewRecipes.setHasFixedSize(true);
-        m_LayoutManagerRecipes = new LinearLayoutManager(this);
-        m_RecyclerViewRecipes.setLayoutManager(m_LayoutManagerRecipes);
+        RecyclerView.LayoutManager layoutManagerRecipes = new LinearLayoutManager(this);
+        m_RecyclerViewRecipes.setLayoutManager(layoutManagerRecipes);
         m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
         ItemClickSupport.addTo(m_RecyclerViewRecipes).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v)
+                (RecyclerView recyclerView, int position, View v) ->
+                {
+                    ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter) recyclerView.getAdapter();
+                    ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
+                    if(adapter == null)
                     {
-                        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter) recyclerView.getAdapter();
-                        ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder) recyclerView.getChildViewHolder(v);
+                        return;
+                    }
 
-                        if(vh.getID().equals(adapter.getActiveElement()))
-                        {
-                            adapter.setActiveElement(null);
-                        }
-                        else
-                        {
-                            adapter.setActiveElement(vh.getID());
-                        }
+                    if(vh.getID().equals(adapter.getActiveElement()))
+                    {
+                        adapter.setActiveElement(null);
+                    }
+                    else
+                    {
+                        adapter.setActiveElement(vh.getID());
                     }
                 }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback<ShoppingRecipesAdapter>(m_RecyclerViewRecipes,
-                                                                            m_RecyclerViewRecipes.getContext(),
-                                                                            R.drawable.ic_delete_black_24dp,
-                                                                             false));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerViewRecipes.getAdapter(),
+                                                                                              this,
+                                                                                              R.drawable.ic_delete_black_24dp,
+                                                                                              false));
         itemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
 
         if(savedInstanceState != null)
@@ -82,7 +83,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
         m_RecyclerViewRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
@@ -117,11 +118,11 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
     public void onAddShoppingRecipe(View v)
     {
-        ArrayList<String> inputList = new ArrayList<String>();
+        ArrayList<String> inputList = new ArrayList<>();
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             ShoppingRecipesAdapter adapterItems = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-            if(adapterItems.containsItem(new Pair<>(strName, "")))
+            if(adapterItems == null || adapterItems.containsItem(new Pair<>(strName, "")))
             {
                 continue;
             }
@@ -139,38 +140,44 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
     {
-        if(tag.equals("addRecipeItem")) // See ShoppingRecipesAdapter
+        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
+        if(adapter == null)
         {
-            String strIngredient = strInput;
-            String strRecipe = strAdditonalInformation;
-
-            ShoppingListItem item = new ShoppingListItem();
-            item.m_Ingredient = strIngredient;
-            item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient).m_DefaultUnit;
-            m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strRecipe).m_Items.add(item);
-
-            Pair<String, String> newItem = new Pair<String, String>(strRecipe, strIngredient);
-
-            ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-            adapter.notifyDataSetChanged();
-            adapter.setActiveElement(newItem);
+            return;
         }
-        else if(tag.equals("changeRecipeScaling")) // See ShoppingRecipesAdapter
-        {
-            float fNewValue = Float.valueOf(strInput);
 
-            ShoppingList.ShoppingRecipe recipe = m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strAdditonalInformation);
-            recipe.changeScalingFactor(fNewValue);
-            m_RecyclerViewRecipes.getAdapter().notifyDataSetChanged();
-        }
-        else if(tag.equals("addShoppingRecipe"))
+        switch(tag)
         {
-            m_GroceryPlanning.m_ShoppingList.addFromRecipe(strInput, m_GroceryPlanning.m_Recipes.getRecipe(strInput));
+            case "addRecipeItem": // See ShoppingRecipesAdapter
+            {
+                ShoppingListItem item = new ShoppingListItem();
+                item.m_Ingredient = strInput;
+                item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strInput).m_DefaultUnit;
+                m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strAdditonalInformation).m_Items.add(item);
 
-            ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-            adapter.notifyDataSetChanged();
-            adapter.setActiveElement(new Pair<>(strInput, ""));
-            m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
+                Pair<String, String> newItem = new Pair<>(strAdditonalInformation, strInput);
+                adapter.notifyDataSetChanged();
+                adapter.setActiveElement(newItem);
+                break;
+            }
+
+            case "changeRecipeScaling": // See ShoppingRecipesAdapter
+            {
+                float fNewValue = Float.valueOf(strInput);
+
+                ShoppingList.ShoppingRecipe recipe = m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strAdditonalInformation);
+                recipe.changeScalingFactor(fNewValue);
+                adapter.notifyDataSetChanged();
+            }
+
+            case "addShoppingRecipe":
+            {
+                m_GroceryPlanning.m_ShoppingList.addFromRecipe(strInput, m_GroceryPlanning.m_Recipes.getRecipe(strInput));
+
+                adapter.notifyDataSetChanged();
+                adapter.setActiveElement(new Pair<>(strInput, ""));
+                m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
+            }
         }
     }
 
@@ -185,18 +192,16 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         // Allow undo
 
         Snackbar snackbar = Snackbar.make(m_RecyclerViewRecipes, R.string.text_shoppnglist_reset, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.text_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m_GroceryPlanning.m_ShoppingList = m_RecentlyDeletedShoppingList;
-                m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
-                m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
+        snackbar.setAction(R.string.text_undo, (View view) ->
+        {
+            m_GroceryPlanning.m_ShoppingList = m_RecentlyDeletedShoppingList;
+            m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
+            m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
 
-                m_RecentlyDeletedShoppingList = null;
+            m_RecentlyDeletedShoppingList = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_RecyclerViewRecipes, R.string.text_shoppnglist_restored, Snackbar.LENGTH_SHORT);
-                snackbar1.show();
-            }
+            Snackbar snackbar1 = Snackbar.make(m_RecyclerViewRecipes, R.string.text_shoppnglist_restored, Snackbar.LENGTH_SHORT);
+            snackbar1.show();
         });
         snackbar.show();
     }

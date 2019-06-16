@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.Locale;
+
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static String KEY_DEFAULT_NRPERSONS = "ch.phwidmer.einkaufsliste.DEF_NRPERSONS";
@@ -20,7 +22,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     public static String KEY_DEFAULT_SORORDER = "ch.phwidmer.einkaufsliste.DEF_SORORDER";
 
     private Spinner         m_SpinnerDefaultUnit;
-    private EditText        m_EditTextDefaultNrPersons;
     private Spinner         m_SpinnerDefaultSortOrder;
 
     @Override
@@ -32,12 +33,12 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         GroceryPlanning m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_SpinnerDefaultUnit = findViewById(R.id.spinnerDefaultUnit);
-        m_EditTextDefaultNrPersons = findViewById(R.id.editTextDefaultNrPersons);
+        EditText editTextDefaultNrPersons = findViewById(R.id.editTextDefaultNrPersons);
         m_SpinnerDefaultSortOrder = findViewById(R.id.spinnerDefaultSortOrder);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<CharSequence>(this, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<>(this, R.layout.spinner_item);
         for(Amount.Unit u : Amount.Unit.values())
         {
             adapterStdUnit.add(Amount.toUIString(this, u));
@@ -49,8 +50,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         m_SpinnerDefaultUnit.setSelection(Amount.Unit.valueOf(strDefaultUnit).ordinal());
 
         int iNrPersons = preferences.getInt(KEY_DEFAULT_NRPERSONS, 4);
-        m_EditTextDefaultNrPersons.setText(Integer.toString(iNrPersons));
-        m_EditTextDefaultNrPersons.addTextChangedListener(new TextWatcher() {
+        editTextDefaultNrPersons.setText(String.format(Locale.getDefault(), "%d", iNrPersons));
+        editTextDefaultNrPersons.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
                 if(s.length() == 0)
