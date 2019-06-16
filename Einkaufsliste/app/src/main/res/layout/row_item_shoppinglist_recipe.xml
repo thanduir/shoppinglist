@@ -38,6 +38,7 @@
             android:layout_width="?listPreferredItemHeight"
             android:layout_height="match_parent"
             android:scaleType="center"
+            android:contentDescription="@string/button_add"
             android:src="@drawable/ic_add_black_24dp" />
 
         <ImageView
@@ -45,6 +46,7 @@
             android:layout_width="?listPreferredItemHeight"
             android:layout_height="match_parent"
             android:scaleType="center"
+            android:contentDescription="@string/button_delete"
             android:src="@drawable/ic_delete_black_24dp" />
     </LinearLayout>
 

@@ -1,9 +1,6 @@
 TODO
 ====
 
-- Code cleanup (fix (if possible) all yellow notifications):
-    * layout files
-
 - slow loading of some activites. Check what can be done to improve speed:
     * ManageIngredients
     * ManageShoppingList
