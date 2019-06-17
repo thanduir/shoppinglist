@@ -122,7 +122,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
             ShoppingRecipesAdapter adapterItems = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
-            if(adapterItems == null || adapterItems.containsItem(new Pair<>(strName, "")))
+            if(adapterItems == null)
             {
                 continue;
             }
@@ -172,10 +172,18 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
             case "addShoppingRecipe":
             {
-                m_GroceryPlanning.m_ShoppingList.addFromRecipe(strInput, m_GroceryPlanning.m_Recipes.getRecipe(strInput));
+                String strRecipe = strInput;
+                int iNr = 2;
+                while(adapter.containsItem(new Pair<>(strRecipe, "")))
+                {
+                    strRecipe = String.format("%s (%d)", strInput, iNr);
+                    ++iNr;
+                }
+
+                m_GroceryPlanning.m_ShoppingList.addFromRecipe(strRecipe, m_GroceryPlanning.m_Recipes.getRecipe(strInput));
 
                 adapter.notifyDataSetChanged();
-                adapter.setActiveElement(new Pair<>(strInput, ""));
+                adapter.setActiveElement(new Pair<>(strRecipe, ""));
                 m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
             }
         }

@@ -497,7 +497,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
         else
         {
-            vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%f", item.m_Amount.m_Quantity));
+            vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_Quantity)));
             vh.m_EditTextAmount.setVisibility(View.VISIBLE);
         }
     }
