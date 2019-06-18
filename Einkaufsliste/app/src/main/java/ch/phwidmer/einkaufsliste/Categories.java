@@ -6,10 +6,10 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Vector;
 
 class Categories implements Parcelable
 {
@@ -50,7 +50,7 @@ class Categories implements Parcelable
     // CategorySortOrder
     class SortOrder
     {
-        Vector<Category> m_CategoriesOrder = new Vector<>();
+        ArrayList<Category> m_CategoriesOrder = new ArrayList<>();
     }
     private LinkedHashMap<String, SortOrder>  m_SortOrders;
 
@@ -99,9 +99,9 @@ class Categories implements Parcelable
         return null;
     }
 
-    Vector<String> getAllCategories()
+    ArrayList<String> getAllCategories()
     {
-        Vector<String> vec = new Vector<>();
+        ArrayList<String> vec = new ArrayList<>();
         for(Object obj : m_Categories.toArray())
         {
             vec.add((String)obj);
@@ -133,11 +133,11 @@ class Categories implements Parcelable
         Category newCategory = new Category(strNewName);
         for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
         {
-            Vector<Category> vec = e.getValue().m_CategoriesOrder;
+            ArrayList<Category> vec = e.getValue().m_CategoriesOrder;
 
             int index = vec.indexOf(category);
             vec.remove(index);
-            vec.insertElementAt(newCategory, index);
+            vec.add(index, newCategory);
         }
     }
 
@@ -167,9 +167,9 @@ class Categories implements Parcelable
         return m_SortOrders.get(strName);
     }
 
-    Vector<String> getAllSortOrders()
+    ArrayList<String> getAllSortOrders()
     {
-        return new Vector<>(m_SortOrders.keySet());
+        return new ArrayList<>(m_SortOrders.keySet());
     }
 
     void removeSortOrder(String strName)

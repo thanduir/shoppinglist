@@ -1,7 +1,6 @@
 package ch.phwidmer.einkaufsliste;
 
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
     private GroceryPlanning m_GroceryPlanning;
 
+    // TODO: Beide umbenennen?
     private static final String c_strStdDataFilename = "default.json";
     private static final String c_strSaveFilename = "einkaufsliste.json";
 
@@ -140,13 +140,21 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
     public void onExport()
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_saveas), "", "", getListOfExistingFiles(true));
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_saveas));
+        newFragment.setListInputsToConfirm(getListOfExistingFiles(true));
+        ArrayList<String> excludedList = new ArrayList<>();
+        excludedList.add(c_strStdDataFilename);
+        excludedList.add(c_strStdDataFilename.replace(".json", ""));
+        excludedList.add(c_strSaveFilename);
+        excludedList.add(c_strSaveFilename.replace(".json", ""));
+        newFragment.setListExcludedInputs(excludedList);
         newFragment.show(getSupportFragmentManager(), "onExport");
     }
 
     public void onImport()
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_load), "", getListOfExistingFiles(false));
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_load));
+        newFragment.setListOnlyAllowed(getListOfExistingFiles(false));
         newFragment.show(getSupportFragmentManager(), "onImport");
     }
 

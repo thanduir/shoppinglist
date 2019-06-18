@@ -20,8 +20,8 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Vector;
 
 public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
@@ -385,9 +385,9 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         return getRecipeItemsList().contains(strName);
     }
 
-    private Vector<String> getRecipeItemsList()
+    private ArrayList<String> getRecipeItemsList()
     {
-        Vector<String> vec = new Vector<>();
+        ArrayList<String> vec = new ArrayList<>();
         for(RecipeItem item : m_Recipe.m_Items)
         {
             vec.add(item.m_Ingredient);

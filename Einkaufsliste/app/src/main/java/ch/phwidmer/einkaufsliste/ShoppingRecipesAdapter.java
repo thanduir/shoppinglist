@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Vector;
 
 public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipesAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
@@ -461,9 +459,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         return getShoppingRecipes().size();
     }
 
-    private Vector<Pair<String, String>> getShoppingRecipes()
+    private ArrayList<Pair<String, String>> getShoppingRecipes()
     {
-        Vector<Pair<String, String>> vec = new Vector<>();
+        ArrayList<Pair<String, String>> vec = new ArrayList<>();
         for(String strRecipe : m_ShoppingList.getAllShoppingRecipes())
         {
             vec.add(new Pair<>(strRecipe, ""));
@@ -527,9 +525,10 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             inputList.add(strName);
         }
 
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient),
-                                                                            strRecipe,
-                                                                            inputList);
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient));
+        newFragment.setDefaultValue(strRecipe);
+        newFragment.setAdditionalInformation(strRecipe);
+        newFragment.setListOnlyAllowed(inputList);
         newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "addRecipeItem");
     }
 
@@ -599,10 +598,10 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
 
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_change_nrpersons, strRecipe),
-                                                                            strRecipe,
-                                                                            recipe.m_fScalingFactor.toString(),
-                                                                            InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_change_nrpersons, strRecipe));
+        newFragment.setAdditionalInformation(strRecipe);
+        newFragment.setDefaultValue(recipe.m_fScalingFactor.toString());
+        newFragment.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "changeRecipeScaling");
     }
 

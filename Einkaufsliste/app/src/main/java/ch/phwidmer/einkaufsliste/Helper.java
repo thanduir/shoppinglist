@@ -1,6 +1,7 @@
 package ch.phwidmer.einkaufsliste;
 
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -17,6 +18,22 @@ class Helper {
             instance.setStrength(Collator.NO_DECOMPOSITION);
             return instance.compare(s1.toLowerCase(), s2.toLowerCase());
         }
+    }
+
+    static boolean arrayListContainsIgnoreCase(ArrayList<String> list, String str)
+    {
+        final Collator instance = Collator.getInstance();
+        instance.setStrength(Collator.NO_DECOMPOSITION);
+
+        String toSearch = str.toLowerCase();
+        for(String s : list)
+        {
+            if(instance.equals(s.toLowerCase(), toSearch))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Format numbers: Write as integer without decimals if applicable, otherwise restrict decimal digits.

@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v7.app.AlertDialog;
@@ -177,7 +176,10 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
                 }
                 else
                 {
-                    DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.file_exists_already), payloadFile.getAbsolutePath(), filename, getListOfExistingFiles());
+                    InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.file_exists_already));
+                    newFragment.setAdditionalInformation(payloadFile.getAbsolutePath());
+                    newFragment.setDefaultValue(filename);
+                    newFragment.setListExcludedInputs(getListOfExistingFiles());
                     newFragment.show(getSupportFragmentManager(), "onCopiedFileAlreayExists");
                 }
             }

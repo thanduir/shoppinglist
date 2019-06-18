@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -209,7 +208,8 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     public void onAddRecipe(View v)
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_recipe), "");
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_recipe));
+        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Recipes.getAllRecipes());
         newFragment.show(getSupportFragmentManager(), "addRecipe");
     }
 
@@ -253,8 +253,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
-        // TODO: Dasselbe wie für copy: Don't allow current or existing name
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe), strCurrentRecipe);
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe));
+        newFragment.setDefaultValue(strCurrentRecipe);
+        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Recipes.getAllRecipes());
         newFragment.show(getSupportFragmentManager(), "renameRecipe");
     }
 
@@ -262,8 +263,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
-        // TODO: So anpassen, dass der aktuelle (und andere vorhandene?) Name nicht bestätigt werden kann! (-> braucht erweiterung der DialogFragment-Klasse)
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_copy_recipe, strCurrentRecipe), strCurrentRecipe);
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_copy_recipe, strCurrentRecipe));
+        newFragment.setDefaultValue(strCurrentRecipe);
+        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Recipes.getAllRecipes());
         newFragment.show(getSupportFragmentManager(), "copyRecipe");
     }
 
@@ -280,7 +282,8 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             inputList.add(strName);
         }
 
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient), "", inputList);
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient));
+        newFragment.setListOnlyAllowed(inputList);
         newFragment.show(getSupportFragmentManager(), "addRecipeItem");
     }
 

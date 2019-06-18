@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -124,7 +123,8 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
 
     public void onAddIngredient(View v)
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient), "");
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient));
+        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Ingredients.getAllIngredients());
         newFragment.show(getSupportFragmentManager(), "addIngredient");
     }
 

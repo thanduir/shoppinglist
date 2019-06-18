@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
@@ -344,14 +342,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return false;
     }
 
-    private Vector<String> getSortedIngredients()
+    private ArrayList<String> getSortedIngredients()
     {
         return m_GroceryPlanning.m_Ingredients.getAllIngredients();
     }
 
     private void renameIngredient(final String strIngredient)
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_ingredient, strIngredient), strIngredient);
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_ingredient, strIngredient));
+        newFragment.setDefaultValue(strIngredient);
+        newFragment.setAdditionalInformation(strIngredient);
+        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Ingredients.getAllIngredients());
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameIngredient");
     }
 

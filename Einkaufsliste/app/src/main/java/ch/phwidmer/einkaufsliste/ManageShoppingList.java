@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ManageShoppingList extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
@@ -140,7 +140,8 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
             return;
         }
 
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_import_recipe), "", inputList);
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_import_recipe));
+        newFragment.setListOnlyAllowed(inputList);
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
     }
 
@@ -182,7 +183,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                 int iNr = 2;
                 while(adapter.containsItem(new Pair<>(strRecipe, "")))
                 {
-                    strRecipe = String.format("%s (%d)", strInput, iNr);
+                    strRecipe = String.format(Locale.getDefault(), "%s (%d)", strInput, iNr);
                     ++iNr;
                 }
 

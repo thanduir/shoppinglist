@@ -9,7 +9,6 @@ import android.util.JsonWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TreeMap;
-import java.util.Vector;
 
 class Ingredients implements Parcelable
 {
@@ -44,7 +43,7 @@ class Ingredients implements Parcelable
         }
         Ingredient i = new Ingredient();
         i.m_DefaultUnit = defaultUnit;
-        i.m_Category = m_Categories.getCategory(m_Categories.getAllCategories().firstElement());
+        i.m_Category = m_Categories.getCategory(m_Categories.getAllCategories().get(0));
         m_Ingredients.put(strName, i);
     }
 
@@ -55,9 +54,9 @@ class Ingredients implements Parcelable
 
     int getIngredientsCount() { return m_Ingredients.size(); }
 
-    Vector<String> getAllIngredients()
+    ArrayList<String> getAllIngredients()
     {
-        return new Vector<>(m_Ingredients.keySet());
+        return new ArrayList<>(m_Ingredients.keySet());
     }
 
     void removeIngredient(String strName)

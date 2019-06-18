@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.TreeMap;
-import java.util.Vector;
 
 class Recipes implements Parcelable
 {
@@ -68,9 +67,9 @@ class Recipes implements Parcelable
         m_Recipies.remove(strName);
     }
 
-    Vector<String> getAllRecipes()
+    ArrayList<String> getAllRecipes()
     {
-        return new Vector<>(m_Recipies.keySet());
+        return new ArrayList<>(m_Recipies.keySet());
     }
 
     void renameRecipe(String strRecipe, String strNewName)

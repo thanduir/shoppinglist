@@ -1,10 +1,10 @@
 package ch.phwidmer.einkaufsliste;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Vector;
 
 // Generates the list of ingredients sorted by categories according to a sort order from the ShoppingList.
 class SortedShoppingList
@@ -61,7 +61,7 @@ class SortedShoppingList
 
         m_UnorderdList = new LinkedHashMap<>();
 
-        Vector<String> recipes = shoppingList.getAllShoppingRecipes();
+        ArrayList<String> recipes = shoppingList.getAllShoppingRecipes();
         for(String strName : recipes)
         {
             ShoppingList.ShoppingRecipe recipe = shoppingList.getShoppingRecipe(strName);

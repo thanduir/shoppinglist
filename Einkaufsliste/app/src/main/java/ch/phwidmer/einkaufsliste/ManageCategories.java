@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -115,13 +114,15 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
     public void onAddCategory(View v)
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.button_add_category), "");
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.button_add_category));
+        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Categories.getAllCategories());
         newFragment.show(getSupportFragmentManager(), "addCategory");
     }
 
     public void onAddSortOrder(View v)
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_sortorder), "");
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_sortorder));
+        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Categories.getAllSortOrders());
         newFragment.show(getSupportFragmentManager(), "addSortOrder");
     }
 

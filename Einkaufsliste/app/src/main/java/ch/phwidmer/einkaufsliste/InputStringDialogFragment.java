@@ -26,72 +26,90 @@ public class InputStringDialogFragment extends DialogFragment {
         void onStringInput(String tag, String strInput, String strAdditonalInformation);
     }
 
+    private static final String m_keyTitle = "title";
+    private static final String m_keyAdditionalInformation = "additionalInfo";
+    private static final String m_keyDefaultValue = "defaultValue";
+    private static final String m_keyInputType = "inputType";
+
+    private static final String m_keyListExcludedInputs = "listExcludedInputs";
+    private static final String m_keyListInputsToConfirm = "listInputsToConfirm";
+    private static final String m_keyListOnlyAllowed = "listOnlyAllowed";
+
     private String m_Title;
     private String m_AdditionalInformation;
     private String m_DefaultValue;
     private int m_InputType;
-    private Boolean m_InputFromList;
-    private Boolean m_ConfirmElementsInList;
-    private ArrayList<String> m_ListOfSpecialInputs;
 
-    /* TODO: REFACTOR THIS, list should have different possibilites: excludeOnList, onlyThoseFromList, confirmThoseOnList! Should it be possible to combine these Lists?
-          FIRST LIST ALL CURRENT (and usefull) VARIANTS, THEN DECIDE ON NEW CODE-STRUCTURE
-          ALSO LOOK AT OTHER TODO ITEM: "Lange (d.h. mehrzeilige) Nachrichten sind abgeschnitten!"
-     */
+    private ArrayList<String> m_ListExcludedInputs;
+    private ArrayList<String> m_ListInputsToConfirm;
+    private ArrayList<String> m_ListOnlyAllowed;
 
-    static InputStringDialogFragment newInstance(String strTitle, String strAdditonalInformation)
-    {
-        return newInstance(strTitle, strAdditonalInformation, strAdditonalInformation, InputType.TYPE_CLASS_TEXT);
-    }
-
-    static InputStringDialogFragment newInstance(String strTitle, String strAdditonalInformation, String defaultValue, int inputType)
+    static InputStringDialogFragment newInstance(String strTitle)
     {
         InputStringDialogFragment f = new InputStringDialogFragment();
 
         Bundle args = new Bundle();
-        args.putString("title", strTitle);
-        args.putString("additionalInfo", strAdditonalInformation);
-        args.putString("defaultValue", defaultValue);
-        args.putInt("inputType", inputType);
-        args.putBoolean("inputFromList", false);
-        args.putBoolean("confirmElementsInList", false);
+        args.putString(m_keyTitle, strTitle);
+        args.putString(m_keyAdditionalInformation, "");
+        args.putString(m_keyDefaultValue, "");
+        args.putInt(m_keyInputType, InputType.TYPE_CLASS_TEXT);
         f.setArguments(args);
 
         return f;
     }
 
-    static InputStringDialogFragment newInstance(String strTitle, String strAdditonalInformation, String defaultValue, ArrayList<String> listOfInputsToConfirm)
+    void setAdditionalInformation(String strAdditonalInformation)
     {
-        InputStringDialogFragment f = new InputStringDialogFragment();
-
-        Bundle args = new Bundle();
-        args.putString("title", strTitle);
-        args.putString("additionalInfo", strAdditonalInformation);
-        args.putString("defaultValue", defaultValue);
-        args.putInt("inputType", InputType.TYPE_CLASS_TEXT);
-        args.putBoolean("inputFromList", false);
-        args.putBoolean("confirmElementsInList", true);
-        args.putStringArrayList("listOfSpecialInputs", listOfInputsToConfirm);
-        f.setArguments(args);
-
-        return f;
+        if(getArguments() == null)
+        {
+            return;
+        }
+        getArguments().putString(m_keyAdditionalInformation, strAdditonalInformation);
     }
 
-    static InputStringDialogFragment newInstance(String strTitle, String strAdditonalInformation, ArrayList<String> listOfPossibleInputs)
+    void setDefaultValue(String strDefaultValue)
     {
-        InputStringDialogFragment f = new InputStringDialogFragment();
+        if(getArguments() == null)
+        {
+            return;
+        }
+        getArguments().putString(m_keyDefaultValue, strDefaultValue);
+    }
 
-        Bundle args = new Bundle();
-        args.putString("title", strTitle);
-        args.putString("additionalInfo", strAdditonalInformation);
-        args.putString("defaultValue", strAdditonalInformation);
-        args.putInt("inputType", InputType.TYPE_CLASS_TEXT);
-        args.putBoolean("inputFromList", true);
-        args.putBoolean("confirmElementsInList", false);
-        args.putStringArrayList("listOfSpecialInputs", listOfPossibleInputs);
-        f.setArguments(args);
+    void setInputType(int inputType)
+    {
+        if(getArguments() == null)
+        {
+            return;
+        }
+        getArguments().putInt(m_keyInputType, inputType);
+    }
 
-        return f;
+    void setListExcludedInputs(ArrayList<String> listExcludedInputs)
+    {
+        if(getArguments() == null)
+        {
+            return;
+        }
+        getArguments().putStringArrayList(m_keyListExcludedInputs, listExcludedInputs);
+    }
+
+    void setListInputsToConfirm(ArrayList<String> listInputsToConfirm)
+    {
+        if(getArguments() == null)
+        {
+            return;
+        }
+        getArguments().putStringArrayList(m_keyListInputsToConfirm, listInputsToConfirm);
+    }
+
+    void setListOnlyAllowed(ArrayList<String> listOnlyAllowed)
+    {
+        if(getArguments() == null)
+        {
+            return;
+        }
+        getArguments().putStringArrayList(m_keyListOnlyAllowed, listOnlyAllowed);
     }
 
     @Override
@@ -106,12 +124,10 @@ public class InputStringDialogFragment extends DialogFragment {
         m_AdditionalInformation = getArguments().getString("additionalInfo");
         m_DefaultValue = getArguments().getString("defaultValue");
         m_InputType = getArguments().getInt("inputType");
-        m_InputFromList = getArguments().getBoolean("inputFromList");
-        m_ConfirmElementsInList = getArguments().getBoolean("confirmElementsInList");
-        if(m_InputFromList || m_ConfirmElementsInList)
-        {
-            m_ListOfSpecialInputs = getArguments().getStringArrayList("listOfSpecialInputs");
-        }
+
+        m_ListExcludedInputs = getArguments().getStringArrayList(m_keyListExcludedInputs);
+        m_ListInputsToConfirm = getArguments().getStringArrayList(m_keyListInputsToConfirm);
+        m_ListOnlyAllowed = getArguments().getStringArrayList(m_keyListOnlyAllowed);
     }
 
     private View setupStringInput(LayoutInflater inflater, ViewGroup container)
@@ -133,7 +149,8 @@ public class InputStringDialogFragment extends DialogFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
                 Button button = mainView.findViewById(R.id.ButtonOk);
-                button.setEnabled(!s.toString().isEmpty());
+                String strInput = s.toString();
+                button.setEnabled(!strInput.isEmpty() && (m_ListExcludedInputs == null || !Helper.arrayListContainsIgnoreCase(m_ListExcludedInputs, strInput)));
             }
 
             @Override
@@ -153,7 +170,7 @@ public class InputStringDialogFragment extends DialogFragment {
         {
             return null;
         }
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, m_ListOfSpecialInputs);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, m_ListOnlyAllowed);
         inputView.setAdapter(adapter);
         inputView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -164,7 +181,9 @@ public class InputStringDialogFragment extends DialogFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
                 Button button = mainView.findViewById(R.id.ButtonOk);
-                button.setEnabled(m_ListOfSpecialInputs.contains(s.toString()));
+                String strInput = s.toString();
+                button.setEnabled(Helper.arrayListContainsIgnoreCase(m_ListOnlyAllowed, strInput)
+                                 && (m_ListExcludedInputs == null || !Helper.arrayListContainsIgnoreCase(m_ListExcludedInputs, strInput)));
             }
 
             @Override
@@ -194,7 +213,7 @@ public class InputStringDialogFragment extends DialogFragment {
         }
 
         View view;
-        if(m_InputFromList)
+        if(m_ListOnlyAllowed != null && m_ListOnlyAllowed.size() > 0)
         {
             view = setupInputFromStringList(inflater, container);
         }
@@ -216,52 +235,42 @@ public class InputStringDialogFragment extends DialogFragment {
 
         final View mainView = view;
         Button buttonOk = mainView.findViewById(R.id.ButtonOk);
-        buttonOk.setEnabled(!m_AdditionalInformation.isEmpty());
+        buttonOk.setEnabled(!m_DefaultValue.isEmpty()
+                            && (m_ListExcludedInputs == null || !Helper.arrayListContainsIgnoreCase(m_ListExcludedInputs, m_DefaultValue))
+                            && (m_ListOnlyAllowed == null || Helper.arrayListContainsIgnoreCase(m_ListOnlyAllowed, m_DefaultValue)));
         buttonOk.setOnClickListener((View v) ->
         {
-            if(!m_InputFromList && !m_ConfirmElementsInList)
+            String strInput;
+            if(m_ListOnlyAllowed != null && m_ListOnlyAllowed.size() > 0)
             {
-                EditText editText = mainView.findViewById(R.id.editTextInput);
-                InputStringResponder activity = (InputStringResponder) getActivity();
-                if(activity == null)
-                {
-                    return;
-                }
-                activity.onStringInput(getTag(), editText.getText().toString(), m_AdditionalInformation);
-            }
-            else if(m_ConfirmElementsInList && !m_InputFromList)
-            {
-                EditText editText = mainView.findViewById(R.id.editTextInput);
-                if(m_ListOfSpecialInputs.contains(editText.getText().toString()))
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getActivity().getResources().getString(R.string.file_exists_overwrite_header));
-                    builder.setMessage(getActivity().getResources().getString(R.string.file_exists_overwrite, editText.getText().toString()));
-                    builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
-                    {
-                        ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditionalInformation);
-                        dismiss();
-                    });
-                    builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
-                    {
-                    });
-                    builder.show();
-                    return;
-                }
-                else
-                {
-                    ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditionalInformation);
-                }
+                AutoCompleteTextView inputView = mainView.findViewById(R.id.inputListControl);
+                strInput = inputView.getText().toString();
             }
             else
             {
-                AutoCompleteTextView inputView = mainView.findViewById(R.id.inputListControl);
-                InputStringResponder activity = (InputStringResponder) getActivity();
-                if(activity == null)
+                EditText editText = mainView.findViewById(R.id.editTextInput);
+                strInput = editText.getText().toString();
+            }
+
+            if(m_ListInputsToConfirm != null && Helper.arrayListContainsIgnoreCase(m_ListInputsToConfirm, strInput))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(getActivity().getResources().getString(R.string.file_exists_overwrite_header));
+                builder.setMessage(getActivity().getResources().getString(R.string.file_exists_overwrite, strInput));
+                builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
                 {
-                    return;
-                }
-                activity.onStringInput(getTag(), inputView.getText().toString(), m_AdditionalInformation);
+                    ((InputStringResponder) getActivity()).onStringInput(getTag(), strInput, m_AdditionalInformation);
+                    dismiss();
+                });
+                builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
+                {
+                });
+                builder.show();
+                return;
+            }
+            else
+            {
+                ((InputStringResponder) getActivity()).onStringInput(getTag(), strInput, m_AdditionalInformation);
             }
             dismiss();
         });

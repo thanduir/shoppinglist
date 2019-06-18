@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Vector;
 
 class ShoppingList implements Parcelable
 {
@@ -75,9 +74,9 @@ class ShoppingList implements Parcelable
         return m_Items.get(strName);
     }
 
-    Vector<String> getAllShoppingRecipes()
+    ArrayList<String> getAllShoppingRecipes()
     {
-        return new Vector<>(m_Items.keySet());
+        return new ArrayList<>(m_Items.keySet());
     }
 
     void removeShoppingRecipe(String strName)

@@ -1,12 +1,8 @@
 TODO
 ====
 
-- Rezept-Kopier-Funktion implementieren!
-- DialogFragment: Lange (d.h. mehrzeilige) Nachrichten sind abgeschnitten!
-
 - Undo-Bar verdeckt floating action button, aber verschwindet z.T. ein bisschen schnell...
 - Braucht es für DelRecipe zuerst eine abfrage (aka "wirklich löschen?")? Brauchte es dies irgendwo sonst (auch) noch?
-
 - Annotations / remarks for shoppinglist items? (d.h. zusatzinformationen)
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
 - Alternativen in Rezepten (e.g. Poulet oder Tofu)! Wie könnte dies gehandhabt werden?

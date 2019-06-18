@@ -3,7 +3,6 @@ package ch.phwidmer.einkaufsliste;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -145,14 +144,17 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
         Categories.Category category = m_SortOrder.m_CategoriesOrder.get(oldPos);
         m_SortOrder.m_CategoriesOrder.remove(oldPos);
-        m_SortOrder.m_CategoriesOrder.insertElementAt(category, newPos);
+        m_SortOrder.m_CategoriesOrder.add(newPos, category);
         notifyItemMoved(oldPos, newPos);
         return true;
     }
 
     private void renameCategory(final Categories.Category category)
     {
-        DialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_category, category.getName()), category.getName());
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_category, category.getName()));
+        newFragment.setDefaultValue(category.getName());
+        newFragment.setAdditionalInformation(category.getName());
+        newFragment.setListExcludedInputs(m_Categories.getAllCategories());
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameCategory");
     }
 
