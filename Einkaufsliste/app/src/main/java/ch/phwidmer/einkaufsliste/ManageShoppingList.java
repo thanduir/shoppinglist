@@ -20,14 +20,16 @@ import java.util.ArrayList;
 
 public class ManageShoppingList extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    private GroceryPlanning m_GroceryPlanning;
+    private GroceryPlanning         m_GroceryPlanning;
 
-    private ShoppingList    m_RecentlyDeletedShoppingList;
+    private ShoppingList            m_RecentlyDeletedShoppingList;
 
-    private RecyclerView                m_RecyclerViewRecipes;
-    private ShoppingRecipesAdapter      m_AdapterRecipes;
+    private RecyclerView            m_RecyclerViewRecipes;
+    private ShoppingRecipesAdapter  m_AdapterRecipes;
 
-    private FloatingActionButton m_FAB;
+    private FloatingActionButton    m_FAB;
+
+    private ItemTouchHelper         m_ItemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +67,15 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                     }
                 }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerViewRecipes.getAdapter(),
+        if(m_ItemTouchHelper != null)
+        {
+            m_ItemTouchHelper.attachToRecyclerView(null);
+        }
+        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerViewRecipes.getAdapter(),
                                                                                               this,
                                                                                               R.drawable.ic_delete_black_24dp,
                                                                                               false));
-        itemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
+        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
 
         if(savedInstanceState != null)
         {

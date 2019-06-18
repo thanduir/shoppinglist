@@ -27,12 +27,17 @@ public class InputStringDialogFragment extends DialogFragment {
     }
 
     private String m_Title;
-    private String m_AdditonalInformation;
+    private String m_AdditionalInformation;
     private String m_DefaultValue;
     private int m_InputType;
     private Boolean m_InputFromList;
     private Boolean m_ConfirmElementsInList;
     private ArrayList<String> m_ListOfSpecialInputs;
+
+    /* TODO: REFACTOR THIS, list should have different possibilites: excludeOnList, onlyThoseFromList, confirmThoseOnList! Should it be possible to combine these Lists?
+          FIRST LIST ALL CURRENT (and usefull) VARIANTS, THEN DECIDE ON NEW CODE-STRUCTURE
+          ALSO LOOK AT OTHER TODO ITEM: "Lange (d.h. mehrzeilige) Nachrichten sind abgeschnitten!"
+     */
 
     static InputStringDialogFragment newInstance(String strTitle, String strAdditonalInformation)
     {
@@ -98,7 +103,7 @@ public class InputStringDialogFragment extends DialogFragment {
             return;
         }
         m_Title = getArguments().getString("title");
-        m_AdditonalInformation = getArguments().getString("additionalInfo");
+        m_AdditionalInformation = getArguments().getString("additionalInfo");
         m_DefaultValue = getArguments().getString("defaultValue");
         m_InputType = getArguments().getInt("inputType");
         m_InputFromList = getArguments().getBoolean("inputFromList");
@@ -211,7 +216,7 @@ public class InputStringDialogFragment extends DialogFragment {
 
         final View mainView = view;
         Button buttonOk = mainView.findViewById(R.id.ButtonOk);
-        buttonOk.setEnabled(!m_AdditonalInformation.isEmpty());
+        buttonOk.setEnabled(!m_AdditionalInformation.isEmpty());
         buttonOk.setOnClickListener((View v) ->
         {
             if(!m_InputFromList && !m_ConfirmElementsInList)
@@ -222,7 +227,7 @@ public class InputStringDialogFragment extends DialogFragment {
                 {
                     return;
                 }
-                activity.onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+                activity.onStringInput(getTag(), editText.getText().toString(), m_AdditionalInformation);
             }
             else if(m_ConfirmElementsInList && !m_InputFromList)
             {
@@ -234,7 +239,7 @@ public class InputStringDialogFragment extends DialogFragment {
                     builder.setMessage(getActivity().getResources().getString(R.string.file_exists_overwrite, editText.getText().toString()));
                     builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
                     {
-                        ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+                        ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditionalInformation);
                         dismiss();
                     });
                     builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
@@ -245,7 +250,7 @@ public class InputStringDialogFragment extends DialogFragment {
                 }
                 else
                 {
-                    ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditonalInformation);
+                    ((InputStringResponder) getActivity()).onStringInput(getTag(), editText.getText().toString(), m_AdditionalInformation);
                 }
             }
             else
@@ -256,7 +261,7 @@ public class InputStringDialogFragment extends DialogFragment {
                 {
                     return;
                 }
-                activity.onStringInput(getTag(), inputView.getText().toString(), m_AdditonalInformation);
+                activity.onStringInput(getTag(), inputView.getText().toString(), m_AdditionalInformation);
             }
             dismiss();
         });

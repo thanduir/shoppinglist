@@ -17,12 +17,13 @@ import android.widget.Toast;
 
 public class ManageIngredients extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    private GroceryPlanning m_GroceryPlanning;
+    private GroceryPlanning             m_GroceryPlanning;
 
-    private RecyclerView               m_RecyclerView;
-    private IngredientsAdapter         m_Adapter;
+    private RecyclerView                m_RecyclerView;
+    private IngredientsAdapter          m_Adapter;
 
-    private FloatingActionButton m_FAB;
+    private FloatingActionButton        m_FAB;
+    private ItemTouchHelper             m_ItemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +61,15 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
                 }
             }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
+        if(m_ItemTouchHelper != null)
+        {
+            m_ItemTouchHelper.attachToRecyclerView(null);
+        }
+        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
                                                                                               this,
                                                                                               R.drawable.ic_delete_black_24dp,
                                                                                               false));
-        itemTouchHelper.attachToRecyclerView(m_RecyclerView);
+        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerView);
 
         if(savedInstanceState != null)
         {

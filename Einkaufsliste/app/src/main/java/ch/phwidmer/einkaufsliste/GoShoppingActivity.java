@@ -14,13 +14,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class GoShoppingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private GroceryPlanning m_GroceryPlanning;
+public class GoShoppingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+{
+    private GroceryPlanning     m_GroceryPlanning;
 
-    private SortedShoppingList m_SortedShoppingList;
+    private SortedShoppingList  m_SortedShoppingList;
 
-    private Spinner                     m_SpinnerSortOrders;
-    private RecyclerView                m_RecyclerView;
+    private Spinner             m_SpinnerSortOrders;
+    private RecyclerView        m_RecyclerView;
+
+    private ItemTouchHelper     m_ItemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,11 +115,15 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
                 goShoppingAdapter.updateAppearance(vh, position);
             }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
+        if(m_ItemTouchHelper != null)
+        {
+            m_ItemTouchHelper.attachToRecyclerView(null);
+        }
+        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
                                                                                               this,
                                                                                               R.drawable.ic_check_black_24dp,
                                                                                               false));
-        itemTouchHelper.attachToRecyclerView(m_RecyclerView);
+        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerView);
     }
 
     public void onNothingSelected(AdapterView<?> parent)

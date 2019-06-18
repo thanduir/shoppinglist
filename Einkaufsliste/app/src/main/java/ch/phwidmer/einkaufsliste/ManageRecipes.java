@@ -14,11 +14,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,7 +38,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     private ArrayAdapter<CharSequence>  m_SpinnerRecipesAdapter;
 
-    private Button                      m_ButtonDelRecipe;
+    private ItemTouchHelper             m_ItemTouchHelper;
 
     private String                      m_strRecentlyDeletedRecipe;
     private Recipes.Recipe              m_RecentlyDeletedRecipe;
@@ -63,8 +64,6 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_EditTextNrPersons = findViewById(R.id.editText_NrPersons);
         m_textViewNrPersons = findViewById(R.id.textViewNrPersons);
         m_SpinnerRecipes = findViewById(R.id.spinnerRecipes);
-
-        m_ButtonDelRecipe = findViewById(R.id.buttonDelRecipe);
 
         m_EditTextNrPersons.addTextChangedListener(new TextWatcher() {
 
@@ -103,6 +102,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         {
             m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getPosition(strActiveRecipe));
         }
+        registerForContextMenu(m_SpinnerRecipes);
 
         m_RecyclerView = findViewById(R.id.recyclerViewRecipeItems);
         m_RecyclerView.setHasFixedSize(true);
@@ -128,21 +128,42 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         updateVisibility();
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_recipe_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_button_rename:
+                onRenameRecipe(m_SpinnerRecipes);
+                return true;
+            case R.id.menu_button_copy:
+                onCopyRecipe(m_SpinnerRecipes);
+                return true;
+            case R.id.menu_button_delete:
+                onDelRecipe(m_SpinnerRecipes);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
     private void updateVisibility()
     {
         if(m_SpinnerRecipes.getAdapter().getCount() > 0)
         {
             m_EditTextNrPersons.setVisibility(View.VISIBLE);
             m_textViewNrPersons.setVisibility(View.VISIBLE);
-
-            m_ButtonDelRecipe.setEnabled(true);
         }
         else
         {
             m_EditTextNrPersons.setVisibility(View.INVISIBLE);
             m_textViewNrPersons.setVisibility(View.INVISIBLE);
-
-            m_ButtonDelRecipe.setEnabled(false);
 
             m_Adapter = null;
             m_RecyclerView.setAdapter(null);
@@ -206,6 +227,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
         m_GroceryPlanning.m_Recipes.removeRecipe(strName);
         m_SpinnerRecipesAdapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
+        m_SpinnerRecipes.setAdapter(m_SpinnerRecipesAdapter);
         updateVisibility();
 
         // Allow undo
@@ -231,8 +253,18 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
+        // TODO: Dasselbe wie für copy: Don't allow current or existing name
         DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe), strCurrentRecipe);
         newFragment.show(getSupportFragmentManager(), "renameRecipe");
+    }
+
+    public void onCopyRecipe(View v)
+    {
+        final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
+
+        // TODO: So anpassen, dass der aktuelle (und andere vorhandene?) Name nicht bestätigt werden kann! (-> braucht erweiterung der DialogFragment-Klasse)
+        DialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_copy_recipe, strCurrentRecipe), strCurrentRecipe);
+        newFragment.show(getSupportFragmentManager(), "copyRecipe");
     }
 
     public void onAddRecipeItem(View v)
@@ -279,6 +311,17 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 m_SpinnerRecipes.setSelection(index);
 
                 Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strInput), Toast.LENGTH_SHORT).show();
+                break;
+            }
+
+            case "copyRecipe":
+            {
+                final String strCurrentRecipe = (String) m_SpinnerRecipes.getSelectedItem();
+
+                m_GroceryPlanning.m_Recipes.copyRecipe(strCurrentRecipe, strInput);
+
+                m_SpinnerRecipesAdapter.add(strInput);
+                m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getCount() - 1);
                 break;
             }
 
@@ -334,11 +377,16 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 }
             }
         );
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
+
+        if(m_ItemTouchHelper != null)
+        {
+            m_ItemTouchHelper.attachToRecyclerView(null);
+        }
+        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
                                                                                               this,
                                                                                               R.drawable.ic_delete_black_24dp,
                                                                                               false));
-        itemTouchHelper.attachToRecyclerView(m_RecyclerView);
+        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerView);
 
         if(m_SavedActiveElement != null && m_SavedActiveRecipe != null)
         {

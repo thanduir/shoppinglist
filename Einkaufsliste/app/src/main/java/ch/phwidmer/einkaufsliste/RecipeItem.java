@@ -23,6 +23,14 @@ public class RecipeItem implements Parcelable
         m_Amount = new Amount();
     }
 
+    RecipeItem(RecipeItem other)
+    {
+        m_Ingredient = other.m_Ingredient;
+        m_Amount = new Amount(other.m_Amount);
+        m_Size = other.m_Size;
+        m_Optional = other.m_Optional;
+    }
+
     static String toUIString(Context context, Size size)
     {
         switch(size)

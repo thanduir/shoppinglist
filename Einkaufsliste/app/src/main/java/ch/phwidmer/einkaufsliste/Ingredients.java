@@ -221,7 +221,7 @@ class Ingredients implements Parcelable
         m_Categories = categories;
 
         int size = in.readInt();
-        m_Ingredients = new TreeMap<>();
+        m_Ingredients = new TreeMap<>(new Helper.SortIgnoreCase());
         for(int i = 0; i < size; i++)
         {
             String strName = in.readString();

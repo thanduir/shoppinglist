@@ -44,23 +44,23 @@
                 tools:layout_editor_absoluteX="32dp"
                 tools:layout_editor_absoluteY="193dp" />
 
-            <Button
-                android:id="@+id/buttonAddSortOrder"
-                android:layout_width="60dp"
-                android:layout_height="35dp"
+            <ImageView
+                android:id="@+id/imageViewAddSortOrder"
+                android:layout_width="?listPreferredItemHeightSmall"
+                android:layout_height="match_parent"
                 android:onClick="onAddSortOrder"
-                android:text="@string/button_add"
-                tools:layout_editor_absoluteX="219dp"
-                tools:layout_editor_absoluteY="242dp" />
+                android:scaleType="center"
+                android:contentDescription="@string/button_add"
+                android:src="@drawable/ic_add_black_24dp" />
 
-            <Button
-                android:id="@+id/buttonDelSortOrder"
-                android:layout_width="60dp"
-                android:layout_height="35dp"
+            <ImageView
+                android:id="@+id/imageViewDelSortOrder"
+                android:layout_width="?listPreferredItemHeightSmall"
+                android:layout_height="match_parent"
                 android:onClick="onDeleteSortOrder"
-                android:text="@string/button_delete"
-                tools:layout_editor_absoluteX="337dp"
-                tools:layout_editor_absoluteY="220dp" />
+                android:scaleType="center"
+                android:contentDescription="@string/button_delete"
+                android:src="@drawable/ic_delete_black_24dp" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

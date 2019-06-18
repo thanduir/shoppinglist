@@ -7,8 +7,8 @@
     <string name="button_manage_ingredients">Zutaten verwalten</string>
     <string name="button_go_shopping">Go Shopping!</string>
     <string name="button_settings">Einstellungen</string>
-    <string name="button_add">Add</string>
-    <string name="button_delete">Del</string>
+    <string name="button_add">Hinzufügen</string>
+    <string name="button_delete">Löschen</string>
     <string name="button_datasynchronization">Daten synchronisieren</string>
     <string name="activity_ingredients">Zutaten verwalten</string>
     <string name="activity_categories">Sortierreihenfolge der Kategorien</string>
@@ -28,6 +28,7 @@
     <string name="button_export">Speichern als</string>
     <string name="button_import">Laden</string>
     <string name="button_rename">Umbenennen</string>
+    <string name="button_copy">Kopieren</string>
     <string name="alert_saveas">Speichern als&#8230;</string>
     <string name="alert_load">Datei importieren</string>
     <string name="text_data_saved">Daten gespeichert in %s</string>
@@ -65,6 +66,7 @@
     <string name="text_rename_ingredient">Zutat \"%s\" umbenennen</string>
     <string name="text_ingredient_renamed">Zutat \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_rename_recipe">Rezept \"%s\" umbenennen</string>
+    <string name="text_copy_recipe">Rezept \"%s\" kopieren</string>
     <string name="text_recipe_renamed">Rezept \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="file_exists_overwrite_header">Datei existiert bereits.</string>
     <string name="file_exists_overwrite">Die Datei %s existiert bereits. Soll sie überschrieben werden?</string>

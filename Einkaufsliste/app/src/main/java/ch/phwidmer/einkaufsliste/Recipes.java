@@ -85,6 +85,23 @@ class Recipes implements Parcelable
         m_Recipies.put(strNewName, recipe);
     }
 
+    void copyRecipe(String strRecipe, String strNewName)
+    {
+        Recipe oldRecipe = m_Recipies.get(strRecipe);
+        if(oldRecipe == null)
+        {
+            return;
+        }
+
+        Recipe recipe = new Recipe();
+        recipe.m_NumberOfPersons = oldRecipe.m_NumberOfPersons;
+        for(RecipeItem item : oldRecipe.m_Items)
+        {
+            recipe.m_Items.add(new RecipeItem(item));
+        }
+        m_Recipies.put(strNewName, recipe);
+    }
+
     boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> recipesUsingIngredient)
     {
         boolean stillInUse = false;
@@ -259,7 +276,7 @@ class Recipes implements Parcelable
     private Recipes(Parcel in)
     {
         int size = in.readInt();
-        m_Recipies = new TreeMap<>();
+        m_Recipies = new TreeMap<>(new Helper.SortIgnoreCase());
         for(int i = 0; i < size; i++)
         {
             String strName = in.readString();

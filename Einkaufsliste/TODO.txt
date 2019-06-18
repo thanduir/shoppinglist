@@ -1,20 +1,21 @@
 TODO
 ====
 
-- Rezept-Kopier-Funktion
-- data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHNAGES!)
-- Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
+- Rezept-Kopier-Funktion implementieren!
+- DialogFragment: Lange (d.h. mehrzeilige) Nachrichten sind abgeschnitten!
+
+- Undo-Bar verdeckt floating action button, aber verschwindet z.T. ein bisschen schnell...
+- Braucht es für DelRecipe zuerst eine abfrage (aka "wirklich löschen?")? Brauchte es dies irgendwo sonst (auch) noch?
+
 - Annotations / remarks for shoppinglist items? (d.h. zusatzinformationen)
+- Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
 - Alternativen in Rezepten (e.g. Poulet oder Tofu)! Wie könnte dies gehandhabt werden?
-- Synonyme? (Sultaninen, Rosinen, ...)
-- Suchen in Liste (z.B. zum Hinzufügen von Rezepten): Es sollte auch nach Wortteilen u/o Sachen in klammern gesucht werden können! (z.B. Tagliatelle)
-    -> possibly using something like this: https://stackoverflow.com/questions/32926034/autocompletetextview-not-completing-words-inside-parentheses
-    -> Or maybe I should using something else (e.g. custom made) anyways to have it behave exactly as I'd like?
 - Sometimes you don't want things to get add up together (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
     -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
 - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
     -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?
     -> Oder +/- Buttons auch e.g. für Gramm, welche jeweils um \pm 50 den Wert verändern (+ immer noch die Möglichkeit, manuell eine Zahl einzugeben)
+- data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHNAGES!)
 
 - slow loading of some activites. Check what can be done to improve speed:
     * ManageIngredients

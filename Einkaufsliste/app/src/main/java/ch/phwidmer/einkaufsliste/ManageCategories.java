@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,13 +27,15 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
     private GroceryPlanning             m_GroceryPlanning;
 
     private Spinner                     m_SpinnerSortOrders;
-    private Button                      m_ButtonDelSortOrder;
+    private ImageView                   m_ImageViewDelSortOrder;
     private RecyclerView                m_RecyclerView;
     private RecyclerView.Adapter        m_Adapter;
 
     private ArrayAdapter<CharSequence>  m_SpinnerSortOrdersAdapter;
 
     private FloatingActionButton        m_FAB;
+
+    private ItemTouchHelper             m_ItemTouchHelper;
 
     private String                      m_strRecentlyDeletedSortOrder;
     private Categories.SortOrder        m_RecentlyDeletedSortOrder;
@@ -52,7 +54,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         // Manage SortOrders
 
         m_SpinnerSortOrders = findViewById(R.id.spinnerSortOrder);
-        m_ButtonDelSortOrder = findViewById(R.id.buttonDelSortOrder);
+        m_ImageViewDelSortOrder = findViewById(R.id.imageViewDelSortOrder);
 
         m_SpinnerSortOrdersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         for(String strName : m_GroceryPlanning.m_Categories.getAllSortOrders())
@@ -85,7 +87,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        m_ButtonDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
+        m_ImageViewDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
     }
 
     @Override
@@ -145,7 +147,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
                 m_SpinnerSortOrdersAdapter.add(strInput);
                 m_SpinnerSortOrders.setSelection(m_SpinnerSortOrdersAdapter.getCount() - 1);
 
-                m_ButtonDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
+                m_ImageViewDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
                 break;
             }
 
@@ -187,7 +189,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         m_RecentlyDeletedSortOrder = m_GroceryPlanning.m_Categories.getSortOrder(strName);
         m_GroceryPlanning.m_Categories.removeSortOrder(strName);
         m_SpinnerSortOrdersAdapter.remove(strName);
-        m_ButtonDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
+        m_ImageViewDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
         if(m_SpinnerSortOrdersAdapter.getCount() == 0)
         {
             m_Adapter = null;
@@ -202,7 +204,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
                 m_SpinnerSortOrdersAdapter.add(m_strRecentlyDeletedSortOrder);
                 m_SpinnerSortOrders.setSelection(m_SpinnerSortOrdersAdapter.getCount() - 1);
 
-                m_ButtonDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
+                m_ImageViewDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
 
                 m_strRecentlyDeletedSortOrder = "";
                 m_RecentlyDeletedSortOrder = null;
@@ -223,12 +225,16 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
         m_Adapter = new CategoriesAdapter(m_RecyclerView, m_GroceryPlanning.m_Categories, order, m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
+        if(m_ItemTouchHelper != null)
+        {
+            m_ItemTouchHelper.attachToRecyclerView(null);
+        }
+        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
                                                                                               this,
                                                                                               R.drawable.ic_delete_black_24dp,
                                                                                               true));
-        ((CategoriesAdapter) m_Adapter).setTouchHelper(itemTouchHelper);
-        itemTouchHelper.attachToRecyclerView(m_RecyclerView);
+        ((CategoriesAdapter) m_Adapter).setTouchHelper(m_ItemTouchHelper);
+        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerView);
     }
 
     public void onNothingSelected(AdapterView<?> parent)
