@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -232,7 +233,8 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_recipe_deleted, Snackbar.LENGTH_LONG);
+        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
+        Snackbar snackbar = Snackbar.make(coordLayout, R.string.text_recipe_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
             m_GroceryPlanning.m_Recipes.addRecipe(m_strRecentlyDeletedRecipe, m_RecentlyDeletedRecipe);
@@ -243,7 +245,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             m_strRecentlyDeletedRecipe = "";
             m_RecentlyDeletedRecipe = null;
 
-            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_recipe_restored, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar1 = Snackbar.make(coordLayout, R.string.text_recipe_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();
         });
         snackbar.show();
@@ -357,7 +359,8 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
         m_EditTextNrPersons.setText(String.format(Locale.getDefault(), "%d", recipe.m_NumberOfPersons));
 
-        m_Adapter = new RecipeItemsAdapter(m_RecyclerView, recipe);
+        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
+        m_Adapter = new RecipeItemsAdapter(coordLayout,  m_RecyclerView, recipe);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
             (RecyclerView recyclerView, int position, View v) ->

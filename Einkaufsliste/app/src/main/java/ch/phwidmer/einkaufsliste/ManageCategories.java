@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -199,7 +200,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_SpinnerSortOrders, R.string.text_sortorder_deleted, Snackbar.LENGTH_LONG);
+        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
+        Snackbar snackbar = Snackbar.make(coordLayout, R.string.text_sortorder_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) -> {
                 m_GroceryPlanning.m_Categories.addSortOrder(m_strRecentlyDeletedSortOrder, m_RecentlyDeletedSortOrder);
                 m_SpinnerSortOrdersAdapter.add(m_strRecentlyDeletedSortOrder);
@@ -210,7 +212,7 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
                 m_strRecentlyDeletedSortOrder = "";
                 m_RecentlyDeletedSortOrder = null;
 
-                Snackbar snackbar1 = Snackbar.make(m_SpinnerSortOrders, R.string.text_sortorder_restored, Snackbar.LENGTH_SHORT);
+                Snackbar snackbar1 = Snackbar.make(coordLayout, R.string.text_sortorder_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
         });
         snackbar.show();
@@ -224,7 +226,8 @@ public class ManageCategories extends AppCompatActivity implements AdapterView.O
         Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
         m_GroceryPlanning.m_Categories.setActiveSortOrder(strSortOrder);
 
-        m_Adapter = new CategoriesAdapter(m_RecyclerView, m_GroceryPlanning.m_Categories, order, m_GroceryPlanning.m_Ingredients);
+        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
+        m_Adapter = new CategoriesAdapter(coordLayout, m_RecyclerView, m_GroceryPlanning.m_Categories, order, m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);
         if(m_ItemTouchHelper != null)
         {

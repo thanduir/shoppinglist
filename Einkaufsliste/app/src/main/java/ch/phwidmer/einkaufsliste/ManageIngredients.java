@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,12 +34,13 @@ public class ManageIngredients extends AppCompatActivity implements InputStringD
         m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_FAB = findViewById(R.id.fab);
+        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
 
         m_RecyclerView = findViewById(R.id.recyclerViewIngredients);
         m_RecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         m_RecyclerView.setLayoutManager(layoutManager);
-        m_Adapter = new IngredientsAdapter(m_RecyclerView, m_GroceryPlanning);
+        m_Adapter = new IngredientsAdapter(coordLayout, m_RecyclerView, m_GroceryPlanning);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
             (RecyclerView recyclerView, int position, View v) ->

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     private Ingredients m_Ingredients;
     private Integer m_iActiveElement;
     private RecyclerView m_RecyclerView;
+    private CoordinatorLayout m_CoordLayout;
 
     private ShoppingList.ShoppingRecipe m_RecentlyDeleted = null;
     private ShoppingListItem m_RecentlyDeletedItem = null;
@@ -125,12 +127,13 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
     }
 
-    ShoppingRecipesAdapter(RecyclerView recyclerView, Ingredients ingredients, ShoppingList shoppingList)
+    ShoppingRecipesAdapter(CoordinatorLayout coordLayout, RecyclerView recyclerView, Ingredients ingredients, ShoppingList shoppingList)
     {
         m_iActiveElement = -1;
         m_ShoppingList = shoppingList;
         m_Ingredients = ingredients;
         m_RecyclerView = recyclerView;
+        m_CoordLayout = coordLayout;
     }
 
     Pair<String, String> getActiveElement()
@@ -421,7 +424,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
             if(m_RecentlyDeletedItem == null)
@@ -436,7 +439,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             m_RecentlyDeleted = null;
             m_RecentlyDeletedItem = null;
 
-            Snackbar currentSnackbar = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
+            Snackbar currentSnackbar = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             currentSnackbar.show();
         });
         snackbar.show();
@@ -562,7 +565,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
             if(m_RecentlyDeletedItem != null)
@@ -577,7 +580,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             m_RecentlyDeleted = null;
             m_RecentlyDeletedItem = null;
 
-            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();
         });
         snackbar.show();

@@ -1,16 +1,16 @@
 TODO
 ====
 
-- Undo-Bar verdeckt floating action button, aber verschwindet z.T. ein bisschen schnell...
 - Braucht es für DelRecipe zuerst eine abfrage (aka "wirklich löschen?")? Brauchte es dies irgendwo sonst (auch) noch?
+
 - Annotations / remarks for shoppinglist items? (d.h. zusatzinformationen)
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
 - Alternativen in Rezepten (e.g. Poulet oder Tofu)! Wie könnte dies gehandhabt werden?
-- Sometimes you don't want things to get add up together (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
-    -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
 - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
     -> Oder ggfs. einfach ein paar Standardwerte zur schnelleren Auswahl?
     -> Oder +/- Buttons auch e.g. für Gramm, welche jeweils um \pm 50 den Wert verändern (+ immer noch die Möglichkeit, manuell eine Zahl einzugeben)
+- Sometimes you don't want things to get add up together (e.g. 250g Geschnetzeltes für X und 500g für Essen Y. Aufteilen der Verpackung ist aber doof).
+    -> Was tun? Vorschlag nicole: in go shopping hinten am Text noch irgendwie hinschreiben (250g + 500g) bei zusmmengefassten entries.
 - data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHNAGES!)
 
 - slow loading of some activites. Check what can be done to improve speed:

@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
@@ -40,12 +41,13 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_FAB = findViewById(R.id.fab);
+        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
 
         m_RecyclerViewRecipes = findViewById(R.id.recyclerViewShoppingRecipe);
         m_RecyclerViewRecipes.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManagerRecipes = new LinearLayoutManager(this);
         m_RecyclerViewRecipes.setLayoutManager(layoutManagerRecipes);
-        m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
+        m_AdapterRecipes = new ShoppingRecipesAdapter(coordLayout, m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
         ItemClickSupport.addTo(m_RecyclerViewRecipes).setOnItemClickListener(
                 (RecyclerView recyclerView, int position, View v) ->
@@ -200,22 +202,24 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
     {
         m_RecentlyDeletedShoppingList = m_GroceryPlanning.m_ShoppingList;
 
+        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
+
         m_GroceryPlanning.m_ShoppingList = new ShoppingList();
-        m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
+        m_AdapterRecipes = new ShoppingRecipesAdapter(coordLayout, m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerViewRecipes, R.string.text_shoppnglist_reset, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(coordLayout, R.string.text_shoppnglist_reset, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
             m_GroceryPlanning.m_ShoppingList = m_RecentlyDeletedShoppingList;
-            m_AdapterRecipes = new ShoppingRecipesAdapter(m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
+            m_AdapterRecipes = new ShoppingRecipesAdapter(coordLayout, m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
             m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
 
             m_RecentlyDeletedShoppingList = null;
 
-            Snackbar snackbar1 = Snackbar.make(m_RecyclerViewRecipes, R.string.text_shoppnglist_restored, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar1 = Snackbar.make(coordLayout, R.string.text_shoppnglist_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();
         });
         snackbar.show();

@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 {
     private GroceryPlanning m_GroceryPlanning;
     private RecyclerView m_RecyclerView;
+    private CoordinatorLayout m_CoordLayout;
+
     private Integer m_iActiveElement;
 
     private String                 m_strRecentlyDeleted;
@@ -71,11 +74,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
     }
 
-    IngredientsAdapter(RecyclerView recyclerView, GroceryPlanning groceryPlanning)
+    IngredientsAdapter(CoordinatorLayout coordLayout, RecyclerView recyclerView, GroceryPlanning groceryPlanning)
     {
         m_iActiveElement = -1;
         m_GroceryPlanning = groceryPlanning;
         m_RecyclerView = recyclerView;
+        m_CoordLayout = coordLayout;
     }
 
     @Override @NonNull
@@ -317,7 +321,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) -> {
             m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit);
             Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
@@ -329,7 +333,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             m_strRecentlyDeleted = "";
             m_RecentlyDeleted = null;
 
-            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();
         });
         snackbar.show();

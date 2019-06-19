@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -27,6 +28,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 {
     private Recipes.Recipe m_Recipe;
     private RecyclerView m_RecyclerView;
+    private CoordinatorLayout m_CoordLayout;
     private Integer m_iActiveElement;
 
     private RecipeItem m_RecentlyDeleted;
@@ -101,11 +103,12 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         }
     }
 
-    RecipeItemsAdapter(RecyclerView recyclerView, Recipes.Recipe recipe)
+    RecipeItemsAdapter(CoordinatorLayout coordLayout, RecyclerView recyclerView, Recipes.Recipe recipe)
     {
         m_iActiveElement = -1;
         m_RecyclerView = recyclerView;
         m_Recipe = recipe;
+        m_CoordLayout = coordLayout;
     }
 
     @Override @NonNull
@@ -357,7 +360,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         // Allow undo
 
-        Snackbar snackbar = Snackbar.make(m_RecyclerView, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
             m_Recipe.m_Items.add(m_RecentlyDeletedIndex, m_RecentlyDeleted);
@@ -367,7 +370,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             m_RecentlyDeleted = null;
             m_RecentlyDeletedIndex = -1;
 
-            Snackbar snackbar1 = Snackbar.make(m_RecyclerView, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();
         });
         snackbar.show();
