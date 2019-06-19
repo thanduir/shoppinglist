@@ -63,6 +63,7 @@ class ShoppingList implements Parcelable
             li.m_Amount = new Amount(r.m_Amount);
             li.m_Ingredient = r.m_Ingredient;
             li.m_Optional = r.m_Optional;
+            li.m_AdditionalInfo = r.m_AdditionalInfo;
             li.m_Size = r.m_Size;
             item.m_Items.add(li);
         }
@@ -169,6 +170,8 @@ class ShoppingList implements Parcelable
                 writer.name("size").value(si.m_Size.toString());
                 writer.name("optional").value(si.m_Optional);
 
+                writer.name("additionalInfo").value(si.m_AdditionalInfo);
+
                 writer.endObject();
             }
             writer.endObject();
@@ -246,6 +249,12 @@ class ShoppingList implements Parcelable
                                 case "optional":
                                 {
                                     item.m_Optional = reader.nextBoolean();
+                                    break;
+                                }
+
+                                case "additionalInfo":
+                                {
+                                    item.m_AdditionalInfo = reader.nextString();
                                     break;
                                 }
                             }

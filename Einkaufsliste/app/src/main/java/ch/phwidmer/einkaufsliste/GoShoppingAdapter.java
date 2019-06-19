@@ -55,15 +55,30 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         {
             SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
 
+            // TODO: Besser formattieren? (sieht atm doof aus, wenn Zutat schon mit Klammer aufhört... -> Z.B. mit Zusatzinfos (inkl. Size) in andersfarbiger Zusatzbox?
             String text = "";
             if(item.getAmount().m_Unit != Amount.Unit.Unitless)
             {
                 text = Helper.formatNumber(item.getAmount().m_Quantity) + " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.getAmount().m_Unit) + " ";
             }
             text += holder.m_id;
+
+            String additionalText = "";
             if(item.getSize() != RecipeItem.Size.Normal)
             {
-                text += " (" + RecipeItem.toUIString(holder.itemView.getContext(), item.getSize()) + ")";
+                additionalText += RecipeItem.toUIString(holder.itemView.getContext(), item.getSize());
+            }
+            if(!item.getAdditionalInfo().isEmpty())
+            {
+                if(!additionalText.isEmpty())
+                {
+                    additionalText += ", ";
+                }
+                additionalText += item.getAdditionalInfo();
+            }
+            if(!additionalText.isEmpty())
+            {
+                text += " (" + additionalText + ")";
             }
             holder.m_CheckBox.setText(text);
         }

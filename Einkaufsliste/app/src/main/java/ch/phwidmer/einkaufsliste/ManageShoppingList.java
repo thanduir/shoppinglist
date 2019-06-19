@@ -177,6 +177,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                 ShoppingList.ShoppingRecipe recipe = m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strAdditonalInformation);
                 recipe.changeScalingFactor(fNewValue);
                 adapter.notifyDataSetChanged();
+                break;
             }
 
             case "addShoppingRecipe":
@@ -194,6 +195,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                 adapter.notifyDataSetChanged();
                 adapter.setActiveElement(new Pair<>(strRecipe, ""));
                 m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
+                break;
             }
 
             case "renameShoppingRecipe":
@@ -204,6 +206,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                 adapter.setActiveElement(new Pair<>(strInput, ""));
                 m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
                 Toast.makeText(this, getResources().getString(R.string.text_recipe_renamed, strAdditonalInformation, strInput), Toast.LENGTH_SHORT).show();
+                break;
             }
         }
     }

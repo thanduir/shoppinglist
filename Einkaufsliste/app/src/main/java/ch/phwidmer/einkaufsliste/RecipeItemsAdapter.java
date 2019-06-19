@@ -46,6 +46,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         private Spinner  m_SpinnerAmount;
         private EditText m_EditTextAmount;
         private Spinner  m_SpinnerSize;
+        private EditText m_AdditionalInfo;
 
         public ViewHolder(View v)
         {
@@ -62,6 +63,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             m_EditTextAmount = v.findViewById(R.id.editText_Amount);
             m_SpinnerSize = v.findViewById(R.id.spinnerSize);
             m_CheckBoxOptional = v.findViewById(R.id.checkBoxOptional);
+            m_AdditionalInfo = v.findViewById(R.id.editText_AdditonalInfo);
         }
 
         String getID()
@@ -71,18 +73,34 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         void setDescription(Context context, RecipeItem item)
         {
-            String text = " (" + Helper.formatNumber(item.m_Amount.m_Quantity) + " " + Amount.shortForm(context, item.m_Amount.m_Unit);
+            String text = "";
+            if(item.m_Amount.m_Unit != Amount.Unit.Unitless)
+            {
+                text += Helper.formatNumber(item.m_Amount.m_Quantity) + " " + Amount.shortForm(context, item.m_Amount.m_Unit);
+            }
             if(item.m_Size != RecipeItem.Size.Normal)
             {
-                text += ", " + RecipeItem.toUIString(context, item.m_Size);
+                if(!text.isEmpty())
+                {
+                    text += ", ";
+                }
+                text += RecipeItem.toUIString(context, item.m_Size);
             }
-            text += ")";
-
-            if(item.m_Amount.m_Unit == Amount.Unit.Unitless)
+            if(!item.m_AdditionalInfo.isEmpty())
             {
-                text = "";
+                if(!text.isEmpty())
+                {
+                    text += ", ";
+                }
+                text += item.m_AdditionalInfo;
             }
-            m_TextViewDesc.setText(text);
+
+            String fullText = "";
+            if(!text.isEmpty() )
+            {
+                fullText = " (" + text + ")";
+            }
+            m_TextViewDesc.setText(fullText);
 
             if(item.m_Optional)
             {
@@ -261,6 +279,32 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                 viewHolder.setDescription(viewHolder.itemView.getContext(), recipeItem);
             });
             vh.m_CheckBoxOptional.setChecked(item.m_Optional);
+
+            vh.m_AdditionalInfo.setText(item.m_AdditionalInfo);
+            vh.m_AdditionalInfo.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
+                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                    if(child == null)
+                    {
+                        // Item not visible (yet) -> nothing to do
+                        return;
+                    }
+
+                    RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+                    RecipeItem item = getRecipeItem(vh.getID());
+                    if(item == null)
+                    {
+                        return;
+                    }
+                    item.m_AdditionalInfo = s.toString();
+
+                    vh.setDescription(vh.itemView.getContext(), item);
+                }
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            });
 
             vh.m_EditTextAmount.addTextChangedListener(new TextWatcher() {
 

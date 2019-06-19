@@ -106,6 +106,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/textViewAdditionalInfo"
+                android:layout_width="86dp"
+                android:layout_height="40dp"
+                android:text="@string/text_additionalinfo" />
+
+            <EditText
+                android:id="@+id/editText_AdditonalInfo"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
             <CheckBox
                 android:id="@+id/checkBoxOptional"
                 android:layout_column="1"

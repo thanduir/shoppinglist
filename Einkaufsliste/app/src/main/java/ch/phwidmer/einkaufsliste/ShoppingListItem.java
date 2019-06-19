@@ -15,6 +15,7 @@ class ShoppingListItem implements Parcelable
 
     String           m_Ingredient;
     Amount           m_Amount;
+    String           m_AdditionalInfo = "";
     RecipeItem.Size  m_Size = RecipeItem.Size.Normal;
     Boolean          m_Optional = false;
 
@@ -49,6 +50,8 @@ class ShoppingListItem implements Parcelable
 
         out.writeInt(m_Size.ordinal());
         out.writeInt(m_Optional ? 1 : 0);
+
+        out.writeString(m_AdditionalInfo);
     }
 
     private ShoppingListItem(Parcel in)
@@ -63,6 +66,8 @@ class ShoppingListItem implements Parcelable
 
         m_Size = RecipeItem.Size.values()[in.readInt()];
         m_Optional = in.readInt() == 1;
+
+        m_AdditionalInfo = in.readString();
     }
 
     @Override

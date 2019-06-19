@@ -13,10 +13,11 @@ public class RecipeItem implements Parcelable
         Large
     }
 
-    String   m_Ingredient;
-    Amount   m_Amount;
-    Size     m_Size = Size.Normal;
-    Boolean  m_Optional = false;
+    String  m_Ingredient;
+    Amount  m_Amount;
+    String  m_AdditionalInfo = "";
+    Size    m_Size = Size.Normal;
+    Boolean m_Optional = false;
 
     RecipeItem()
     {
@@ -27,6 +28,7 @@ public class RecipeItem implements Parcelable
     {
         m_Ingredient = other.m_Ingredient;
         m_Amount = new Amount(other.m_Amount);
+        m_AdditionalInfo = other.m_AdditionalInfo;
         m_Size = other.m_Size;
         m_Optional = other.m_Optional;
     }
@@ -57,6 +59,7 @@ public class RecipeItem implements Parcelable
         out.writeString(m_Ingredient);
         out.writeInt(m_Size.ordinal());
         out.writeInt(m_Optional ? 1 : 0);
+        out.writeString(m_AdditionalInfo);
 
         // Amount
         out.writeFloat(m_Amount.m_Quantity);
@@ -68,6 +71,7 @@ public class RecipeItem implements Parcelable
         m_Ingredient = in.readString();
         m_Size = Size.values()[in.readInt()];
         m_Optional = in.readInt() == 1;
+        m_AdditionalInfo = in.readString();
 
         // Amount
         m_Amount = new Amount();

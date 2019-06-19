@@ -14,7 +14,7 @@ class SortedShoppingList
     private LinkedHashMap<String, LinkedList<CategoryShoppingItem>>  m_UnorderdList; // Key: Categories; Value: items
     private LinkedList<CategoryItem>                                 m_SortedList;  // Ingredientslist sorted by category. Same ingredients have been combined.
 
-    public class CategoryShoppingItem
+    class CategoryShoppingItem
     {
         private String                       m_Ingredient;
         private Amount                       m_Amount = new Amount();
@@ -37,14 +37,19 @@ class SortedShoppingList
             return m_ShoppingItems.getFirst().m_Optional;
         }
 
-        public Amount getAmount()
+        Amount getAmount()
         {
             return m_Amount;
         }
 
-        public RecipeItem.Size getSize()
+        RecipeItem.Size getSize()
         {
             return m_ShoppingItems.getFirst().m_Size;
+        }
+
+        String getAdditionalInfo()
+        {
+            return m_ShoppingItems.getFirst().m_AdditionalInfo;
         }
     }
 
@@ -94,7 +99,10 @@ class SortedShoppingList
             }
 
             ShoppingListItem firstItem = csi.m_ShoppingItems.getFirst();
-            if(item.m_Optional != firstItem.m_Optional || item.m_Size != firstItem.m_Size || item.m_Status != firstItem.m_Status)
+            if(item.m_Optional != firstItem.m_Optional
+               || item.m_Size != firstItem.m_Size
+               || item.m_Status != firstItem.m_Status
+               || !item.m_AdditionalInfo.equals(firstItem.m_AdditionalInfo))
             {
                 continue;
             }

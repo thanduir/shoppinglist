@@ -161,6 +161,7 @@ class Recipes implements Parcelable
 
                 writer.name("size").value(ri.m_Size.toString());
                 writer.name("optional").value(ri.m_Optional);
+                writer.name("additionalInfo").value(ri.m_AdditionalInfo);
 
                 writer.endObject();
             }
@@ -232,6 +233,12 @@ class Recipes implements Parcelable
                                 case "optional":
                                 {
                                     item.m_Optional = reader.nextBoolean();
+                                    break;
+                                }
+
+                                case "additionalInfo":
+                                {
+                                    item.m_AdditionalInfo = reader.nextString();
                                     break;
                                 }
                             }
