@@ -20,12 +20,14 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
     {
         private TextView m_TextView;
         private CheckBox m_CheckBox;
+        private TextView m_TextViewAdditionalInfo;
         private String m_id;
         public ViewHolder(View v)
         {
             super(v);
             m_TextView = v.findViewById(R.id.textView);
             m_CheckBox = v.findViewById(R.id.checkBox);
+            m_TextViewAdditionalInfo = v.findViewById(R.id.textViewAdditionalInfo);
             m_id = "";
         }
     }
@@ -55,13 +57,13 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         {
             SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
 
-            // TODO: Besser formattieren? (sieht atm doof aus, wenn Zutat schon mit Klammer aufhört... -> Z.B. mit Zusatzinfos (inkl. Size) in andersfarbiger Zusatzbox?
             String text = "";
             if(item.getAmount().m_Unit != Amount.Unit.Unitless)
             {
                 text = Helper.formatNumber(item.getAmount().m_Quantity) + " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.getAmount().m_Unit) + " ";
             }
             text += holder.m_id;
+            holder.m_CheckBox.setText(text);
 
             String additionalText = "";
             if(item.getSize() != RecipeItem.Size.Normal)
@@ -78,9 +80,9 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             }
             if(!additionalText.isEmpty())
             {
-                text += " (" + additionalText + ")";
+                additionalText = " (" + additionalText + ")";
             }
-            holder.m_CheckBox.setText(text);
+            holder.m_TextViewAdditionalInfo.setText(additionalText);
         }
         holder.m_TextView.setText(holder.m_id);
 
@@ -94,6 +96,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             holder.m_TextView.setTypeface(holder.m_TextView.getTypeface(), Typeface.BOLD);
 
             holder.m_CheckBox.setVisibility(View.GONE);
+            holder.m_TextViewAdditionalInfo.setVisibility(View.GONE);
             holder.m_TextView.setVisibility(View.VISIBLE);
 
             if(m_SortedList.isIncompatibleItemsList(position))
@@ -109,7 +112,10 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         else
         {
             holder.m_CheckBox.setVisibility(View.VISIBLE);
+            holder.m_TextViewAdditionalInfo.setVisibility(View.VISIBLE);
             holder.m_TextView.setVisibility(View.GONE);
+
+            holder.m_TextViewAdditionalInfo.setTextColor(Color.GRAY);
 
             SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
             if(item.isOptional())
@@ -127,11 +133,13 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             {
                 holder.m_CheckBox.setPaintFlags(holder.m_CheckBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.m_CheckBox.setChecked(true);
+                holder.m_TextViewAdditionalInfo.setPaintFlags(holder.m_TextViewAdditionalInfo.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }
             else
             {
                 holder.m_CheckBox.setPaintFlags(holder.m_CheckBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 holder.m_CheckBox.setChecked(false);
+                holder.m_TextViewAdditionalInfo.setPaintFlags(holder.m_TextViewAdditionalInfo.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
         }
     }

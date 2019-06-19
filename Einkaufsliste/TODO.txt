@@ -1,8 +1,6 @@
 TODO
 ====
 
-- Textformatierung in GoShopping(Adapter)!
-
 - Amount-Redesign / -Erweiterung:
     - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
     - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
