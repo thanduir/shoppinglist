@@ -1,6 +1,8 @@
 TODO
 ====
 
+- Textformatierung in GoShopping(Adapter)!
+
 - Amount-Redesign / -Erweiterung:
     - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
     - Auswahl "Anzahl" durch +/- Buttons statt durch direkte Texteingabe? Analoge Änderungen für andere Einheiten!
@@ -8,7 +10,6 @@ TODO
         -> Oder +/- Buttons auch e.g. für Gramm, welche jeweils um \pm 50 den Wert verändern (+ immer noch die Möglichkeit, manuell eine Zahl einzugeben)
     - Sonstige sinnvolle Erweiterungen / Anpassungen?
 
-- TODOs im Code!
 - slow loading: ManageRecipes (list of recipeitems is loaded noticeably later than the rest of the UI)
 - decide how to handle saving now and adjust accordingly!
     -> saving of einkaufsliste.json would then happen in a background thread (needs proper locking!), but when should this be started? Timer? When quiting an activity?

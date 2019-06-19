@@ -28,9 +28,8 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
     private GroceryPlanning m_GroceryPlanning;
 
-    // TODO: Beide umbenennen?
-    private static final String c_strStdDataFilename = "default.json";
-    private static final String c_strSaveFilename = "einkaufsliste.json";
+    private static final String c_strStdDataFilename = "ch.phwidmer.einkaufsliste.default.json";
+    private static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
 
     private File m_AppDataDirectory = null;
 
