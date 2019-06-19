@@ -68,6 +68,8 @@
     <string name="text_rename_recipe">Rezept \"%s\" umbenennen</string>
     <string name="text_copy_recipe">Rezept \"%s\" kopieren</string>
     <string name="text_recipe_renamed">Rezept \"%1$s\" umbenannt zu \"%2$s\".</string>
+    <string name="text_delete_recipe_header">Rezept löschen</string>
+    <string name="text_delete_recipe">Soll das Rezept \"%s\" wirklich gelöscht werdeb?</string>
     <string name="file_exists_overwrite_header">Datei existiert bereits.</string>
     <string name="file_exists_overwrite">Die Datei %s existiert bereits. Soll sie überschrieben werden?</string>
     <string name="provenance_everywhere">Überall</string>

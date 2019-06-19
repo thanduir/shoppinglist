@@ -1,7 +1,7 @@
 TODO
 ====
 
-- Braucht es für DelRecipe zuerst eine abfrage (aka "wirklich löschen?")? Brauchte es dies irgendwo sonst (auch) noch?
+- ShoppingListRecipes umbenennbar machen!
 
 - Annotations / remarks for shoppinglist items? (d.h. zusatzinformationen)
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)

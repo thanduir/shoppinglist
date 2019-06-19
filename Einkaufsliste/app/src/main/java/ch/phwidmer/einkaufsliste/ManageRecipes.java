@@ -1,5 +1,6 @@
 package ch.phwidmer.einkaufsliste;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -146,8 +148,23 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 onCopyRecipe(m_SpinnerRecipes);
                 return true;
             case R.id.menu_button_delete:
-                onDelRecipe(m_SpinnerRecipes);
+            {
+                String strName = (String)m_SpinnerRecipes.getSelectedItem();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getResources().getString(R.string.text_delete_recipe_header));
+                builder.setMessage(getResources().getString(R.string.text_delete_recipe, strName));
+                builder.setPositiveButton(android.R.string.yes, (DialogInterface dialog, int which) ->
+                {
+                    onDelRecipe(m_SpinnerRecipes);
+                });
+                builder.setNegativeButton(android.R.string.no, (DialogInterface dialog, int which) ->
+                {
+                });
+                builder.show();
+
                 return true;
+            }
             default:
                 return super.onContextItemSelected(item);
         }

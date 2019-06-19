@@ -67,6 +67,8 @@
     <string name="text_rename_recipe">Rename recipe \"%s\"</string>
     <string name="text_copy_recipe">Copy recipe \"%s\"</string>
     <string name="text_recipe_renamed">Recipe \"%1$s\" renamed to \"%2$s\".</string>
+    <string name="text_delete_recipe_header">Deleting Recipe</string>
+    <string name="text_delete_recipe">Deleting recipe \"%s\". Do you really want to proceed?</string>
     <string name="file_exists_overwrite_header">File already exists.</string>
     <string name="file_exists_overwrite">The file %s already exists. Do you want to overwrite it?</string>
     <string name="provenance_everywhere">Everywhere</string>
