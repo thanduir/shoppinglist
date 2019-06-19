@@ -244,12 +244,18 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
             // Recipe -> Header line
             vh.m_TextView.setText(vh.m_strRecipe);
+            vh.m_TextView.setOnLongClickListener((View view) ->
+            {
+                onRenameShoppingRecipe(strRecipe);
+                return true;
+            });
         }
         else
         {
             // Active ShoppingListItem
 
             vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.m_Ingredient));
+            vh.m_TextView.setOnLongClickListener(null);
 
             vh.m_TextViewDesc.setOnClickListener(null);
             vh.m_TextViewDesc.setClickable(false);
@@ -584,6 +590,15 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             snackbar1.show();
         });
         snackbar.show();
+    }
+
+    private void onRenameShoppingRecipe(final String strRecipe)
+    {
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_recipe, strRecipe));
+        newFragment.setDefaultValue(strRecipe);
+        newFragment.setAdditionalInformation(strRecipe);
+        newFragment.setListExcludedInputs(m_ShoppingList.getAllShoppingRecipes());
+        newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameShoppingRecipe");
     }
 
     private void onChangeRecipeScaling(final String strRecipe)

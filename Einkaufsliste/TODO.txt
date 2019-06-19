@@ -1,8 +1,6 @@
 TODO
 ====
 
-- ShoppingListRecipes umbenennbar machen!
-
 - Annotations / remarks for shoppinglist items? (d.h. zusatzinformationen)
 - Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
 - Alternativen in Rezepten (e.g. Poulet oder Tofu)! Wie könnte dies gehandhabt werden?

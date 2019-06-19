@@ -195,6 +195,16 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                 adapter.setActiveElement(new Pair<>(strRecipe, ""));
                 m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
             }
+
+            case "renameShoppingRecipe":
+            {
+                m_GroceryPlanning.m_ShoppingList.renameRecipe(strAdditonalInformation, strInput);
+
+                adapter.notifyDataSetChanged();
+                adapter.setActiveElement(new Pair<>(strInput, ""));
+                m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
+                Toast.makeText(this, getResources().getString(R.string.text_recipe_renamed, strAdditonalInformation, strInput), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

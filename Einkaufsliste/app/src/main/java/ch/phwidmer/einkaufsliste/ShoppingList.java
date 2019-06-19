@@ -84,6 +84,18 @@ class ShoppingList implements Parcelable
         m_Items.remove(strName);
     }
 
+    void renameRecipe(String strRecipe, String strNewName)
+    {
+        if(!m_Items.containsKey(strRecipe))
+        {
+            return;
+        }
+
+        ShoppingRecipe recipe = m_Items.get(strRecipe);
+        m_Items.remove(strRecipe);
+        m_Items.put(strNewName, recipe);
+    }
+
     void addExistingShoppingRecipe(String strName, ShoppingRecipe recipe)
     {
         if(m_Items.containsKey(strName))
