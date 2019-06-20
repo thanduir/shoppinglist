@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
@@ -157,6 +158,30 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         newFragment.show(getSupportFragmentManager(), "onImport");
     }
 
+    private class SaveToFileThread implements Runnable
+    {
+        private final ReentrantLock lock = new ReentrantLock();
+        private File m_File;
+
+        SaveToFileThread(File file)
+        {
+            m_File =  file;
+        }
+
+        public void run()
+        {
+            lock.lock();
+            try
+            {
+                m_GroceryPlanning.saveDataToFile(m_File, null);
+            }
+            finally
+            {
+                lock.unlock();
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -174,7 +199,9 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
             m_GroceryPlanning = data.getParcelableExtra(EXTRA_GROCERYPLANNING);
 
             File file = new File(m_AppDataDirectory, c_strSaveFilename);
-            m_GroceryPlanning.saveDataToFile(file, null);
+
+            Thread thread = new Thread(new SaveToFileThread(file));
+            thread.start();
         }
     }
 
