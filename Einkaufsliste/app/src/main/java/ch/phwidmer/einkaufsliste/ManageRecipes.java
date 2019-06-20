@@ -93,6 +93,21 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
+        m_RecyclerView = findViewById(R.id.recyclerViewRecipeItems);
+        m_RecyclerView.setHasFixedSize(true);
+        m_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
+                    m_FAB.hide();
+                } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
+                    m_FAB.show();
+                }
+            }
+        });
+
         m_SpinnerRecipesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         for(String strName : m_GroceryPlanning.m_Recipes.getAllRecipes())
         {
@@ -109,21 +124,6 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
             m_IgnoreNextSpinnerRecipesClick = true;
         }
         registerForContextMenu(m_SpinnerRecipes);
-
-        m_RecyclerView = findViewById(R.id.recyclerViewRecipeItems);
-        m_RecyclerView.setHasFixedSize(true);
-        m_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
-                    m_FAB.hide();
-                } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
-                    m_FAB.show();
-                }
-            }
-        });
 
         if(savedInstanceState != null)
         {

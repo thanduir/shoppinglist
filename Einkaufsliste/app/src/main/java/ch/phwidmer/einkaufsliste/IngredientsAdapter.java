@@ -21,6 +21,9 @@ import java.util.ArrayList;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
+    private static final int TYPE_INACTIVE = 1;
+    private static final int TYPE_ACTIVE = 2;
+
     private GroceryPlanning m_GroceryPlanning;
     private RecyclerView m_RecyclerView;
     private CoordinatorLayout m_CoordLayout;
@@ -32,34 +35,33 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView m_TextView;
-        private TextView m_TextViewDesc;
-        private TableLayout m_TableLayout;
-        private View m_View;
-        private String m_id;
+        protected TextView m_TextView;
+        protected View m_View;
+        protected String m_id;
 
-        private Spinner m_SpinnerCategory;
-        private Spinner m_SpinnerProvenance;
-        private Spinner m_SpinnerStdUnit;
-
-        public ViewHolder(View v)
+        ViewHolder(View v)
         {
             super(v);
             m_View = v;
             m_TextView = v.findViewById(R.id.textView);
-            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
-            m_TableLayout = v.findViewById(R.id.tableLayoutEditIntegrdient);
-
-            m_SpinnerCategory = v.findViewById(R.id.spinnerCategory);
-            m_SpinnerProvenance = v.findViewById(R.id.spinnerProvenance);
-            m_SpinnerStdUnit = v.findViewById(R.id.spinnerStdUnit);
-
             m_id = "";
         }
 
         String getID()
         {
             return m_id;
+        }
+    }
+
+    public static class ViewHolderInactive extends IngredientsAdapter.ViewHolder
+    {
+        private TextView m_TextViewDesc;
+
+        ViewHolderInactive(View v)
+        {
+            super(v);
+            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
+            m_id = "";
         }
 
         void setDescription(Ingredients.Ingredient ingredient)
@@ -73,6 +75,24 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
     }
 
+    public static class ViewHolderActive extends IngredientsAdapter.ViewHolder
+    {
+        private TableLayout m_TableLayout;
+
+        private Spinner m_SpinnerCategory;
+        private Spinner m_SpinnerProvenance;
+        private Spinner m_SpinnerStdUnit;
+
+        ViewHolderActive(View v)
+        {
+            super(v);
+            m_TableLayout = v.findViewById(R.id.tableLayoutEditIntegrdient);
+            m_SpinnerCategory = v.findViewById(R.id.spinnerCategory);
+            m_SpinnerProvenance = v.findViewById(R.id.spinnerProvenance);
+            m_SpinnerStdUnit = v.findViewById(R.id.spinnerStdUnit);
+        }
+    }
+
     IngredientsAdapter(CoordinatorLayout coordLayout, RecyclerView recyclerView, GroceryPlanning groceryPlanning)
     {
         m_iActiveElement = -1;
@@ -81,14 +101,37 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         m_CoordLayout = coordLayout;
     }
 
+    @Override
+    public int getItemViewType(int position)
+    {
+        if(m_iActiveElement == position)
+        {
+            return TYPE_ACTIVE;
+        }
+        else
+        {
+            return TYPE_INACTIVE;
+        }
+    }
+
     @Override @NonNull
     public IngredientsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                             int viewType)
     {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_item_edit_ingredients, parent, false);
+        if(viewType == TYPE_INACTIVE)
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_item_edit_ingredients_inactive, parent, false);
 
-        return new IngredientsAdapter.ViewHolder(v);
+            return new IngredientsAdapter.ViewHolderInactive(v);
+        }
+        else
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_item_edit_ingredients_active, parent, false);
+
+            return new IngredientsAdapter.ViewHolderActive(v);
+        }
     }
 
     @Override
@@ -98,10 +141,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         holder.m_id = strIngredient;
         holder.m_TextView.setText(strIngredient);
 
-        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient);
-        holder.setDescription(ingredient);
+        final View view = holder.itemView;
+        holder.m_TextView.setOnClickListener((View v) -> view.performClick());
 
-        updateViewHolder(holder, m_iActiveElement == position);
+        if(m_iActiveElement == position)
+        {
+            updateViewHolderActive(holder);
+        }
+        else
+        {
+            updateViewHolderInactive(holder);
+        }
     }
 
     @Override
@@ -128,12 +178,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         if(m_iActiveElement != -1)
         {
-            View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+            notifyItemChanged(m_iActiveElement);
+            /*View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(v != null)
             {
-                IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
+                IngredientsAdapter.ViewHolder2 vh = (IngredientsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
                 updateViewHolder(vh, false);
-            }
+            }*/
         }
 
         if(strElement.equals(""))
@@ -143,97 +194,100 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         else
         {
             m_iActiveElement = getSortedIngredients().indexOf(strElement);
+            notifyItemChanged(m_iActiveElement);
 
-            View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+            /*View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(child == null)
             {
                 return;
             }
 
-            IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-            updateViewHolder(vh, true);
+            IngredientsAdapter.ViewHolder2 vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+            updateViewHolder(vh, true);*/
         }
     }
 
-    private void updateViewHolder(IngredientsAdapter.ViewHolder vh, boolean bActive)
+    private void updateViewHolderInactive(IngredientsAdapter.ViewHolder holder)
     {
-        final View view = vh.itemView;
-        vh.m_TextView.setOnClickListener((View v) -> view.performClick());
-
-        if(!bActive)
+        IngredientsAdapter.ViewHolderInactive vh = (IngredientsAdapter.ViewHolderInactive)holder;
+        if(holder == null)
         {
-            vh.m_TableLayout.setVisibility(View.GONE);
-            vh.m_TextViewDesc.setVisibility(View.VISIBLE);
+            return;
+        }
 
-            vh.m_TextView.setOnLongClickListener(null);
+        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(holder.m_id);
+        vh.setDescription(ingredient);
 
-            vh.m_SpinnerCategory.setAdapter(null);
-            vh.m_SpinnerProvenance.setAdapter(null);
-            vh.m_SpinnerStdUnit.setAdapter(null);
+        vh.m_TextViewDesc.setVisibility(View.VISIBLE);
+        vh.m_TextView.setOnLongClickListener(null);
+        vh.m_View.setBackgroundColor(Color.TRANSPARENT);
+    }
 
-            vh.m_View.setBackgroundColor(Color.TRANSPARENT);
+    private void updateViewHolderActive(IngredientsAdapter.ViewHolder holder)
+    {
+        IngredientsAdapter.ViewHolderActive vh = (IngredientsAdapter.ViewHolderActive)holder;
+        if(holder == null)
+        {
+            return;
+        }
+
+        vh.m_TableLayout.setVisibility(View.VISIBLE);
+
+        vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
+
+        final String strIngredient = vh.m_id;
+
+        vh.m_TextView.setOnLongClickListener((View v) ->
+        {
+            renameIngredient(strIngredient);
+            return true;
+        });
+
+        final Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
+        if(ingredient == null)
+        {
+            // This case should only be possible if a renamed object is sorted into the same position as
+            // the previous one (then vh.m_id is still the old id which doesn't exist anymore in m_Ingredients)
+            return;
+        }
+
+        ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
+        for(String strCategory : m_GroceryPlanning.m_Categories.getAllCategories())
+        {
+            adapterCategory.add(strCategory);
+        }
+        adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vh.m_SpinnerCategory.setAdapter(adapterCategory);
+        vh.m_SpinnerCategory.setOnItemSelectedListener(this);
+        vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category.getName()));
+
+        ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
+        adapterProvenance.add(m_RecyclerView.getContext().getResources().getString(R.string.provenance_everywhere));
+        for(String strSortOrder : m_GroceryPlanning.m_Categories.getAllSortOrders())
+        {
+            adapterProvenance.add(strSortOrder);
+        }
+        adapterProvenance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vh.m_SpinnerProvenance.setAdapter(adapterProvenance);
+        vh.m_SpinnerProvenance.setOnItemSelectedListener(this);
+        if(ingredient.m_strProvenance.equals(Ingredients.c_strProvenanceEverywhere))
+        {
+            vh.m_SpinnerProvenance.setSelection(0);
         }
         else
         {
-            vh.m_TableLayout.setVisibility(View.VISIBLE);
-            vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
-
-            vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
-
-            final String strIngredient = vh.m_id;
-
-            vh.m_TextView.setOnLongClickListener((View v) ->
-            {
-                renameIngredient(strIngredient);
-                return true;
-            });
-
-            final Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
-            if(ingredient == null)
-            {
-                // This case should only be possible if a renamed object is sorted into the same position as
-                // the previous one (then vh.m_id is still the old id which doesn't exist anymore in m_Ingredients)
-                return;
-            }
-
-            ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(String strCategory : m_GroceryPlanning.m_Categories.getAllCategories())
-            {
-                adapterCategory.add(strCategory);
-            }
-            adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            vh.m_SpinnerCategory.setAdapter(adapterCategory);
-            vh.m_SpinnerCategory.setOnItemSelectedListener(this);
-            vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category.getName()));
-
-            ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-            adapterProvenance.add(m_RecyclerView.getContext().getResources().getString(R.string.provenance_everywhere));
-            for(String strSortOrder : m_GroceryPlanning.m_Categories.getAllSortOrders())
-            {
-                adapterProvenance.add(strSortOrder);
-            }
-            adapterProvenance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            vh.m_SpinnerProvenance.setAdapter(adapterProvenance);
-            vh.m_SpinnerProvenance.setOnItemSelectedListener(this);
-            if(ingredient.m_strProvenance.equals(Ingredients.c_strProvenanceEverywhere))
-            {
-                vh.m_SpinnerProvenance.setSelection(0);
-            }
-            else
-            {
-                vh.m_SpinnerProvenance.setSelection(adapterProvenance.getPosition(ingredient.m_strProvenance));
-            }
-
-            ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(Amount.Unit u : Amount.Unit.values())
-            {
-                adapterStdUnit.add(Amount.toUIString(vh.itemView.getContext(), u));
-            }
-            adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            vh.m_SpinnerStdUnit.setAdapter(adapterStdUnit);
-            vh.m_SpinnerStdUnit.setOnItemSelectedListener(this);
-            vh.m_SpinnerStdUnit.setSelection(ingredient.m_DefaultUnit.ordinal());
+            vh.m_SpinnerProvenance.setSelection(adapterProvenance.getPosition(ingredient.m_strProvenance));
         }
+
+        ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
+        for(Amount.Unit u : Amount.Unit.values())
+        {
+            adapterStdUnit.add(Amount.toUIString(vh.itemView.getContext(), u));
+        }
+        adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vh.m_SpinnerStdUnit.setAdapter(adapterStdUnit);
+        vh.m_SpinnerStdUnit.setOnItemSelectedListener(this);
+        vh.m_SpinnerStdUnit.setSelection(ingredient.m_DefaultUnit.ordinal());
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -248,7 +302,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             return;
         }
-        IngredientsAdapter.ViewHolder vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
+        IngredientsAdapter.ViewHolderActive vh = (IngredientsAdapter.ViewHolderActive)m_RecyclerView.getChildViewHolder(v);
+        if(vh == null)
+        {
+            return;
+        }
+
         Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
 
         if(parent == vh.m_SpinnerCategory)
@@ -271,8 +330,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             ingredient.m_DefaultUnit = Amount.Unit.values()[vh.m_SpinnerStdUnit.getSelectedItemPosition()];
         }
-
-        vh.setDescription(ingredient);
     }
 
     public void onNothingSelected(AdapterView<?> parent)
@@ -338,8 +395,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         snackbar.show();
     }
 
+    @Override
     public boolean swipeAllowed(RecyclerView.ViewHolder vh) { return true; }
 
+    @Override
     public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
     {
         return false;
@@ -359,6 +418,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameIngredient");
     }
 
+    @Override
     public void clearViewBackground(RecyclerView.ViewHolder vh)
     {
         if(m_iActiveElement == -1)
