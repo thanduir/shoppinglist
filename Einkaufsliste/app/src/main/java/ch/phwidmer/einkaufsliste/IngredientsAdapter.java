@@ -49,7 +49,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             m_TextView = v.findViewById(R.id.textView);
             m_TextViewDesc = v.findViewById(R.id.textViewDesc);
             m_TableLayout = v.findViewById(R.id.tableLayoutEditIntegrdient);
-            m_TableLayout.setVisibility(View.GONE);
 
             m_SpinnerCategory = v.findViewById(R.id.spinnerCategory);
             m_SpinnerProvenance = v.findViewById(R.id.spinnerProvenance);

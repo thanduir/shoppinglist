@@ -32,11 +32,11 @@ import java.util.Locale;
 
 public class ManageRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
 
-    private GroceryPlanning m_GroceryPlanning;
+    private GroceryPlanning             m_GroceryPlanning;
 
-    private Spinner     m_SpinnerRecipes;
-    private EditText    m_EditTextNrPersons;
-    private TextView    m_textViewNrPersons;
+    private Spinner                     m_SpinnerRecipes;
+    private EditText                    m_EditTextNrPersons;
+    private TextView                    m_textViewNrPersons;
 
     private ArrayAdapter<CharSequence>  m_SpinnerRecipesAdapter;
 
@@ -51,7 +51,9 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     private String                      m_SavedActiveRecipe;
     private String                      m_SavedActiveElement;
 
-    private FloatingActionButton m_FAB;
+    private FloatingActionButton        m_FAB;
+
+    private boolean                     m_IgnoreNextSpinnerRecipesClick = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,8 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         if(!strActiveRecipe.isEmpty() && m_GroceryPlanning.m_Recipes.getAllRecipes().contains(strActiveRecipe))
         {
             m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getPosition(strActiveRecipe));
+            onItemSelected(null, null, m_SpinnerRecipesAdapter.getPosition(strActiveRecipe), 0);
+            m_IgnoreNextSpinnerRecipesClick = true;
         }
         registerForContextMenu(m_SpinnerRecipes);
 
@@ -385,6 +389,12 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
+        if(m_IgnoreNextSpinnerRecipesClick)
+        {
+            m_IgnoreNextSpinnerRecipesClick = false;
+            return;
+        }
+
         String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
         Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
         m_GroceryPlanning.m_Recipes.setActiveRecipe(strRecipe);
@@ -392,7 +402,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_EditTextNrPersons.setText(String.format(Locale.getDefault(), "%d", recipe.m_NumberOfPersons));
 
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
-        m_Adapter = new RecipeItemsAdapter(coordLayout,  m_RecyclerView, recipe);
+        m_Adapter = new RecipeItemsAdapter(coordLayout, m_RecyclerView, recipe);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
             (RecyclerView recyclerView, int position, View v) ->

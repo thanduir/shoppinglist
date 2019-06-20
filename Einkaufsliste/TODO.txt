@@ -1,7 +1,9 @@
 TODO
 ====
 
-- slow loading: ManageRecipes (list of recipeitems is loaded noticeably later than the rest of the UI)
+- slow loading of ManageIngredients, ManageRecipes and ManageShoppingList:
+    Reason: complex item layouts... Might (possibly) be fixed by using two different layouts (cf. https://www.codexpedia.com/android/android-recyclerview-with-multiple-different-layouts/ )
+    -> should i do this or not? Probably a precondition for groups (alternatives) and ranges (cf. below), at least performance-wise
 
 - Amount: Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
         -> Nein, dafür erlauben, "-" in Amounts anzugeben. Dann wird es NICHT addiert.
