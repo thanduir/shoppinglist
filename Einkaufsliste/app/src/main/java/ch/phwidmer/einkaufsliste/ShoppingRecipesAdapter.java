@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         private EditText m_EditTextAmount;
         private Spinner  m_SpinnerSize;
         private EditText m_AdditionalInfo;
+        private TableRow m_TableRowAmount;
 
         public ViewHolder(View v)
         {
@@ -77,6 +79,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             m_SpinnerSize = v.findViewById(R.id.spinnerSize);
             m_CheckBoxOptional = v.findViewById(R.id.checkBoxOptional);
             m_AdditionalInfo = v.findViewById(R.id.editText_AdditonalInfo);
+            m_TableRowAmount = v.findViewById(R.id.tableRowAmount);
         }
 
         Pair<String, String> getID()
@@ -408,6 +411,36 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
     }
 
+    void onChangeAmount(boolean bIncrease)
+    {
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
+        View activeItem = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+        if(activeItem == null)
+        {
+            return;
+        }
+        ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
+        if(holder.m_RecipeItem == null)
+        {
+            return;
+        }
+        ShoppingListItem item = holder.m_RecipeItem;
+
+        if(bIncrease)
+        {
+            item.m_Amount.increaseAmount();
+        }
+        else
+        {
+            item.m_Amount.decreaseAmount();
+        }
+
+        holder.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_Quantity)));
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
@@ -550,11 +583,13 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         {
             vh.m_EditTextAmount.setText("");
             vh.m_EditTextAmount.setVisibility(View.INVISIBLE);
+            vh.m_TableRowAmount.setVisibility(View.GONE);
         }
         else
         {
             vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_Quantity)));
             vh.m_EditTextAmount.setVisibility(View.VISIBLE);
+            vh.m_TableRowAmount.setVisibility(View.VISIBLE);
         }
     }
 

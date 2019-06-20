@@ -43,6 +43,61 @@ public class Amount {
         m_Quantity *= fFactor;
     }
 
+    void increaseAmount()
+    {
+        m_Quantity += getChangeAmount();
+    }
+
+    void decreaseAmount()
+    {
+        float changeAmount = getChangeAmount();
+        if(m_Quantity > changeAmount)
+        {
+            m_Quantity -= changeAmount;
+        }
+        else
+        {
+            m_Quantity = 0;
+        }
+    }
+
+    private float getChangeAmount()
+    {
+        if(m_Unit == Unit.Unitless)
+        {
+            return 0f;
+        }
+
+        if(m_Quantity < 0.01f)
+        {
+            return 0.001f;
+        }
+        else if(m_Quantity < 0.1f)
+        {
+            return 0.01f;
+        }
+        else if(m_Quantity < 1.0f)
+        {
+            return 0.1f;
+        }
+        else if(m_Quantity < 10.0f)
+        {
+            return 1.0f;
+        }
+        else if(m_Quantity < 100.0f)
+        {
+            return 10.0f;
+        }
+        else if(m_Quantity < 1000.0f)
+        {
+            return 50.0f;
+        }
+        else
+        {
+            return 100.0f;
+        }
+    }
+
     static String toUIString(Context context, Unit unit)
     {
         switch(unit)

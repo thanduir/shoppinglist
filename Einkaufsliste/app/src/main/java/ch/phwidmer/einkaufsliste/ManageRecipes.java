@@ -154,13 +154,8 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(getResources().getString(R.string.text_delete_recipe_header));
                 builder.setMessage(getResources().getString(R.string.text_delete_recipe, strName));
-                builder.setPositiveButton(android.R.string.yes, (DialogInterface dialog, int which) ->
-                {
-                    onDelRecipe(m_SpinnerRecipes);
-                });
-                builder.setNegativeButton(android.R.string.no, (DialogInterface dialog, int which) ->
-                {
-                });
+                builder.setPositiveButton(android.R.string.yes, (DialogInterface dialog, int which) -> onDelRecipe(m_SpinnerRecipes));
+                builder.setNegativeButton(android.R.string.no, (DialogInterface dialog, int which) -> {});
                 builder.show();
 
                 return true;
@@ -304,6 +299,26 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient));
         newFragment.setListOnlyAllowed(inputList);
         newFragment.show(getSupportFragmentManager(), "addRecipeItem");
+    }
+
+    public void onIncreaseAmount(View v)
+    {
+        RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
+        if(adapter == null)
+        {
+            return;
+        }
+        adapter.onChangeAmount(true);
+    }
+
+    public void onDecreaseAmount(View v)
+    {
+        RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
+        if(adapter == null)
+        {
+            return;
+        }
+        adapter.onChangeAmount(false);
     }
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)

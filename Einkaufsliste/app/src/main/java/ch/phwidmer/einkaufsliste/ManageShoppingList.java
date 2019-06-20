@@ -147,6 +147,26 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
     }
 
+    public void onIncreaseAmount(View v)
+    {
+        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
+        if(adapter == null)
+        {
+            return;
+        }
+        adapter.onChangeAmount(true);
+    }
+
+    public void onDecreaseAmount(View v)
+    {
+        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
+        if(adapter == null)
+        {
+            return;
+        }
+        adapter.onChangeAmount(false);
+    }
+
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
     {
         ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();

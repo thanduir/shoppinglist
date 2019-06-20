@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -36,17 +37,18 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView m_TextView;
-        private TextView m_TextViewDesc;
+        private TextView    m_TextView;
+        private TextView    m_TextViewDesc;
         private TableLayout m_TableLayout;
-        private View m_View;
-        private String m_id;
+        private View        m_View;
+        private String      m_id;
 
-        private CheckBox m_CheckBoxOptional;
-        private Spinner  m_SpinnerAmount;
-        private EditText m_EditTextAmount;
-        private Spinner  m_SpinnerSize;
-        private EditText m_AdditionalInfo;
+        private CheckBox    m_CheckBoxOptional;
+        private Spinner     m_SpinnerAmount;
+        private EditText    m_EditTextAmount;
+        private Spinner     m_SpinnerSize;
+        private EditText    m_AdditionalInfo;
+        private TableRow    m_TableRowAmount;
 
         public ViewHolder(View v)
         {
@@ -64,6 +66,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             m_SpinnerSize = v.findViewById(R.id.spinnerSize);
             m_CheckBoxOptional = v.findViewById(R.id.checkBoxOptional);
             m_AdditionalInfo = v.findViewById(R.id.editText_AdditonalInfo);
+            m_TableRowAmount = v.findViewById(R.id.tableRowAmount);
         }
 
         String getID()
@@ -341,6 +344,37 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         }
     }
 
+    void onChangeAmount(boolean bIncrease)
+    {
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
+
+        View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+        if(child == null)
+        {
+            return;
+        }
+        RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+        RecipeItem item = getRecipeItem(vh.getID());
+        if(item == null)
+        {
+            return;
+        }
+
+        if(bIncrease)
+        {
+            item.m_Amount.increaseAmount();
+        }
+        else
+        {
+            item.m_Amount.decreaseAmount();
+        }
+
+        vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_Quantity)));
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
@@ -460,11 +494,13 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         {
             vh.m_EditTextAmount.setText("");
             vh.m_EditTextAmount.setVisibility(View.INVISIBLE);
+            vh.m_TableRowAmount.setVisibility(View.GONE);
         }
         else
         {
             vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_Quantity)));
             vh.m_EditTextAmount.setVisibility(View.VISIBLE);
+            vh.m_TableRowAmount.setVisibility(View.VISIBLE);
         }
     }
 
