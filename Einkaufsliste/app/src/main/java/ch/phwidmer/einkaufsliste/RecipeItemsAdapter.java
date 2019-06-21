@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,7 +19,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -27,6 +27,9 @@ import java.util.Locale;
 
 public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
+    private static final int TYPE_INACTIVE = 1;
+    private static final int TYPE_ACTIVE = 2;
+
     private Recipes.Recipe m_Recipe;
     private RecyclerView m_RecyclerView;
     private CoordinatorLayout m_CoordLayout;
@@ -37,36 +40,33 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView    m_TextView;
-        private TextView    m_TextViewDesc;
-        private TableLayout m_TableLayout;
-        private View        m_View;
-        private String      m_id;
-
-        private CheckBox    m_CheckBoxOptional;
-        private Spinner     m_SpinnerAmount;
-        private EditText    m_EditTextAmount;
-        private Spinner     m_SpinnerSize;
-        private EditText    m_AdditionalInfo;
-        private TableRow    m_TableRowAmount;
+        TextView    m_TextView;
+        View        m_View;
+        String      m_id;
 
         public ViewHolder(View v)
         {
             super(v);
             m_View = v;
             m_TextView = v.findViewById(R.id.textView);
-            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
-            m_TableLayout = v.findViewById(R.id.tableLayoutEditIntegrdient);
-            m_TableLayout.setVisibility(View.GONE);
 
             m_id = "";
+        }
 
-            m_SpinnerAmount = v.findViewById(R.id.spinnerAmount);
-            m_EditTextAmount = v.findViewById(R.id.editText_Amount);
-            m_SpinnerSize = v.findViewById(R.id.spinnerSize);
-            m_CheckBoxOptional = v.findViewById(R.id.checkBoxOptional);
-            m_AdditionalInfo = v.findViewById(R.id.editText_AdditonalInfo);
-            m_TableRowAmount = v.findViewById(R.id.tableRowAmount);
+        String getID()
+        {
+            return m_id;
+        }
+    }
+
+    public static class ViewHolderInactive extends RecipeItemsAdapter.ViewHolder
+    {
+        private TextView    m_TextViewDesc;
+
+        ViewHolderInactive(View v)
+        {
+            super(v);
+            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
         }
 
         String getID()
@@ -104,22 +104,44 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                 fullText = " (" + text + ")";
             }
             m_TextViewDesc.setText(fullText);
+        }
+    }
 
+    public static class ViewHolderActive extends RecipeItemsAdapter.ViewHolder
+    {
+        private CheckBox    m_CheckBoxOptional;
+        private Spinner     m_SpinnerAmount;
+        private EditText    m_EditTextAmount;
+        private Spinner     m_SpinnerSize;
+        private EditText    m_AdditionalInfo;
+        private TableRow    m_TableRowAmount;
+
+        ViewHolderActive(View v)
+        {
+            super(v);
+            m_SpinnerAmount = v.findViewById(R.id.spinnerAmount);
+            m_EditTextAmount = v.findViewById(R.id.editText_Amount);
+            m_SpinnerSize = v.findViewById(R.id.spinnerSize);
+            m_CheckBoxOptional = v.findViewById(R.id.checkBoxOptional);
+            m_AdditionalInfo = v.findViewById(R.id.editText_AdditonalInfo);
+            m_TableRowAmount = v.findViewById(R.id.tableRowAmount);
+        }
+
+        String getID()
+        {
+            return m_id;
+        }
+
+        void updateAppearance(RecipeItem item)
+        {
             if(item.m_Optional)
             {
                 m_TextView.setTextColor(Color.GRAY);
-                m_TextView.setTypeface(m_TextView.getTypeface(), Typeface.ITALIC);
-
-                m_TextViewDesc.setTextColor(Color.GRAY);
-                m_TextViewDesc.setTypeface(m_TextViewDesc.getTypeface(), Typeface.ITALIC);
             }
             else
             {
                 m_TextView.setTextColor(Color.BLACK);
                 m_TextView.setTypeface(m_TextView.getTypeface(), Typeface.BOLD);
-
-                m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
-                m_TextViewDesc.setTextColor(Color.BLACK);
             }
         }
     }
@@ -132,14 +154,37 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         m_CoordLayout = coordLayout;
     }
 
+    @Override
+    public int getItemViewType(int position)
+    {
+        if(m_iActiveElement == position)
+        {
+            return TYPE_ACTIVE;
+        }
+        else
+        {
+            return TYPE_INACTIVE;
+        }
+    }
+
     @Override @NonNull
     public RecipeItemsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                             int viewType)
     {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_item_edit_recipieitem, parent, false);
+        if(viewType == TYPE_INACTIVE)
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_item_edit_recipieitem_inactive, parent, false);
 
-        return new RecipeItemsAdapter.ViewHolder(v);
+            return new RecipeItemsAdapter.ViewHolderInactive(v);
+        }
+        else
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_item_edit_recipieitem_active, parent, false);
+
+            return new RecipeItemsAdapter.ViewHolderActive(v);
+        }
     }
 
     @Override
@@ -149,10 +194,14 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         holder.m_id = strRecipeItem;
         holder.m_TextView.setText(strRecipeItem);
 
-        RecipeItem item = m_Recipe.m_Items.get(position);
-        holder.setDescription(holder.itemView.getContext(), item);
-
-        updateViewHolder(holder, m_iActiveElement == position);
+        if(m_iActiveElement == position)
+        {
+            updateViewHolderActive(holder);
+        }
+        else
+        {
+            updateViewHolderInactive(holder);
+        }
     }
 
     @Override
@@ -170,27 +219,11 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         return getRecipeItemsList().get(m_iActiveElement);
     }
 
-    @Override
-    public void onViewAttachedToWindow(@NonNull RecipeItemsAdapter.ViewHolder holder)
-    {
-        updateViewHolder(holder, m_iActiveElement == holder.getAdapterPosition());
-    }
-
     void setActiveElement(String strElement)
     {
-        if(m_RecyclerView.getLayoutManager() == null)
-        {
-            return;
-        }
-
         if(m_iActiveElement != -1)
         {
-            View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-            if(v != null)
-            {
-                RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
-                updateViewHolder(vh, false);
-            }
+            notifyItemChanged(m_iActiveElement);
         }
 
         if(strElement.equals(""))
@@ -200,148 +233,161 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         else
         {
             m_iActiveElement = getRecipeItemsList().indexOf(strElement);
+            notifyItemChanged(m_iActiveElement);
+        }
+    }
 
+    private void updateViewHolderInactive(RecipeItemsAdapter.ViewHolder holder)
+    {
+        RecipeItemsAdapter.ViewHolderInactive vh = (RecipeItemsAdapter.ViewHolderInactive)holder;
+        if(vh == null)
+        {
+            return;
+        }
+
+        RecipeItem item = getRecipeItem(vh.m_id);
+        if(item == null)
+        {
+            return;
+        }
+        vh.setDescription(holder.itemView.getContext(), item);
+
+        if(item.m_Optional)
+        {
+            vh.m_TextView.setTextColor(Color.GRAY);
+            vh.m_TextView.setTypeface(vh.m_TextView.getTypeface(), Typeface.ITALIC);
+
+            vh.m_TextViewDesc.setTextColor(Color.GRAY);
+            vh.m_TextViewDesc.setTypeface(vh.m_TextViewDesc.getTypeface(), Typeface.ITALIC);
+        }
+        else
+        {
+            vh.m_TextView.setTextColor(Color.BLACK);
+            vh.m_TextView.setTypeface(vh.m_TextView.getTypeface(), Typeface.BOLD);
+
+            vh.m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
+            vh.m_TextViewDesc.setTextColor(Color.BLACK);
+        }
+
+        vh.m_TextViewDesc.setVisibility(View.VISIBLE);
+        vh.m_View.setBackgroundColor(Color.TRANSPARENT);
+    }
+
+    private void updateViewHolderActive(RecipeItemsAdapter.ViewHolder holder)
+    {
+        RecipeItemsAdapter.ViewHolderActive vh = (RecipeItemsAdapter.ViewHolderActive)holder;
+        if(vh == null)
+        {
+            return;
+        }
+
+        RecipeItem item = getRecipeItem(vh.m_id);
+        if(item == null)
+        {
+            return;
+        }
+
+        vh.updateAppearance(item);
+        vh.m_View.setBackgroundColor(ContextCompat.getColor(vh.m_View.getContext(), R.color.colorHighlightedBackground));
+
+        ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
+        for(Amount.Unit u : Amount.Unit.values())
+        {
+            adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
+        }
+        adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vh.m_SpinnerAmount.setAdapter(adapterAmount);
+        vh.m_SpinnerAmount.setOnItemSelectedListener(this);
+        vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
+
+        ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
+        for(RecipeItem.Size size : RecipeItem.Size.values())
+        {
+            adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
+        }
+        adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vh.m_SpinnerSize.setAdapter(adapterSize);
+        vh.m_SpinnerSize.setOnItemSelectedListener(this);
+        vh.m_SpinnerSize.setSelection(item.m_Size.ordinal());
+
+        if(m_RecyclerView.getLayoutManager() == null)
+        {
+            return;
+        }
+
+        vh.m_CheckBoxOptional.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) ->
+        {
             View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
             if(child == null)
             {
                 return;
             }
-
-            RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-            updateViewHolder(vh, true);
-
-            child.requestFocus();
-        }
-    }
-
-    private void updateViewHolder(RecipeItemsAdapter.ViewHolder vh, boolean bActive)
-    {
-        if(!bActive)
-        {
-            vh.m_TableLayout.setVisibility(View.GONE);
-            vh.m_TextViewDesc.setVisibility(View.VISIBLE);
-
-            vh.m_SpinnerAmount.setAdapter(null);
-            vh.m_SpinnerSize.setAdapter(null);
-
-            vh.m_View.setBackgroundColor(Color.TRANSPARENT);
-        }
-        else
-        {
-            vh.m_TableLayout.setVisibility(View.VISIBLE);
-            vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
-
-            vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
-
-            RecipeItem item = getRecipeItem(vh.m_id);
-            if(item == null)
+            RecipeItemsAdapter.ViewHolder viewHolder = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+            RecipeItem recipeItem = getRecipeItem(viewHolder.getID());
+            if(recipeItem == null)
             {
                 return;
             }
 
-            ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(Amount.Unit u : Amount.Unit.values())
-            {
-                adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
-            }
-            adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            vh.m_SpinnerAmount.setAdapter(adapterAmount);
-            vh.m_SpinnerAmount.setOnItemSelectedListener(this);
-            vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
+            recipeItem.m_Optional = isChecked;
+            vh.updateAppearance(recipeItem);
+        });
+        vh.m_CheckBoxOptional.setChecked(item.m_Optional);
 
-            ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(RecipeItem.Size size : RecipeItem.Size.values())
-            {
-                adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
-            }
-            adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            vh.m_SpinnerSize.setAdapter(adapterSize);
-            vh.m_SpinnerSize.setOnItemSelectedListener(this);
-            vh.m_SpinnerSize.setSelection(item.m_Size.ordinal());
+        vh.m_AdditionalInfo.setText(item.m_AdditionalInfo);
+        vh.m_AdditionalInfo.addTextChangedListener(new TextWatcher() {
 
-            if(m_RecyclerView.getLayoutManager() == null)
-            {
-                return;
-            }
-
-            vh.m_CheckBoxOptional.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) ->
-            {
+            public void afterTextChanged(Editable s) {
                 View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
                 if(child == null)
                 {
+                    // Item not visible (yet) -> nothing to do
                     return;
                 }
-                RecipeItemsAdapter.ViewHolder viewHolder = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-                RecipeItem recipeItem = getRecipeItem(viewHolder.getID());
-                if(recipeItem == null)
+
+                RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+                RecipeItem item = getRecipeItem(vh.getID());
+                if(item == null)
                 {
                     return;
                 }
+                item.m_AdditionalInfo = s.toString();
+            }
 
-                recipeItem.m_Optional = isChecked;
-                viewHolder.setDescription(viewHolder.itemView.getContext(), recipeItem);
-            });
-            vh.m_CheckBoxOptional.setChecked(item.m_Optional);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
 
-            vh.m_AdditionalInfo.setText(item.m_AdditionalInfo);
-            vh.m_AdditionalInfo.addTextChangedListener(new TextWatcher() {
+        vh.m_EditTextAmount.addTextChangedListener(new TextWatcher() {
 
-                public void afterTextChanged(Editable s) {
-                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-                    if(child == null)
-                    {
-                        // Item not visible (yet) -> nothing to do
-                        return;
-                    }
-
-                    RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-                    RecipeItem item = getRecipeItem(vh.getID());
-                    if(item == null)
-                    {
-                        return;
-                    }
-                    item.m_AdditionalInfo = s.toString();
-
-                    vh.setDescription(vh.itemView.getContext(), item);
+            public void afterTextChanged(Editable s) {
+                View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                if(child == null)
+                {
+                    // Item not visible (yet) -> nothing to do
+                    return;
                 }
 
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            });
-
-            vh.m_EditTextAmount.addTextChangedListener(new TextWatcher() {
-
-                public void afterTextChanged(Editable s) {
-                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-                    if(child == null)
-                    {
-                        // Item not visible (yet) -> nothing to do
-                        return;
-                    }
-
-                    RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-                    RecipeItem item = getRecipeItem(vh.getID());
-                    if(item == null)
-                    {
-                        return;
-                    }
-                    if(s.toString().isEmpty())
-                    {
-                        item.m_Amount.m_Quantity = 0.0f;
-                    }
-                    else
-                    {
-                        item.m_Amount.m_Quantity = Float.valueOf(s.toString());
-                    }
-
-                    vh.setDescription(vh.itemView.getContext(), item);
+                RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+                RecipeItem item = getRecipeItem(vh.getID());
+                if(item == null)
+                {
+                    return;
                 }
+                if(s.toString().isEmpty())
+                {
+                    item.m_Amount.m_Quantity = 0.0f;
+                }
+                else
+                {
+                    item.m_Amount.m_Quantity = Float.valueOf(s.toString());
+                }
+            }
 
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            });
-            adjustEditTextAmount(vh, item);
-        }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+        adjustEditTextAmount(vh, item);
     }
 
     void onChangeAmount(boolean bIncrease)
@@ -356,7 +402,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         {
             return;
         }
-        RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+        RecipeItemsAdapter.ViewHolderActive vh = (RecipeItemsAdapter.ViewHolderActive)m_RecyclerView.getChildViewHolder(child);
         RecipeItem item = getRecipeItem(vh.getID());
         if(item == null)
         {
@@ -378,7 +424,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
-        if(m_RecyclerView.getLayoutManager() == null)
+        if(m_iActiveElement == -1 || m_RecyclerView.getLayoutManager() == null)
         {
             return;
         }
@@ -388,7 +434,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         {
             return;
         }
-        RecipeItemsAdapter.ViewHolder vh = (RecipeItemsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+        RecipeItemsAdapter.ViewHolderActive vh = (RecipeItemsAdapter.ViewHolderActive)m_RecyclerView.getChildViewHolder(child);
         RecipeItem item = getRecipeItem(vh.getID());
         if(item == null)
         {
@@ -404,8 +450,6 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         {
             item.m_Size = RecipeItem.Size.values()[vh.m_SpinnerSize.getSelectedItemPosition()];
         }
-
-        vh.setDescription(view.getContext(), item);
     }
 
     @Override
@@ -413,6 +457,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     {
     }
 
+    @Override
     public void reactToSwipe(int position)
     {
         // Remove element
@@ -454,8 +499,10 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         snackbar.show();
     }
 
+    @Override
     public boolean swipeAllowed(RecyclerView.ViewHolder vh) { return true; }
 
+    @Override
     public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
     {
         return false;
@@ -488,7 +535,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         return null;
     }
 
-    private void adjustEditTextAmount(RecipeItemsAdapter.ViewHolder vh, RecipeItem item)
+    private void adjustEditTextAmount(RecipeItemsAdapter.ViewHolderActive vh, RecipeItem item)
     {
         if(item.m_Amount.m_Unit == Amount.Unit.Unitless)
         {
@@ -504,6 +551,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         }
     }
 
+    @Override
     public void clearViewBackground(RecyclerView.ViewHolder vh)
     {
         if(m_iActiveElement == -1)
@@ -521,7 +569,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         if(v != null && m_RecyclerView.getChildViewHolder(v) == vh)
         {
-            vh.itemView.setBackgroundColor(vh.itemView.getResources().getColor(R.color.colorHighlightedBackground));
+            vh.itemView.setBackgroundColor(ContextCompat.getColor(vh.itemView.getContext(), R.color.colorHighlightedBackground));
         }
         else
         {

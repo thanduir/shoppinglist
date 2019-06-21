@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -35,9 +36,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        protected TextView m_TextView;
-        protected View m_View;
-        protected String m_id;
+        TextView m_TextView;
+        View m_View;
+        String m_id;
 
         ViewHolder(View v)
         {
@@ -171,20 +172,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     void setActiveElement(String strElement)
     {
-        if(m_RecyclerView.getLayoutManager() == null)
-        {
-            return;
-        }
-
         if(m_iActiveElement != -1)
         {
             notifyItemChanged(m_iActiveElement);
-            /*View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-            if(v != null)
-            {
-                IngredientsAdapter.ViewHolder2 vh = (IngredientsAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
-                updateViewHolder(vh, false);
-            }*/
         }
 
         if(strElement.equals(""))
@@ -195,15 +185,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             m_iActiveElement = getSortedIngredients().indexOf(strElement);
             notifyItemChanged(m_iActiveElement);
-
-            /*View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-            if(child == null)
-            {
-                return;
-            }
-
-            IngredientsAdapter.ViewHolder2 vh = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-            updateViewHolder(vh, true);*/
         }
     }
 
@@ -233,7 +214,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         vh.m_TableLayout.setVisibility(View.VISIBLE);
 
-        vh.m_View.setBackgroundColor(vh.m_View.getResources().getColor(R.color.colorHighlightedBackground));
+        vh.m_View.setBackgroundColor(ContextCompat.getColor(vh.m_View.getContext(), R.color.colorHighlightedBackground));
 
         final String strIngredient = vh.m_id;
 
@@ -436,7 +417,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         if(v != null && m_RecyclerView.getChildViewHolder(v) == vh)
         {
-            vh.itemView.setBackgroundColor(vh.itemView.getResources().getColor(R.color.colorHighlightedBackground));
+            vh.itemView.setBackgroundColor(ContextCompat.getColor(vh.itemView.getContext(), R.color.colorHighlightedBackground));
         }
         else
         {

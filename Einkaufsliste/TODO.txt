@@ -2,7 +2,6 @@ TODO
 ====
 
 - slow loading of ManageIngredients, ManageRecipes and ManageShoppingList. TBD:
-    * ManageRecipes
     * ManageShoppingList
 
 - Amount: Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
@@ -12,6 +11,7 @@ TODO
     -> Im Rezept als Gruppe zusammen definiert und beim Einfügen in die ShoppingList muss man dann eines davon auswählen!
         (macht evtl. das Laden dann noch langsamer, da komplexes Layout...)
         -> Dann müsste ich es halt besser optimieren :p
+- Amount: improve getChangeAmount-Method
 
 - data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHANGES!)
 - Data synchronisation - part 2:
