@@ -1,15 +1,11 @@
 TODO
 ====
 
-- Amount: Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
-        -> Nein, dafür erlauben, "-" in Amounts anzugeben. Dann wird es NICHT addiert.
-        -> Das lässt sich nicht sinnvoll implementieren. Trotzdem andere Variante?
+- Ranges: Sicherstellen, dass quantityMin <= quantityMax! Wie sollte das Verhalten genau sein diesbezüglich?
+
 - Alternativen in Rezepten (e.g. Poulet oder Tofu)! Wie könnte dies gehandhabt werden?
     -> Im Rezept als Gruppe zusammen definiert und beim Einfügen in die ShoppingList muss man dann eines davon auswählen!
-        (macht evtl. das Laden dann noch langsamer, da komplexes Layout...)
-        -> Dann müsste ich es halt besser optimieren :p
-- Amount: improve getChangeAmount-Method
-
+    -> Oder gibt es eine (implementations- und UI-technisch) einfachere Möglichkeit?
 - data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHANGES!)
 - Data synchronisation - part 2:
     2. merge-functionality (-> "data consistency check"?)

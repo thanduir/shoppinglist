@@ -71,6 +71,9 @@
     <string name="text_recipe_renamed">Rezept \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_delete_recipe_header">Rezept löschen</string>
     <string name="text_delete_recipe">Soll das Rezept \"%s\" wirklich gelöscht werdeb?</string>
+    <string name="text_amount_range">Bereich</string>
+    <string name="text_amount_min">Min.</string>
+    <string name="text_amount_max">Max.</string>
     <string name="file_exists_overwrite_header">Datei existiert bereits.</string>
     <string name="file_exists_overwrite">Die Datei %s existiert bereits. Soll sie überschrieben werden?</string>
     <string name="provenance_everywhere">Überall</string>

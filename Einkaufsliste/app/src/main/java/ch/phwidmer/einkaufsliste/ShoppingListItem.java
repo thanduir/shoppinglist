@@ -45,7 +45,8 @@ class ShoppingListItem implements Parcelable
 
         out.writeString(m_Ingredient);
 
-        out.writeFloat(m_Amount.m_Quantity);
+        out.writeFloat(m_Amount.m_QuantityMin);
+        out.writeFloat(m_Amount.m_QuantityMax);
         out.writeInt(m_Amount.m_Unit.ordinal());
 
         out.writeInt(m_Size.ordinal());
@@ -61,7 +62,8 @@ class ShoppingListItem implements Parcelable
         m_Ingredient = in.readString();
 
         m_Amount = new Amount();
-        m_Amount.m_Quantity = in.readFloat();
+        m_Amount.m_QuantityMin = in.readFloat();
+        m_Amount.m_QuantityMax = in.readFloat();
         m_Amount.m_Unit = Amount.Unit.values()[in.readInt()];
 
         m_Size = RecipeItem.Size.values()[in.readInt()];

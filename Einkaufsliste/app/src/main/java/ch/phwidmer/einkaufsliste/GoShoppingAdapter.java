@@ -60,7 +60,12 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             String text = "";
             if(item.getAmount().m_Unit != Amount.Unit.Unitless)
             {
-                text = Helper.formatNumber(item.getAmount().m_Quantity) + " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.getAmount().m_Unit) + " ";
+                text = Helper.formatNumber(item.getAmount().m_QuantityMin);
+                if(item.getAmount().isRange())
+                {
+                    text += "-" + Helper.formatNumber(item.getAmount().m_QuantityMax);
+                }
+                text += " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.getAmount().m_Unit) + " ";
             }
             text += holder.m_id;
             holder.m_CheckBox.setText(text);

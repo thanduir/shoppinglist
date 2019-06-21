@@ -3,6 +3,8 @@ package ch.phwidmer.einkaufsliste;
 import android.content.Context;
 
 public class Amount {
+    private static float QUANTITY_UNUSED = -1;
+
     public enum Unit {
         Count,
 
@@ -19,76 +21,136 @@ public class Amount {
         Unitless
     }
 
-    float m_Quantity;
+    float m_QuantityMin;
+    float m_QuantityMax;
     Unit m_Unit;
 
     public Amount()
     {
-        m_Quantity = 1.0f;
+        m_QuantityMin = 1.0f;
+        m_QuantityMax = QUANTITY_UNUSED;
         m_Unit = Unit.Count;
     }
 
     public Amount(Amount other)
     {
-        m_Quantity = other.m_Quantity;
+        m_QuantityMin = other.m_QuantityMin;
+        m_QuantityMax = other.m_QuantityMax;
         m_Unit = other.m_Unit;
+    }
+
+    boolean isRange()
+    {
+        return m_QuantityMax != QUANTITY_UNUSED;
+    }
+
+    void setIsRange(boolean bIsRange)
+    {
+        if(bIsRange == isRange())
+        {
+            return;
+        }
+
+        if(bIsRange)
+        {
+            m_QuantityMax = m_QuantityMin;
+        }
+        else
+        {
+            m_QuantityMax = QUANTITY_UNUSED;
+        }
     }
 
     void scaleAmount(float fFactor)
     {
-        if(m_Unit == Unit.Unitless)
+        if(m_Unit == Unit.Unitless || fFactor < 0.0f)
         {
             return;
         }
-        m_Quantity *= fFactor;
-    }
-
-    void increaseAmount()
-    {
-        m_Quantity += getChangeAmount();
-    }
-
-    void decreaseAmount()
-    {
-        float changeAmount = getChangeAmount();
-        if(m_Quantity > changeAmount)
+        m_QuantityMin *= fFactor;
+        if(m_QuantityMax != QUANTITY_UNUSED)
         {
-            m_Quantity -= changeAmount;
+            m_QuantityMax *= fFactor;
+        }
+    }
+
+    void increaseAmountMin()
+    {
+        m_QuantityMin += getChangeAmount(m_QuantityMin);
+    }
+
+    void decreaseAmountMin()
+    {
+        float changeAmount = getChangeAmount(m_QuantityMin);
+        if(m_QuantityMin > changeAmount)
+        {
+            m_QuantityMin -= changeAmount;
         }
         else
         {
-            m_Quantity = 0;
+            m_QuantityMin = 0;
         }
     }
 
-    private float getChangeAmount()
+    void increaseAmountMax()
+    {
+        if(m_QuantityMax == QUANTITY_UNUSED)
+        {
+            return;
+        }
+        m_QuantityMax += getChangeAmount(m_QuantityMax);
+    }
+
+    void decreaseAmountMax()
+    {
+        if(m_QuantityMax == QUANTITY_UNUSED)
+        {
+            return;
+        }
+
+        float changeAmount = getChangeAmount(m_QuantityMax);
+        if(m_QuantityMax > changeAmount)
+        {
+            m_QuantityMax -= changeAmount;
+        }
+        else
+        {
+            m_QuantityMax = 0;
+        }
+    }
+
+    private float getChangeAmount(float quantity)
     {
         if(m_Unit == Unit.Unitless)
         {
             return 0f;
         }
 
-        if(m_Quantity < 0.01f)
-        {
-            return 0.001f;
-        }
-        else if(m_Quantity < 0.1f)
-        {
-            return 0.01f;
-        }
-        else if(m_Quantity < 1.0f)
-        {
-            return 0.1f;
-        }
-        else if(m_Quantity < 10.0f)
+        if(quantity == 0.0f)
         {
             return 1.0f;
         }
-        else if(m_Quantity < 100.0f)
+        else if(quantity < 0.01f)
+        {
+            return 0.001f;
+        }
+        else if(quantity < 0.1f)
+        {
+            return 0.01f;
+        }
+        else if(quantity < 1.0f)
+        {
+            return 0.1f;
+        }
+        else if(quantity < 10.0f)
+        {
+            return 1.0f;
+        }
+        else if(quantity < 100.0f)
         {
             return 10.0f;
         }
-        else if(m_Quantity < 1000.0f)
+        else if(quantity < 1000.0f)
         {
             return 50.0f;
         }
@@ -211,7 +273,7 @@ public class Amount {
             case Teaspoon:
             case Unitless:
             {
-                result.m_Quantity = m1.m_Quantity + m2.m_Quantity;
+                result.m_QuantityMin = m1.m_QuantityMin + m2.m_QuantityMin;
                 result.m_Unit = m1.m_Unit;
                 break;
             }
@@ -219,12 +281,12 @@ public class Amount {
             case Kilogram:
             case Gram:
             {
-                result.m_Quantity = m1.m_Unit == Unit.Kilogram ? m1.m_Quantity * 1000.0f : m1.m_Quantity;
-                result.m_Quantity += m2.m_Unit == Unit.Kilogram ? m2.m_Quantity * 1000.0f : m2.m_Quantity;
+                result.m_QuantityMin = m1.m_Unit == Unit.Kilogram ? m1.m_QuantityMin * 1000.0f : m1.m_QuantityMin;
+                result.m_QuantityMin += m2.m_Unit == Unit.Kilogram ? m2.m_QuantityMin * 1000.0f : m2.m_QuantityMin;
 
-                if(result.m_Quantity >= 1000.0f)
+                if(result.m_QuantityMin >= 1000.0f)
                 {
-                    result.m_Quantity /= 1000.0f;
+                    result.m_QuantityMin /= 1000.0f;
                     result.m_Unit = Unit.Kilogram;
                 }
                 else
@@ -238,7 +300,7 @@ public class Amount {
             case Deciliter:
             case Milliliter:
             {
-                float value1 = m1.m_Quantity;
+                float value1 = m1.m_QuantityMin;
                 if(m1.m_Unit == Unit.Liter)
                 {
                     value1 *= 1000.0f;
@@ -248,7 +310,7 @@ public class Amount {
                     value1 *= 100.0f;
                 }
 
-                float value2 = m2.m_Quantity;
+                float value2 = m2.m_QuantityMin;
                 if(m2.m_Unit == Unit.Liter)
                 {
                     value2 *= 1000.0f;
@@ -258,15 +320,15 @@ public class Amount {
                     value2 *= 100.0f;
                 }
 
-                result.m_Quantity = value1 + value2;
-                if(result.m_Quantity >= 1000.0f)
+                result.m_QuantityMin = value1 + value2;
+                if(result.m_QuantityMin >= 1000.0f)
                 {
-                    result.m_Quantity /= 1000.0f;
+                    result.m_QuantityMin /= 1000.0f;
                     result.m_Unit = Unit.Liter;
                 }
-                else if(result.m_Quantity >= 10.0f)
+                else if(result.m_QuantityMin >= 10.0f)
                 {
-                    result.m_Quantity /= 100.0f;
+                    result.m_QuantityMin /= 100.0f;
                     result.m_Unit = Unit.Deciliter;
                 }
                 else
@@ -284,6 +346,11 @@ public class Amount {
 
     static boolean canBeAddedUp(Amount m1, Amount m2)
     {
+        if(m1.isRange() || m2.isRange())
+        {
+            return false;
+        }
+
         switch(m1.m_Unit)
         {
             case Count:

@@ -155,7 +155,8 @@ class Recipes implements Parcelable
 
                 writer.name("amount");
                 writer.beginArray();
-                writer.value(ri.m_Amount.m_Quantity);
+                writer.value(ri.m_Amount.m_QuantityMin);
+                writer.value(ri.m_Amount.m_QuantityMax);
                 writer.value(ri.m_Amount.m_Unit.toString());
                 writer.endArray();
 
@@ -171,7 +172,7 @@ class Recipes implements Parcelable
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader) throws IOException
+    void readFromJson(JsonReader reader, int version) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -215,7 +216,11 @@ class Recipes implements Parcelable
                                 {
                                     reader.beginArray();
 
-                                    item.m_Amount.m_Quantity = (float)reader.nextDouble();
+                                    item.m_Amount.m_QuantityMin = (float)reader.nextDouble();
+                                    if(version > 1)
+                                    {
+                                        item.m_Amount.m_QuantityMax = (float) reader.nextDouble();
+                                    }
                                     String str = reader.nextString();
                                     item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
 

@@ -91,6 +91,10 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         private Spinner  m_SpinnerSize;
         private EditText m_AdditionalInfo;
         private TableRow m_TableRowAmount;
+        private CheckBox    m_CheckBoxAmountRange;
+        private TableRow    m_TableRowAmountRange;
+        private EditText    m_EditTextAmountMax;
+        private TextView    m_TextViewAmountMin;
 
         ViewHolderActive(View v)
         {
@@ -101,6 +105,10 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             m_CheckBoxOptional = v.findViewById(R.id.checkBoxOptional);
             m_AdditionalInfo = v.findViewById(R.id.editText_AdditonalInfo);
             m_TableRowAmount = v.findViewById(R.id.tableRowAmount);
+            m_CheckBoxAmountRange = v.findViewById(R.id.checkBoxAmountRange);
+            m_TableRowAmountRange = v.findViewById(R.id.tableRowAmountRange);
+            m_EditTextAmountMax = v.findViewById(R.id.editText_AmountMax);
+            m_TextViewAmountMin = v.findViewById(R.id.textViewMinAmount);
         }
 
         private void updateAppearance()
@@ -133,7 +141,12 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             String text = "";
             if(m_RecipeItem.m_Amount.m_Unit != Amount.Unit.Unitless)
             {
-                text += Helper.formatNumber(m_RecipeItem.m_Amount.m_Quantity) + " " + Amount.shortForm(context, m_RecipeItem.m_Amount.m_Unit);
+                text += Helper.formatNumber(m_RecipeItem.m_Amount.m_QuantityMin);
+                if(m_RecipeItem.m_Amount.isRange())
+                {
+                    text += "-" + Helper.formatNumber(m_RecipeItem.m_Amount.m_QuantityMax);
+                }
+                text += " " + Amount.shortForm(context, m_RecipeItem.m_Amount.m_Unit);
             }
             if(m_RecipeItem.m_Size != RecipeItem.Size.Normal)
             {
@@ -173,20 +186,18 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     @Override
     public int getItemViewType(int position)
     {
-        if(m_iActiveElement == position)
+        Pair<String, String> strItem = getShoppingRecipes().get(position);
+        if(strItem.second == null || strItem.second.isEmpty())
+        {
+            return TYPE_HEADER;
+        }
+        else if(m_iActiveElement == position)
         {
             return TYPE_ACTIVE;
         }
         else
         {
-            Pair<String, String> strItem = getShoppingRecipes().get(position);
-            if(strItem.second == null || strItem.second.isEmpty())
-            {
-                return TYPE_HEADER;
-            }
-            else {
-                return TYPE_INACTIVE;
-            }
+            return TYPE_INACTIVE;
         }
     }
 
@@ -454,21 +465,84 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 ShoppingListItem item = vh.m_RecipeItem;
                 if(s.toString().isEmpty())
                 {
-                    item.m_Amount.m_Quantity = 0.0f;
+                    item.m_Amount.m_QuantityMin = 0.0f;
                 }
                 else
                 {
-                    item.m_Amount.m_Quantity = Float.valueOf(s.toString());
+                    item.m_Amount.m_QuantityMin = Float.valueOf(s.toString());
                 }
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
+
+        vh.m_EditTextAmountMax.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s)
+            {
+                if(m_RecyclerView.getLayoutManager() == null)
+                {
+                    return;
+                }
+                View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                if(child == null)
+                {
+                    // Item not visible (yet) -> nothing to do
+                    return;
+                }
+
+                ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+                ShoppingListItem item = vh.m_RecipeItem;
+                if(item == null || !item.m_Amount.isRange())
+                {
+                    return;
+                }
+
+                if(s.toString().isEmpty())
+                {
+                    item.m_Amount.m_QuantityMax = 0.0f;
+                }
+                else
+                {
+                    item.m_Amount.m_QuantityMax = Float.valueOf(s.toString());
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+        vh.m_CheckBoxAmountRange.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) ->
+        {
+            if(m_RecyclerView.getLayoutManager() == null)
+            {
+                return;
+            }
+
+            View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+            if(child == null)
+            {
+                return;
+            }
+            ShoppingRecipesAdapter.ViewHolder viewHolder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+            ShoppingListItem recipeItem = viewHolder.m_RecipeItem;
+            if(recipeItem == null)
+            {
+                return;
+            }
+
+            vh.m_TableRowAmountRange.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            recipeItem.m_Amount.setIsRange(isChecked);
+
+            adjustEditTextAmount(vh, item);
+        });
+        vh.m_CheckBoxAmountRange.setChecked(item.m_Amount.isRange());
+
         adjustEditTextAmount(vh, item);
     }
 
-    void onChangeAmount(boolean bIncrease)
+    void onChangeAmount(boolean bChangeMax, boolean bIncrease)
     {
         if(m_RecyclerView.getLayoutManager() == null)
         {
@@ -488,14 +562,35 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         if(bIncrease)
         {
-            item.m_Amount.increaseAmount();
+            if(bChangeMax)
+            {
+                item.m_Amount.increaseAmountMax();
+            }
+            else
+            {
+                item.m_Amount.increaseAmountMin();
+            }
         }
         else
         {
-            item.m_Amount.decreaseAmount();
+            if(bChangeMax)
+            {
+                item.m_Amount.decreaseAmountMax();
+            }
+            else
+            {
+                item.m_Amount.decreaseAmountMin();
+            }
         }
 
-        holder.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_Quantity)));
+        if(bChangeMax)
+        {
+            holder.m_EditTextAmountMax.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMax)));
+        }
+        else
+        {
+            holder.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMin)));
+        }
     }
 
     @Override
@@ -640,14 +735,30 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         if(item.m_Amount.m_Unit == Amount.Unit.Unitless)
         {
             vh.m_EditTextAmount.setText("");
-            vh.m_EditTextAmount.setVisibility(View.INVISIBLE);
+            vh.m_EditTextAmountMax.setText("");
+            vh.m_CheckBoxAmountRange.setChecked(false);
+            vh.m_CheckBoxAmountRange.setVisibility(View.GONE);
             vh.m_TableRowAmount.setVisibility(View.GONE);
+            vh.m_TableRowAmountRange.setVisibility(View.GONE);
         }
         else
         {
-            vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_Quantity)));
-            vh.m_EditTextAmount.setVisibility(View.VISIBLE);
+            vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMin)));
+            vh.m_CheckBoxAmountRange.setVisibility(View.VISIBLE);
             vh.m_TableRowAmount.setVisibility(View.VISIBLE);
+
+            if(item.m_Amount.isRange())
+            {
+                vh.m_EditTextAmountMax.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMax)));
+                vh.m_TableRowAmountRange.setVisibility(View.VISIBLE);
+                vh.m_TextViewAmountMin.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                vh.m_EditTextAmountMax.setText("");
+                vh.m_TableRowAmountRange.setVisibility(View.GONE);
+                vh.m_TextViewAmountMin.setVisibility(View.GONE);
+            }
         }
     }
 

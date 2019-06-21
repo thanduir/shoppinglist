@@ -59,8 +59,15 @@
 
                 <Spinner
                     android:id="@+id/spinnerAmount"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="40dp" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxAmountRange"
+                    android:layout_width="86dp"
+                    android:layout_height="40dp"
+                    android:text="@string/text_amount_range" />
             </LinearLayout>
         </TableRow>
 
@@ -83,6 +90,13 @@
                 android:layout_marginRight="0dp"
                 android:padding="0dp"
                 android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewMinAmount"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_amount_min" />
 
                 <ImageView
                     android:id="@+id/imageViewInc"
@@ -115,6 +129,66 @@
                     android:contentDescription="@string/button_add"
                     android:src="@drawable/ic_add_box_black_24dp" />
 
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRowAmountRange"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewPlaceholder2"
+                android:layout_width="86dp"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:text="" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:padding="0dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewMaxAmount"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_amount_max" />
+
+                <ImageView
+                    android:id="@+id/imageViewIncRange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:onClick="onDecreaseAmountMax"
+                    android:scaleType="center"
+                    android:contentDescription="@string/button_add"
+                    android:src="@drawable/ic_indeterminate_check_box_black_24dp" />
+
+                <EditText
+                    android:id="@+id/editText_AmountMax"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:ems="10"
+                    android:inputType="number|numberDecimal" />
+
+                <ImageView
+                    android:id="@+id/imageViewDecRange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:onClick="onIncreaseAmountMax"
+                    android:scaleType="center"
+                    android:contentDescription="@string/button_add"
+                    android:src="@drawable/ic_add_box_black_24dp" />
             </LinearLayout>
         </TableRow>
 

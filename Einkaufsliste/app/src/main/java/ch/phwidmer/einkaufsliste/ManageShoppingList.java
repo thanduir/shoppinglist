@@ -154,7 +154,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         {
             return;
         }
-        adapter.onChangeAmount(true);
+        adapter.onChangeAmount(false,true);
     }
 
     public void onDecreaseAmount(View v)
@@ -164,7 +164,27 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         {
             return;
         }
-        adapter.onChangeAmount(false);
+        adapter.onChangeAmount(false,false);
+    }
+
+    public void onIncreaseAmountMax(View v)
+    {
+        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
+        if(adapter == null)
+        {
+            return;
+        }
+        adapter.onChangeAmount(true,true);
+    }
+
+    public void onDecreaseAmountMax(View v)
+    {
+        ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
+        if(adapter == null)
+        {
+            return;
+        }
+        adapter.onChangeAmount(true,false);
     }
 
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)

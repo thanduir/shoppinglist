@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class GroceryPlanning implements Parcelable
 {
-    private static int     SERIALIZING_VERSION = 1;
+    private static int     SERIALIZING_VERSION = 2;
 
     Categories      m_Categories;
     Ingredients     m_Ingredients;
@@ -147,10 +147,10 @@ public class GroceryPlanning implements Parcelable
             m_Ingredients.readFromJson(jr);
 
             m_Recipes = new Recipes();
-            m_Recipes.readFromJson(jr);
+            m_Recipes.readFromJson(jr, iVersion);
 
             m_ShoppingList = new ShoppingList();
-            m_ShoppingList.readFromJson(jr);
+            m_ShoppingList.readFromJson(jr, iVersion);
 
             jr.endArray();
 

@@ -62,7 +62,8 @@ public class RecipeItem implements Parcelable
         out.writeString(m_AdditionalInfo);
 
         // Amount
-        out.writeFloat(m_Amount.m_Quantity);
+        out.writeFloat(m_Amount.m_QuantityMin);
+        out.writeFloat(m_Amount.m_QuantityMax);
         out.writeInt(m_Amount.m_Unit.ordinal());
     }
 
@@ -75,7 +76,8 @@ public class RecipeItem implements Parcelable
 
         // Amount
         m_Amount = new Amount();
-        m_Amount.m_Quantity = in.readFloat();
+        m_Amount.m_QuantityMin = in.readFloat();
+        m_Amount.m_QuantityMax = in.readFloat();
         m_Amount.m_Unit = Amount.Unit.values()[in.readInt()];
     }
 
