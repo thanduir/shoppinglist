@@ -1,9 +1,6 @@
 TODO
 ====
 
-- slow loading of ManageIngredients, ManageRecipes and ManageShoppingList. TBD:
-    * ManageShoppingList
-
 - Amount: Possibility to add ranges? (e.g. 1-2 Peperoni, 200-250g Fleisch, ...)
         -> Nein, dafür erlauben, "-" in Amounts anzugeben. Dann wird es NICHT addiert.
         -> Das lässt sich nicht sinnvoll implementieren. Trotzdem andere Variante?

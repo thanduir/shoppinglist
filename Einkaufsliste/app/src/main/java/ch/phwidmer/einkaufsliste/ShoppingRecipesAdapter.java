@@ -23,7 +23,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -32,6 +31,10 @@ import java.util.Locale;
 
 public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipesAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
+    private static final int TYPE_INACTIVE = 1;
+    private static final int TYPE_ACTIVE = 2;
+    private static final int TYPE_HEADER = 3;
+
     private ShoppingList m_ShoppingList;
     private Ingredients m_Ingredients;
     private Integer m_iActiveElement;
@@ -44,18 +47,44 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView m_TextView;
-        private View m_View;
+        TextView m_TextView;
+        View m_View;
 
-        private String m_strRecipe;
-        private ShoppingListItem m_RecipeItem = null;
+        String m_strRecipe;
+        ShoppingListItem m_RecipeItem = null;
 
+        public ViewHolder(View v)
+        {
+            super(v);
+            m_View = v;
+            m_TextView = v.findViewById(R.id.textView);
+        }
+
+        Pair<String, String> getID()
+        {
+            String strItem = m_RecipeItem != null ? m_RecipeItem.m_Ingredient : "";
+            return new Pair<>(m_strRecipe, strItem);
+        }
+    }
+
+    public static class ViewHolderHeader extends ShoppingRecipesAdapter.ViewHolder
+    {
         private TextView m_TextViewDesc;
-        private TableLayout m_TableLayout;
 
         private ImageView m_ButtonAddRecipeItem;
         private ImageView m_ButtonDeleteRecipe;
 
+        ViewHolderHeader(View v)
+        {
+            super(v);
+            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
+            m_ButtonAddRecipeItem = v.findViewById(R.id.button_addRecipeItem);
+            m_ButtonDeleteRecipe = v.findViewById(R.id.button_deleteRecipe);
+        }
+    }
+
+    public static class ViewHolderActive extends ShoppingRecipesAdapter.ViewHolder
+    {
         private CheckBox m_CheckBoxOptional;
         private Spinner  m_SpinnerAmount;
         private EditText m_EditTextAmount;
@@ -63,18 +92,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         private EditText m_AdditionalInfo;
         private TableRow m_TableRowAmount;
 
-        public ViewHolder(View v)
+        ViewHolderActive(View v)
         {
             super(v);
-            m_View = v;
-            m_TextView = v.findViewById(R.id.textView);
-            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
-            m_TableLayout = v.findViewById(R.id.tableLayoutEditRecipeItem);
-            m_TableLayout.setVisibility(View.GONE);
-
-            m_ButtonAddRecipeItem = v.findViewById(R.id.button_addRecipeItem);
-            m_ButtonDeleteRecipe = v.findViewById(R.id.button_deleteRecipe);
-
             m_SpinnerAmount = v.findViewById(R.id.spinnerAmount);
             m_EditTextAmount = v.findViewById(R.id.editText_Amount);
             m_SpinnerSize = v.findViewById(R.id.spinnerSize);
@@ -83,24 +103,33 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             m_TableRowAmount = v.findViewById(R.id.tableRowAmount);
         }
 
-        Pair<String, String> getID()
+        private void updateAppearance()
         {
-            String strItem = m_RecipeItem != null ? m_RecipeItem.m_Ingredient : "";
-            return new Pair<>(m_strRecipe, strItem);
+            if(m_RecipeItem.m_Optional)
+            {
+                m_TextView.setTextColor(Color.GRAY);
+                m_TextView.setTypeface(m_TextView.getTypeface(), Typeface.ITALIC);
+            }
+            else
+            {
+                m_TextView.setTextColor(Color.BLACK);
+                m_TextView.setTypeface(null, Typeface.NORMAL);
+            }
+        }
+    }
+
+    public static class ViewHolderInactive extends ShoppingRecipesAdapter.ViewHolder
+    {
+        private TextView m_TextViewDesc;
+
+        ViewHolderInactive(View v)
+        {
+            super(v);
+            m_TextViewDesc = v.findViewById(R.id.textViewDesc);
         }
 
         private void updateDescription(Context context)
         {
-            if(m_RecipeItem == null)
-            {
-                m_TextView.setTextColor(Color.BLACK);
-                m_TextView.setTypeface(m_TextView.getTypeface(), Typeface.BOLD);
-
-                m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
-                m_TextViewDesc.setTextColor(Color.GRAY);
-                return;
-            }
-
             String text = "";
             if(m_RecipeItem.m_Amount.m_Unit != Amount.Unit.Unitless)
             {
@@ -129,23 +158,6 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 fullText = " (" + text + ")";
             }
             m_TextViewDesc.setText(fullText);
-
-            if(m_RecipeItem.m_Optional)
-            {
-                m_TextView.setTextColor(Color.GRAY);
-                m_TextView.setTypeface(m_TextView.getTypeface(), Typeface.ITALIC);
-
-                m_TextViewDesc.setTextColor(Color.GRAY);
-                m_TextViewDesc.setTypeface(m_TextViewDesc.getTypeface(), Typeface.ITALIC);
-            }
-            else
-            {
-                m_TextView.setTextColor(Color.BLACK);
-                m_TextView.setTypeface(null, Typeface.NORMAL);
-
-                m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
-                m_TextViewDesc.setTextColor(Color.BLACK);
-            }
         }
     }
 
@@ -156,6 +168,79 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         m_Ingredients = ingredients;
         m_RecyclerView = recyclerView;
         m_CoordLayout = coordLayout;
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        if(m_iActiveElement == position)
+        {
+            return TYPE_ACTIVE;
+        }
+        else
+        {
+            Pair<String, String> strItem = getShoppingRecipes().get(position);
+            if(strItem.second == null || strItem.second.isEmpty())
+            {
+                return TYPE_HEADER;
+            }
+            else {
+                return TYPE_INACTIVE;
+            }
+        }
+    }
+
+    @Override @NonNull
+    public ShoppingRecipesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                int viewType)
+    {
+        if(viewType == TYPE_INACTIVE)
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_item_shoppinglist_recipe_inactive, parent, false);
+
+            return new ShoppingRecipesAdapter.ViewHolderInactive(v);
+        }
+        else if(viewType == TYPE_ACTIVE)
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_item_shoppinglist_recipe_active, parent, false);
+
+            return new ShoppingRecipesAdapter.ViewHolderActive(v);
+        }
+        else
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_item_shoppinglist_recipe_header, parent, false);
+
+            return new ShoppingRecipesAdapter.ViewHolderHeader(v);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ShoppingRecipesAdapter.ViewHolder holder, int position)
+    {
+        Pair<String, String> strItem = getShoppingRecipes().get(position);
+        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strItem.first);
+        holder.m_strRecipe = strItem.first;
+        holder.m_RecipeItem = null;
+        if(strItem.second != null && !strItem.second.isEmpty())
+        {
+            holder.m_RecipeItem = getShoppingListItem(recipe, strItem.second);
+
+            if(m_iActiveElement == position)
+            {
+                updateViewHolderActive(holder);
+            }
+            else
+            {
+                updateViewHolderInactive(holder);
+            }
+        }
+        else
+        {
+            updateViewHolderHeader(holder);
+        }
     }
 
     Pair<String, String> getActiveElement()
@@ -176,12 +261,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         if(m_iActiveElement != -1)
         {
-            View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-            if(v != null)
-            {
-                ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder) m_RecyclerView.getChildViewHolder(v);
-                updateViewHolder(vh, false);
-            }
+            notifyItemChanged(m_iActiveElement);
         }
 
         if(element == null)
@@ -191,225 +271,201 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         else
         {
             m_iActiveElement = getShoppingRecipes().indexOf(element);
-
-            View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-            if(child == null)
-            {
-                return;
-            }
-
-            ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-            updateViewHolder(vh, true);
+            notifyItemChanged(m_iActiveElement);
         }
     }
 
-    @Override @NonNull
-    public ShoppingRecipesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                                                int viewType)
+    private void updateViewHolderHeader(ShoppingRecipesAdapter.ViewHolder holder)
     {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_item_shoppinglist_recipe, parent, false);
-
-        return new ShoppingRecipesAdapter.ViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ShoppingRecipesAdapter.ViewHolder holder, int position)
-    {
-        Pair<String, String> strItem = getShoppingRecipes().get(position);
-        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strItem.first);
-        holder.m_strRecipe = strItem.first;
-        holder.m_RecipeItem = null;
-        if(strItem.second != null && !strItem.second.isEmpty())
+        ShoppingRecipesAdapter.ViewHolderHeader vh = (ShoppingRecipesAdapter.ViewHolderHeader)holder;
+        if(vh == null)
         {
-            holder.m_RecipeItem = getShoppingListItem(recipe, strItem.second);
+            return;
         }
 
-        holder.updateDescription(holder.itemView.getContext());
-        updateViewHolder(holder, m_iActiveElement == position);
-    }
+        final String strRecipe = vh.m_strRecipe;
 
-    private void updateViewHolder(ShoppingRecipesAdapter.ViewHolder vh, boolean bActive)
-    {
-        if(vh.m_RecipeItem == null || !bActive)
+        ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
+        if(recipe == null)
         {
-            vh.m_SpinnerAmount.setAdapter(null);
-            vh.m_SpinnerSize.setAdapter(null);
+            return;
         }
 
-        if(vh.m_RecipeItem == null)
+        vh.m_TextView.setTextColor(Color.BLACK);
+        vh.m_TextView.setTypeface(vh.m_TextView.getTypeface(), Typeface.BOLD);
+
+        vh.m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
+        vh.m_TextViewDesc.setTextColor(Color.GRAY);
+
+        vh.m_TextViewDesc.setText(vh.itemView.getContext().getResources().getString(R.string.text_nrpersons_listvariant, Helper.formatNumber(recipe.m_fScalingFactor)));
+
+        vh.m_TextViewDesc.setOnClickListener((View view) -> onChangeRecipeScaling(strRecipe));
+
+        vh.m_ButtonDeleteRecipe.setOnClickListener((View view) -> onDelShoppingRecipe(strRecipe));
+        vh.m_ButtonAddRecipeItem.setOnClickListener((View view) -> onAddShoppingListItem(strRecipe));
+
+        // Recipe -> Header line
+        vh.m_TextView.setText(vh.m_strRecipe);
+        vh.m_TextView.setOnLongClickListener((View view) ->
         {
-            vh.m_TableLayout.setVisibility(View.GONE);
+            onRenameShoppingRecipe(strRecipe);
+            return true;
+        });
+    }
 
-            final String strRecipe = vh.m_strRecipe;
+    private void updateViewHolderInactive(ShoppingRecipesAdapter.ViewHolder holder)
+    {
+        ShoppingRecipesAdapter.ViewHolderInactive vh = (ShoppingRecipesAdapter.ViewHolderInactive)holder;
+        if(vh == null)
+        {
+            return;
+        }
 
-            ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
-            if(recipe == null)
-            {
-                return;
-            }
+        vh.updateDescription(holder.itemView.getContext());
 
-            vh.m_TextViewDesc.setText(vh.itemView.getContext().getResources().getString(R.string.text_nrpersons_listvariant, Helper.formatNumber(recipe.m_fScalingFactor)));
+        if(vh.m_RecipeItem.m_Optional)
+        {
+            vh.m_TextView.setTextColor(Color.GRAY);
+            vh.m_TextView.setTypeface(vh.m_TextView.getTypeface(), Typeface.ITALIC);
 
-            vh.m_TextViewDesc.setOnClickListener((View view) -> onChangeRecipeScaling(strRecipe));
-
-            vh.m_View.setBackgroundColor(Color.TRANSPARENT);
-
-            vh.m_ButtonAddRecipeItem.setVisibility(View.VISIBLE);
-            vh.m_ButtonDeleteRecipe.setVisibility(View.VISIBLE);
-
-            vh.m_ButtonDeleteRecipe.setOnClickListener((View view) -> onDelShoppingRecipe(strRecipe));
-            vh.m_ButtonAddRecipeItem.setOnClickListener((View view) -> onAddShoppingListItem(strRecipe));
-
-            vh.m_SpinnerAmount.setAdapter(null);
-            vh.m_SpinnerSize.setAdapter(null);
-
-            // Recipe -> Header line
-            vh.m_TextView.setText(vh.m_strRecipe);
-            vh.m_TextView.setOnLongClickListener((View view) ->
-            {
-                onRenameShoppingRecipe(strRecipe);
-                return true;
-            });
+            vh.m_TextViewDesc.setTextColor(Color.GRAY);
+            vh.m_TextViewDesc.setTypeface(vh.m_TextViewDesc.getTypeface(), Typeface.ITALIC);
         }
         else
         {
-            // Active ShoppingListItem
+            vh.m_TextView.setTextColor(Color.BLACK);
+            vh.m_TextView.setTypeface(null, Typeface.NORMAL);
 
-            vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.m_Ingredient));
-            vh.m_TextView.setOnLongClickListener(null);
+            vh.m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
+            vh.m_TextViewDesc.setTextColor(Color.BLACK);
+        }
 
-            vh.m_TextViewDesc.setOnClickListener(null);
-            vh.m_TextViewDesc.setClickable(false);
+        vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.m_Ingredient));
+        vh.m_TextViewDesc.setClickable(false);
 
-            vh.m_ButtonAddRecipeItem.setVisibility(View.GONE);
-            vh.m_ButtonDeleteRecipe.setVisibility(View.GONE);
+        vh.m_View.setBackgroundColor(Color.TRANSPARENT);
+    }
 
-            if(!bActive)
+    private void updateViewHolderActive(ShoppingRecipesAdapter.ViewHolder holder)
+    {
+        ShoppingRecipesAdapter.ViewHolderActive vh = (ShoppingRecipesAdapter.ViewHolderActive)holder;
+        if(vh == null)
+        {
+            return;
+        }
+
+        vh.updateAppearance();
+
+        vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.m_Ingredient));
+        vh.m_TextView.setOnLongClickListener(null);
+
+        vh.m_View.setBackgroundColor(ContextCompat.getColor(vh.m_View.getContext(), R.color.colorHighlightedBackground));
+
+        ShoppingListItem item = vh.m_RecipeItem;
+
+        ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
+        for(Amount.Unit u : Amount.Unit.values())
+        {
+            adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
+        }
+        adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vh.m_SpinnerAmount.setAdapter(adapterAmount);
+        vh.m_SpinnerAmount.setOnItemSelectedListener(this);
+        vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
+
+        ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
+        for(RecipeItem.Size size : RecipeItem.Size.values())
+        {
+            adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
+        }
+        adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vh.m_SpinnerSize.setAdapter(adapterSize);
+        vh.m_SpinnerSize.setOnItemSelectedListener(this);
+        vh.m_SpinnerSize.setSelection(item.m_Size.ordinal());
+
+        vh.m_CheckBoxOptional.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) ->
+        {
+            if(m_RecyclerView.getLayoutManager() == null)
             {
-                vh.m_TableLayout.setVisibility(View.GONE);
-                vh.m_TextViewDesc.setVisibility(View.VISIBLE);
-
-                vh.m_View.setBackgroundColor(Color.TRANSPARENT);
-
+                return;
+            }
+            View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+            if(v == null)
+            {
+                return;
+            }
+            ShoppingRecipesAdapter.ViewHolderActive viewHolder = (ShoppingRecipesAdapter.ViewHolderActive)m_RecyclerView.getChildViewHolder(v);
+            ShoppingListItem listItem = viewHolder.m_RecipeItem;
+            if(listItem == null)
+            {
                 return;
             }
 
-            vh.m_TableLayout.setVisibility(View.VISIBLE);
-            vh.m_TextViewDesc.setVisibility(View.INVISIBLE);
+            listItem.m_Optional = isChecked;
+            viewHolder.updateAppearance();
+        });
+        vh.m_CheckBoxOptional.setChecked(item.m_Optional);
 
-            vh.m_View.setBackgroundColor(ContextCompat.getColor(vh.m_View.getContext(), R.color.colorHighlightedBackground));
+        vh.m_AdditionalInfo.setText(item.m_AdditionalInfo);
+        vh.m_AdditionalInfo.addTextChangedListener(new TextWatcher() {
 
-            ShoppingListItem item = vh.m_RecipeItem;
-
-            ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(Amount.Unit u : Amount.Unit.values())
-            {
-                adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
-            }
-            adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            vh.m_SpinnerAmount.setAdapter(adapterAmount);
-            vh.m_SpinnerAmount.setOnItemSelectedListener(this);
-            vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
-
-            ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-            for(RecipeItem.Size size : RecipeItem.Size.values())
-            {
-                adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
-            }
-            adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            vh.m_SpinnerSize.setAdapter(adapterSize);
-            vh.m_SpinnerSize.setOnItemSelectedListener(this);
-            vh.m_SpinnerSize.setSelection(item.m_Size.ordinal());
-
-            vh.m_CheckBoxOptional.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) ->
+            public void afterTextChanged(Editable s)
             {
                 if(m_RecyclerView.getLayoutManager() == null)
                 {
                     return;
                 }
-                View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-                if(v == null)
+                View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                if(child == null)
                 {
-                    return;
-                }
-                ShoppingRecipesAdapter.ViewHolder viewHolder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
-                ShoppingListItem listItem = viewHolder.m_RecipeItem;
-                if(listItem == null)
-                {
+                    // Item not visible (yet) -> nothing to do
                     return;
                 }
 
-                listItem.m_Optional = isChecked;
-                viewHolder.updateDescription(viewHolder.itemView.getContext());
-            });
-            vh.m_CheckBoxOptional.setChecked(item.m_Optional);
-
-            vh.m_AdditionalInfo.setText(item.m_AdditionalInfo);
-            vh.m_AdditionalInfo.addTextChangedListener(new TextWatcher() {
-
-                public void afterTextChanged(Editable s)
+                ShoppingRecipesAdapter.ViewHolderActive vh = (ShoppingRecipesAdapter.ViewHolderActive)m_RecyclerView.getChildViewHolder(child);
+                ShoppingListItem item = vh.m_RecipeItem;
+                if(item == null)
                 {
-                    if(m_RecyclerView.getLayoutManager() == null)
-                    {
-                        return;
-                    }
-                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-                    if(child == null)
-                    {
-                        // Item not visible (yet) -> nothing to do
-                        return;
-                    }
+                    return;
+                }
+                item.m_AdditionalInfo = s.toString();
+            }
 
-                    ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-                    ShoppingListItem item = vh.m_RecipeItem;
-                    if(item == null)
-                    {
-                        return;
-                    }
-                    item.m_AdditionalInfo = s.toString();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
 
-                    vh.updateDescription(vh.itemView.getContext());
+        vh.m_EditTextAmount.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s)
+            {
+                if(m_RecyclerView.getLayoutManager() == null)
+                {
+                    return;
+                }
+                View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+                if(child == null)
+                {
+                    // Item not visible (yet) -> nothing to do
+                    return;
                 }
 
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            });
-
-            vh.m_EditTextAmount.addTextChangedListener(new TextWatcher() {
-
-                public void afterTextChanged(Editable s)
+                ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
+                ShoppingListItem item = vh.m_RecipeItem;
+                if(s.toString().isEmpty())
                 {
-                    if(m_RecyclerView.getLayoutManager() == null)
-                    {
-                        return;
-                    }
-                    View child = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
-                    if(child == null)
-                    {
-                        // Item not visible (yet) -> nothing to do
-                        return;
-                    }
-
-                    ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
-                    ShoppingListItem item = vh.m_RecipeItem;
-                    if(s.toString().isEmpty())
-                    {
-                        item.m_Amount.m_Quantity = 0.0f;
-                    }
-                    else
-                    {
-                        item.m_Amount.m_Quantity = Float.valueOf(s.toString());
-                    }
-
-                    vh.updateDescription(vh.itemView.getContext());
+                    item.m_Amount.m_Quantity = 0.0f;
                 }
+                else
+                {
+                    item.m_Amount.m_Quantity = Float.valueOf(s.toString());
+                }
+            }
 
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            });
-            adjustEditTextAmount(vh, item);
-        }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+        adjustEditTextAmount(vh, item);
     }
 
     void onChangeAmount(boolean bIncrease)
@@ -423,7 +479,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         {
             return;
         }
-        ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
+        ShoppingRecipesAdapter.ViewHolderActive holder = (ShoppingRecipesAdapter.ViewHolderActive)m_RecyclerView.getChildViewHolder(activeItem);
         if(holder.m_RecipeItem == null)
         {
             return;
@@ -455,7 +511,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         {
             return;
         }
-        ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(v);
+        ShoppingRecipesAdapter.ViewHolderActive vh = (ShoppingRecipesAdapter.ViewHolderActive)m_RecyclerView.getChildViewHolder(v);
         ShoppingListItem item = vh.m_RecipeItem;
 
         if(parent == vh.m_SpinnerAmount)
@@ -467,8 +523,6 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         {
             item.m_Size = RecipeItem.Size.values()[vh.m_SpinnerSize.getSelectedItemPosition()];
         }
-
-        vh.updateDescription(vh.itemView.getContext());
     }
 
     @Override
@@ -481,6 +535,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         return getShoppingRecipes().contains(strName);
     }
 
+    @Override
     public void reactToSwipe(int position)
     {
         // Remove ShoppingListItem at this position
@@ -534,12 +589,14 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         snackbar.show();
     }
 
+    @Override
     public boolean swipeAllowed(RecyclerView.ViewHolder vh)
     {
         ShoppingRecipesAdapter.ViewHolder holder = (ShoppingRecipesAdapter.ViewHolder)vh;
         return holder.m_RecipeItem != null;
     }
 
+    @Override
     public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
     {
         return false;
@@ -578,7 +635,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         return null;
     }
 
-    private void adjustEditTextAmount(ShoppingRecipesAdapter.ViewHolder vh, ShoppingListItem item)
+    private void adjustEditTextAmount(ShoppingRecipesAdapter.ViewHolderActive vh, ShoppingListItem item)
     {
         if(item.m_Amount.m_Unit == Amount.Unit.Unitless)
         {
@@ -708,6 +765,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "changeRecipeScaling");
     }
 
+    @Override
     public void clearViewBackground(RecyclerView.ViewHolder vh)
     {
         if(m_iActiveElement == -1)
