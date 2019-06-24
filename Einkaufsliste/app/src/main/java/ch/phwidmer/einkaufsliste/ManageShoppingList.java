@@ -142,6 +142,8 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
             return;
         }
 
+        // TODO: Groups beachten
+
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_import_recipe));
         newFragment.setListOnlyAllowed(inputList);
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");

@@ -1,11 +1,9 @@
 TODO
 ====
 
-- Ranges: Sicherstellen, dass quantityMin <= quantityMax! Wie sollte das Verhalten genau sein diesbezüglich?
+- Alternativen in Rezepten: Beim Einfügen in die ShoppingList muss eines(?) pro Gruppe ausggewählt werden!
 
-- Alternativen in Rezepten (e.g. Poulet oder Tofu)! Wie könnte dies gehandhabt werden?
-    -> Im Rezept als Gruppe zusammen definiert und beim Einfügen in die ShoppingList muss man dann eines davon auswählen!
-    -> Oder gibt es eine (implementations- und UI-technisch) einfachere Möglichkeit?
+- Ranges: Sicherstellen, dass quantityMin <= quantityMax! Aber wie sollte das Verhalten genau sein diesbezüglich?
 - data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHANGES!)
 - Data synchronisation - part 2:
     2. merge-functionality (-> "data consistency check"?)

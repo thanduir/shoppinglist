@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Locale;
 
 public class ManageRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
@@ -52,6 +53,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
     private String                      m_SavedActiveElement;
 
     private FloatingActionButton        m_FAB;
+    private FloatingActionButton        m_FABGroup;
 
     private boolean                     m_IgnoreNextSpinnerRecipesClick = false;
 
@@ -64,6 +66,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
 
         m_FAB = findViewById(R.id.fab);
+        m_FABGroup = findViewById(R.id.fabGroup);
 
         m_EditTextNrPersons = findViewById(R.id.editText_NrPersons);
         m_textViewNrPersons = findViewById(R.id.textViewNrPersons);
@@ -102,8 +105,10 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
+                    m_FABGroup.hide();
                 } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
                     m_FAB.show();
+                    m_FABGroup.show();
                 }
             }
         });
@@ -345,6 +350,17 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         adapter.onChangeAmount(true,false);
     }
 
+    public void onAddAlternativesGroup(View v)
+    {
+        String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
+        Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
+        ArrayList<String> excludedInputs = new ArrayList<>(recipe.m_Groups.keySet());
+
+        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_group));
+        newFragment.setListExcludedInputs(excludedInputs);
+        newFragment.show(getSupportFragmentManager(), "addAlternativesGroup");
+    }
+
     public void onStringInput(String tag, String strInput, String strAdditonalInformation)
     {
         switch(tag) {
@@ -386,6 +402,41 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 break;
             }
 
+            case "addAlternativesGroup":
+            {
+                String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
+
+                recipe.m_Groups.put(strInput, new LinkedList<>());
+                RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
+                if (adapter == null) {
+                    return;
+                }
+                adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                adapter.setActiveElement("");
+
+                break;
+            }
+
+            case "renameAlternativesGroup":
+            {
+                String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
+
+                LinkedList<RecipeItem> groupItems = recipe.m_Groups.get(strAdditonalInformation);
+                recipe.m_Groups.remove(strAdditonalInformation);
+                recipe.m_Groups.put(strInput, groupItems);
+
+                RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
+                if (adapter == null) {
+                    return;
+                }
+                adapter.notifyDataSetChanged();
+                adapter.setActiveElement("");
+                Toast.makeText(this, getResources().getString(R.string.text_group_renamed, strAdditonalInformation, strInput), Toast.LENGTH_SHORT).show();
+                break;
+            }
+
             case "addRecipeItem":
             {
                 String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
@@ -401,6 +452,30 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                     return;
                 }
                 adapter.notifyItemInserted(recipe.m_Items.size() - 1);
+                adapter.setActiveElement(strInput);
+                break;
+            }
+
+            case "addRecipeItemToGroup":
+            {
+                String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(strRecipe);
+
+                RecipeItem item = new RecipeItem();
+                item.m_Ingredient = strInput;
+                item.m_Amount.m_Unit = m_GroceryPlanning.m_Ingredients.getIngredient(strInput).m_DefaultUnit;
+                LinkedList<RecipeItem> items = recipe.m_Groups.get(strAdditonalInformation);
+                if(items == null)
+                {
+                    return;
+                }
+                items.add(item);
+
+                RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
+                if (adapter == null) {
+                    return;
+                }
+                adapter.notifyDataSetChanged();
                 adapter.setActiveElement(strInput);
                 break;
             }
@@ -422,7 +497,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
         m_EditTextNrPersons.setText(String.format(Locale.getDefault(), "%d", recipe.m_NumberOfPersons));
 
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
-        m_Adapter = new RecipeItemsAdapter(coordLayout, m_RecyclerView, recipe);
+        m_Adapter = new RecipeItemsAdapter(coordLayout, m_RecyclerView, recipe, m_GroceryPlanning.m_Ingredients);
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
             (RecyclerView recyclerView, int position, View v) ->

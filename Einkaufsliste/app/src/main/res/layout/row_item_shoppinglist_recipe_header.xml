@@ -27,7 +27,7 @@
 
     <ImageView
         android:id="@+id/button_addRecipeItem"
-        android:layout_width="?listPreferredItemHeight"
+        android:layout_width="?listPreferredItemHeightSmall"
         android:layout_height="match_parent"
         android:scaleType="center"
         android:contentDescription="@string/button_add"
@@ -35,7 +35,7 @@
 
     <ImageView
         android:id="@+id/button_deleteRecipe"
-        android:layout_width="?listPreferredItemHeight"
+        android:layout_width="?listPreferredItemHeightSmall"
         android:layout_height="match_parent"
         android:scaleType="center"
         android:contentDescription="@string/button_delete"

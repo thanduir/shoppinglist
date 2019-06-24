@@ -14,7 +14,7 @@
 
     <ImageView
         android:id="@+id/reorder_view"
-        android:layout_width="?listPreferredItemHeight"
+        android:layout_width="?listPreferredItemHeightSmall"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical|end"
         android:scaleType="center"

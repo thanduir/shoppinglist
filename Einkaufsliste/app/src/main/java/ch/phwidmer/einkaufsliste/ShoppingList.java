@@ -161,7 +161,7 @@ class ShoppingList implements Parcelable
 
                 writer.name("status").value(si.m_Status.toString());
 
-                writer.name("amount");
+                writer.name("amountMinMax");
                 writer.beginArray();
                 writer.value(si.m_Amount.m_QuantityMin);
                 writer.value(si.m_Amount.m_QuantityMax);
@@ -181,7 +181,7 @@ class ShoppingList implements Parcelable
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader, int version) throws IOException
+    void readFromJson(JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -233,10 +233,19 @@ class ShoppingList implements Parcelable
                                     reader.beginArray();
 
                                     item.m_Amount.m_QuantityMin = (float)reader.nextDouble();
-                                    if(version > 1)
-                                    {
-                                        item.m_Amount.m_QuantityMax = (float) reader.nextDouble();
-                                    }
+                                    String str = reader.nextString();
+                                    item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+
+                                    reader.endArray();
+                                    break;
+                                }
+
+                                case "amountMinMax":
+                                {
+                                    reader.beginArray();
+
+                                    item.m_Amount.m_QuantityMin = (float)reader.nextDouble();
+                                    item.m_Amount.m_QuantityMax = (float) reader.nextDouble();
                                     String str = reader.nextString();
                                     item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
 

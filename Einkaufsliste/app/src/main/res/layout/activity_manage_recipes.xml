@@ -93,17 +93,25 @@
         android:id="@+id/fabCoordinatorLayout">
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="85dp"
+            android:onClick="onAddAlternativesGroup"
+            android:src="@drawable/ic_baseline_add_24px"
+            app:layout_anchor="@id/fab"
+            app:layout_anchorGravity="right"
+            app:fabSize="mini" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:onClick="onAddRecipeItem"
-            android:src="@drawable/ic_baseline_add_24px"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:src="@drawable/ic_baseline_add_24px" />
     </android.support.design.widget.CoordinatorLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -70,6 +70,9 @@
     <string name="text_recipe_renamed">Recipe \"%1$s\" renamed to \"%2$s\".</string>
     <string name="text_delete_recipe_header">Deleting Recipe</string>
     <string name="text_delete_recipe">Deleting recipe \"%s\". Do you really want to proceed?</string>
+    <string name="text_rename_group">Rename alternatives group \"%s\"</string>
+    <string name="text_group_renamed">Alternatives group \"%1$s\" renamed to \"%2$s\".</string>
+    <string name="text_add_group">Add alternatives group</string>
     <string name="text_amount_range">Range</string>
     <string name="text_amount_min">Min.</string>
     <string name="text_amount_max">Max.</string>
