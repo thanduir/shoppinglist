@@ -99,7 +99,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="85dp"
             android:onClick="onAddAlternativesGroup"
-            android:src="@drawable/ic_baseline_add_24px"
+            android:src="@drawable/ic_swap_horiz_black_24dp"
             app:layout_anchor="@id/fab"
             app:layout_anchorGravity="right"
             app:fabSize="mini" />
