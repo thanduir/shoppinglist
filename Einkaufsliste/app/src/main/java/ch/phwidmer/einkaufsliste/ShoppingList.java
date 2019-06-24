@@ -59,12 +59,7 @@ class ShoppingList implements Parcelable
         item.m_fScalingFactor = (float)recipe.m_NumberOfPersons;
         for(RecipeItem r : recipe.m_Items)
         {
-            ShoppingListItem li = new ShoppingListItem();
-            li.m_Amount = new Amount(r.m_Amount);
-            li.m_Ingredient = r.m_Ingredient;
-            li.m_Optional = r.m_Optional;
-            li.m_AdditionalInfo = r.m_AdditionalInfo;
-            li.m_Size = r.m_Size;
+            ShoppingListItem li = new ShoppingListItem(r);
             item.m_Items.add(li);
         }
         m_Items.put(strName, item);

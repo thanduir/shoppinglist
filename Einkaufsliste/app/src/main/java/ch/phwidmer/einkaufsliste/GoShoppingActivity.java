@@ -53,7 +53,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         else
         {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            final String strDefaultSortOrder = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, "");
+            final String strDefaultSortOrder = preferences.getString(SettingsActivity.KEY_DEFAULT_SORORDER, "");
             if(strDefaultSortOrder != null && !strDefaultSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strDefaultSortOrder))
             {
                 m_SpinnerSortOrders.setSelection(adapter.getPosition(strDefaultSortOrder));

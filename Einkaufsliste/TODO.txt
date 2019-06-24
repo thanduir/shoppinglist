@@ -1,9 +1,8 @@
 TODO
 ====
 
-- Alternativen in Rezepten: Beim Einfügen in die ShoppingList muss eines(?) pro Gruppe ausggewählt werden!
+- Better icon for "add alternatives group" in Manage Recipes
 
-- Ranges: Sicherstellen, dass quantityMin <= quantityMax! Aber wie sollte das Verhalten genau sein diesbezüglich?
 - data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHANGES!)
 - Data synchronisation - part 2:
     2. merge-functionality (-> "data consistency check"?)

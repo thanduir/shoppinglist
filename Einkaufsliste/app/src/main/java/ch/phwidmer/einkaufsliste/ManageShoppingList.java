@@ -17,7 +17,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Locale;
+import java.util.TreeMap;
 
 public class ManageShoppingList extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
@@ -142,8 +144,6 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
             return;
         }
 
-        // TODO: Groups beachten
-
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_import_recipe));
         newFragment.setListOnlyAllowed(inputList);
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
@@ -224,15 +224,73 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
 
             case "addShoppingRecipe":
             {
-                String strRecipe = strInput;
+                // AdditionalInformation: First the recipe name, then the chosen elements from the different groups afterwards (if any).
+                if(!strAdditonalInformation.isEmpty())
+                {
+                    strAdditonalInformation += ";";
+                }
+                strAdditonalInformation += strInput;
+                String[] infosSet = strAdditonalInformation.split(";");
+
+                Recipes.Recipe recipe = m_GroceryPlanning.m_Recipes.getRecipe(infosSet[0]);
+                if(recipe == null)
+                {
+                    return;
+                }
+
+                // Verify if for all groups an item has been chosen already. If not, ask for it and call this method again afterwards
+                if(infosSet.length < recipe.m_Groups.size() + 1)
+                {
+                    // There are more groups to ask about
+                    TreeMap.Entry<String, LinkedList<RecipeItem>> group = (TreeMap.Entry<String, LinkedList<RecipeItem>>)recipe.m_Groups.entrySet().toArray()[infosSet.length - 1];
+                    if(group.getValue().size() < 2)
+                    {
+                        String itemName = "-";
+                        if(group.getValue().size() == 1)
+                        {
+                            itemName = group.getValue().getFirst().m_Ingredient;
+                        }
+                        onStringInput(tag, itemName, strAdditonalInformation);
+                        return;
+                    }
+
+                    ArrayList<String> groupItems = new ArrayList<>();
+                    for(RecipeItem item : group.getValue())
+                    {
+                        groupItems.add(item.m_Ingredient);
+                    }
+                    InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_chose_from_group, group.getKey()));
+                    newFragment.setListOnlyAllowed(groupItems);
+                    newFragment.setAdditionalInformation(strAdditonalInformation);
+                    newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
+                    break;
+                }
+
+                String strRecipe = infosSet[0];
                 int iNr = 2;
                 while(adapter.containsItem(new Pair<>(strRecipe, "")))
                 {
-                    strRecipe = String.format(Locale.getDefault(), "%s (%d)", strInput, iNr);
+                    strRecipe = String.format(Locale.getDefault(), "%s (%d)", infosSet[0], iNr);
                     ++iNr;
                 }
 
-                m_GroceryPlanning.m_ShoppingList.addFromRecipe(strRecipe, m_GroceryPlanning.m_Recipes.getRecipe(strInput));
+                m_GroceryPlanning.m_ShoppingList.addFromRecipe(strRecipe, m_GroceryPlanning.m_Recipes.getRecipe(infosSet[0]));
+                ShoppingList.ShoppingRecipe shoppingRecipe = m_GroceryPlanning.m_ShoppingList.getShoppingRecipe(strRecipe);
+
+                int i = 1;
+                for(LinkedList<RecipeItem> groupItems : recipe.m_Groups.values())
+                {
+                    String strIngredient = infosSet[i];
+                    for(RecipeItem item : groupItems)
+                    {
+                        if(item.m_Ingredient.equals(strIngredient))
+                        {
+                            shoppingRecipe.m_Items.add(new ShoppingListItem(item));
+                            break;
+                        }
+                    }
+                    ++i;
+                }
 
                 adapter.notifyDataSetChanged();
                 adapter.setActiveElement(new Pair<>(strRecipe, ""));

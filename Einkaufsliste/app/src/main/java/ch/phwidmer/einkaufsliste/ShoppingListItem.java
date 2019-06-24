@@ -24,6 +24,15 @@ class ShoppingListItem implements Parcelable
         m_Amount = new Amount();
     }
 
+    ShoppingListItem(RecipeItem recipeItem)
+    {
+        m_Amount = new Amount(recipeItem.m_Amount);
+        m_Ingredient = recipeItem.m_Ingredient;
+        m_Optional = recipeItem.m_Optional;
+        m_AdditionalInfo = recipeItem.m_AdditionalInfo;
+        m_Size = recipeItem.m_Size;
+    }
+
     void invertStatus()
     {
         if(m_Status == Status.None)

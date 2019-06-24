@@ -74,6 +74,7 @@
     <string name="text_rename_group">Alternativen-Gruppe \"%s\" umbenennen</string>
     <string name="text_group_renamed">Alternativen-Gruppe \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_add_group">Alternativen-Gruppe hinzufügen</string>
+    <string name="text_chose_from_group">Wähle Element aus der Gruppe \"%s\"</string>
     <string name="text_amount_range">Bereich</string>
     <string name="text_amount_min">Min.</string>
     <string name="text_amount_max">Max.</string>
