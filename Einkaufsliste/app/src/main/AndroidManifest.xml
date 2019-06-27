@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".DataSynchronizationActivity"
-            android:label="DataSynchronisationTest"
+            android:label="@string/activity_data_synchronisation"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

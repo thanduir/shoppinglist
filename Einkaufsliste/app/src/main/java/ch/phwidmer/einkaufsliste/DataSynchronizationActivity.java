@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.nearby.Nearby;
@@ -64,9 +65,10 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
 
     private LinkedHashMap<String, String>   m_Devices;
 
-    private ListView m_ListViewAvailableFiles;
-    private Button m_ButtonDiscover;
-    private Button m_ButtonAdvertise;
+    private Button      m_ButtonDiscover;
+    private ListView    m_ListViewNearyDevices;
+    private TextView    m_TextViewConnected;
+    private ListView    m_ListViewAvailableFiles;
 
     private ArrayAdapter<CharSequence> m_AdapterListViewDevices;
     private ArrayAdapter<CharSequence> m_AdapterAvailableFiles;
@@ -216,9 +218,9 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
         Intent intent = getIntent();
         m_strSaveFilePath = intent.getStringExtra(MainActivity.EXTRA_SAVEDFILESPATH);
 
-        ListView listViewDevices = findViewById(R.id.listviewOtherDevices);
+        m_ListViewNearyDevices = findViewById(R.id.listviewOtherDevices);
+        m_TextViewConnected = findViewById(R.id.textViewConnected);
         m_ListViewAvailableFiles = findViewById(R.id.listviewAvailableFiles);
-        m_ButtonAdvertise = findViewById(R.id.buttonAdvertise);
         m_ButtonDiscover = findViewById(R.id.buttonDiscover);
 
         m_DeviceName = Settings.Secure.getString(getContentResolver(), "bluetooth_name");
@@ -229,115 +231,13 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
 
         m_Connection = Nearby.getConnectionsClient(this);
 
-        m_AdapterListViewDevices = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        listViewDevices.setAdapter(m_AdapterListViewDevices);
+        m_AdapterListViewDevices = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        m_ListViewNearyDevices.setAdapter(m_AdapterListViewDevices);
 
-        m_AdapterAvailableFiles = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        m_AdapterAvailableFiles = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         m_ListViewAvailableFiles.setAdapter(m_AdapterAvailableFiles);
-
-        m_EndpointDiscoveryCallback =
-                new EndpointDiscoveryCallback() {
-                    @Override
-                    public void onEndpointFound(@NonNull String endpointId, @NonNull DiscoveredEndpointInfo info) {
-                        // An endpoint was found. Add it to the list of endpoints.
-                        m_Devices.put(endpointId, info.getEndpointName());
-
-                        m_AdapterListViewDevices.add(info.getEndpointName());
-                    }
-
-                    @Override
-                    public void onEndpointLost(@NonNull String endpointId) {
-                        // A previously discovered endpoint has gone away.
-                        m_Devices.remove(endpointId);
-
-                        m_AdapterListViewDevices.remove(m_Devices.get(endpointId));
-                    }
-                };
-
-        m_ConnectionLifecycleCallback =
-                new ConnectionLifecycleCallback() {
-                    @Override
-                    public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(DataSynchronizationActivity.this);
-                        builder.setTitle(getResources().getString(R.string.accept_connection_header, connectionInfo.getEndpointName()));
-                        builder.setMessage(getResources().getString(R.string.accept_connection_confirm_code, connectionInfo.getAuthenticationToken()));
-                        builder.setIcon(android.R.drawable.ic_dialog_alert);
-                        builder.setPositiveButton(R.string.accept, (DialogInterface dialog, int which) ->
-                            {
-                                // The user confirmed, so we can accept the connection.
-                                m_Connection.acceptConnection(endpointId, new PayloadListener());
-                            });
-                        builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
-                            {
-                                // The user canceled, so we should reject the connection.
-                                m_Connection.rejectConnection(endpointId);
-                            });
-                        builder.show();
-                    }
-
-                    @Override
-                    public void onConnectionResult(@NonNull String endpointId, @NonNull ConnectionResolution result) {
-                        switch (result.getStatus().getStatusCode()) {
-                            case ConnectionsStatusCodes.STATUS_OK:
-                                // We're connected! Can now start sending and receiving data.
-                                Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.connection_established), Toast.LENGTH_SHORT).show();
-
-                                m_ConnectedEndpointId = endpointId;
-
-                                if(m_Advertising)
-                                {
-                                    onAdvertise(null);
-                                }
-                                if(m_Discovering)
-                                {
-                                    onDiscover(null);
-                                }
-
-                                sendFilesList();
-
-                                break;
-                            case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
-                                // The connection was rejected by one or both sides.
-                                Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.connection_rejected), Toast.LENGTH_SHORT).show();
-                                break;
-                            case ConnectionsStatusCodes.STATUS_ERROR:
-                                // The connection broke before it was able to be accepted.
-                                Toast.makeText(DataSynchronizationActivity.this, "ERROR: Connection failed", Toast.LENGTH_SHORT).show();
-                                break;
-                            default:
-                                // Unknown status code
-                        }
-                    }
-
-                    @Override
-                    public void onDisconnected(@NonNull String endpointId) {
-                        // We've been disconnected from this endpoint. No more data can be
-                        // sent or received.
-                    }
-                };
-
-        listViewDevices.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
-            {
-                // Connect to other device
-                String endpointId = (String)m_AdapterListViewDevices.getItem(position);
-                if(endpointId == null)
-                {
-                    return;
-                }
-
-                m_Connection
-                        .requestConnection(m_DeviceName, endpointId, m_ConnectionLifecycleCallback)
-                        .addOnSuccessListener(
-                                (Void unused) -> {
-                                    // We successfully requested a connection. Now both sides
-                                    // must accept before the connection is established.
-                                })
-                        .addOnFailureListener(
-                                (Exception e) -> {
-                                    // Nearby Connections failed to request the connection.
-                                    Toast.makeText(DataSynchronizationActivity.this, "ERROR: Connection failed. Reason: " + e.getCause(), Toast.LENGTH_SHORT).show();
-                                });
-            });
+        m_ListViewAvailableFiles.setVisibility(View.INVISIBLE);
+        m_TextViewConnected.setVisibility(View.INVISIBLE);
 
         m_ListViewAvailableFiles.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
         {
@@ -352,64 +252,207 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
             Payload payload = Payload.fromBytes(bytesPayload);
             m_Connection.sendPayload(m_ConnectedEndpointId, payload);
         });
+
+        m_EndpointDiscoveryCallback = new EndpointDiscoveryCallback()
+        {
+            @Override
+            public void onEndpointFound(@NonNull String endpointId, @NonNull DiscoveredEndpointInfo info)
+            {
+                // An endpoint was found. Add it to the list of endpoints.
+                m_Devices.put(endpointId, info.getEndpointName());
+                m_AdapterListViewDevices.add(info.getEndpointName());
+            }
+
+            @Override
+            public void onEndpointLost(@NonNull String endpointId)
+            {
+                // A previously discovered endpoint has gone away.
+                m_Devices.remove(endpointId);
+                m_AdapterListViewDevices.remove(m_Devices.get(endpointId));
+            }
+        };
+
+        m_ConnectionLifecycleCallback = new ConnectionLifecycleCallback()
+        {
+            @Override
+            public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DataSynchronizationActivity.this);
+                builder.setTitle(getResources().getString(R.string.accept_connection_header, connectionInfo.getEndpointName()));
+                builder.setMessage(getResources().getString(R.string.accept_connection_confirm_code, connectionInfo.getAuthenticationToken()));
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setPositiveButton(R.string.accept, (DialogInterface dialog, int which) ->
+                {
+                    // The user confirmed, so we can accept the connection.
+                    m_Connection.acceptConnection(endpointId, new PayloadListener());
+                });
+                builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
+                {
+                    // The user canceled, so we should reject the connection.
+                    m_Connection.rejectConnection(endpointId);
+                });
+                builder.show();
+            }
+
+            @Override
+            public void onConnectionResult(@NonNull String endpointId, @NonNull ConnectionResolution result)
+            {
+                switch (result.getStatus().getStatusCode()) {
+                    case ConnectionsStatusCodes.STATUS_OK:
+                        // We're connected! Can now start sending and receiving data.
+                        m_ConnectedEndpointId = endpointId;
+
+                        changeAdvertisingStatus(false);
+                        changeDiscoveringStatus(false);
+
+                        m_ButtonDiscover.setVisibility(View.GONE);
+                        m_ListViewNearyDevices.setVisibility(View.GONE);
+
+                        m_AdapterAvailableFiles.clear();
+                        m_ListViewAvailableFiles.setVisibility(View.VISIBLE);
+                        m_TextViewConnected.setVisibility(View.VISIBLE);
+                        m_TextViewConnected.setText( getResources().getString(R.string.connection_established, m_Devices.get(endpointId)));
+
+                        sendFilesList();
+
+                        break;
+                    case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
+                        // The connection was rejected by one or both sides.
+                        Toast.makeText(DataSynchronizationActivity.this, getResources().getString(R.string.connection_rejected), Toast.LENGTH_SHORT).show();
+                        break;
+                    case ConnectionsStatusCodes.STATUS_ERROR:
+                        // The connection broke before it was able to be accepted.
+                        Toast.makeText(DataSynchronizationActivity.this, "ERROR: Connection failed", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        // Unknown status code
+                }
+            }
+
+            @Override
+            public void onDisconnected(@NonNull String endpointId)
+            {
+                // We've been disconnected from this endpoint. No more data can be
+                // sent or received.
+
+                m_TextViewConnected.setVisibility(View.VISIBLE);
+                m_ListViewNearyDevices.setVisibility(View.VISIBLE);
+                m_ButtonDiscover.setEnabled(true);
+                m_ListViewNearyDevices.setEnabled(true);
+
+                m_AdapterAvailableFiles.clear();
+                m_ListViewAvailableFiles.setVisibility(View.INVISIBLE);
+                m_TextViewConnected.setVisibility(View.INVISIBLE);
+            }
+        };
+
+        m_ListViewNearyDevices.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
+        {
+            String endpointId = (String)m_Devices.keySet().toArray()[position];
+            if(endpointId == null)
+            {
+                return;
+            }
+            m_ListViewNearyDevices.setEnabled(false);
+            m_ButtonDiscover.setEnabled(false);
+
+            m_Connection.requestConnection(m_DeviceName, endpointId, m_ConnectionLifecycleCallback)
+                .addOnSuccessListener((Void unused) ->
+                {
+                    // We successfully requested a connection. Now both sides
+                    // must accept before the connection is established.
+                })
+                .addOnFailureListener((Exception e) ->
+                {
+                    // Nearby Connections failed to request the connection.
+                    Toast.makeText(DataSynchronizationActivity.this, "ERROR: Connection failed. Reason: " + e.getCause(), Toast.LENGTH_SHORT).show();
+                    m_ListViewNearyDevices.setEnabled(true);
+                    m_ButtonDiscover.setEnabled(true);
+                });
+        });
+
+        // Start advertising on load up
+        changeAdvertisingStatus(true);
     }
 
-
-    public void onAdvertise(View view)
+    @Override
+    public void onPause()
     {
-        if(m_Advertising)
+        changeDiscoveringStatus(false);
+        changeAdvertisingStatus(false);
+        super.onPause();
+    }
+
+    private void changeAdvertisingStatus(boolean bOn)
+    {
+        if(m_Advertising == bOn)
         {
-            m_Connection.stopAdvertising();
-            m_Advertising = false;
-            m_ButtonAdvertise.setTextColor(Color.BLACK);
             return;
         }
 
-        AdvertisingOptions advertisingOptions =
-                new AdvertisingOptions.Builder().setStrategy(m_Strategy).build();
-        m_Connection
-                .startAdvertising(
-                        m_DeviceName, m_ServiceID, m_ConnectionLifecycleCallback, advertisingOptions)
-                .addOnSuccessListener(
-                        (Void unused) -> {
-                            // We're advertising!
-                            m_Advertising = true;
-                            m_ButtonAdvertise.setTextColor(Color.RED);
-                        })
-                .addOnFailureListener(
-                        (Exception e) -> {
-                            // We were unable to start advertising.
-                            m_Advertising = false;
-                            m_ButtonAdvertise.setTextColor(Color.BLACK);
-                        });
+        m_Advertising = bOn;
+
+        if(!m_Advertising)
+        {
+            m_Connection.stopAdvertising();
+            m_Advertising = false;
+        }
+        else
+        {
+            AdvertisingOptions advertisingOptions = new AdvertisingOptions.Builder().setStrategy(m_Strategy).build();
+            m_Connection.startAdvertising(m_DeviceName, m_ServiceID, m_ConnectionLifecycleCallback, advertisingOptions)
+                    .addOnSuccessListener((Void unused) ->
+                    {
+                        // We're advertising!
+                        m_Advertising = true;
+                    })
+                    .addOnFailureListener((Exception e) ->
+                    {
+                        // We were unable to start advertising.
+                        m_Advertising = false;
+                    });
+        }
+    }
+
+    private void changeDiscoveringStatus(boolean bOn)
+    {
+        if (m_Discovering == bOn)
+        {
+            return;
+        }
+
+        m_Discovering = bOn;
+
+        if(!m_Discovering)
+        {
+            m_Connection.stopDiscovery();
+            m_Discovering = false;
+
+            m_AdapterListViewDevices.clear();
+            m_ButtonDiscover.setBackgroundColor(Color.LTGRAY);
+        }
+        else
+        {
+            DiscoveryOptions discoveryOptions = new DiscoveryOptions.Builder().setStrategy(m_Strategy).build();
+            m_Connection.startDiscovery(m_ServiceID, m_EndpointDiscoveryCallback, discoveryOptions)
+                    .addOnSuccessListener((Void unused) ->
+                    {
+                        // We're discovering!
+                        m_Discovering = true;
+                        m_ButtonDiscover.setBackgroundColor(Color.GRAY);
+                    })
+                    .addOnFailureListener((Exception e) ->
+                    {
+                        // We're unable to start discovering.
+                        m_Discovering = false;
+                        m_ButtonDiscover.setBackgroundColor(Color.LTGRAY);
+                    });
+        }
     }
 
     public void onDiscover(View view)
     {
-        if(m_Discovering)
-        {
-            m_Connection.stopDiscovery();
-            m_Discovering = false;
-            m_ButtonDiscover.setTextColor(Color.BLACK);
-            return;
-        }
-
-        DiscoveryOptions discoveryOptions =
-                new DiscoveryOptions.Builder().setStrategy(m_Strategy).build();
-        m_Connection
-                .startDiscovery(m_ServiceID, m_EndpointDiscoveryCallback, discoveryOptions)
-                .addOnSuccessListener(
-                        (Void unused) -> {
-                            // We're discovering!
-                            m_Discovering = true;
-                            m_ButtonDiscover.setTextColor(Color.RED);
-                        })
-                .addOnFailureListener(
-                        (Exception e) -> {
-                            // We're unable to start discovering.
-                            m_Discovering = false;
-                            m_ButtonDiscover.setTextColor(Color.BLACK);
-                        });
+        changeDiscoveringStatus(!m_Discovering);
     }
 
     @Override
@@ -437,7 +480,7 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
         builder.append(m_TagEKList);
         for(File f : directory.listFiles())
         {
-            if(!f.getName().endsWith(".json"))
+            if(!f.getName().endsWith(".json") || f.getName().equals(MainActivity.c_strSaveFilename) || f.getName().equals(MainActivity.c_strStdDataFilename))
             {
                 continue;
             }

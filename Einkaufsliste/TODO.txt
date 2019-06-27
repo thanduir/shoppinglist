@@ -1,10 +1,7 @@
 TODO
 ====
 
-- Better icon for "add alternatives group" in Manage Recipes
-
-- data synchronization: improve UI and possibly the code itself (UPDATING OF FILE LISTS ON CHANGES!)
 - Data synchronisation - part 2:
-    2. merge-functionality (-> "data consistency check"?)
-    3. two-way auto-sync with merge
-    4. [optional] Connect to Google App Folder API / Google App Engine / Amazon Web Services / Dropbox datastore API / something similar (or some of them)
+    1. merge-functionality (-> "data consistency check"?)
+    2. two-way auto-sync with merge
+    3. [optional] Connect to Google App Folder API / Google App Engine / Amazon Web Services / Dropbox datastore API / something similar (or some of them)

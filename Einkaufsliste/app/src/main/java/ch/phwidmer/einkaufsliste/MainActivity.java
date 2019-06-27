@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     public static final String EXTRA_GROCERYPLANNING = "ch.phwidmer.einkaufsliste.GROCERYPLANNING";
     public static final String EXTRA_SAVEDFILESPATH = "ch.phwidmer.einkaufsliste.SAVEDFILESPATH";
 
+    public static final String c_strStdDataFilename = "ch.phwidmer.einkaufsliste.default.json";
+    public static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
+
     private final int REQUEST_CODE_ManageCategories = 1;
     private final int REQUEST_CODE_ManageIngredients = 2;
     private final int REQUEST_CODE_ManageRecipes = 3;
@@ -28,9 +31,6 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     private final int REQUEST_CODE_GoShopping = 5;
 
     private GroceryPlanning m_GroceryPlanning;
-
-    private static final String c_strStdDataFilename = "ch.phwidmer.einkaufsliste.default.json";
-    private static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
 
     private File m_AppDataDirectory = null;
 

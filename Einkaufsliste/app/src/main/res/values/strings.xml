@@ -15,6 +15,7 @@
     <string name="activity_manage_shoppinglist">Manage shopping list</string>
     <string name="activity_go_shopping">Go shopping</string>
     <string name="activity_settings">Settings</string>
+    <string name="activity_data_synchronisation">Data synchronisation</string>
     <string name="text_category">Category</string>
     <string name="text_provenance">Provenance</string>
     <string name="text_numberofpersons"># Persons</string>
@@ -83,14 +84,14 @@
     <string name="file_received">File %s received</string>
     <string name="file_copy_error">Error copying file %s</string>
     <string name="file_exists_already">File already exists. Rename or don\'t change if it should be overwritten.</string>
-    <string name="connection_established">Connection successfully established.</string>
+    <string name="connection_established">Connected to %s.\nAvailable files:</string>
     <string name="connection_rejected">Connection rejected.</string>
     <string name="requesting_file">Requesting file %s</string>
     <string name="permission_not_granted">Permissions not granted.</string>
-
     <string name="accept_connection_header">Accept connection to %s</string>
     <string name="accept_connection_confirm_code">Confirm the code matches on both devices: %s</string>
     <string name="accept">Accept</string>
+    <string name="find_nearby_devices">Find nearby devices</string>
 
     <string name="unit_count_long">Count</string>
     <string name="unit_kilogram_long">Kilogram</string>

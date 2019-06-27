@@ -16,6 +16,7 @@
     <string name="activity_manage_shoppinglist">Einkaufsliste erstellen</string>
     <string name="activity_go_shopping">Go Shopping!</string>
     <string name="activity_settings">Einstellungen</string>
+    <string name="activity_data_synchronisation">Daten-Synchronisierung</string>
     <string name="text_category">Kategorie</string>
     <string name="text_provenance">Herkunft</string>
     <string name="text_numberofpersons"># Personen</string>
@@ -84,14 +85,14 @@
     <string name="file_received">Datei %s erhalten</string>
     <string name="file_copy_error">Fehler beim Kopieren der Datei %s</string>
     <string name="file_exists_already">Datei existiert schon. Umbenennen oder Bestätigen zum Überschreiben.</string>
-    <string name="connection_established">Verbindung erfolgreich hergestellt.</string>
+    <string name="connection_established">Verbunden mit %s.\nVerfügbare Dateien:</string>
     <string name="connection_rejected">Verbindungsversuch zurückgewiesen.</string>
     <string name="requesting_file">Fordere Datei %s an.</string>
     <string name="permission_not_granted">Zugriffsrechte nicht erteilt.</string>
-
     <string name="accept_connection_header">Verbindung zu %s akzeptieren</string>
     <string name="accept_connection_confirm_code">Bitte bestätigen, dass der Code auf beiden Geräten derselbe ist: %s</string>
     <string name="accept">Akzeptieren</string>
+    <string name="find_nearby_devices">Finde Geräte in der Nähe</string>
 
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>
