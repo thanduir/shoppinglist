@@ -116,7 +116,6 @@ class Recipes implements Parcelable
                     if(!recipesUsingIngredient.contains(e.getKey()))
                     {
                         recipesUsingIngredient.add(e.getKey());
-                        break;
                     }
                     stillInUse = true;
                 }
@@ -131,7 +130,6 @@ class Recipes implements Parcelable
                         if(!recipesUsingIngredient.contains(e.getKey()))
                         {
                             recipesUsingIngredient.add(e.getKey());
-                            break;
                         }
                         stillInUse = true;
                     }

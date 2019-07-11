@@ -1,7 +1,9 @@
 TODO
 ====
 
+- data consistency check method (correctness of text-only references, something?) to be executed on loading (and saving?) of json files
+- db statt json für aktuelle daten (json nur noch für import / export) -> sollte auch performance stark verbessern...
 - Data synchronisation - part 2:
-    1. merge-functionality (-> "data consistency check"?)
+    1. merge-functionality
     2. two-way auto-sync with merge
     3. [optional] Connect to Google App Folder API / Google App Engine / Amazon Web Services / Dropbox datastore API / something similar (or some of them)
