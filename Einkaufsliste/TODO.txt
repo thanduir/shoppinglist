@@ -1,8 +1,13 @@
 TODO
 ====
 
+- Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
 - data consistency check method (correctness of text-only references, something?) to be executed on loading (and saving?) of json files
+
+- separate java files into several packages (at least GUI / data, keep switch to db in mind when doing this)
 - db statt json für aktuelle daten (json nur noch für import / export) -> sollte auch performance stark verbessern...
+- Possibility to add a picture to a recipe
+
 - Data synchronisation - part 2:
     1. merge-functionality
     2. two-way auto-sync with merge

@@ -26,7 +26,6 @@
     <string name="text_std_unit">Einheit</string>
     <string name="text_additionalinfo">Zusatzinfo</string>
     <string name="button_reset">Zurücksetzen</string>
-    <string name="text_sort_order">Sortierreihenfolge</string>
     <string name="button_export">Speichern als</string>
     <string name="button_import">Laden</string>
     <string name="button_rename">Umbenennen</string>

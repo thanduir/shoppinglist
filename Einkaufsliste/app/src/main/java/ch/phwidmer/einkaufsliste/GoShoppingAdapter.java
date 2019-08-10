@@ -11,9 +11,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder> implements ReactToTouchActionsInterface {
-
-    private RecyclerView m_RecyclerView;
+public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder>
+{
     private SortedShoppingList m_SortedList;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
@@ -32,9 +31,8 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         }
     }
 
-    GoShoppingAdapter(RecyclerView recyclerView, SortedShoppingList sortedList)
+    GoShoppingAdapter(SortedShoppingList sortedList)
     {
-        m_RecyclerView = recyclerView;
         m_SortedList = sortedList;
     }
 
@@ -153,29 +151,5 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
     public int getItemCount()
     {
         return m_SortedList.itemsCount();
-    }
-
-    @Override
-    public void reactToSwipe(int position)
-    {
-        SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
-        item.invertStatus();
-        notifyItemChanged(position);
-    }
-
-    public boolean swipeAllowed(RecyclerView.ViewHolder vh)
-    {
-        return !m_SortedList.isCategory(m_RecyclerView.getChildAdapterPosition(vh.itemView));
-    }
-
-    @Override
-    public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
-    {
-        return false;
-    }
-
-    public void clearViewBackground(RecyclerView.ViewHolder vh)
-    {
-        vh.itemView.setBackgroundColor(0);
     }
 }

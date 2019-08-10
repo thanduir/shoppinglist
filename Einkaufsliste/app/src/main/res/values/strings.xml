@@ -25,7 +25,6 @@
     <string name="text_std_unit">Default unit</string>
     <string name="text_additionalinfo">Add. Info</string>
     <string name="button_reset">Reset</string>
-    <string name="text_sort_order">Sort order</string>
     <string name="button_export">Save as</string>
     <string name="button_import">Load</string>
     <string name="button_rename">Rename</string>

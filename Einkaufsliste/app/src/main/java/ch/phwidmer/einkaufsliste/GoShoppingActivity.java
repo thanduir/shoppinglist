@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,8 +21,6 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
 
     private Spinner             m_SpinnerSortOrders;
     private RecyclerView        m_RecyclerView;
-
-    private ItemTouchHelper     m_ItemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +90,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         m_GroceryPlanning.m_ShoppingList.setCurrentSortOrder(strSortOrder);
 
         m_SortedShoppingList.setSortOrder(strSortOrder, order);
-        RecyclerView.Adapter adapter = new GoShoppingAdapter(m_RecyclerView, m_SortedShoppingList);
+        RecyclerView.Adapter adapter = new GoShoppingAdapter(m_SortedShoppingList);
         m_RecyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
             (RecyclerView recyclerView, int position, View v) ->
@@ -115,15 +112,6 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
                 goShoppingAdapter.updateAppearance(vh, position);
             }
         );
-        if(m_ItemTouchHelper != null)
-        {
-            m_ItemTouchHelper.attachToRecyclerView(null);
-        }
-        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerView.getAdapter(),
-                                                                                              this,
-                                                                                              R.drawable.ic_check_black_24dp,
-                                                                                              false));
-        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerView);
     }
 
     public void onNothingSelected(AdapterView<?> parent)
