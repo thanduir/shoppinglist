@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,9 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class ManageIngredients extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+
+public class IngredientsActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    private GroceryPlanning             m_GroceryPlanning;
+    private GroceryPlanning m_GroceryPlanning;
 
     private RecyclerView                m_RecyclerView;
     private IngredientsAdapter          m_Adapter;

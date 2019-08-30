@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
@@ -16,6 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.Categories;
+import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> implements ReactToTouchActionsInterface
 {

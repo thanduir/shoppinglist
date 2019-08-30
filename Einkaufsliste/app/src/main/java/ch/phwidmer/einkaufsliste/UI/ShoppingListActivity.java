@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -21,11 +21,22 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.TreeMap;
 
-public class ManageShoppingList extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
-{
-    private GroceryPlanning         m_GroceryPlanning;
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+import ch.phwidmer.einkaufsliste.data.RecipeItem;
+import ch.phwidmer.einkaufsliste.data.Recipes;
+import ch.phwidmer.einkaufsliste.data.ShoppingList;
+import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 
-    private ShoppingList            m_RecentlyDeletedShoppingList;
+public class ShoppingListActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
+{
+    private GroceryPlanning m_GroceryPlanning;
+
+    private ShoppingList m_RecentlyDeletedShoppingList;
 
     private RecyclerView            m_RecyclerViewRecipes;
     private ShoppingRecipesAdapter  m_AdapterRecipes;

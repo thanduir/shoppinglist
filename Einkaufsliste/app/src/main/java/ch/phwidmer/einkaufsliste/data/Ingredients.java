@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,17 +10,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-class Ingredients implements Parcelable
+import ch.phwidmer.einkaufsliste.helper.Helper;
+
+public class Ingredients implements Parcelable
 {
     private Categories m_Categories;
 
-    static String c_strProvenanceEverywhere = "*EVERYWHERE*";
+    public static final String c_strProvenanceEverywhere = "*EVERYWHERE*";
 
-    class Ingredient
+    public class Ingredient
     {
-        Categories.Category m_Category;
-        String m_strProvenance = c_strProvenanceEverywhere;
-        Amount.Unit m_DefaultUnit;
+        public Categories.Category m_Category;
+        public String m_strProvenance = c_strProvenanceEverywhere;
+        public Amount.Unit m_DefaultUnit;
     }
     private TreeMap<String, Ingredient> m_Ingredients;
 
@@ -30,12 +32,12 @@ class Ingredients implements Parcelable
         m_Ingredients = new TreeMap<>(new Helper.SortIgnoreCase());
     }
 
-    void updateCategories(Categories categories)
+    public void updateCategories(Categories categories)
     {
         m_Categories = categories;
     }
 
-    void addIngredient(String strName, Amount.Unit defaultUnit)
+    public void addIngredient(String strName, Amount.Unit defaultUnit)
     {
         if(m_Ingredients.containsKey(strName))
         {
@@ -47,24 +49,24 @@ class Ingredients implements Parcelable
         m_Ingredients.put(strName, i);
     }
 
-    Ingredient getIngredient(String strName)
+    public Ingredient getIngredient(String strName)
     {
         return m_Ingredients.get(strName);
     }
 
-    int getIngredientsCount() { return m_Ingredients.size(); }
+    public int getIngredientsCount() { return m_Ingredients.size(); }
 
-    ArrayList<String> getAllIngredients()
+    public ArrayList<String> getAllIngredients()
     {
         return new ArrayList<>(m_Ingredients.keySet());
     }
 
-    void removeIngredient(String strName)
+    public void removeIngredient(String strName)
     {
         m_Ingredients.remove(strName);
     }
 
-    void renameIngredient(String strIngredient, String strNewName)
+    public void renameIngredient(String strIngredient, String strNewName)
     {
         if(!m_Ingredients.containsKey(strIngredient))
         {
@@ -76,7 +78,7 @@ class Ingredients implements Parcelable
         m_Ingredients.put(strNewName, ingredient);
     }
 
-    boolean isCategoryInUse(Categories.Category category, @NonNull ArrayList<String> ingredientsUsingCategory)
+    public boolean isCategoryInUse(Categories.Category category, @NonNull ArrayList<String> ingredientsUsingCategory)
     {
         boolean stillInUse = false;
         for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
@@ -90,7 +92,7 @@ class Ingredients implements Parcelable
         return stillInUse;
     }
 
-    void onCategoryRenamed(Categories.Category category, Categories.Category newCategory)
+    public void onCategoryRenamed(Categories.Category category, Categories.Category newCategory)
     {
         for(Ingredient i : m_Ingredients.values())
         {
@@ -101,7 +103,7 @@ class Ingredients implements Parcelable
         }
     }
 
-    boolean isSortOrderInUse(String strSortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)
+    public boolean isSortOrderInUse(String strSortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)
     {
         boolean stillInUse = false;
         for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())

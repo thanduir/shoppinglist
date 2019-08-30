@@ -18,62 +18,62 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".DataSynchronizationActivity"
+            android:name=".UI.DataSynchronizationActivity"
             android:label="@string/activity_data_synchronisation"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".UI.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".UI.MainActivity" />
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".UI.SettingsActivity"
             android:label="@string/activity_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".UI.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".UI.MainActivity" />
         </activity>
         <activity
-            android:name=".GoShoppingActivity"
+            android:name=".UI.GoShoppingActivity"
             android:label="@string/activity_go_shopping"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".UI.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".UI.MainActivity" />
         </activity>
         <activity
-            android:name=".ManageShoppingList"
+            android:name=".UI.ShoppingListActivity"
             android:label="@string/activity_manage_shoppinglist"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".UI.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".UI.MainActivity" />
         </activity>
         <activity
-            android:name=".ManageRecipes"
+            android:name=".UI.RecipesActivity"
             android:label="@string/activity_recipes"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".UI.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".UI.MainActivity" />
         </activity>
         <activity
-            android:name=".ManageIngredients"
+            android:name=".UI.IngredientsActivity"
             android:label="@string/activity_ingredients"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".UI.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".UI.MainActivity" />
         </activity>
         <activity
-            android:name=".ManageCategories"
+            android:name=".UI.CategoriesActivity"
             android:label="@string/activity_categories"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".UI.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".UI.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".UI.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

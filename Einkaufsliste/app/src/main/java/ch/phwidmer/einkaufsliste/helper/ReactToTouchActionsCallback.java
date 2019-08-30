@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.helper;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,7 +19,7 @@ public class ReactToTouchActionsCallback extends ItemTouchHelper.Callback
     private Drawable  m_SwipeIcon;
 
     // Remark: We save the recyclerView instead of the adapter in order to still work correctly if the adapter gets reset.
-    ReactToTouchActionsCallback(ReactToTouchActionsInterface adapter, Context context, int swipeIcon, boolean bAllowDrag)
+    public ReactToTouchActionsCallback(ReactToTouchActionsInterface adapter, Context context, int swipeIcon, boolean bAllowDrag)
     {
         m_bAllowDrag = bAllowDrag;
         m_Adapter = adapter;

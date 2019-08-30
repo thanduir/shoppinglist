@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
-class ShoppingList implements Parcelable
+public class ShoppingList implements Parcelable
 {
-    class ShoppingRecipe
+    public class ShoppingRecipe
     {
-        Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
-        LinkedList<ShoppingListItem>    m_Items = new LinkedList<>();
+        public Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
+        public LinkedList<ShoppingListItem>    m_Items = new LinkedList<>();
 
-        void changeScalingFactor(float f)
+        public void changeScalingFactor(float f)
         {
             float fFactor = f / m_fScalingFactor;
             m_fScalingFactor = f;
@@ -32,23 +32,23 @@ class ShoppingList implements Parcelable
     private LinkedHashMap<String, ShoppingRecipe> m_Items;
     private String                                m_CurrentSortOrder;
 
-    ShoppingList()
+    public ShoppingList()
     {
         m_Items = new LinkedHashMap<>();
         m_CurrentSortOrder = "";
     }
 
-    void setCurrentSortOrder(String strOrder)
+    public void setCurrentSortOrder(String strOrder)
     {
         m_CurrentSortOrder = strOrder;
     }
 
-    String getCurrentSortOrder()
+    public String getCurrentSortOrder()
     {
         return m_CurrentSortOrder;
     }
 
-    void addFromRecipe(String strName, Recipes.Recipe recipe)
+    public void addFromRecipe(String strName, Recipes.Recipe recipe)
     {
         if(m_Items.containsKey(strName))
         {
@@ -65,22 +65,22 @@ class ShoppingList implements Parcelable
         m_Items.put(strName, item);
     }
 
-    ShoppingRecipe getShoppingRecipe(String strName)
+    public ShoppingRecipe getShoppingRecipe(String strName)
     {
         return m_Items.get(strName);
     }
 
-    ArrayList<String> getAllShoppingRecipes()
+    public ArrayList<String> getAllShoppingRecipes()
     {
         return new ArrayList<>(m_Items.keySet());
     }
 
-    void removeShoppingRecipe(String strName)
+    public void removeShoppingRecipe(String strName)
     {
         m_Items.remove(strName);
     }
 
-    void renameRecipe(String strRecipe, String strNewName)
+    public void renameRecipe(String strRecipe, String strNewName)
     {
         if(!m_Items.containsKey(strRecipe))
         {
@@ -92,7 +92,7 @@ class ShoppingList implements Parcelable
         m_Items.put(strNewName, recipe);
     }
 
-    void addExistingShoppingRecipe(String strName, ShoppingRecipe recipe)
+    public void addExistingShoppingRecipe(String strName, ShoppingRecipe recipe)
     {
         if(m_Items.containsKey(strName))
         {
@@ -102,7 +102,7 @@ class ShoppingList implements Parcelable
         m_Items.put(strName, recipe);
     }
 
-    boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> shoppingListItemUsingIngredient)
+    public boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> shoppingListItemUsingIngredient)
     {
         boolean stillInUse = false;
         for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
@@ -122,7 +122,7 @@ class ShoppingList implements Parcelable
         return stillInUse;
     }
 
-    void onIngredientRenamed(String strIngredient, String strNewName)
+    public void onIngredientRenamed(String strIngredient, String strNewName)
     {
         for(ShoppingRecipe sr : m_Items.values())
         {

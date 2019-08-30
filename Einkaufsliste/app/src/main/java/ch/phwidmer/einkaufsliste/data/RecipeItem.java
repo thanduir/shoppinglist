@@ -1,8 +1,10 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import ch.phwidmer.einkaufsliste.R;
 
 public class RecipeItem implements Parcelable
 {
@@ -13,13 +15,13 @@ public class RecipeItem implements Parcelable
         Large
     }
 
-    String  m_Ingredient;
-    Amount  m_Amount;
-    String  m_AdditionalInfo = "";
-    Size    m_Size = Size.Normal;
-    Boolean m_Optional = false;
+    public String  m_Ingredient;
+    public Amount  m_Amount;
+    public String  m_AdditionalInfo = "";
+    public Size    m_Size = Size.Normal;
+    public Boolean m_Optional = false;
 
-    RecipeItem()
+    public RecipeItem()
     {
         m_Amount = new Amount();
     }
@@ -33,7 +35,7 @@ public class RecipeItem implements Parcelable
         m_Optional = other.m_Optional;
     }
 
-    static String toUIString(Context context, Size size)
+    public static String toUIString(Context context, Size size)
     {
         switch(size)
         {

@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.helper;
 
 import android.support.v7.widget.RecyclerView;
 

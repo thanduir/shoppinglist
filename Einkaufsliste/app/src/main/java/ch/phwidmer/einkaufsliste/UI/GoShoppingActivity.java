@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,11 +13,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.SortedShoppingList;
+import ch.phwidmer.einkaufsliste.data.Categories;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+
 public class GoShoppingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
-    private GroceryPlanning     m_GroceryPlanning;
+    private GroceryPlanning m_GroceryPlanning;
 
-    private SortedShoppingList  m_SortedShoppingList;
+    private SortedShoppingList m_SortedShoppingList;
 
     private Spinner             m_SpinnerSortOrders;
     private RecyclerView        m_RecyclerView;

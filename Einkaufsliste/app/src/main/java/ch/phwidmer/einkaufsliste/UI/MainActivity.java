@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +15,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
+
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
@@ -84,28 +88,28 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
     public void manageCategories(View view)
     {
-        Intent intent = new Intent(this, ManageCategories.class);
+        Intent intent = new Intent(this, CategoriesActivity.class);
         intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
         startActivityForResult(intent, REQUEST_CODE_ManageCategories);
     }
 
     public void manageIngredients(View view)
     {
-        Intent intent = new Intent(this, ManageIngredients.class);
+        Intent intent = new Intent(this, IngredientsActivity.class);
         intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
         startActivityForResult(intent, REQUEST_CODE_ManageIngredients);
     }
 
     public void manageRecipies(View view)
     {
-        Intent intent = new Intent(this, ManageRecipes.class);
+        Intent intent = new Intent(this, RecipesActivity.class);
         intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
         startActivityForResult(intent, REQUEST_CODE_ManageRecipes);
     }
 
     public void editShoppingList(View view)
     {
-        Intent intent = new Intent(this, ManageShoppingList.class);
+        Intent intent = new Intent(this, ShoppingListActivity.class);
         intent.putExtra(EXTRA_GROCERYPLANNING, m_GroceryPlanning);
         startActivityForResult(intent, REQUEST_CODE_ManageShoppingList);
     }

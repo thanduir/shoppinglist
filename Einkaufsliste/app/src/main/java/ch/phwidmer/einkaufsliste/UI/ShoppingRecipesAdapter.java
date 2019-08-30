@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -28,6 +28,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import ch.phwidmer.einkaufsliste.helper.Helper;
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.data.RecipeItem;
+import ch.phwidmer.einkaufsliste.data.ShoppingList;
+import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 
 public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipesAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {

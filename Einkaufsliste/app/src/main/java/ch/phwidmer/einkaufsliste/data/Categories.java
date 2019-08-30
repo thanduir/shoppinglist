@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,7 +11,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-class Categories implements Parcelable
+import ch.phwidmer.einkaufsliste.helper.Helper;
+
+public class Categories implements Parcelable
 {
     public class Category
     {
@@ -48,9 +50,9 @@ class Categories implements Parcelable
     private LinkedHashSet<String> m_Categories;
 
     // CategorySortOrder
-    class SortOrder
+    public class SortOrder
     {
-        ArrayList<Category> m_CategoriesOrder = new ArrayList<>();
+        public ArrayList<Category> m_CategoriesOrder = new ArrayList<>();
     }
     private LinkedHashMap<String, SortOrder>  m_SortOrders;
 
@@ -63,19 +65,19 @@ class Categories implements Parcelable
         m_ActiveSortOrder = "";
     }
 
-    void setActiveSortOrder(String strOrder)
+    public void setActiveSortOrder(String strOrder)
     {
         m_ActiveSortOrder = strOrder;
     }
 
-    String getActiveSortOrder()
+    public String getActiveSortOrder()
     {
         return m_ActiveSortOrder;
     }
 
     // Categories methods
 
-    void addCategory(String strName)
+    public void addCategory(String strName)
     {
         if(m_Categories.contains(strName))
         {
@@ -89,7 +91,7 @@ class Categories implements Parcelable
         }
     }
 
-    Category getCategory(String category)
+    public Category getCategory(String category)
     {
         if(m_Categories.contains(category))
         {
@@ -99,7 +101,7 @@ class Categories implements Parcelable
         return null;
     }
 
-    ArrayList<String> getAllCategories()
+    public ArrayList<String> getAllCategories()
     {
         ArrayList<String> vec = new ArrayList<>();
         for(Object obj : m_Categories.toArray())
@@ -110,7 +112,7 @@ class Categories implements Parcelable
         return vec;
     }
 
-    void removeCategory(String strName)
+    public void removeCategory(String strName)
     {
         m_Categories.remove(strName);
 
@@ -120,7 +122,7 @@ class Categories implements Parcelable
         }
     }
 
-    void renameCategory(Category category, String strNewName)
+    public void renameCategory(Category category, String strNewName)
     {
         if(!m_Categories.contains(category.getName()))
         {
@@ -143,7 +145,7 @@ class Categories implements Parcelable
 
     // SortOrder methods
 
-    void addSortOrder(String strName)
+    public void addSortOrder(String strName)
     {
         SortOrder order = new SortOrder();
         for(String str : m_Categories)
@@ -153,7 +155,7 @@ class Categories implements Parcelable
         m_SortOrders.put(strName, order);
     }
 
-    void addSortOrder(String strName, SortOrder order)
+    public void addSortOrder(String strName, SortOrder order)
     {
         if(order.m_CategoriesOrder.size() != m_Categories.size())
         {
@@ -162,17 +164,17 @@ class Categories implements Parcelable
         m_SortOrders.put(strName, order);
     }
 
-    SortOrder getSortOrder(String strName)
+    public SortOrder getSortOrder(String strName)
     {
         return m_SortOrders.get(strName);
     }
 
-    ArrayList<String> getAllSortOrders()
+    public ArrayList<String> getAllSortOrders()
     {
         return new ArrayList<>(m_SortOrders.keySet());
     }
 
-    void removeSortOrder(String strName)
+    public void removeSortOrder(String strName)
     {
         m_SortOrders.remove(strName);
     }

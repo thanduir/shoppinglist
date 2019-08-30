@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import ch.phwidmer.einkaufsliste.helper.Helper;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.SortedShoppingList;
+import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.RecipeItem;
+import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 
 public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder>
 {

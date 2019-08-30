@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.Locale;
+
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

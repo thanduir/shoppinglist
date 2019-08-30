@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,9 +31,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Locale;
 
-public class ManageRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+import ch.phwidmer.einkaufsliste.data.RecipeItem;
+import ch.phwidmer.einkaufsliste.data.Recipes;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 
-    private GroceryPlanning             m_GroceryPlanning;
+public class RecipesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
+
+    private GroceryPlanning m_GroceryPlanning;
 
     private Spinner                     m_SpinnerRecipes;
     private EditText                    m_EditTextNrPersons;
@@ -387,7 +396,7 @@ public class ManageRecipes extends AppCompatActivity implements AdapterView.OnIt
                 m_SpinnerRecipesAdapter.insert(strInput, index);
                 m_SpinnerRecipes.setSelection(index);
 
-                Toast.makeText(ManageRecipes.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strInput), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RecipesActivity.this, getResources().getString(R.string.text_recipe_renamed, strCurrentRecipe, strInput), Toast.LENGTH_SHORT).show();
                 break;
             }
 

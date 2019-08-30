@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,9 +22,16 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class ManageCategories extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.Categories;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+
+public class CategoriesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
 {
-    private GroceryPlanning             m_GroceryPlanning;
+    private GroceryPlanning m_GroceryPlanning;
 
     private Spinner                     m_SpinnerSortOrders;
     private ImageView                   m_ImageViewDelSortOrder;

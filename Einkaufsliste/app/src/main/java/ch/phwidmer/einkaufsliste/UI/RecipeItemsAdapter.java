@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -29,6 +29,15 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.TreeMap;
 
+import ch.phwidmer.einkaufsliste.helper.Helper;
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.data.RecipeItem;
+import ch.phwidmer.einkaufsliste.data.Recipes;
+import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+
 public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
     private static final int TYPE_INACTIVE = 1;
@@ -40,12 +49,12 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     private static final String GROUP_PREFIX = "#Group_";
 
     private Recipes.Recipe      m_Recipe;
-    private Ingredients         m_Ingredients;
+    private Ingredients m_Ingredients;
     private RecyclerView        m_RecyclerView;
     private CoordinatorLayout   m_CoordLayout;
     private Integer             m_iActiveElement;
 
-    private RecipeItem              m_RecentlyDeleted;
+    private RecipeItem m_RecentlyDeleted;
     private String                  m_GroupOfRecentlyDeletedItem;
     private int                     m_RecentlyDeletedIndex;
     private LinkedList<RecipeItem>  m_ItemsOfRecentlyDeletedGroup;

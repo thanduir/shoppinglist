@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,24 +7,24 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 // Generates the list of ingredients sorted by categories according to a sort order from the ShoppingList.
-class SortedShoppingList
+public class SortedShoppingList
 {
     private Ingredients m_Ingredients;
 
     private LinkedHashMap<String, LinkedList<CategoryShoppingItem>>  m_UnorderdList; // Key: Categories; Value: items
     private LinkedList<CategoryItem>                                 m_SortedList;  // Ingredientslist sorted by category. Same ingredients have been combined.
 
-    class CategoryShoppingItem
+    public class CategoryShoppingItem
     {
         private String                       m_Ingredient;
-        private Amount                       m_Amount = new Amount();
+        private Amount m_Amount = new Amount();
         private LinkedList<ShoppingListItem> m_ShoppingItems = new LinkedList<>();
 
-        ShoppingListItem.Status getStatus()
+        public ShoppingListItem.Status getStatus()
         {
             return m_ShoppingItems.getFirst().m_Status;
         }
-        void invertStatus()
+        public void invertStatus()
         {
             for(ShoppingListItem item : m_ShoppingItems)
             {
@@ -32,22 +32,22 @@ class SortedShoppingList
             }
         }
 
-        Boolean isOptional()
+        public Boolean isOptional()
         {
             return m_ShoppingItems.getFirst().m_Optional;
         }
 
-        Amount getAmount()
+        public Amount getAmount()
         {
             return m_Amount;
         }
 
-        RecipeItem.Size getSize()
+        public RecipeItem.Size getSize()
         {
             return m_ShoppingItems.getFirst().m_Size;
         }
 
-        String getAdditionalInfo()
+        public String getAdditionalInfo()
         {
             return m_ShoppingItems.getFirst().m_AdditionalInfo;
         }
@@ -60,7 +60,7 @@ class SortedShoppingList
         LinkedList<CategoryShoppingItem> m_Items;
     }
 
-    SortedShoppingList(ShoppingList shoppingList, Ingredients ingredients)
+    public SortedShoppingList(ShoppingList shoppingList, Ingredients ingredients)
     {
         m_Ingredients = ingredients;
 
@@ -132,7 +132,7 @@ class SortedShoppingList
         }
     }
 
-    void setSortOrder(String strSortOrderName, Categories.SortOrder sortOrder)
+    public void setSortOrder(String strSortOrderName, Categories.SortOrder sortOrder)
     {
         LinkedList<CategoryItem> incompatibleItems = new LinkedList<>();
 
@@ -197,7 +197,7 @@ class SortedShoppingList
         incompatibleItems.add(otherItems);
     }
 
-    Integer itemsCount()
+    public Integer itemsCount()
     {
         int size = 0;
         for(CategoryItem e : m_SortedList)
@@ -207,7 +207,7 @@ class SortedShoppingList
         return size;
     }
 
-    String getName(int index)
+    public String getName(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)
@@ -237,7 +237,7 @@ class SortedShoppingList
         return "";
     }
 
-    Boolean isCategory(int index)
+    public Boolean isCategory(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)
@@ -258,7 +258,7 @@ class SortedShoppingList
         return false;
     }
 
-    Boolean isIncompatibleItemsList(int index)
+    public Boolean isIncompatibleItemsList(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)
@@ -279,7 +279,7 @@ class SortedShoppingList
         return false;
     }
 
-    CategoryShoppingItem getListItem(int index)
+    public CategoryShoppingItem getListItem(int index)
     {
         int i = 0;
         for(CategoryItem e : m_SortedList)

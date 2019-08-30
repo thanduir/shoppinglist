@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.UI;
 
 import android.Manifest;
 import android.content.Context;
@@ -41,6 +41,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
+import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.R;
 
 public class DataSynchronizationActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {

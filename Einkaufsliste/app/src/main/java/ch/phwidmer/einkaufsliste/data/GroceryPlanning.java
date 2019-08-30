@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
@@ -13,16 +13,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import ch.phwidmer.einkaufsliste.R;
+
 public class GroceryPlanning implements Parcelable
 {
     private static int     SERIALIZING_VERSION = 1;
 
-    Categories      m_Categories;
-    Ingredients     m_Ingredients;
-    Recipes         m_Recipes;
-    ShoppingList    m_ShoppingList;
+    public Categories      m_Categories;
+    public Ingredients     m_Ingredients;
+    public Recipes         m_Recipes;
+    public ShoppingList    m_ShoppingList;
 
-    GroceryPlanning()
+    public GroceryPlanning()
     {
         m_Categories = new Categories();
         m_Ingredients = new Ingredients(m_Categories);
@@ -30,12 +32,12 @@ public class GroceryPlanning implements Parcelable
         m_ShoppingList = new ShoppingList();
     }
 
-    GroceryPlanning(File file, Context context)
+    public GroceryPlanning(File file, Context context)
     {
         loadDataFromFile(file, context);
     }
 
-    void saveDataToFile(File fileToBeCreated, Context context)
+    public void saveDataToFile(File fileToBeCreated, Context context)
     {
         boolean moveFilesFirst = fileToBeCreated.exists();
 
@@ -104,7 +106,7 @@ public class GroceryPlanning implements Parcelable
         scanFile(context, fileToBeCreated);
     }
 
-    void loadDataFromFile(File file, Context context)
+    public void loadDataFromFile(File file, Context context)
     {
         try
         {
@@ -168,7 +170,7 @@ public class GroceryPlanning implements Parcelable
     }
 
     // Make file known to the MediaScanner so that it apears when the device is mount e.g. on windows.
-    void scanFile(Context context, File f)
+    public void scanFile(Context context, File f)
     {
         if(context == null)
         {

@@ -1,11 +1,11 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.helper;
 
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
 
-class Helper {
+public class Helper {
 
     public static class SortIgnoreCase implements Comparator<Object>
     {
@@ -37,7 +37,7 @@ class Helper {
     }
 
     // Format numbers: Write as integer without decimals if applicable, otherwise restrict decimal digits.
-    static String formatNumber(Float f)
+    public static String formatNumber(Float f)
     {
         if(f == Math.round(f))
         {

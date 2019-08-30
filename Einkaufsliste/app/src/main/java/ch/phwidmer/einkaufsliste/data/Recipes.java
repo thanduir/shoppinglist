@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,16 +11,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
-class Recipes implements Parcelable
+import ch.phwidmer.einkaufsliste.helper.Helper;
+
+public class Recipes implements Parcelable
 {
     private String m_ActiveRecipe;
 
-    class Recipe
+    public class Recipe
     {
-        Integer m_NumberOfPersons = 0;
-        LinkedList<RecipeItem> m_Items = new LinkedList<>();
+        public Integer m_NumberOfPersons = 0;
+        public LinkedList<RecipeItem> m_Items = new LinkedList<>();
 
-        TreeMap<String, LinkedList<RecipeItem>> m_Groups = new TreeMap<>(new Helper.SortIgnoreCase());
+        public TreeMap<String, LinkedList<RecipeItem>> m_Groups = new TreeMap<>(new Helper.SortIgnoreCase());
     }
     private TreeMap<String, Recipe> m_Recipies;
 
@@ -30,17 +32,17 @@ class Recipes implements Parcelable
         m_ActiveRecipe = "";
     }
 
-    void setActiveRecipe(String strRecipe)
+    public void setActiveRecipe(String strRecipe)
     {
         m_ActiveRecipe = strRecipe;
     }
 
-    String getActiveRecipe()
+    public String getActiveRecipe()
     {
         return m_ActiveRecipe;
     }
 
-    void addRecipe(String strName, Integer iNrPersons)
+    public void addRecipe(String strName, Integer iNrPersons)
     {
         if(m_Recipies.containsKey(strName))
         {
@@ -51,7 +53,7 @@ class Recipes implements Parcelable
         m_Recipies.put(strName, recipe);
     }
 
-    void addRecipe(String strName, Recipe r)
+    public void addRecipe(String strName, Recipe r)
     {
         if(m_Recipies.containsKey(strName))
         {
@@ -60,22 +62,22 @@ class Recipes implements Parcelable
         m_Recipies.put(strName, r);
     }
 
-    Recipe getRecipe(String strName)
+    public Recipe getRecipe(String strName)
     {
         return m_Recipies.get(strName);
     }
 
-    void removeRecipe(String strName)
+    public void removeRecipe(String strName)
     {
         m_Recipies.remove(strName);
     }
 
-    ArrayList<String> getAllRecipes()
+    public ArrayList<String> getAllRecipes()
     {
         return new ArrayList<>(m_Recipies.keySet());
     }
 
-    void renameRecipe(String strRecipe, String strNewName)
+    public void renameRecipe(String strRecipe, String strNewName)
     {
         if(!m_Recipies.containsKey(strRecipe))
         {
@@ -87,7 +89,7 @@ class Recipes implements Parcelable
         m_Recipies.put(strNewName, recipe);
     }
 
-    void copyRecipe(String strRecipe, String strNewName)
+    public void copyRecipe(String strRecipe, String strNewName)
     {
         Recipe oldRecipe = m_Recipies.get(strRecipe);
         if(oldRecipe == null)
@@ -104,7 +106,7 @@ class Recipes implements Parcelable
         m_Recipies.put(strNewName, recipe);
     }
 
-    boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> recipesUsingIngredient)
+    public boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> recipesUsingIngredient)
     {
         boolean stillInUse = false;
         for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
@@ -140,7 +142,7 @@ class Recipes implements Parcelable
         return stillInUse;
     }
 
-    void onIngredientRenamed(String strIngredient, String strNewName)
+    public void onIngredientRenamed(String strIngredient, String strNewName)
     {
         for(Recipe r : m_Recipies.values())
         {

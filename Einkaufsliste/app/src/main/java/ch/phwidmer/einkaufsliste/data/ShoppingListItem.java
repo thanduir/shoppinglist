@@ -1,9 +1,9 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-class ShoppingListItem implements Parcelable
+public class ShoppingListItem implements Parcelable
 {
     public enum Status
     {
@@ -11,20 +11,20 @@ class ShoppingListItem implements Parcelable
         Taken
     }
 
-    Status           m_Status = Status.None;
+    Status                  m_Status = Status.None;
 
-    String           m_Ingredient;
-    Amount           m_Amount;
-    String           m_AdditionalInfo = "";
-    RecipeItem.Size  m_Size = RecipeItem.Size.Normal;
-    Boolean          m_Optional = false;
+    public String           m_Ingredient;
+    public Amount           m_Amount;
+    public String           m_AdditionalInfo = "";
+    public RecipeItem.Size  m_Size = RecipeItem.Size.Normal;
+    public Boolean          m_Optional = false;
 
-    ShoppingListItem()
+    public ShoppingListItem()
     {
         m_Amount = new Amount();
     }
 
-    ShoppingListItem(RecipeItem recipeItem)
+    public ShoppingListItem(RecipeItem recipeItem)
     {
         m_Amount = new Amount(recipeItem.m_Amount);
         m_Ingredient = recipeItem.m_Ingredient;

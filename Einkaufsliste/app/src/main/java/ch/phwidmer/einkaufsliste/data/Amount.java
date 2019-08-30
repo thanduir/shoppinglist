@@ -1,6 +1,8 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
+
+import ch.phwidmer.einkaufsliste.R;
 
 public class Amount {
     private static float QUANTITY_UNUSED = -1;
@@ -21,9 +23,9 @@ public class Amount {
         Unitless
     }
 
-    float m_QuantityMin;
-    float m_QuantityMax;
-    Unit m_Unit;
+    public float m_QuantityMin;
+    public float m_QuantityMax;
+    public Unit m_Unit;
 
     public Amount()
     {
@@ -39,12 +41,12 @@ public class Amount {
         m_Unit = other.m_Unit;
     }
 
-    boolean isRange()
+    public boolean isRange()
     {
         return m_QuantityMax != QUANTITY_UNUSED;
     }
 
-    void setIsRange(boolean bIsRange)
+    public void setIsRange(boolean bIsRange)
     {
         if(bIsRange == isRange())
         {
@@ -74,12 +76,12 @@ public class Amount {
         }
     }
 
-    void increaseAmountMin()
+    public void increaseAmountMin()
     {
         m_QuantityMin += getChangeAmount(m_QuantityMin);
     }
 
-    void decreaseAmountMin()
+    public void decreaseAmountMin()
     {
         float changeAmount = getChangeAmount(m_QuantityMin);
         if(m_QuantityMin > changeAmount)
@@ -92,7 +94,7 @@ public class Amount {
         }
     }
 
-    void increaseAmountMax()
+    public void increaseAmountMax()
     {
         if(m_QuantityMax == QUANTITY_UNUSED)
         {
@@ -101,7 +103,7 @@ public class Amount {
         m_QuantityMax += getChangeAmount(m_QuantityMax);
     }
 
-    void decreaseAmountMax()
+    public void decreaseAmountMax()
     {
         if(m_QuantityMax == QUANTITY_UNUSED)
         {
@@ -160,7 +162,7 @@ public class Amount {
         }
     }
 
-    static String toUIString(Context context, Unit unit)
+    public static String toUIString(Context context, Unit unit)
     {
         switch(unit)
         {
@@ -192,7 +194,7 @@ public class Amount {
         }
     }
 
-    static String shortForm(Context context, Unit unit)
+    public static String shortForm(Context context, Unit unit)
     {
         switch(unit)
         {
@@ -225,7 +227,7 @@ public class Amount {
     }
 
     // asPrefix: Is it used in front of the corresponding item? Then we don't need to write "1 Piece Apple", but can use another form.
-    static String shortFormAsPrefix(Context context, Unit unit)
+    public static String shortFormAsPrefix(Context context, Unit unit)
     {
         switch(unit)
         {

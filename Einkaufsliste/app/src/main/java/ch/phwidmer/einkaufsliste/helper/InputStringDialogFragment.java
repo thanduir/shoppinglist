@@ -1,4 +1,4 @@
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.helper;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import ch.phwidmer.einkaufsliste.R;
 
 public class InputStringDialogFragment extends DialogFragment {
 
@@ -44,7 +46,7 @@ public class InputStringDialogFragment extends DialogFragment {
     private ArrayList<String> m_ListInputsToConfirm;
     private ArrayList<String> m_ListOnlyAllowed;
 
-    static InputStringDialogFragment newInstance(String strTitle)
+    public static InputStringDialogFragment newInstance(String strTitle)
     {
         InputStringDialogFragment f = new InputStringDialogFragment();
 
@@ -58,7 +60,7 @@ public class InputStringDialogFragment extends DialogFragment {
         return f;
     }
 
-    void setAdditionalInformation(String strAdditonalInformation)
+    public void setAdditionalInformation(String strAdditonalInformation)
     {
         if(getArguments() == null)
         {
@@ -67,7 +69,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putString(m_keyAdditionalInformation, strAdditonalInformation);
     }
 
-    void setDefaultValue(String strDefaultValue)
+    public void setDefaultValue(String strDefaultValue)
     {
         if(getArguments() == null)
         {
@@ -76,7 +78,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putString(m_keyDefaultValue, strDefaultValue);
     }
 
-    void setInputType(int inputType)
+    public void setInputType(int inputType)
     {
         if(getArguments() == null)
         {
@@ -85,7 +87,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putInt(m_keyInputType, inputType);
     }
 
-    void setListExcludedInputs(ArrayList<String> listExcludedInputs)
+    public void setListExcludedInputs(ArrayList<String> listExcludedInputs)
     {
         if(getArguments() == null)
         {
@@ -94,7 +96,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putStringArrayList(m_keyListExcludedInputs, listExcludedInputs);
     }
 
-    void setListInputsToConfirm(ArrayList<String> listInputsToConfirm)
+    public void setListInputsToConfirm(ArrayList<String> listInputsToConfirm)
     {
         if(getArguments() == null)
         {
@@ -103,7 +105,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putStringArrayList(m_keyListInputsToConfirm, listInputsToConfirm);
     }
 
-    void setListOnlyAllowed(ArrayList<String> listOnlyAllowed)
+    public void setListOnlyAllowed(ArrayList<String> listOnlyAllowed)
     {
         if(getArguments() == null)
         {

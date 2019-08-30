@@ -10,13 +10,15 @@
   });
 
 */
-package ch.phwidmer.einkaufsliste;
+package ch.phwidmer.einkaufsliste.helper;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-class ItemClickSupport {
+import ch.phwidmer.einkaufsliste.R;
+
+public class ItemClickSupport {
     private final RecyclerView mRecyclerView;
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
@@ -63,7 +65,7 @@ class ItemClickSupport {
         mRecyclerView.addOnChildAttachStateChangeListener(mAttachListener);
     }
 
-    static ItemClickSupport addTo(RecyclerView view) {
+    public static ItemClickSupport addTo(RecyclerView view) {
         ItemClickSupport support = (ItemClickSupport) view.getTag(R.id.item_click_support);
         if (support == null) {
             support = new ItemClickSupport(view);
@@ -79,12 +81,12 @@ class ItemClickSupport {
         return support;
     }
 
-    ItemClickSupport setOnItemClickListener(OnItemClickListener listener) {
+    public ItemClickSupport setOnItemClickListener(OnItemClickListener listener) {
         mOnItemClickListener = listener;
         return this;
     }
 
-    ItemClickSupport setOnItemLongClickListener(OnItemLongClickListener listener) {
+    public ItemClickSupport setOnItemLongClickListener(OnItemLongClickListener listener) {
         mOnItemLongClickListener = listener;
         return this;
     }
