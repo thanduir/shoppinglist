@@ -1,16 +1,16 @@
 TODO
 ====
 
+- separate java files into several packages (at least GUI / data, keep switch to db in mind when doing this)
+- data consistency check method (correctness of text-only references, something?) to be executed on loading (and saving?) of json files
+
+- Possibility to refer to other recipies within a recipe (or a subcategory for "partial recipes")? E.g. Salat within "Pommes + Cordon-Bleu"
+- Possibility to add a picture to a recipe (-> can I save these in json? Or how to do this technically? Save in db should work, but otherwise?)
+- db statt json für aktuelle daten (json nur noch für import / export) -> sollte auch performance stark verbessern...
+
 - Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
     -> efficiently implementing this probably depends on a redesign of SortedShoppingList
     -> first define exactly how this should work! (vanish on click?)
-- data consistency check method (correctness of text-only references, something?) to be executed on loading (and saving?) of json files
-
-- separate java files into several packages (at least GUI / data, keep switch to db in mind when doing this)
-- db statt json für aktuelle daten (json nur noch für import / export) -> sollte auch performance stark verbessern...
-- Possibility to add a picture to a recipe
-
-- Possibility to refer to other recipies within a recipe (or a subcategory for "partial recipes")? E.g. Salat within "Pommes + Cordon-Bleu"
 
 Low priority
 ------------

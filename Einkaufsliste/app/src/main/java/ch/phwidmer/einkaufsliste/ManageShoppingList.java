@@ -71,15 +71,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                     }
                 }
         );
-        if(m_ItemTouchHelper != null)
-        {
-            m_ItemTouchHelper.attachToRecyclerView(null);
-        }
-        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerViewRecipes.getAdapter(),
-                                                                                              this,
-                                                                                              R.drawable.ic_delete_black_24dp,
-                                                                                              false));
-        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
+        initTouchHelper();
 
         if(savedInstanceState != null)
         {
@@ -102,6 +94,24 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
                 }
             }
         });
+    }
+
+    private void initTouchHelper()
+    {
+        if(m_RecyclerViewRecipes == null)
+        {
+            return;
+        }
+
+        if(m_ItemTouchHelper != null)
+        {
+            m_ItemTouchHelper.attachToRecyclerView(null);
+        }
+        m_ItemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback((ReactToTouchActionsInterface)m_RecyclerViewRecipes.getAdapter(),
+                this,
+                R.drawable.ic_delete_black_24dp,
+                false));
+        m_ItemTouchHelper.attachToRecyclerView(m_RecyclerViewRecipes);
     }
 
     @Override
@@ -320,6 +330,7 @@ public class ManageShoppingList extends AppCompatActivity implements InputString
         m_GroceryPlanning.m_ShoppingList = new ShoppingList();
         m_AdapterRecipes = new ShoppingRecipesAdapter(coordLayout, m_RecyclerViewRecipes, m_GroceryPlanning.m_Ingredients, m_GroceryPlanning.m_ShoppingList);
         m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
+        initTouchHelper();
 
         // Allow undo
 
