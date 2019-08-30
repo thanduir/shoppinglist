@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste.UI;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,14 +49,28 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         m_AppDataDirectory = getExternalFilesDir(null);
 
         File file = new File(m_AppDataDirectory, c_strSaveFilename);
+        m_GroceryPlanning = new GroceryPlanning();
         if(file.exists())
         {
-            m_GroceryPlanning = new GroceryPlanning(file, this);
+            try
+            {
+                m_GroceryPlanning.loadDataFromFile(file, this);
+            }
+            catch(IOException e)
+            {
+                showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage());
+            }
         }
         else
         {
-            m_GroceryPlanning = new GroceryPlanning();
-            m_GroceryPlanning.saveDataToFile(file, this);
+            try
+            {
+                m_GroceryPlanning.saveDataToFile(file, this);
+            }
+            catch(IOException e)
+            {
+                showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage());
+            }
         }
 
         writeStdDataFileIfNotPresent();
@@ -179,6 +195,12 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
             {
                 m_GroceryPlanning.saveDataToFile(m_File, null);
             }
+            catch(IOException e)
+            {
+                // TODO: Good idea to show this here? (asynchronously?) -> Nope
+                //       -> Fail silently for the moment. THis won't be needed anymore anyways after switch to db.
+                //showErrorDialog(e.getMessage());
+            }
             finally
             {
                 lock.unlock();
@@ -210,29 +232,34 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     }
 
     @Override
-    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
-    {
-        if(tag.equals("onExport"))
-        {
+    public void onStringInput(String tag, String strInput, String strAdditonalInformation) {
+        if (tag.equals("onExport")) {
             String strFilename = strInput;
-            if(!strFilename.endsWith(".json"))
-            {
+            if (!strFilename.endsWith(".json")) {
                 strFilename += ".json";
             }
 
             File file = new File(m_AppDataDirectory, strFilename);
-            m_GroceryPlanning.saveDataToFile(file, getBaseContext());
-            Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
-        }
-        else if(tag.equals("onImport"))
+            try {
+                m_GroceryPlanning.saveDataToFile(file, getBaseContext());
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage());
+            }
+        } else if (tag.equals("onImport"))
         {
-            File file = new File(m_AppDataDirectory, strInput);
-            m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
+            try {
+                File file = new File(m_AppDataDirectory, strInput);
+                m_GroceryPlanning.loadDataFromFile(file, MainActivity.this);
 
-            File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
-            m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
+                File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
+                m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
 
-            Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded,  strInput), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded, strInput), Toast.LENGTH_SHORT).show();
+            } catch (IOException e)
+            {
+                showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage());
+            }
         }
     }
 
@@ -267,5 +294,15 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showErrorDialog(String title, String message)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setPositiveButton(R.string.accept, (DialogInterface dialog, int which) ->{});
+        builder.show();
     }
 }

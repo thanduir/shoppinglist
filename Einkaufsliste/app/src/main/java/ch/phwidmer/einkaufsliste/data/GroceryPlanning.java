@@ -6,12 +6,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
 
 import ch.phwidmer.einkaufsliste.R;
 
@@ -32,12 +32,7 @@ public class GroceryPlanning implements Parcelable
         m_ShoppingList = new ShoppingList();
     }
 
-    public GroceryPlanning(File file, Context context)
-    {
-        loadDataFromFile(file, context);
-    }
-
-    public void saveDataToFile(File fileToBeCreated, Context context)
+    public void saveDataToFile(File fileToBeCreated, Context context) throws IOException
     {
         boolean moveFilesFirst = fileToBeCreated.exists();
 
@@ -82,8 +77,7 @@ public class GroceryPlanning implements Parcelable
         }
         catch(IOException e)
         {
-            Toast.makeText(context, R.string.text_save_file_failed, Toast.LENGTH_SHORT).show();
-            return;
+            throw new IOException(e.getMessage());
         }
 
         if(moveFilesFirst)
@@ -92,12 +86,14 @@ public class GroceryPlanning implements Parcelable
             if(!fileToBeCreated.renameTo(fileOld))
             {
                 fileNew.delete();
-                Toast.makeText(context, R.string.text_save_file_failed, Toast.LENGTH_SHORT).show();
+                fileOld.delete();
+                throw new IOException(context.getString(R.string.text_save_file_failed));
             }
             if(!fileNew.renameTo(fileToBeCreated))
             {
                 fileOld.renameTo(fileToBeCreated);
-                Toast.makeText(context, R.string.text_save_file_failed, Toast.LENGTH_SHORT).show();
+                fileOld.delete();
+                throw new IOException(context.getString(R.string.text_save_file_failed));
             }
 
             fileOld.delete();
@@ -106,7 +102,7 @@ public class GroceryPlanning implements Parcelable
         scanFile(context, fileToBeCreated);
     }
 
-    public void loadDataFromFile(File file, Context context)
+    public void loadDataFromFile(File file, Context context) throws IOException
     {
         try
         {
@@ -124,7 +120,7 @@ public class GroceryPlanning implements Parcelable
                     String id = jr.nextString();
                     if (!id.equals("ch.phwidmer.einkaufsliste"))
                     {
-                        throw new IOException();
+                        throw new IOException("Invalid ID string");
                     }
                     bIDFound = true;
                 }
@@ -132,14 +128,14 @@ public class GroceryPlanning implements Parcelable
                     iVersion = jr.nextInt();
                     if (iVersion > SERIALIZING_VERSION)
                     {
-                        throw new IOException();
+                        throw new IOException("Invalid version");
                     }
                 }
             }
             jr.endObject();
             if(!bIDFound || iVersion == -1)
             {
-                throw new IOException();
+                throw new IOException("Invalid ID");
             }
 
             m_Categories = new Categories();
@@ -161,12 +157,15 @@ public class GroceryPlanning implements Parcelable
         }
         catch(IOException e)
         {
-            Toast.makeText(context, R.string.text_load_file_failed, Toast.LENGTH_SHORT).show();
             m_Categories = new Categories();
             m_Ingredients = new Ingredients();
             m_Recipes = new Recipes();
             m_ShoppingList = new ShoppingList();
+
+            throw new IOException(e.getMessage());
         }
+
+        checkDataConsistency();
     }
 
     // Make file known to the MediaScanner so that it apears when the device is mount e.g. on windows.
@@ -181,6 +180,36 @@ public class GroceryPlanning implements Parcelable
                 new String[] {f.getAbsolutePath()},
                 new String[] {"application/json"},
                 null);
+    }
+
+    private void checkDataConsistency() throws IOException
+    {
+        LinkedList<String> missingCategories = new LinkedList<>();
+        LinkedList<String> missingSortOrders = new LinkedList<>();
+        LinkedList<String> missingIngredients = new LinkedList<>();
+
+        boolean dataConsistent = m_Categories.checkDataConsistency(missingCategories);
+        dataConsistent = dataConsistent && m_Ingredients.checkDataConsistency(m_Categories, missingCategories, missingSortOrders);
+        dataConsistent = dataConsistent && m_Recipes.checkDataConsistency(m_Ingredients, missingIngredients);
+        dataConsistent = dataConsistent && m_ShoppingList.checkDataConsistency(m_Ingredients, missingIngredients);
+
+        if(!dataConsistent)
+        {
+            String strMessage = "Inconsistent data:";
+            if(missingCategories.size() > 0)
+            {
+                strMessage += "\n\nCategories: " + missingCategories.toString();
+            }
+            if(missingSortOrders.size() > 0)
+            {
+                strMessage += "\n\nSortOrders: " + missingSortOrders.toString();
+            }
+            if(missingIngredients.size() > 0)
+            {
+                strMessage += "\n\nIngredients: " + missingIngredients.toString();
+            }
+            throw new IOException(strMessage);
+        }
     }
 
     // Parcelable

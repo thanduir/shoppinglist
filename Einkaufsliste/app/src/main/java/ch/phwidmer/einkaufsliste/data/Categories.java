@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 import ch.phwidmer.einkaufsliste.helper.Helper;
 
@@ -186,6 +187,26 @@ public class Categories implements Parcelable
     public void removeSortOrder(String strName)
     {
         m_SortOrders.remove(strName);
+    }
+
+    boolean checkDataConsistency(LinkedList<String> missingCategories)
+    {
+        boolean dataConsistent = true;
+        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
+        {
+            for(Category c : e.getValue().m_CategoriesOrder)
+            {
+                if(!m_Categories.contains(c.getName()))
+                {
+                    if(!missingCategories.contains(c.getName()))
+                    {
+                        missingCategories.add(c.getName());
+                    }
+                    dataConsistent = false;
+                }
+            }
+        }
+        return dataConsistent;
     }
 
     // Serializing

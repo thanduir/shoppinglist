@@ -167,6 +167,43 @@ public class Recipes implements Parcelable
         }
     }
 
+    boolean checkDataConsistency(Ingredients ingredients, LinkedList<String> missingIngredients)
+    {
+        boolean dataConsistent = true;
+        for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
+        {
+            for(RecipeItem ri : e.getValue().m_Items)
+            {
+                String ingredient = ri.m_Ingredient;
+                if(ingredients.getIngredient(ingredient) == null)
+                {
+                    if(!missingIngredients.contains(ingredient))
+                    {
+                        missingIngredients.add(ingredient);
+                    }
+                    dataConsistent = false;
+                }
+            }
+
+            for(LinkedList<RecipeItem> groupItems : e.getValue().m_Groups.values())
+            {
+                for(RecipeItem ri : groupItems)
+                {
+                    String ingredient = ri.m_Ingredient;
+                    if(ingredients.getIngredient(ingredient) == null)
+                    {
+                        if(!missingIngredients.contains(ingredient))
+                        {
+                            missingIngredients.add(ingredient);
+                        }
+                        dataConsistent = false;
+                    }
+                }
+            }
+        }
+        return dataConsistent;
+    }
+
     // Serializing
 
     void saveToJson(JsonWriter writer) throws IOException

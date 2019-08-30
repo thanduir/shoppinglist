@@ -8,6 +8,7 @@ import android.util.JsonWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 import ch.phwidmer.einkaufsliste.helper.Helper;
@@ -107,6 +108,35 @@ public class Ingredients implements Parcelable
             }
         }
         return stillInUse;
+    }
+
+    boolean checkDataConsistency(Categories categories, LinkedList<String> missingCategories, LinkedList<String> missingSortOrders)
+    {
+        boolean dataConsistent = true;
+
+        for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
+        {
+            String category = e.getValue().m_Category;
+            if(categories.getCategory(category) == null)
+            {
+                if(!missingCategories.contains(category))
+                {
+                    missingCategories.add(category);
+                }
+                dataConsistent = false;
+            }
+            String sortOrder = e.getValue().m_strProvenance;
+            if(categories.getSortOrder(sortOrder) == null && !sortOrder.equals(c_strProvenanceEverywhere))
+            {
+                if(!missingSortOrders.contains(sortOrder))
+                {
+                    missingSortOrders.add(sortOrder);
+                }
+                dataConsistent = false;
+            }
+        }
+
+        return dataConsistent;
     }
 
     // Serializing

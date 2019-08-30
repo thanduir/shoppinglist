@@ -136,6 +136,27 @@ public class ShoppingList implements Parcelable
         }
     }
 
+    boolean checkDataConsistency(Ingredients ingredients, LinkedList<String> missingIngredients)
+    {
+        boolean dataConsistent = true;
+        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
+        {
+            for(ShoppingListItem li : e.getValue().m_Items)
+            {
+                String ingredient = li.m_Ingredient;
+                if(ingredients.getIngredient(ingredient) == null)
+                {
+                    if(!missingIngredients.contains(ingredient))
+                    {
+                        missingIngredients.add(ingredient);
+                    }
+                    dataConsistent = false;
+                }
+            }
+        }
+        return dataConsistent;
+    }
+
     // Serializing
 
     void saveToJson(JsonWriter writer) throws IOException

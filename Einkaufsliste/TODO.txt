@@ -1,8 +1,6 @@
 TODO
 ====
 
-- data consistency check method (correctness of text-only references, something?) to be executed on loading (and saving?) of json files
-
 - db statt json für aktuelle daten (json nur noch für import / export) -> sollte auch performance stark verbessern...
     -> Danach kann ich wohl die Parcelable-Methoden entfernen (again)
 - Possibility to refer to other recipies within a recipe (or a subcategory for "partial recipes")? E.g. Salat within "Pommes + Cordon-Bleu" -> dependencies?
