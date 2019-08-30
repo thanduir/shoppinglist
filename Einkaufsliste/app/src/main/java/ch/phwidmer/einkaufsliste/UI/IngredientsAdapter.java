@@ -74,7 +74,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         void setDescription(Ingredients.Ingredient ingredient)
         {
-            String text = " (" + ingredient.m_Category.getName();
+            String text = " (" + ingredient.m_Category;
             if(!ingredient.m_strProvenance.equals(Ingredients.c_strProvenanceEverywhere)) {
                 text += ", " + ingredient.m_strProvenance;
             }
@@ -247,7 +247,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerCategory.setAdapter(adapterCategory);
         vh.m_SpinnerCategory.setOnItemSelectedListener(this);
-        vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category.getName()));
+        vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category));
 
         ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
         adapterProvenance.add(m_RecyclerView.getContext().getResources().getString(R.string.provenance_everywhere));
@@ -300,8 +300,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         if(parent == vh.m_SpinnerCategory)
         {
-            String category = (String)vh.m_SpinnerCategory.getSelectedItem();
-            ingredient.m_Category = m_GroceryPlanning.m_Categories.getCategory(category);
+            ingredient.m_Category = (String)vh.m_SpinnerCategory.getSelectedItem();
         }
         else if(parent == vh.m_SpinnerProvenance)
         {
@@ -367,9 +366,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) -> {
-            m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit);
+            m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit, m_GroceryPlanning.m_Categories.getCategory(m_RecentlyDeleted.m_Category));
             Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
-            ingredient.m_Category = m_RecentlyDeleted.m_Category;
             ingredient.m_strProvenance = m_RecentlyDeleted.m_strProvenance;
 
             notifyDataSetChanged();

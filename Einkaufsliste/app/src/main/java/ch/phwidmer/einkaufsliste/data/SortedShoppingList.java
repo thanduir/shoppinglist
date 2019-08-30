@@ -17,7 +17,7 @@ public class SortedShoppingList
     public class CategoryShoppingItem
     {
         private String                       m_Ingredient;
-        private Amount m_Amount = new Amount();
+        private Amount                       m_Amount = new Amount();
         private LinkedList<ShoppingListItem> m_ShoppingItems = new LinkedList<>();
 
         public ShoppingListItem.Status getStatus()
@@ -72,7 +72,7 @@ public class SortedShoppingList
             ShoppingList.ShoppingRecipe recipe = shoppingList.getShoppingRecipe(strName);
             for(ShoppingListItem item : recipe.m_Items)
             {
-                String strCategory = ingredients.getIngredient(item.m_Ingredient).m_Category.getName();
+                String strCategory = ingredients.getIngredient(item.m_Ingredient).m_Category;
 
                 if(!m_UnorderdList.containsKey(strCategory))
                 {

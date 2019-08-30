@@ -151,7 +151,7 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
 
-            m_GroceryPlanning.m_Ingredients.addIngredient(strInput, Amount.Unit.valueOf(strDefaultUnit));
+            m_GroceryPlanning.m_Ingredients.addIngredient(strInput, Amount.Unit.valueOf(strDefaultUnit), m_GroceryPlanning.m_Categories.getDefaultCategory());
 
             adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();

@@ -14,30 +14,22 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class Ingredients implements Parcelable
 {
-    private Categories m_Categories;
-
     public static final String c_strProvenanceEverywhere = "*EVERYWHERE*";
 
     public class Ingredient
     {
-        public Categories.Category m_Category;
+        public String m_Category = "";
         public String m_strProvenance = c_strProvenanceEverywhere;
         public Amount.Unit m_DefaultUnit;
     }
     private TreeMap<String, Ingredient> m_Ingredients;
 
-    Ingredients(Categories categories)
+    Ingredients()
     {
-        m_Categories = categories;
         m_Ingredients = new TreeMap<>(new Helper.SortIgnoreCase());
     }
 
-    public void updateCategories(Categories categories)
-    {
-        m_Categories = categories;
-    }
-
-    public void addIngredient(String strName, Amount.Unit defaultUnit)
+    public void addIngredient(String strName, Amount.Unit defaultUnit, Categories.Category category)
     {
         if(m_Ingredients.containsKey(strName))
         {
@@ -45,7 +37,7 @@ public class Ingredients implements Parcelable
         }
         Ingredient i = new Ingredient();
         i.m_DefaultUnit = defaultUnit;
-        i.m_Category = m_Categories.getCategory(m_Categories.getAllCategories().get(0));
+        i.m_Category = category.getName();
         m_Ingredients.put(strName, i);
     }
 
@@ -83,7 +75,7 @@ public class Ingredients implements Parcelable
         boolean stillInUse = false;
         for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
         {
-            if(e.getValue().m_Category.equals(category))
+            if(e.getValue().m_Category.equals(category.getName()))
             {
                 ingredientsUsingCategory.add(e.getKey());
                 stillInUse = true;
@@ -96,9 +88,9 @@ public class Ingredients implements Parcelable
     {
         for(Ingredient i : m_Ingredients.values())
         {
-            if(i.m_Category.equals(category))
+            if(i.m_Category.equals(category.getName()))
             {
-                i.m_Category = newCategory;
+                i.m_Category = newCategory.getName();
             }
         }
     }
@@ -129,7 +121,7 @@ public class Ingredients implements Parcelable
             writer.name(e.getKey());
 
             writer.beginObject();
-            writer.name("category").value(e.getValue().m_Category.getName());
+            writer.name("category").value(e.getValue().m_Category);
             writer.name("provenance").value(e.getValue().m_strProvenance);
             writer.name("default-unit").value(e.getValue().m_DefaultUnit.toString());
             writer.endObject();
@@ -164,7 +156,7 @@ public class Ingredients implements Parcelable
                     {
                         case "category":
                         {
-                            in.m_Category = m_Categories.getCategory(reader.nextString());
+                            in.m_Category = reader.nextString();
                             break;
                         }
 
@@ -172,11 +164,6 @@ public class Ingredients implements Parcelable
                         case "provenance":
                         {
                             in.m_strProvenance = reader.nextString();
-                            if(m_Categories.getSortOrder(in.m_strProvenance) == null && !in.m_strProvenance.equals(c_strProvenanceEverywhere))
-                            {
-                                // Provenance doesn't exist as a SortOrder -> set default provenance.
-                                in.m_strProvenance = c_strProvenanceEverywhere;
-                            }
                             break;
                         }
 
@@ -211,23 +198,21 @@ public class Ingredients implements Parcelable
         for(TreeMap.Entry<String, Ingredient> e : m_Ingredients.entrySet())
         {
             out.writeString(e.getKey());
-            out.writeString(e.getValue().m_Category.getName());
+            out.writeString(e.getValue().m_Category);
             out.writeString(e.getValue().m_strProvenance);
             out.writeInt(e.getValue().m_DefaultUnit.ordinal());
         }
     }
 
-    Ingredients(Parcel in, Categories categories)
+    private Ingredients(Parcel in)
     {
-        m_Categories = categories;
-
         int size = in.readInt();
         m_Ingredients = new TreeMap<>(new Helper.SortIgnoreCase());
         for(int i = 0; i < size; i++)
         {
             String strName = in.readString();
             Ingredient order = new Ingredient();
-            order.m_Category = m_Categories.getCategory(in.readString());
+            order.m_Category = in.readString();
             order.m_strProvenance = in.readString();
             order.m_DefaultUnit = Amount.Unit.values()[in.readInt()];
             m_Ingredients.put(strName, order);
@@ -244,7 +229,7 @@ public class Ingredients implements Parcelable
 
         @Override
         public Ingredients createFromParcel(Parcel in) {
-            return new Ingredients(in, new Categories());
+            return new Ingredients(in);
         }
 
         @Override

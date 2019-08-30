@@ -27,7 +27,7 @@ public class GroceryPlanning implements Parcelable
     public GroceryPlanning()
     {
         m_Categories = new Categories();
-        m_Ingredients = new Ingredients(m_Categories);
+        m_Ingredients = new Ingredients();
         m_Recipes = new Recipes();
         m_ShoppingList = new ShoppingList();
     }
@@ -145,7 +145,7 @@ public class GroceryPlanning implements Parcelable
             m_Categories = new Categories();
             m_Categories.readFromJson(jr);
 
-            m_Ingredients = new Ingredients(m_Categories);
+            m_Ingredients = new Ingredients();
             m_Ingredients.readFromJson(jr);
 
             m_Recipes = new Recipes();
@@ -163,7 +163,7 @@ public class GroceryPlanning implements Parcelable
         {
             Toast.makeText(context, R.string.text_load_file_failed, Toast.LENGTH_SHORT).show();
             m_Categories = new Categories();
-            m_Ingredients = new Ingredients(m_Categories);
+            m_Ingredients = new Ingredients();
             m_Recipes = new Recipes();
             m_ShoppingList = new ShoppingList();
         }
@@ -197,7 +197,7 @@ public class GroceryPlanning implements Parcelable
     private GroceryPlanning(Parcel in)
     {
         m_Categories = Categories.CREATOR.createFromParcel(in);
-        m_Ingredients = new Ingredients(in, m_Categories);
+        m_Ingredients = Ingredients.CREATOR.createFromParcel(in);
         m_Recipes = Recipes.CREATOR.createFromParcel(in);
         m_ShoppingList = ShoppingList.CREATOR.createFromParcel(in);
     }

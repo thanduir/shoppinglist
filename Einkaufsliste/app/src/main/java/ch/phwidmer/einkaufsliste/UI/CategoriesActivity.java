@@ -111,8 +111,6 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
     @Override
     public void finish()
     {
-        m_GroceryPlanning.m_Ingredients.updateCategories(m_GroceryPlanning.m_Categories);
-
         Intent data = new Intent();
         data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
         setResult(RESULT_OK, data);

@@ -17,7 +17,7 @@ public class Categories implements Parcelable
 {
     public class Category
     {
-        private CharSequence m_Category;
+        private String m_Category;
 
         private Category(String strName)
         {
@@ -26,7 +26,7 @@ public class Categories implements Parcelable
 
         public String getName()
         {
-            return (String)m_Category;
+            return m_Category;
         }
 
         @Override
@@ -101,10 +101,19 @@ public class Categories implements Parcelable
         return null;
     }
 
+    public Category getDefaultCategory()
+    {
+        if(m_Categories.size() > 0)
+        {
+            return new Category((String)m_Categories.toArray()[0]);
+        }
+        return null;
+    }
+
     public ArrayList<String> getAllCategories()
     {
         ArrayList<String> vec = new ArrayList<>();
-        for(Object obj : m_Categories.toArray())
+        for(Object obj : m_Categories)
         {
             vec.add((String)obj);
         }
