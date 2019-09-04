@@ -1,8 +1,14 @@
 TODO
 ====
 
-- db statt json für aktuelle daten (json nur noch für import / export) -> sollte auch performance stark verbessern...
+- db statt json für aktuelle daten (json nur noch für import / export)
     -> Danach kann ich wohl die Parcelable-Methoden entfernen (again)
+    - db: wie sortieren? SQL sort + danach noch spezialsort?
+    - Reset db button in settings!
+    - Ask before overwriting db (e.g. before importing file / resetting db)?
+    - Also understand db migration! (how to e.g. add columns to a table!)
+- Allow renaming of sortorders! (mit menu (del + rename) analog zu rezepte)
+- Use Google Paging Library (https://guides.codepath.com/android/Paging-Library-Guide) to speed up large RecyclerViews?
 - Possibility to refer to other recipies within a recipe (or a subcategory for "partial recipes")? E.g. Salat within "Pommes + Cordon-Bleu" -> dependencies?
 - Possibility to add a picture to a recipe (-> can I save these in json? Or how to do this technically? Save in db should work, but otherwise?)
 

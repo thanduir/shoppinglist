@@ -1,34 +1,18 @@
 package ch.phwidmer.einkaufsliste.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 
-import ch.phwidmer.einkaufsliste.helper.Helper;
-
-public class Categories implements Parcelable
+public abstract class Categories
 {
-    public class Category
+    // Categories
+
+    public abstract class Category
     {
-        private String m_Category;
-
-        private Category(String strName)
-        {
-            m_Category = strName;
-        }
-
-        public String getName()
-        {
-            return m_Category;
-        }
+        public abstract String getName();
 
         @Override
         public boolean equals(Object other)
@@ -38,176 +22,40 @@ public class Categories implements Parcelable
                 return false;
             }
             Category c = (Category)other;
-            return m_Category.equals(c.m_Category);
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return m_Category.hashCode();
-        }
-    }
-    // Categories
-    private LinkedHashSet<String> m_Categories;
-
-    // CategorySortOrder
-    public class SortOrder
-    {
-        public ArrayList<Category> m_CategoriesOrder = new ArrayList<>();
-    }
-    private LinkedHashMap<String, SortOrder>  m_SortOrders;
-
-    private String m_ActiveSortOrder;
-
-    Categories()
-    {
-        m_Categories = new LinkedHashSet<>();
-        m_SortOrders = new LinkedHashMap<>();
-        m_ActiveSortOrder = "";
-    }
-
-    public void setActiveSortOrder(String strOrder)
-    {
-        m_ActiveSortOrder = strOrder;
-    }
-
-    public String getActiveSortOrder()
-    {
-        return m_ActiveSortOrder;
-    }
-
-    // Categories methods
-
-    public void addCategory(String strName)
-    {
-        if(m_Categories.contains(strName))
-        {
-            return;
-        }
-        m_Categories.add(strName);
-
-        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
-        {
-            e.getValue().m_CategoriesOrder.add(new Category(strName));
+            return this.getName().equals(c.getName());
         }
     }
 
-    public Category getCategory(String category)
-    {
-        if(m_Categories.contains(category))
-        {
-            return new Category(category);
-        }
+    public abstract void addCategory(String strName);
+    public abstract void renameCategory(Category category, String strNewName);
+    public abstract void removeCategory(Category category);
+    public abstract Category getCategory(String category);
 
-        return null;
+    public abstract int getCategoriesCount();
+    public abstract ArrayList<Category> getAllCategories();
+    public abstract ArrayList<String> getAllCategorieNames();
+    public abstract Category getDefaultCategory();
+
+    // SortOrder
+
+    public interface SortOrder
+    {
+        String getName();
+
+        ArrayList<Category> getOrder();
+        void setOrder(ArrayList<Category> order);
+
+        void moveCategory(Category category, int newPos);
     }
 
-    public Category getDefaultCategory()
-    {
-        if(m_Categories.size() > 0)
-        {
-            return new Category((String)m_Categories.toArray()[0]);
-        }
-        return null;
-    }
+    public abstract SortOrder addSortOrder(String strName);
+    public abstract void renameSortOrder(SortOrder order, String strNewName);
+    public abstract void removeSortOrder(String strName);
+    public abstract SortOrder getSortOrder(String strName);
 
-    public ArrayList<String> getAllCategories()
-    {
-        ArrayList<String> vec = new ArrayList<>();
-        for(Object obj : m_Categories)
-        {
-            vec.add((String)obj);
-        }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
-        return vec;
-    }
-
-    public void removeCategory(String strName)
-    {
-        m_Categories.remove(strName);
-
-        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
-        {
-            e.getValue().m_CategoriesOrder.remove(new Category(strName));
-        }
-    }
-
-    public void renameCategory(Category category, String strNewName)
-    {
-        if(!m_Categories.contains(category.getName()))
-        {
-            return;
-        }
-
-        m_Categories.remove(category.getName());
-        m_Categories.add(strNewName);
-
-        Category newCategory = new Category(strNewName);
-        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
-        {
-            ArrayList<Category> vec = e.getValue().m_CategoriesOrder;
-
-            int index = vec.indexOf(category);
-            vec.remove(index);
-            vec.add(index, newCategory);
-        }
-    }
-
-    // SortOrder methods
-
-    public void addSortOrder(String strName)
-    {
-        SortOrder order = new SortOrder();
-        for(String str : m_Categories)
-        {
-            order.m_CategoriesOrder.add(new Category(str));
-        }
-        m_SortOrders.put(strName, order);
-    }
-
-    public void addSortOrder(String strName, SortOrder order)
-    {
-        if(order.m_CategoriesOrder.size() != m_Categories.size())
-        {
-            return;
-        }
-        m_SortOrders.put(strName, order);
-    }
-
-    public SortOrder getSortOrder(String strName)
-    {
-        return m_SortOrders.get(strName);
-    }
-
-    public ArrayList<String> getAllSortOrders()
-    {
-        return new ArrayList<>(m_SortOrders.keySet());
-    }
-
-    public void removeSortOrder(String strName)
-    {
-        m_SortOrders.remove(strName);
-    }
-
-    boolean checkDataConsistency(LinkedList<String> missingCategories)
-    {
-        boolean dataConsistent = true;
-        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
-        {
-            for(Category c : e.getValue().m_CategoriesOrder)
-            {
-                if(!m_Categories.contains(c.getName()))
-                {
-                    if(!missingCategories.contains(c.getName()))
-                    {
-                        missingCategories.add(c.getName());
-                    }
-                    dataConsistent = false;
-                }
-            }
-        }
-        return dataConsistent;
-    }
+    public abstract int getSortOrdersCount();
+    public abstract ArrayList<SortOrder> getAllSortOrders();
+    public abstract ArrayList<String> getAllSortOrderNames();
 
     // Serializing
 
@@ -215,23 +63,22 @@ public class Categories implements Parcelable
     {
         writer.beginObject();
         writer.name("id").value("Categories");
-        writer.name("activeSortOrder").value(m_ActiveSortOrder);
 
         writer.name("all categories");
         writer.beginArray();
-        for(String str : m_Categories)
+        for(Category c : getAllCategories())
         {
-            writer.value(str);
+            writer.value(c.getName());
         }
         writer.endArray();
 
         writer.name("sortOrders");
         writer.beginObject();
-        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
+        for(SortOrder order : getAllSortOrders())
         {
-            writer.name(e.getKey());
+            writer.name(order.getName());
             writer.beginArray();
-            for(Category c : e.getValue().m_CategoriesOrder)
+            for(Category c : order.getOrder())
             {
                 writer.value(c.getName());
             }
@@ -258,12 +105,6 @@ public class Categories implements Parcelable
                     break;
                 }
 
-                case ("activeSortOrder"):
-                {
-                    m_ActiveSortOrder = reader.nextString();
-                    break;
-                }
-
                 case ("all categories"):
                 {
                     reader.beginArray();
@@ -279,14 +120,16 @@ public class Categories implements Parcelable
                     reader.beginObject();
                     while (reader.hasNext()) {
                         String orderName = reader.nextName();
-                        SortOrder order = new SortOrder();
 
                         reader.beginArray();
+                        ArrayList<Category> newOrder = new ArrayList<>();
                         while (reader.hasNext()) {
-                            order.m_CategoriesOrder.add(getCategory(reader.nextString()));
+                            newOrder.add(getCategory(reader.nextString()));
                         }
                         reader.endArray();
-                        m_SortOrders.put(orderName, order);
+
+                        SortOrder order = addSortOrder(orderName);
+                        order.setOrder(newOrder);
                     }
                     reader.endObject();
                     break;
@@ -302,77 +145,4 @@ public class Categories implements Parcelable
 
         reader.endObject();
     }
-
-    // Parcelable
-
-    @Override
-    public void writeToParcel(Parcel out, int flags)
-    {
-        out.writeInt(m_Categories.size());
-        for(String str : m_Categories)
-        {
-            out.writeString(str);
-        }
-
-        out.writeInt(m_SortOrders.size());
-        for(LinkedHashMap.Entry<String, SortOrder> e : m_SortOrders.entrySet())
-        {
-            out.writeString(e.getKey());
-
-            out.writeInt(e.getValue().m_CategoriesOrder.size());
-            for(Category cat : e.getValue().m_CategoriesOrder)
-            {
-                out.writeString(cat.getName());
-            }
-        }
-
-        out.writeString(m_ActiveSortOrder);
-
-    }
-
-    private Categories(Parcel in)
-    {
-        int categoriesSize = in.readInt();
-        m_Categories = new LinkedHashSet<>(categoriesSize);
-        for(int i = 0; i <categoriesSize; ++i)
-        {
-            m_Categories.add(in.readString());
-        }
-
-        int sortOrdersSize = in.readInt();
-        m_SortOrders = new LinkedHashMap<>(sortOrdersSize);
-        for(int i = 0; i <sortOrdersSize; ++i)
-        {
-            String str = in.readString();
-
-            int sortOrderSize = in.readInt();
-            SortOrder s = new SortOrder();
-            for(int j = 0; j < sortOrderSize; ++j)
-            {
-                s.m_CategoriesOrder.add(new Category(in.readString()));
-            }
-            m_SortOrders.put(str, s);
-        }
-
-        m_ActiveSortOrder = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Parcelable.Creator<Categories> CREATOR
-            = new Parcelable.Creator<Categories>() {
-
-        @Override
-        public Categories createFromParcel(Parcel in) {
-            return new Categories(in);
-        }
-
-        @Override
-        public Categories[] newArray(int size) {
-            return new Categories[size];
-        }
-    };
 }

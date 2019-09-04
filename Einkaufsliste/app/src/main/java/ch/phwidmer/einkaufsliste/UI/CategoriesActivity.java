@@ -2,6 +2,8 @@ package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -20,8 +22,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
+import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Categories;
@@ -53,8 +58,14 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_categories);
 
-        Intent intent = getIntent();
-        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
+        try
+        {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(IOException e)
+        {
+            return;
+        }
 
         m_FAB = findViewById(R.id.fab);
 
@@ -64,15 +75,17 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         m_ImageViewDelSortOrder = findViewById(R.id.imageViewDelSortOrder);
 
         m_SpinnerSortOrdersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        for(String strName : m_GroceryPlanning.m_Categories.getAllSortOrders())
+        for(Categories.SortOrder sortOrder : m_GroceryPlanning.categories().getAllSortOrders())
         {
-            m_SpinnerSortOrdersAdapter.add(strName);
+            m_SpinnerSortOrdersAdapter.add(sortOrder.getName());
         }
         m_SpinnerSortOrdersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerSortOrders.setAdapter(m_SpinnerSortOrdersAdapter);
         m_SpinnerSortOrders.setOnItemSelectedListener(this);
-        String strActiveSortOrder = m_GroceryPlanning.m_Categories.getActiveSortOrder();
-        if(!strActiveSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strActiveSortOrder))
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String strActiveSortOrder = preferences.getString(SettingsActivity.KEY_ACTIVE_SORTORDER_CATEGORIES, "");
+        Categories.SortOrder sortOrder = m_GroceryPlanning.categories().getSortOrder(strActiveSortOrder);
+        if(sortOrder != null && m_GroceryPlanning.categories().getAllSortOrders().contains(sortOrder))
         {
             m_SpinnerSortOrders.setSelection(m_SpinnerSortOrdersAdapter.getPosition(strActiveSortOrder));
         }
@@ -111,9 +124,7 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
     @Override
     public void finish()
     {
-        Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
-        setResult(RESULT_OK, data);
+        m_GroceryPlanning.flush();
 
         super.finish();
     }
@@ -121,14 +132,14 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
     public void onAddCategory(View v)
     {
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.button_add_category));
-        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Categories.getAllCategories());
+        newFragment.setListExcludedInputs(m_GroceryPlanning.categories().getAllCategorieNames());
         newFragment.show(getSupportFragmentManager(), "addCategory");
     }
 
     public void onAddSortOrder(View v)
     {
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_sortorder));
-        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Categories.getAllSortOrders());
+        newFragment.setListExcludedInputs(m_GroceryPlanning.categories().getAllSortOrderNames());
         newFragment.show(getSupportFragmentManager(), "addSortOrder");
     }
 
@@ -142,7 +153,7 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         switch(tag) {
             case "addCategory":
             {
-                m_GroceryPlanning.m_Categories.addCategory(strInput);
+                m_GroceryPlanning.categories().addCategory(strInput);
                 CategoriesAdapter adapter = (CategoriesAdapter) m_RecyclerView.getAdapter();
                 adapter.notifyItemInserted(adapter.getItemCount() - 1);
                 break;
@@ -150,7 +161,7 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
             case "addSortOrder":
             {
-                m_GroceryPlanning.m_Categories.addSortOrder(strInput);
+                m_GroceryPlanning.categories().addSortOrder(strInput);
                 m_SpinnerSortOrdersAdapter.add(strInput);
                 m_SpinnerSortOrders.setSelection(m_SpinnerSortOrdersAdapter.getCount() - 1);
 
@@ -160,10 +171,10 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
             case "renameCategory": // See CategoriesAdapter
             {
-                Categories.Category category = m_GroceryPlanning.m_Categories.getCategory(strAdditonalInformation);
+                Categories.Category category = m_GroceryPlanning.categories().getCategory(strAdditonalInformation);
 
-                m_GroceryPlanning.m_Categories.renameCategory(category, strInput);
-                m_GroceryPlanning.m_Ingredients.onCategoryRenamed(category, m_GroceryPlanning.m_Categories.getCategory(strInput));
+                m_GroceryPlanning.categories().renameCategory(category, strInput);
+                m_GroceryPlanning.ingredients().onCategoryRenamed(category, m_GroceryPlanning.categories().getCategory(strInput));
 
                 m_RecyclerView.getAdapter().notifyDataSetChanged();
                 Toast.makeText(this, getResources().getString(R.string.text_category_renamed, category.getName(), strInput), Toast.LENGTH_SHORT).show();
@@ -181,8 +192,8 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
 
-        ArrayList<String> ingredientsUsingSortOrder = new ArrayList<>();
-        if(m_GroceryPlanning.m_Ingredients.isSortOrderInUse(strName, ingredientsUsingSortOrder))
+        ArrayList<Ingredients.Ingredient> ingredientsUsingSortOrder = new ArrayList<>();
+        if(m_GroceryPlanning.ingredients().isSortOrderInUse(strName, ingredientsUsingSortOrder))
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
             builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_sortorder_disallowed_header));
@@ -193,8 +204,8 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         }
 
         m_strRecentlyDeletedSortOrder = strName;
-        m_RecentlyDeletedSortOrder = m_GroceryPlanning.m_Categories.getSortOrder(strName);
-        m_GroceryPlanning.m_Categories.removeSortOrder(strName);
+        m_RecentlyDeletedSortOrder = m_GroceryPlanning.categories().getSortOrder(strName);
+        m_GroceryPlanning.categories().removeSortOrder(strName);
         m_SpinnerSortOrdersAdapter.remove(strName);
         m_ImageViewDelSortOrder.setEnabled(m_SpinnerSortOrdersAdapter.getCount() > 0);
         if(m_SpinnerSortOrdersAdapter.getCount() == 0)
@@ -208,7 +219,7 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
         Snackbar snackbar = Snackbar.make(coordLayout, R.string.text_sortorder_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) -> {
-                m_GroceryPlanning.m_Categories.addSortOrder(m_strRecentlyDeletedSortOrder, m_RecentlyDeletedSortOrder);
+                m_GroceryPlanning.categories().addSortOrder(m_strRecentlyDeletedSortOrder).setOrder(m_RecentlyDeletedSortOrder.getOrder());
                 m_SpinnerSortOrdersAdapter.add(m_strRecentlyDeletedSortOrder);
                 m_SpinnerSortOrders.setSelection(m_SpinnerSortOrdersAdapter.getCount() - 1);
 
@@ -228,11 +239,15 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         // Sort order selected -> fill corresponding RecyclerView
 
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
-        Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
-        m_GroceryPlanning.m_Categories.setActiveSortOrder(strSortOrder);
+        Categories.SortOrder order = m_GroceryPlanning.categories().getSortOrder(strSortOrder);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(SettingsActivity.KEY_ACTIVE_SORTORDER_CATEGORIES, strSortOrder);
+        editor.apply();
 
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
-        m_Adapter = new CategoriesAdapter(coordLayout, m_RecyclerView, m_GroceryPlanning.m_Categories, order, m_GroceryPlanning.m_Ingredients);
+        m_Adapter = new CategoriesAdapter(coordLayout, m_RecyclerView, m_GroceryPlanning.categories(), order, m_GroceryPlanning.ingredients());
         m_RecyclerView.setAdapter(m_Adapter);
         if(m_ItemTouchHelper != null)
         {

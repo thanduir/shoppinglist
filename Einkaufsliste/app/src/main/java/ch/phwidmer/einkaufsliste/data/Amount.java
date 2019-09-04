@@ -4,8 +4,7 @@ import android.content.Context;
 
 import ch.phwidmer.einkaufsliste.R;
 
-public class Amount {
-    private static float QUANTITY_UNUSED = -1;
+public abstract class Amount {
 
     public enum Unit {
         Count,
@@ -23,107 +22,86 @@ public class Amount {
         Unitless
     }
 
-    public float m_QuantityMin;
-    public float m_QuantityMax;
-    public Unit m_Unit;
+    protected abstract Amount createNewInstance();
 
-    public Amount()
-    {
-        m_QuantityMin = 1.0f;
-        m_QuantityMax = QUANTITY_UNUSED;
-        m_Unit = Unit.Count;
-    }
+    public abstract float getQuantityMin();
+    public abstract void setQuantityMin(float quantity);
 
-    public Amount(Amount other)
-    {
-        m_QuantityMin = other.m_QuantityMin;
-        m_QuantityMax = other.m_QuantityMax;
-        m_Unit = other.m_Unit;
-    }
+    public abstract float getQuantityMax();
+    public abstract void setQuantityMax(float quantity);
 
-    public boolean isRange()
-    {
-        return m_QuantityMax != QUANTITY_UNUSED;
-    }
+    public abstract Amount.Unit getUnit();
+    public abstract void setUnit(Amount.Unit unit);
 
-    public void setIsRange(boolean bIsRange)
-    {
-        if(bIsRange == isRange())
-        {
-            return;
-        }
-
-        if(bIsRange)
-        {
-            m_QuantityMax = m_QuantityMin;
-        }
-        else
-        {
-            m_QuantityMax = QUANTITY_UNUSED;
-        }
-    }
+    public abstract boolean isRange();
+    public abstract void setIsRange(boolean bIsRange);
 
     void scaleAmount(float fFactor)
     {
-        if(m_Unit == Unit.Unitless || fFactor < 0.0f)
+        if(getUnit() == Unit.Unitless || fFactor < 0.0f)
         {
             return;
         }
-        m_QuantityMin *= fFactor;
-        if(m_QuantityMax != QUANTITY_UNUSED)
+
+        setQuantityMin(getQuantityMin() * fFactor);
+        if(isRange())
         {
-            m_QuantityMax *= fFactor;
+            setQuantityMax(getQuantityMax() * fFactor);
         }
     }
 
     public void increaseAmountMin()
     {
-        m_QuantityMin += getChangeAmount(m_QuantityMin);
+        float quanitityMin = getQuantityMin();
+        setQuantityMin(quanitityMin + getChangeAmount(quanitityMin));
     }
 
     public void decreaseAmountMin()
     {
-        float changeAmount = getChangeAmount(m_QuantityMin);
-        if(m_QuantityMin > changeAmount)
+        float quanitityMin = getQuantityMin();
+        float changeAmount = getChangeAmount(quanitityMin);
+        if(quanitityMin > changeAmount)
         {
-            m_QuantityMin -= changeAmount;
+            setQuantityMin(quanitityMin - changeAmount);
         }
         else
         {
-            m_QuantityMin = 0;
+            setQuantityMin(0);
         }
     }
 
     public void increaseAmountMax()
     {
-        if(m_QuantityMax == QUANTITY_UNUSED)
+        if(!isRange())
         {
             return;
         }
-        m_QuantityMax += getChangeAmount(m_QuantityMax);
+        float quanitityMax = getQuantityMax();
+        setQuantityMin(quanitityMax + getChangeAmount(quanitityMax));
     }
 
     public void decreaseAmountMax()
     {
-        if(m_QuantityMax == QUANTITY_UNUSED)
+        if(!isRange())
         {
             return;
         }
 
-        float changeAmount = getChangeAmount(m_QuantityMax);
-        if(m_QuantityMax > changeAmount)
+        float quanitityMax = getQuantityMax();
+        float changeAmount = getChangeAmount(quanitityMax);
+        if(quanitityMax > changeAmount)
         {
-            m_QuantityMax -= changeAmount;
+            setQuantityMin(quanitityMax - changeAmount);
         }
         else
         {
-            m_QuantityMax = 0;
+            setQuantityMax(0);
         }
     }
 
     private float getChangeAmount(float quantity)
     {
-        if(m_Unit == Unit.Unitless)
+        if(getUnit() == Unit.Unitless)
         {
             return 0f;
         }
@@ -266,34 +244,35 @@ public class Amount {
             return null;
         }
 
-        Amount result = new Amount();
+        Amount result = m1.createNewInstance();
 
-        switch(m1.m_Unit)
+        switch(m1.getUnit())
         {
             case Count:
             case Dessertspoon:
             case Teaspoon:
             case Unitless:
             {
-                result.m_QuantityMin = m1.m_QuantityMin + m2.m_QuantityMin;
-                result.m_Unit = m1.m_Unit;
+                result.setQuantityMin(m1.getQuantityMin() + m2.getQuantityMin());
+                result.setUnit(m1.getUnit());
                 break;
             }
 
             case Kilogram:
             case Gram:
             {
-                result.m_QuantityMin = m1.m_Unit == Unit.Kilogram ? m1.m_QuantityMin * 1000.0f : m1.m_QuantityMin;
-                result.m_QuantityMin += m2.m_Unit == Unit.Kilogram ? m2.m_QuantityMin * 1000.0f : m2.m_QuantityMin;
+                float value1 = m1.getUnit() == Unit.Kilogram ? m1.getQuantityMin() * 1000.0f : m1.getQuantityMin();
+                float value2 = m2.getUnit() == Unit.Kilogram ? m2.getQuantityMin() * 1000.0f : m2.getQuantityMin();
+                result.setQuantityMin(value1 + value2);
 
-                if(result.m_QuantityMin >= 1000.0f)
+                if(result.getQuantityMin() >= 1000.0f)
                 {
-                    result.m_QuantityMin /= 1000.0f;
-                    result.m_Unit = Unit.Kilogram;
+                    result.setQuantityMin(result.getQuantityMin() / 1000.0f);
+                    result.setUnit(Unit.Kilogram);
                 }
                 else
                 {
-                    result.m_Unit = Unit.Gram;
+                    result.setUnit(Unit.Gram);
                 }
                 break;
             }
@@ -302,40 +281,40 @@ public class Amount {
             case Deciliter:
             case Milliliter:
             {
-                float value1 = m1.m_QuantityMin;
-                if(m1.m_Unit == Unit.Liter)
+                float value1 = m1.getQuantityMin();
+                if(m1.getUnit() == Unit.Liter)
                 {
                     value1 *= 1000.0f;
                 }
-                else if(m1.m_Unit == Unit.Deciliter)
+                else if(m1.getUnit() == Unit.Deciliter)
                 {
                     value1 *= 100.0f;
                 }
 
-                float value2 = m2.m_QuantityMin;
-                if(m2.m_Unit == Unit.Liter)
+                float value2 = m2.getQuantityMin();
+                if(m2.getUnit() == Unit.Liter)
                 {
                     value2 *= 1000.0f;
                 }
-                else if(m2.m_Unit == Unit.Deciliter)
+                else if(m2.getUnit() == Unit.Deciliter)
                 {
                     value2 *= 100.0f;
                 }
 
-                result.m_QuantityMin = value1 + value2;
-                if(result.m_QuantityMin >= 1000.0f)
+                result.setQuantityMin(value1 + value2);
+                if(result.getQuantityMin() >= 1000.0f)
                 {
-                    result.m_QuantityMin /= 1000.0f;
-                    result.m_Unit = Unit.Liter;
+                    result.setQuantityMin(result.getQuantityMin() / 1000.0f);
+                    result.setUnit(Unit.Liter);
                 }
-                else if(result.m_QuantityMin >= 10.0f)
+                else if(result.getQuantityMin() >= 10.0f)
                 {
-                    result.m_QuantityMin /= 100.0f;
-                    result.m_Unit = Unit.Deciliter;
+                    result.setQuantityMin(result.getQuantityMin() / 100.0f);
+                    result.setUnit(Unit.Deciliter);
                 }
                 else
                 {
-                    result.m_Unit = Unit.Milliliter;
+                    result.setUnit(Unit.Milliliter);
                 }
                 break;
             }
@@ -353,28 +332,28 @@ public class Amount {
             return false;
         }
 
-        switch(m1.m_Unit)
+        switch(m1.getUnit())
         {
             case Count:
-                return m2.m_Unit == Unit.Count;
+                return m2.getUnit() == Unit.Count;
 
             case Kilogram:
             case Gram:
-                return m2.m_Unit == Unit.Kilogram || m2.m_Unit == Unit.Gram;
+                return m2.getUnit() == Unit.Kilogram || m2.getUnit() == Unit.Gram;
 
             case Liter:
             case Deciliter:
             case Milliliter:
-                return m2.m_Unit == Unit.Liter || m2.m_Unit == Unit.Deciliter || m2.m_Unit == Unit.Milliliter;
+                return m2.getUnit() == Unit.Liter || m2.getUnit() == Unit.Deciliter || m2.getUnit() == Unit.Milliliter;
 
             case Dessertspoon:
-                return m2.m_Unit == Unit.Dessertspoon;
+                return m2.getUnit() == Unit.Dessertspoon;
 
             case Teaspoon:
-                return m2.m_Unit == Unit.Teaspoon;
+                return m2.getUnit() == Unit.Teaspoon;
 
             case Unitless:
-                return m2.m_Unit == Unit.Unitless;
+                return m2.getUnit() == Unit.Unitless;
 
             default:
                 throw new IllegalArgumentException();

@@ -78,7 +78,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final CategoriesAdapter.ViewHolder holder, int position)
     {
-        final Categories.Category category = m_SortOrder.m_CategoriesOrder.get(position);
+        final Categories.Category category = m_SortOrder.getOrder().get(position);
         holder.m_TextView.setText(category.getName());
 
         holder.m_TextView.setOnLongClickListener((View v) ->
@@ -101,16 +101,16 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     @Override
     public int getItemCount()
     {
-        return m_SortOrder.m_CategoriesOrder.size();
+        return m_Categories.getSortOrdersCount();
     }
 
     public void reactToSwipe(int position)
     {
         // Remove element
 
-        Categories.Category category = m_SortOrder.m_CategoriesOrder.get(position);
+        Categories.Category category = m_SortOrder.getOrder().get(position);
 
-        ArrayList<String> ingredientsUsingCategory = new ArrayList<>();
+        ArrayList<Ingredients.Ingredient> ingredientsUsingCategory = new ArrayList<>();
         if(m_Ingredients.isCategoryInUse(category, ingredientsUsingCategory))
         {
             notifyItemChanged(position);
@@ -124,7 +124,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
             return;
         }
 
-        m_Categories.removeCategory(category.getName());
+        m_Categories.removeCategory(category);
         notifyDataSetChanged();
 
         // Allow undo
@@ -151,9 +151,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         int oldPos = vh.getAdapterPosition();
         int newPos = target.getAdapterPosition();
 
-        Categories.Category category = m_SortOrder.m_CategoriesOrder.get(oldPos);
-        m_SortOrder.m_CategoriesOrder.remove(oldPos);
-        m_SortOrder.m_CategoriesOrder.add(newPos, category);
+        Categories.Category category = m_SortOrder.getOrder().get(oldPos);
+        m_SortOrder.moveCategory(category, newPos);
         notifyItemMoved(oldPos, newPos);
         return true;
     }
@@ -163,7 +162,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_category, category.getName()));
         newFragment.setDefaultValue(category.getName());
         newFragment.setAdditionalInformation(category.getName());
-        newFragment.setListExcludedInputs(m_Categories.getAllCategories());
+        newFragment.setListExcludedInputs(m_Categories.getAllCategorieNames());
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameCategory");
     }
 

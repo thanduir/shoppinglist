@@ -1,9 +1,6 @@
 package ch.phwidmer.einkaufsliste.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class ShoppingListItem implements Parcelable
+public abstract class ShoppingListItem
 {
     public enum Status
     {
@@ -11,92 +8,33 @@ public class ShoppingListItem implements Parcelable
         Taken
     }
 
-    Status                  m_Status = Status.None;
+    public abstract Status getStatus();
+    public abstract void setStatus(Status status);
 
-    public String           m_Ingredient;
-    public Amount           m_Amount;
-    public String           m_AdditionalInfo = "";
-    public RecipeItem.Size  m_Size = RecipeItem.Size.Normal;
-    public Boolean          m_Optional = false;
+    public abstract String getIngredient();
+    public abstract void setIngredient(String strIngredient);
 
-    public ShoppingListItem()
-    {
-        m_Amount = new Amount();
-    }
+    public abstract Amount getAmount();
+    public abstract void setAmount(Amount amount);
 
-    public ShoppingListItem(RecipeItem recipeItem)
-    {
-        m_Amount = new Amount(recipeItem.m_Amount);
-        m_Ingredient = recipeItem.m_Ingredient;
-        m_Optional = recipeItem.m_Optional;
-        m_AdditionalInfo = recipeItem.m_AdditionalInfo;
-        m_Size = recipeItem.m_Size;
-    }
+    public abstract String getAdditionalInfo();
+    public abstract void setAdditionInfo(String additionalInfo);
+
+    public abstract RecipeItem.Size getSize();
+    public abstract void setSize(RecipeItem.Size size);
+
+    public abstract boolean isOptional();
+    public abstract void setIsOptional(boolean optional);
 
     void invertStatus()
     {
-        if(m_Status == Status.None)
+        if(getStatus() == Status.None)
         {
-            m_Status = Status.Taken;
+            setStatus(Status.Taken);
         }
         else
         {
-            m_Status = Status.None;
+            setStatus(Status.None);
         }
     }
-
-    // Parcelable
-
-    @Override
-    public void writeToParcel(Parcel out, int flags)
-    {
-        out.writeInt(m_Status.ordinal());
-
-        out.writeString(m_Ingredient);
-
-        out.writeFloat(m_Amount.m_QuantityMin);
-        out.writeFloat(m_Amount.m_QuantityMax);
-        out.writeInt(m_Amount.m_Unit.ordinal());
-
-        out.writeInt(m_Size.ordinal());
-        out.writeInt(m_Optional ? 1 : 0);
-
-        out.writeString(m_AdditionalInfo);
-    }
-
-    private ShoppingListItem(Parcel in)
-    {
-        m_Status = Status.values()[in.readInt()];
-
-        m_Ingredient = in.readString();
-
-        m_Amount = new Amount();
-        m_Amount.m_QuantityMin = in.readFloat();
-        m_Amount.m_QuantityMax = in.readFloat();
-        m_Amount.m_Unit = Amount.Unit.values()[in.readInt()];
-
-        m_Size = RecipeItem.Size.values()[in.readInt()];
-        m_Optional = in.readInt() == 1;
-
-        m_AdditionalInfo = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Parcelable.Creator<ShoppingListItem> CREATOR
-            = new Parcelable.Creator<ShoppingListItem>() {
-
-        @Override
-        public ShoppingListItem createFromParcel(Parcel in) {
-            return new ShoppingListItem(in);
-        }
-
-        @Override
-        public ShoppingListItem[] newArray(int size) {
-            return new ShoppingListItem[size];
-        }
-    };
 }

@@ -72,7 +72,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         Pair<String, String> getID()
         {
-            String strItem = m_RecipeItem != null ? m_RecipeItem.m_Ingredient : "";
+            String strItem = m_RecipeItem != null ? m_RecipeItem.getIngredient() : "";
             return new Pair<>(m_strRecipe, strItem);
         }
     }
@@ -123,7 +123,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         private void updateAppearance()
         {
-            if(m_RecipeItem.m_Optional)
+            if(m_RecipeItem.isOptional())
             {
                 m_TextView.setTextColor(Color.GRAY);
                 m_TextView.setTypeface(m_TextView.getTypeface(), Typeface.ITALIC);
@@ -149,30 +149,30 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         private void updateDescription(Context context)
         {
             String text = "";
-            if(m_RecipeItem.m_Amount.m_Unit != Amount.Unit.Unitless)
+            if(m_RecipeItem.getAmount().getUnit() != Amount.Unit.Unitless)
             {
-                text += Helper.formatNumber(m_RecipeItem.m_Amount.m_QuantityMin);
-                if(m_RecipeItem.m_Amount.isRange())
+                text += Helper.formatNumber(m_RecipeItem.getAmount().getQuantityMin());
+                if(m_RecipeItem.getAmount().isRange())
                 {
-                    text += "-" + Helper.formatNumber(m_RecipeItem.m_Amount.m_QuantityMax);
+                    text += "-" + Helper.formatNumber(m_RecipeItem.getAmount().getQuantityMax());
                 }
-                text += " " + Amount.shortForm(context, m_RecipeItem.m_Amount.m_Unit);
+                text += " " + Amount.shortForm(context, m_RecipeItem.getAmount().getUnit());
             }
-            if(m_RecipeItem.m_Size != RecipeItem.Size.Normal)
+            if(m_RecipeItem.getSize() != RecipeItem.Size.Normal)
             {
                 if(!text.isEmpty())
                 {
                     text += ", ";
                 }
-                text += RecipeItem.toUIString(context, m_RecipeItem.m_Size);
+                text += RecipeItem.toUIString(context, m_RecipeItem.getSize());
             }
-            if(!m_RecipeItem.m_AdditionalInfo.isEmpty())
+            if(!m_RecipeItem.getAdditionalInfo().isEmpty())
             {
                 if(!text.isEmpty())
                 {
                     text += ", ";
                 }
-                text += m_RecipeItem.m_AdditionalInfo;
+                text += m_RecipeItem.getAdditionalInfo();
             }
 
             String fullText = "";
@@ -318,7 +318,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         vh.m_TextViewDesc.setTypeface(null, Typeface.NORMAL);
         vh.m_TextViewDesc.setTextColor(Color.GRAY);
 
-        vh.m_TextViewDesc.setText(vh.itemView.getContext().getResources().getString(R.string.text_nrpersons_listvariant, Helper.formatNumber(recipe.m_fScalingFactor)));
+        vh.m_TextViewDesc.setText(vh.itemView.getContext().getResources().getString(R.string.text_nrpersons_listvariant, Helper.formatNumber(recipe.getScalingFactor())));
 
         vh.m_TextViewDesc.setOnClickListener((View view) -> onChangeRecipeScaling(strRecipe));
 
@@ -344,7 +344,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         vh.updateDescription(holder.itemView.getContext());
 
-        if(vh.m_RecipeItem.m_Optional)
+        if(vh.m_RecipeItem.isOptional())
         {
             vh.m_TextView.setTextColor(Color.GRAY);
             vh.m_TextView.setTypeface(vh.m_TextView.getTypeface(), Typeface.ITALIC);
@@ -361,7 +361,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             vh.m_TextViewDesc.setTextColor(Color.BLACK);
         }
 
-        vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.m_Ingredient));
+        vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.getIngredient()));
         vh.m_TextViewDesc.setClickable(false);
 
         vh.m_View.setBackgroundColor(Color.TRANSPARENT);
@@ -377,7 +377,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         vh.updateAppearance();
 
-        vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.m_Ingredient));
+        vh.m_TextView.setText(String.format(Locale.getDefault(), "\t\u2022 %s", vh.m_RecipeItem.getIngredient()));
         vh.m_TextView.setOnLongClickListener(null);
 
         vh.m_View.setBackgroundColor(ContextCompat.getColor(vh.m_View.getContext(), R.color.colorHighlightedBackground));
@@ -392,7 +392,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerAmount.setAdapter(adapterAmount);
         vh.m_SpinnerAmount.setOnItemSelectedListener(this);
-        vh.m_SpinnerAmount.setSelection(item.m_Amount.m_Unit.ordinal());
+        vh.m_SpinnerAmount.setSelection(item.getAmount().getUnit().ordinal());
 
         ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
         for(RecipeItem.Size size : RecipeItem.Size.values())
@@ -402,7 +402,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerSize.setAdapter(adapterSize);
         vh.m_SpinnerSize.setOnItemSelectedListener(this);
-        vh.m_SpinnerSize.setSelection(item.m_Size.ordinal());
+        vh.m_SpinnerSize.setSelection(item.getSize().ordinal());
 
         vh.m_CheckBoxOptional.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) ->
         {
@@ -422,12 +422,12 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 return;
             }
 
-            listItem.m_Optional = isChecked;
+            listItem.setIsOptional(isChecked);
             viewHolder.updateAppearance();
         });
-        vh.m_CheckBoxOptional.setChecked(item.m_Optional);
+        vh.m_CheckBoxOptional.setChecked(item.isOptional());
 
-        vh.m_AdditionalInfo.setText(item.m_AdditionalInfo);
+        vh.m_AdditionalInfo.setText(item.getAdditionalInfo());
         vh.m_AdditionalInfo.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s)
@@ -449,7 +449,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 {
                     return;
                 }
-                item.m_AdditionalInfo = s.toString();
+                item.setAdditionInfo(s.toString());
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -475,11 +475,11 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 ShoppingListItem item = vh.m_RecipeItem;
                 if(s.toString().isEmpty())
                 {
-                    item.m_Amount.m_QuantityMin = 0.0f;
+                    item.getAmount().setQuantityMin(0.0f);
                 }
                 else
                 {
-                    item.m_Amount.m_QuantityMin = Float.valueOf(s.toString());
+                    item.getAmount().setQuantityMax(Float.valueOf(s.toString()));
                 }
             }
 
@@ -504,18 +504,18 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
                 ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
                 ShoppingListItem item = vh.m_RecipeItem;
-                if(item == null || !item.m_Amount.isRange())
+                if(item == null || !item.getAmount().isRange())
                 {
                     return;
                 }
 
                 if(s.toString().isEmpty())
                 {
-                    item.m_Amount.m_QuantityMax = 0.0f;
+                    item.getAmount().setQuantityMax(0.0f);
                 }
                 else
                 {
-                    item.m_Amount.m_QuantityMax = Float.valueOf(s.toString());
+                    item.getAmount().setQuantityMax(Float.valueOf(s.toString()));
                 }
             }
 
@@ -543,11 +543,11 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             }
 
             vh.m_TableRowAmountRange.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            recipeItem.m_Amount.setIsRange(isChecked);
+            recipeItem.getAmount().setIsRange(isChecked);
 
             adjustEditTextAmount(vh, item);
         });
-        vh.m_CheckBoxAmountRange.setChecked(item.m_Amount.isRange());
+        vh.m_CheckBoxAmountRange.setChecked(item.getAmount().isRange());
 
         adjustEditTextAmount(vh, item);
     }
@@ -574,32 +574,32 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         {
             if(bChangeMax)
             {
-                item.m_Amount.increaseAmountMax();
+                item.getAmount().increaseAmountMax();
             }
             else
             {
-                item.m_Amount.increaseAmountMin();
+                item.getAmount().increaseAmountMin();
             }
         }
         else
         {
             if(bChangeMax)
             {
-                item.m_Amount.decreaseAmountMax();
+                item.getAmount().decreaseAmountMax();
             }
             else
             {
-                item.m_Amount.decreaseAmountMin();
+                item.getAmount().decreaseAmountMin();
             }
         }
 
         if(bChangeMax)
         {
-            holder.m_EditTextAmountMax.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMax)));
+            holder.m_EditTextAmountMax.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.getAmount().getQuantityMax())));
         }
         else
         {
-            holder.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMin)));
+            holder.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.getAmount().getQuantityMin())));
         }
     }
 
@@ -621,12 +621,12 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         if(parent == vh.m_SpinnerAmount)
         {
-            item.m_Amount.m_Unit = Amount.Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()];
+            item.getAmount().setUnit(Amount.Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
             adjustEditTextAmount(vh, item);
         }
         else if(parent == vh.m_SpinnerSize)
         {
-            item.m_Size = RecipeItem.Size.values()[vh.m_SpinnerSize.getSelectedItemPosition()];
+            item.setSize(RecipeItem.Size.values()[vh.m_SpinnerSize.getSelectedItemPosition()]);
         }
     }
 
@@ -663,10 +663,10 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(holder.m_strRecipe);
 
-        m_RecentlyDeletedIndex = recipe.m_Items.indexOf(holder.m_RecipeItem);
+        m_RecentlyDeletedIndex = recipe.getAllItems().indexOf(holder.m_RecipeItem);
         m_RecentlyDeleted = recipe;
         m_RecentlyDeletedItem = holder.m_RecipeItem;
-        recipe.m_Items.remove(holder.m_RecipeItem);
+        recipe.removeItem(holder.m_RecipeItem);
 
         notifyDataSetChanged();
         setActiveElement(null);
@@ -680,7 +680,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             {
                 return;
             }
-            m_RecentlyDeleted.m_Items.add(m_RecentlyDeletedIndex, m_RecentlyDeletedItem);
+            m_RecentlyDeleted.addItem(m_RecentlyDeletedIndex, m_RecentlyDeletedItem);
 
             notifyDataSetChanged();
 
@@ -716,13 +716,12 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     private ArrayList<Pair<String, String>> getShoppingRecipes()
     {
         ArrayList<Pair<String, String>> vec = new ArrayList<>();
-        for(String strRecipe : m_ShoppingList.getAllShoppingRecipes())
+        for(ShoppingList.ShoppingRecipe recipe : m_ShoppingList.getAllShoppingRecipes())
         {
-            vec.add(new Pair<>(strRecipe, ""));
-            ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
-            for(ShoppingListItem item : recipe.m_Items)
+            vec.add(new Pair<>(recipe.getName(), ""));
+            for(ShoppingListItem item : recipe.getAllItems())
             {
-                vec.add(new Pair<>(strRecipe, item.m_Ingredient));
+                vec.add(new Pair<>(recipe.getName(), item.getIngredient()));
             }
         }
         return vec;
@@ -730,9 +729,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
     private ShoppingListItem getShoppingListItem(ShoppingList.ShoppingRecipe recipe, String strName)
     {
-        for(ShoppingListItem r : recipe.m_Items)
+        for(ShoppingListItem r : recipe.getAllItems())
         {
-            if(r.m_Ingredient.equals(strName))
+            if(r.getIngredient().equals(strName))
             {
                 return r;
             }
@@ -742,7 +741,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
     private void adjustEditTextAmount(ShoppingRecipesAdapter.ViewHolderActive vh, ShoppingListItem item)
     {
-        if(item.m_Amount.m_Unit == Amount.Unit.Unitless)
+        if(item.getAmount().getUnit() == Amount.Unit.Unitless)
         {
             vh.m_EditTextAmount.setText("");
             vh.m_EditTextAmountMax.setText("");
@@ -753,13 +752,13 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
         else
         {
-            vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMin)));
+            vh.m_EditTextAmount.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.getAmount().getQuantityMin())));
             vh.m_CheckBoxAmountRange.setVisibility(View.VISIBLE);
             vh.m_TableRowAmount.setVisibility(View.VISIBLE);
 
-            if(item.m_Amount.isRange())
+            if(item.getAmount().isRange())
             {
-                vh.m_EditTextAmountMax.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.m_Amount.m_QuantityMax)));
+                vh.m_EditTextAmountMax.setText(String.format(Locale.getDefault(), "%s", Helper.formatNumber(item.getAmount().getQuantityMax())));
                 vh.m_TableRowAmountRange.setVisibility(View.VISIBLE);
                 vh.m_TextViewAmountMin.setVisibility(View.VISIBLE);
             }
@@ -788,13 +787,13 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         ShoppingList.ShoppingRecipe recipe = m_ShoppingList.getShoppingRecipe(strRecipe);
 
         ArrayList<String> inputList = new ArrayList<>();
-        for(String strName : m_Ingredients.getAllIngredients())
+        for(Ingredients.Ingredient ingredient : m_Ingredients.getAllIngredients())
         {
-            if(getShoppingListItem(recipe, strName) != null)
+            if(getShoppingListItem(recipe, ingredient.getName()) != null)
             {
                 continue;
             }
-            inputList.add(strName);
+            inputList.add(ingredient.getName());
         }
 
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient));
@@ -827,7 +826,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         m_RecentlyDeleted = m_ShoppingList.getShoppingRecipe(holder.m_strRecipe);
         m_RecentlyDeletedIndex = -1;
         m_RecentlyDeletedItem = null;
-        m_ShoppingList.removeShoppingRecipe(holder.m_strRecipe);
+        m_ShoppingList.removeShoppingRecipe(m_RecentlyDeleted);
 
         notifyDataSetChanged();
         setActiveElement(null);
@@ -841,7 +840,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             {
                 return;
             }
-            m_ShoppingList.addExistingShoppingRecipe(strRecipe, m_RecentlyDeleted);
+            m_ShoppingList.addExistingShoppingRecipe(m_RecentlyDeleted);
 
             notifyDataSetChanged();
 
@@ -860,7 +859,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_recipe, strRecipe));
         newFragment.setDefaultValue(strRecipe);
         newFragment.setAdditionalInformation(strRecipe);
-        newFragment.setListExcludedInputs(m_ShoppingList.getAllShoppingRecipes());
+        newFragment.setListExcludedInputs(m_ShoppingList.getAllShoppingRecipeNames());
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameShoppingRecipe");
     }
 
@@ -881,7 +880,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_change_nrpersons, strRecipe));
         newFragment.setAdditionalInformation(strRecipe);
-        newFragment.setDefaultValue(recipe.m_fScalingFactor.toString());
+        newFragment.setDefaultValue(((Float)recipe.getScalingFactor()).toString());
         newFragment.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "changeRecipeScaling");
     }

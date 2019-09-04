@@ -1,7 +1,5 @@
 package ch.phwidmer.einkaufsliste.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
@@ -9,129 +7,70 @@ import android.util.JsonWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.TreeMap;
 
-import ch.phwidmer.einkaufsliste.helper.Helper;
-
-public class Recipes implements Parcelable
+public abstract class Recipes
 {
-    private String m_ActiveRecipe;
-
-    public class Recipe
+    public interface Recipe
     {
-        public Integer m_NumberOfPersons = 0;
-        public LinkedList<RecipeItem> m_Items = new LinkedList<>();
+        String getName();
 
-        public TreeMap<String, LinkedList<RecipeItem>> m_Groups = new TreeMap<>(new Helper.SortIgnoreCase());
-    }
-    private TreeMap<String, Recipe> m_Recipies;
+        int getNumberOfPersons();
+        void setNumberOfPersons(int number);
 
-    Recipes()
-    {
-        m_Recipies = new TreeMap<>(new Helper.SortIgnoreCase());
-        m_ActiveRecipe = "";
-    }
+        RecipeItem addRecipeItem(String strIngredient);
+        void addRecipeItem(int position, final RecipeItem item);
+        void removeRecipeItem(RecipeItem r);
+        ArrayList<RecipeItem> getAllRecipeItems();
 
-    public void setActiveRecipe(String strRecipe)
-    {
-        m_ActiveRecipe = strRecipe;
-    }
+        // Groups
 
-    public String getActiveRecipe()
-    {
-        return m_ActiveRecipe;
+        void addGroup(String strName);
+        void removeGroup(String strName);
+        void renameGroup(String strOldName, String strNewName);
+        ArrayList<String> getAllGroupNames();
+
+        RecipeItem addRecipeItemToGroup(String strGroup, String strIngredient);
+        void addRecipeItemToGroup(String strGroup, final RecipeItem r);
+        void removeRecipeItemFromGroup(String strGroup, RecipeItem r);
+        ArrayList<RecipeItem> getAllRecipeItemsInGroup(String strGroup);
     }
 
-    public void addRecipe(String strName, Integer iNrPersons)
-    {
-        if(m_Recipies.containsKey(strName))
-        {
-            return;
-        }
-        Recipe recipe = new Recipe();
-        recipe.m_NumberOfPersons = iNrPersons;
-        m_Recipies.put(strName, recipe);
-    }
+    public abstract Recipe addRecipe(String strName, int iNrPersons);
+    public abstract void addRecipe(String strName, final Recipe r);
+    public abstract void removeRecipe(Recipe r);
+    public abstract void renameRecipe(Recipe recipe, String strNewName);
+    public abstract void copyRecipe(Recipe recipe, String strNewName);
+    public abstract Recipe getRecipe(String strName);
 
-    public void addRecipe(String strName, Recipe r)
-    {
-        if(m_Recipies.containsKey(strName))
-        {
-            return;
-        }
-        m_Recipies.put(strName, r);
-    }
-
-    public Recipe getRecipe(String strName)
-    {
-        return m_Recipies.get(strName);
-    }
-
-    public void removeRecipe(String strName)
-    {
-        m_Recipies.remove(strName);
-    }
-
-    public ArrayList<String> getAllRecipes()
-    {
-        return new ArrayList<>(m_Recipies.keySet());
-    }
-
-    public void renameRecipe(String strRecipe, String strNewName)
-    {
-        if(!m_Recipies.containsKey(strRecipe))
-        {
-            return;
-        }
-
-        Recipe recipe = m_Recipies.get(strRecipe);
-        m_Recipies.remove(strRecipe);
-        m_Recipies.put(strNewName, recipe);
-    }
-
-    public void copyRecipe(String strRecipe, String strNewName)
-    {
-        Recipe oldRecipe = m_Recipies.get(strRecipe);
-        if(oldRecipe == null)
-        {
-            return;
-        }
-
-        Recipe recipe = new Recipe();
-        recipe.m_NumberOfPersons = oldRecipe.m_NumberOfPersons;
-        for(RecipeItem item : oldRecipe.m_Items)
-        {
-            recipe.m_Items.add(new RecipeItem(item));
-        }
-        m_Recipies.put(strNewName, recipe);
-    }
+    public abstract ArrayList<Recipe> getAllRecipes();
+    public abstract ArrayList<String> getAllRecipeNames();
 
     public boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> recipesUsingIngredient)
     {
         boolean stillInUse = false;
-        for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
+        for(Recipe recipe : getAllRecipes())
         {
-            for(RecipeItem ri : e.getValue().m_Items)
+            for(RecipeItem ri : recipe.getAllRecipeItems())
             {
-                if(ri.m_Ingredient.equals(strIngredient))
+                if(ri.getIngredient().equals(strIngredient))
                 {
-                    if(!recipesUsingIngredient.contains(e.getKey()))
+                    if(!recipesUsingIngredient.contains(recipe.getName()))
                     {
-                        recipesUsingIngredient.add(e.getKey());
+                        recipesUsingIngredient.add(recipe.getName());
                     }
                     stillInUse = true;
                 }
             }
 
-            for(LinkedList<RecipeItem> groupItems : e.getValue().m_Groups.values())
+            for(String strGroup : recipe.getAllGroupNames())
             {
-                for(RecipeItem ri : groupItems)
+                for(RecipeItem ri : recipe.getAllRecipeItemsInGroup(strGroup))
                 {
-                    if(ri.m_Ingredient.equals(strIngredient))
+                    if(ri.getIngredient().equals(strIngredient))
                     {
-                        if(!recipesUsingIngredient.contains(e.getKey()))
+                        if(!recipesUsingIngredient.contains(recipe.getName()))
                         {
-                            recipesUsingIngredient.add(e.getKey());
+                            recipesUsingIngredient.add(recipe.getName());
                         }
                         stillInUse = true;
                     }
@@ -144,23 +83,23 @@ public class Recipes implements Parcelable
 
     public void onIngredientRenamed(String strIngredient, String strNewName)
     {
-        for(Recipe r : m_Recipies.values())
+        for(Recipe r : getAllRecipes())
         {
-            for(RecipeItem ri : r.m_Items)
+            for(RecipeItem ri : r.getAllRecipeItems())
             {
-                if (ri.m_Ingredient.equals(strIngredient))
+                if (ri.getIngredient().equals(strIngredient))
                 {
-                    ri.m_Ingredient = strNewName;
+                    ri.setIngredient(strNewName);
                 }
             }
 
-            for(LinkedList<RecipeItem> groupItems : r.m_Groups.values())
+            for(String strGroup : r.getAllGroupNames())
             {
-                for(RecipeItem ri : groupItems)
+                for(RecipeItem ri : r.getAllRecipeItemsInGroup(strGroup))
                 {
-                    if (ri.m_Ingredient.equals(strIngredient))
+                    if (ri.getIngredient().equals(strIngredient))
                     {
-                        ri.m_Ingredient = strNewName;
+                        ri.setIngredient(strNewName);
                     }
                 }
             }
@@ -170,11 +109,11 @@ public class Recipes implements Parcelable
     boolean checkDataConsistency(Ingredients ingredients, LinkedList<String> missingIngredients)
     {
         boolean dataConsistent = true;
-        for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
+        for(Recipe recipe : getAllRecipes())
         {
-            for(RecipeItem ri : e.getValue().m_Items)
+            for(RecipeItem ri : recipe.getAllRecipeItems())
             {
-                String ingredient = ri.m_Ingredient;
+                String ingredient = ri.getIngredient();
                 if(ingredients.getIngredient(ingredient) == null)
                 {
                     if(!missingIngredients.contains(ingredient))
@@ -185,11 +124,11 @@ public class Recipes implements Parcelable
                 }
             }
 
-            for(LinkedList<RecipeItem> groupItems : e.getValue().m_Groups.values())
+            for(String strGroup : recipe.getAllGroupNames())
             {
-                for(RecipeItem ri : groupItems)
+                for(RecipeItem ri : recipe.getAllRecipeItemsInGroup(strGroup))
                 {
-                    String ingredient = ri.m_Ingredient;
+                    String ingredient = ri.getIngredient();
                     if(ingredients.getIngredient(ingredient) == null)
                     {
                         if(!missingIngredients.contains(ingredient))
@@ -210,24 +149,23 @@ public class Recipes implements Parcelable
     {
         writer.beginObject();
         writer.name("id").value("Recipes");
-        writer.name("activeRecipe").value(m_ActiveRecipe);
 
-        for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
+        for(Recipe recipe : getAllRecipes())
         {
-            writer.name(e.getKey());
+            writer.name(recipe.getName());
             writer.beginObject();
-            writer.name("NrPersons").value(e.getValue().m_NumberOfPersons);
-            for(RecipeItem ri : e.getValue().m_Items)
+            writer.name("NrPersons").value(recipe.getNumberOfPersons());
+            for(RecipeItem ri : recipe.getAllRecipeItems())
             {
                 writeRecipeItem(writer, ri);
             }
 
-            for(TreeMap.Entry<String, LinkedList<RecipeItem>> group : e.getValue().m_Groups.entrySet())
+            for(String strGroup : recipe.getAllGroupNames())
             {
                 writer.name("group");
                 writer.beginObject();
-                writer.name("groupName").value(group.getKey());
-                for(RecipeItem ri : group.getValue())
+                writer.name("groupName").value(strGroup);
+                for(RecipeItem ri : recipe.getAllRecipeItemsInGroup(strGroup))
                 {
                     writeRecipeItem(writer, ri);
                 }
@@ -241,19 +179,19 @@ public class Recipes implements Parcelable
 
     private void writeRecipeItem(JsonWriter writer, RecipeItem ri) throws IOException
     {
-        writer.name(ri.m_Ingredient);
+        writer.name(ri.getIngredient());
         writer.beginObject();
 
         writer.name("amountMinMax");
         writer.beginArray();
-        writer.value(ri.m_Amount.m_QuantityMin);
-        writer.value(ri.m_Amount.m_QuantityMax);
-        writer.value(ri.m_Amount.m_Unit.toString());
+        writer.value(ri.getAmount().getQuantityMin());
+        writer.value(ri.getAmount().getQuantityMax());
+        writer.value(ri.getAmount().getUnit().toString());
         writer.endArray();
 
-        writer.name("size").value(ri.m_Size.toString());
-        writer.name("optional").value(ri.m_Optional);
-        writer.name("additionalInfo").value(ri.m_AdditionalInfo);
+        writer.name("size").value(ri.getSize().toString());
+        writer.name("optional").value(ri.isOptional());
+        writer.name("additionalInfo").value(ri.getAdditionalInfo());
 
         writer.endObject();
     }
@@ -273,11 +211,11 @@ public class Recipes implements Parcelable
             }
             else if(name.equals("activeRecipe"))
             {
-                m_ActiveRecipe = reader.nextString();
+                reader.skipValue();
             }
             else
             {
-                Recipe recipe = new Recipe();
+                Recipe recipe = addRecipe(name, 0);
 
                 reader.beginObject();
                 while (reader.hasNext())
@@ -285,13 +223,12 @@ public class Recipes implements Parcelable
                     String currentName = reader.nextName();
                     if (currentName.equals("NrPersons"))
                     {
-                        recipe.m_NumberOfPersons = reader.nextInt();
+                        recipe.setNumberOfPersons(reader.nextInt());
                     }
                     else if(currentName.equals("group"))
                     {
                         reader.beginObject();
                         String groupName = "";
-                        LinkedList<RecipeItem> groupItems = new LinkedList<>();
                         while (reader.hasNext())
                         {
                             String groupCurrentName = reader.nextName();
@@ -299,38 +236,34 @@ public class Recipes implements Parcelable
                             if (groupCurrentName.equals("groupName"))
                             {
                                 groupName = reader.nextString();
+                                recipe.addGroup(groupName);
                             }
                             else
                             {
-                                RecipeItem item = readRecipeItem(reader, groupCurrentName);
-                                groupItems.add(item);
+                                RecipeItem item = recipe.addRecipeItemToGroup(groupName, groupCurrentName);
+                                readRecipeItem(reader, item);
                             }
                         }
 
-                        recipe.m_Groups.put(groupName, groupItems);
                         reader.endObject();
 
                     }
                     else
                     {
-                        RecipeItem item = readRecipeItem(reader, currentName);
-                        recipe.m_Items.add(item);
+                        RecipeItem item = recipe.addRecipeItem(currentName);
+                        readRecipeItem(reader, item);
                     }
                 }
 
                 reader.endObject();
-                m_Recipies.put(name, recipe);
             }
         }
 
         reader.endObject();
     }
 
-    private RecipeItem readRecipeItem(JsonReader reader, String currentName) throws IOException
+    private void readRecipeItem(JsonReader reader, RecipeItem item) throws IOException
     {
-        RecipeItem item = new RecipeItem();
-        item.m_Ingredient = currentName;
-
         reader.beginObject();
         while (reader.hasNext())
         {
@@ -342,9 +275,9 @@ public class Recipes implements Parcelable
                     // Old version of Amount without min / max.
                     reader.beginArray();
 
-                    item.m_Amount.m_QuantityMin = (float)reader.nextDouble();
+                    item.getAmount().setQuantityMin((float)reader.nextDouble());
                     String str = reader.nextString();
-                    item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+                    item.getAmount().setUnit(Amount.Unit.valueOf(str));
 
                     reader.endArray();
                     break;
@@ -354,10 +287,10 @@ public class Recipes implements Parcelable
                 {
                     reader.beginArray();
 
-                    item.m_Amount.m_QuantityMin = (float)reader.nextDouble();
-                    item.m_Amount.m_QuantityMax = (float) reader.nextDouble();
+                    item.getAmount().setQuantityMin((float)reader.nextDouble());
+                    item.getAmount().setQuantityMax((float) reader.nextDouble());
                     String str = reader.nextString();
-                    item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+                    item.getAmount().setUnit(Amount.Unit.valueOf(str));
 
                     reader.endArray();
                     break;
@@ -366,114 +299,23 @@ public class Recipes implements Parcelable
                 case "size":
                 {
                     String size = reader.nextString();
-                    item.m_Size = RecipeItem.Size.valueOf(size);
+                    item.setSize(RecipeItem.Size.valueOf(size));
                     break;
                 }
 
                 case "optional":
                 {
-                    item.m_Optional = reader.nextBoolean();
+                    item.setIsOptional(reader.nextBoolean());
                     break;
                 }
 
                 case "additionalInfo":
                 {
-                    item.m_AdditionalInfo = reader.nextString();
+                    item.setAdditionInfo(reader.nextString());
                     break;
                 }
             }
         }
         reader.endObject();
-        return item;
     }
-
-    // Parcelable
-
-    @Override
-    public void writeToParcel(Parcel out, int flags)
-    {
-        out.writeInt(m_Recipies.size());
-        for(TreeMap.Entry<String, Recipe> e : m_Recipies.entrySet())
-        {
-            out.writeString(e.getKey());
-            out.writeInt(e.getValue().m_NumberOfPersons);
-
-            out.writeInt(e.getValue().m_Items.size());
-            for(RecipeItem recipe : e.getValue().m_Items)
-            {
-                recipe.writeToParcel(out, flags);
-            }
-
-            out.writeInt(e.getValue().m_Groups.size());
-            for(TreeMap.Entry<String, LinkedList<RecipeItem>> group : e.getValue().m_Groups.entrySet())
-            {
-                out.writeString(group.getKey());
-
-                out.writeInt(group.getValue().size());
-                for(RecipeItem recipe : group.getValue())
-                {
-                    recipe.writeToParcel(out, flags);
-                }
-            }
-        }
-
-        out.writeString(m_ActiveRecipe);
-    }
-
-    private Recipes(Parcel in)
-    {
-        int size = in.readInt();
-        m_Recipies = new TreeMap<>(new Helper.SortIgnoreCase());
-        for(int i = 0; i < size; i++)
-        {
-            String strName = in.readString();
-            Recipe recipe = new Recipe();
-            recipe.m_NumberOfPersons = in.readInt();
-
-            int sizeItem = in.readInt();
-            for(int j = 0; j < sizeItem; j++)
-            {
-                RecipeItem item = RecipeItem.CREATOR.createFromParcel(in);
-                recipe.m_Items.add(item);
-            }
-
-            int nrGroups = in.readInt();
-            for(int j = 0; j < nrGroups; ++j)
-            {
-                String strGroupName = in.readString();
-
-                int nrGroupItems = in.readInt();
-                LinkedList<RecipeItem> groupItems = new LinkedList<>();
-                for(int k = 0; k < nrGroupItems; ++k)
-                {
-                    RecipeItem item = RecipeItem.CREATOR.createFromParcel(in);
-                    groupItems.add(item);
-                }
-                recipe.m_Groups.put(strGroupName, groupItems);
-            }
-
-            m_Recipies.put(strName, recipe);
-        }
-
-        m_ActiveRecipe = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Parcelable.Creator<Recipes> CREATOR
-            = new Parcelable.Creator<Recipes>() {
-
-        @Override
-        public Recipes createFromParcel(Parcel in) {
-            return new Recipes(in);
-        }
-
-        @Override
-        public Recipes[] newArray(int size) {
-            return new Recipes[size];
-        }
-    };
 }

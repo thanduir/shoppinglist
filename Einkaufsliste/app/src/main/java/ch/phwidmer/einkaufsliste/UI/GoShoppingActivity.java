@@ -13,6 +13,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import java.io.IOException;
+
+import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.SortedShoppingList;
@@ -33,31 +36,43 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_shopping);
 
-        Intent intent = getIntent();
-        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
+        try
+        {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(IOException e)
+        {
+            return;
+        }
 
-        m_SortedShoppingList = new SortedShoppingList(m_GroceryPlanning.m_ShoppingList, m_GroceryPlanning.m_Ingredients);
+        if(m_GroceryPlanning == null)
+        {
+            return;
+        }
+
+        m_SortedShoppingList = new SortedShoppingList(m_GroceryPlanning.shoppingList(), m_GroceryPlanning.ingredients());
 
         m_SpinnerSortOrders = findViewById(R.id.spinnerSortOrder);
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        for(String strName : m_GroceryPlanning.m_Categories.getAllSortOrders())
+        for(Categories.SortOrder sortOrder : m_GroceryPlanning.categories().getAllSortOrders())
         {
-            adapter.add(strName);
+            adapter.add(sortOrder.getName());
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerSortOrders.setAdapter(adapter);
         m_SpinnerSortOrders.setOnItemSelectedListener(this);
-        String strCurrentSortOrder = m_GroceryPlanning.m_ShoppingList.getCurrentSortOrder();
-        if(!strCurrentSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strCurrentSortOrder))
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String strCurrentSortOrder = preferences.getString(SettingsActivity.KEY_ACTIVE_SORTORDER_GOSHOPPING, "");
+        Categories.SortOrder sortOrder = m_GroceryPlanning.categories().getSortOrder(strCurrentSortOrder);
+        if(sortOrder != null && m_GroceryPlanning.categories().getAllSortOrders().contains(sortOrder))
         {
             m_SpinnerSortOrders.setSelection(adapter.getPosition(strCurrentSortOrder));
         }
         else
         {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final String strDefaultSortOrder = preferences.getString(SettingsActivity.KEY_DEFAULT_SORORDER, "");
-            if(strDefaultSortOrder != null && !strDefaultSortOrder.isEmpty() && m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strDefaultSortOrder))
+            if(strDefaultSortOrder != null && !strDefaultSortOrder.isEmpty() && m_GroceryPlanning.categories().getAllSortOrders().contains(sortOrder))
             {
                 m_SpinnerSortOrders.setSelection(adapter.getPosition(strDefaultSortOrder));
             }
@@ -82,18 +97,19 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
     @Override
     public void finish()
     {
-        Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
-        setResult(RESULT_OK, data);
-
+        m_GroceryPlanning.flush();
         super.finish();
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
     {
         String strSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
-        Categories.SortOrder order = m_GroceryPlanning.m_Categories.getSortOrder(strSortOrder);
-        m_GroceryPlanning.m_ShoppingList.setCurrentSortOrder(strSortOrder);
+        Categories.SortOrder order = m_GroceryPlanning.categories().getSortOrder(strSortOrder);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(SettingsActivity.KEY_ACTIVE_SORTORDER_GOSHOPPING, strSortOrder);
+        editor.apply();
 
         m_SortedShoppingList.setSortOrder(strSortOrder, order);
         RecyclerView.Adapter adapter = new GoShoppingAdapter(m_SortedShoppingList);

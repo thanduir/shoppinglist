@@ -2,8 +2,6 @@ package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
@@ -15,21 +13,38 @@ import java.util.LinkedList;
 
 import ch.phwidmer.einkaufsliste.R;
 
-public class GroceryPlanning implements Parcelable
+public abstract class GroceryPlanning
 {
     private static int     SERIALIZING_VERSION = 1;
 
-    public Categories      m_Categories;
-    public Ingredients     m_Ingredients;
-    public Recipes         m_Recipes;
-    public ShoppingList    m_ShoppingList;
+    protected Categories      m_Categories;
+    protected Ingredients     m_Ingredients;
+    protected Recipes         m_Recipes;
+    protected ShoppingList    m_ShoppingList;
 
-    public GroceryPlanning()
+    protected Context         m_Context;
+
+    protected abstract void clearAll();
+    public abstract void flush();
+
+    public Categories categories()
     {
-        m_Categories = new Categories();
-        m_Ingredients = new Ingredients();
-        m_Recipes = new Recipes();
-        m_ShoppingList = new ShoppingList();
+        return m_Categories;
+    }
+
+    public Ingredients ingredients()
+    {
+        return m_Ingredients;
+    }
+
+    public Recipes recipes()
+    {
+        return m_Recipes;
+    }
+
+    public ShoppingList shoppingList()
+    {
+        return m_ShoppingList;
     }
 
     public void saveDataToFile(File fileToBeCreated, Context context) throws IOException
@@ -102,7 +117,7 @@ public class GroceryPlanning implements Parcelable
         scanFile(context, fileToBeCreated);
     }
 
-    public void loadDataFromFile(File file, Context context) throws IOException
+    public void loadDataFromFile(File file) throws IOException
     {
         try
         {
@@ -138,16 +153,11 @@ public class GroceryPlanning implements Parcelable
                 throw new IOException("Invalid ID");
             }
 
-            m_Categories = new Categories();
+            clearAll();
+
             m_Categories.readFromJson(jr);
-
-            m_Ingredients = new Ingredients();
             m_Ingredients.readFromJson(jr);
-
-            m_Recipes = new Recipes();
             m_Recipes.readFromJson(jr);
-
-            m_ShoppingList = new ShoppingList();
             m_ShoppingList.readFromJson(jr);
 
             jr.endArray();
@@ -157,11 +167,7 @@ public class GroceryPlanning implements Parcelable
         }
         catch(IOException e)
         {
-            m_Categories = new Categories();
-            m_Ingredients = new Ingredients();
-            m_Recipes = new Recipes();
-            m_ShoppingList = new ShoppingList();
-
+            clearAll();
             throw new IOException(e.getMessage());
         }
 
@@ -188,8 +194,7 @@ public class GroceryPlanning implements Parcelable
         LinkedList<String> missingSortOrders = new LinkedList<>();
         LinkedList<String> missingIngredients = new LinkedList<>();
 
-        boolean dataConsistent = m_Categories.checkDataConsistency(missingCategories);
-        dataConsistent = dataConsistent && m_Ingredients.checkDataConsistency(m_Categories, missingCategories, missingSortOrders);
+        boolean dataConsistent = m_Ingredients.checkDataConsistency(m_Categories, missingCategories, missingSortOrders);
         dataConsistent = dataConsistent && m_Recipes.checkDataConsistency(m_Ingredients, missingIngredients);
         dataConsistent = dataConsistent && m_ShoppingList.checkDataConsistency(m_Ingredients, missingIngredients);
 
@@ -211,42 +216,4 @@ public class GroceryPlanning implements Parcelable
             throw new IOException(strMessage);
         }
     }
-
-    // Parcelable
-
-    @Override
-    public void writeToParcel(Parcel out, int flags)
-    {
-        m_Categories.writeToParcel(out, flags);
-        m_Ingredients.writeToParcel(out, flags);
-        m_Recipes.writeToParcel(out, flags);
-        m_ShoppingList.writeToParcel(out, flags);
-    }
-
-    private GroceryPlanning(Parcel in)
-    {
-        m_Categories = Categories.CREATOR.createFromParcel(in);
-        m_Ingredients = Ingredients.CREATOR.createFromParcel(in);
-        m_Recipes = Recipes.CREATOR.createFromParcel(in);
-        m_ShoppingList = ShoppingList.CREATOR.createFromParcel(in);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Parcelable.Creator<GroceryPlanning> CREATOR
-            = new Parcelable.Creator<GroceryPlanning>() {
-
-        @Override
-        public GroceryPlanning createFromParcel(Parcel in) {
-            return new GroceryPlanning(in);
-        }
-
-        @Override
-        public GroceryPlanning[] newArray(int size) {
-            return new GroceryPlanning[size];
-        }
-    };
 }

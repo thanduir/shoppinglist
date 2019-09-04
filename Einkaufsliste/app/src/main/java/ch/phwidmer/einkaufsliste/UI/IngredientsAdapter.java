@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Amount;
@@ -74,11 +75,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         void setDescription(Ingredients.Ingredient ingredient)
         {
-            String text = " (" + ingredient.m_Category;
-            if(!ingredient.m_strProvenance.equals(Ingredients.c_strProvenanceEverywhere)) {
-                text += ", " + ingredient.m_strProvenance;
+            String text = " (" + ingredient.getCategory();
+            if(!ingredient.getProvenance().equals(Ingredients.c_strProvenanceEverywhere)) {
+                text += ", " + ingredient.getProvenance();
             }
-            text += ", " + ingredient.m_DefaultUnit.toString() + ")";
+            text += ", " + ingredient.getDefaultUnit().toString() + ")";
             m_TextViewDesc.setText(text);
         }
     }
@@ -145,7 +146,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void onBindViewHolder(@NonNull IngredientsAdapter.ViewHolder holder, int position)
     {
-        String strIngredient = getSortedIngredients().get(position);
+        String strIngredient = getSortedIngredients().get(position).getName();
         holder.m_id = strIngredient;
         holder.m_TextView.setText(strIngredient);
 
@@ -165,7 +166,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public int getItemCount()
     {
-        return m_GroceryPlanning.m_Ingredients.getIngredientsCount();
+        return m_GroceryPlanning.ingredients().getIngredientsCount();
     }
 
     String getActiveElement()
@@ -174,7 +175,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             return "";
         }
-        return getSortedIngredients().get(m_iActiveElement);
+        return getSortedIngredients().get(m_iActiveElement).getName();
     }
 
     void setActiveElement(String strElement)
@@ -190,7 +191,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
         else
         {
-            m_iActiveElement = getSortedIngredients().indexOf(strElement);
+            m_iActiveElement = getSortedIngredients().indexOf(m_GroceryPlanning.ingredients().getIngredient(strElement));
             notifyItemChanged(m_iActiveElement);
         }
     }
@@ -203,7 +204,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             return;
         }
 
-        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(holder.m_id);
+        Ingredients.Ingredient ingredient = m_GroceryPlanning.ingredients().getIngredient(holder.m_id);
         vh.setDescription(ingredient);
 
         vh.m_TextViewDesc.setVisibility(View.VISIBLE);
@@ -231,7 +232,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             return true;
         });
 
-        final Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
+        final Ingredients.Ingredient ingredient = m_GroceryPlanning.ingredients().getIngredient(vh.m_id);
         if(ingredient == null)
         {
             // This case should only be possible if a renamed object is sorted into the same position as
@@ -240,31 +241,31 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
 
         ArrayAdapter<CharSequence> adapterCategory = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-        for(String strCategory : m_GroceryPlanning.m_Categories.getAllCategories())
+        for(Categories.Category category : m_GroceryPlanning.categories().getAllCategories())
         {
-            adapterCategory.add(strCategory);
+            adapterCategory.add(category.getName());
         }
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerCategory.setAdapter(adapterCategory);
         vh.m_SpinnerCategory.setOnItemSelectedListener(this);
-        vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.m_Category));
+        vh.m_SpinnerCategory.setSelection(adapterCategory.getPosition(ingredient.getCategory()));
 
         ArrayAdapter<CharSequence> adapterProvenance = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
         adapterProvenance.add(m_RecyclerView.getContext().getResources().getString(R.string.provenance_everywhere));
-        for(String strSortOrder : m_GroceryPlanning.m_Categories.getAllSortOrders())
+        for(Categories.SortOrder sortOrder : m_GroceryPlanning.categories().getAllSortOrders())
         {
-            adapterProvenance.add(strSortOrder);
+            adapterProvenance.add(sortOrder.getName());
         }
         adapterProvenance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerProvenance.setAdapter(adapterProvenance);
         vh.m_SpinnerProvenance.setOnItemSelectedListener(this);
-        if(ingredient.m_strProvenance.equals(Ingredients.c_strProvenanceEverywhere))
+        if(ingredient.getProvenance().equals(Ingredients.c_strProvenanceEverywhere))
         {
             vh.m_SpinnerProvenance.setSelection(0);
         }
         else
         {
-            vh.m_SpinnerProvenance.setSelection(adapterProvenance.getPosition(ingredient.m_strProvenance));
+            vh.m_SpinnerProvenance.setSelection(adapterProvenance.getPosition(ingredient.getProvenance()));
         }
 
         ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
@@ -275,7 +276,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerStdUnit.setAdapter(adapterStdUnit);
         vh.m_SpinnerStdUnit.setOnItemSelectedListener(this);
-        vh.m_SpinnerStdUnit.setSelection(ingredient.m_DefaultUnit.ordinal());
+        vh.m_SpinnerStdUnit.setSelection(ingredient.getDefaultUnit().ordinal());
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -296,26 +297,26 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             return;
         }
 
-        Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(vh.m_id);
+        Ingredients.Ingredient ingredient = m_GroceryPlanning.ingredients().getIngredient(vh.m_id);
 
         if(parent == vh.m_SpinnerCategory)
         {
-            ingredient.m_Category = (String)vh.m_SpinnerCategory.getSelectedItem();
+            ingredient.setCategory((String)vh.m_SpinnerCategory.getSelectedItem());
         }
         else if(parent == vh.m_SpinnerProvenance)
         {
             if(vh.m_SpinnerProvenance.getSelectedItemPosition() == 0)
             {
-                ingredient.m_strProvenance = Ingredients.c_strProvenanceEverywhere;
+                ingredient.setProvenance(Ingredients.c_strProvenanceEverywhere);
             }
             else
             {
-                ingredient.m_strProvenance = (String) vh.m_SpinnerProvenance.getSelectedItem();
+                ingredient.setProvenance((String) vh.m_SpinnerProvenance.getSelectedItem());
             }
         }
         else if(parent == vh.m_SpinnerStdUnit)
         {
-            ingredient.m_DefaultUnit = Amount.Unit.values()[vh.m_SpinnerStdUnit.getSelectedItemPosition()];
+            ingredient.setDefaultUnit(Amount.Unit.values()[vh.m_SpinnerStdUnit.getSelectedItemPosition()]);
         }
     }
 
@@ -341,7 +342,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         ArrayList<String> recipesUsingIngredient = new ArrayList<>();
         ArrayList<String> shoppinglistUsingIngredient = new ArrayList<>();
-        if(m_GroceryPlanning.m_Recipes.isIngredientInUse(strIngredient, recipesUsingIngredient) || m_GroceryPlanning.m_ShoppingList.isIngredientInUse(strIngredient, shoppinglistUsingIngredient))
+        if(m_GroceryPlanning.recipes().isIngredientInUse(strIngredient, recipesUsingIngredient) || m_GroceryPlanning.shoppingList().isIngredientInUse(strIngredient, shoppinglistUsingIngredient))
         {
             notifyItemChanged(position);
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
@@ -356,9 +357,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
 
         m_strRecentlyDeleted = strIngredient;
-        m_RecentlyDeleted = m_GroceryPlanning.m_Ingredients.getIngredient(strIngredient);
+        m_RecentlyDeleted = m_GroceryPlanning.ingredients().getIngredient(strIngredient);
 
-        m_GroceryPlanning.m_Ingredients.removeIngredient(strIngredient);
+        m_GroceryPlanning.ingredients().removeIngredient(m_RecentlyDeleted);
         notifyDataSetChanged();
         setActiveElement("");
 
@@ -366,9 +367,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) -> {
-            m_GroceryPlanning.m_Ingredients.addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.m_DefaultUnit, m_GroceryPlanning.m_Categories.getCategory(m_RecentlyDeleted.m_Category));
-            Ingredients.Ingredient ingredient = m_GroceryPlanning.m_Ingredients.getIngredient(m_strRecentlyDeleted);
-            ingredient.m_strProvenance = m_RecentlyDeleted.m_strProvenance;
+            m_GroceryPlanning.ingredients().addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.getDefaultUnit(), m_GroceryPlanning.categories().getCategory(m_RecentlyDeleted.getCategory()));
+            Ingredients.Ingredient ingredient = m_GroceryPlanning.ingredients().getIngredient(m_strRecentlyDeleted);
+            ingredient.setProvenance(m_RecentlyDeleted.getProvenance());
 
             notifyDataSetChanged();
 
@@ -390,9 +391,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return false;
     }
 
-    private ArrayList<String> getSortedIngredients()
+    private ArrayList<Ingredients.Ingredient> getSortedIngredients()
     {
-        return m_GroceryPlanning.m_Ingredients.getAllIngredients();
+        return m_GroceryPlanning.ingredients().getAllIngredients();
     }
 
     private void renameIngredient(final String strIngredient)
@@ -400,7 +401,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_ingredient, strIngredient));
         newFragment.setDefaultValue(strIngredient);
         newFragment.setAdditionalInformation(strIngredient);
-        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Ingredients.getAllIngredients());
+        newFragment.setListExcludedInputs(m_GroceryPlanning.ingredients().getAllIngredientNames());
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameIngredient");
     }
 

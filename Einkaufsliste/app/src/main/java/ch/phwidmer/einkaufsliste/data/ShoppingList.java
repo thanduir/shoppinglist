@@ -1,119 +1,80 @@
 package ch.phwidmer.einkaufsliste.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
-public class ShoppingList implements Parcelable
+public abstract class ShoppingList
 {
-    public class ShoppingRecipe
+    public abstract class ShoppingRecipe
     {
-        public Float                           m_fScalingFactor; // Current scaling factor used for the items in the list.
-        public LinkedList<ShoppingListItem>    m_Items = new LinkedList<>();
+        public abstract String getName();
+
+        // Current scaling factor used for the items in the list.
+        public abstract float getScalingFactor();
+        public abstract void setScalingFactor(float factor);
+
+        public abstract ShoppingListItem addItem(String strIngredient);
+        public abstract void addItem(RecipeItem recipeItem);
+        public abstract void addItem(int position, ShoppingListItem item);
+        public abstract void removeItem(ShoppingListItem r);
+        public abstract ArrayList<ShoppingListItem> getAllItems();
 
         public void changeScalingFactor(float f)
         {
-            float fFactor = f / m_fScalingFactor;
-            m_fScalingFactor = f;
+            float fFactor = f / getScalingFactor();
+            setScalingFactor(f);
 
-            for(ShoppingListItem sli : m_Items)
+            for(ShoppingListItem sli : getAllItems())
             {
-                sli.m_Amount.scaleAmount(fFactor);
+                sli.getAmount().scaleAmount(fFactor);
             }
         }
     }
-    private LinkedHashMap<String, ShoppingRecipe> m_Items;
-    private String                                m_CurrentSortOrder;
 
-    public ShoppingList()
-    {
-        m_Items = new LinkedHashMap<>();
-        m_CurrentSortOrder = "";
-    }
-
-    public void setCurrentSortOrder(String strOrder)
-    {
-        m_CurrentSortOrder = strOrder;
-    }
-
-    public String getCurrentSortOrder()
-    {
-        return m_CurrentSortOrder;
-    }
+    protected abstract ShoppingRecipe addRecipe(String strName);
 
     public void addFromRecipe(String strName, Recipes.Recipe recipe)
     {
-        if(m_Items.containsKey(strName))
+        if(getShoppingRecipe(strName) != null)
         {
             return;
         }
 
-        ShoppingRecipe item = new ShoppingRecipe();
-        item.m_fScalingFactor = (float)recipe.m_NumberOfPersons;
-        for(RecipeItem r : recipe.m_Items)
+        ShoppingRecipe item = addRecipe(strName);
+        item.setScalingFactor((float)recipe.getNumberOfPersons());
+        for(RecipeItem r : recipe.getAllRecipeItems())
         {
-            ShoppingListItem li = new ShoppingListItem(r);
-            item.m_Items.add(li);
+            item.addItem(r);
         }
-        m_Items.put(strName, item);
     }
+    public abstract void addExistingShoppingRecipe(ShoppingRecipe recipe);
 
-    public ShoppingRecipe getShoppingRecipe(String strName)
-    {
-        return m_Items.get(strName);
-    }
+    public abstract ShoppingRecipe getShoppingRecipe(String strName);
+    public abstract void renameShoppingRecipe(ShoppingRecipe recipe, String strNewName);
+    public abstract void removeShoppingRecipe(ShoppingRecipe recipe);
 
-    public ArrayList<String> getAllShoppingRecipes()
-    {
-        return new ArrayList<>(m_Items.keySet());
-    }
+    public abstract ArrayList<ShoppingRecipe> getAllShoppingRecipes();
+    public abstract ArrayList<String> getAllShoppingRecipeNames();
 
-    public void removeShoppingRecipe(String strName)
-    {
-        m_Items.remove(strName);
-    }
-
-    public void renameRecipe(String strRecipe, String strNewName)
-    {
-        if(!m_Items.containsKey(strRecipe))
-        {
-            return;
-        }
-
-        ShoppingRecipe recipe = m_Items.get(strRecipe);
-        m_Items.remove(strRecipe);
-        m_Items.put(strNewName, recipe);
-    }
-
-    public void addExistingShoppingRecipe(String strName, ShoppingRecipe recipe)
-    {
-        if(m_Items.containsKey(strName))
-        {
-            return;
-        }
-
-        m_Items.put(strName, recipe);
-    }
+    public abstract void clearShoppingList();
 
     public boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> shoppingListItemUsingIngredient)
     {
         boolean stillInUse = false;
-        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
+        for(ShoppingRecipe recipe : getAllShoppingRecipes())
         {
-            for(ShoppingListItem sli : e.getValue().m_Items)
+            for(ShoppingListItem sli : recipe.getAllItems())
             {
-                if (sli.m_Ingredient.equals(strIngredient))
+                if (sli.getIngredient().equals(strIngredient))
                 {
-                    if(!shoppingListItemUsingIngredient.contains(e.getKey()))
+                    if(!shoppingListItemUsingIngredient.contains(recipe.getName()))
                     {
-                        shoppingListItemUsingIngredient.add(e.getKey());
+                        shoppingListItemUsingIngredient.add(recipe.getName());
                     }
                     stillInUse = true;
                 }
@@ -124,13 +85,13 @@ public class ShoppingList implements Parcelable
 
     public void onIngredientRenamed(String strIngredient, String strNewName)
     {
-        for(ShoppingRecipe sr : m_Items.values())
+        for(ShoppingRecipe sr : getAllShoppingRecipes())
         {
-            for(ShoppingListItem sli : sr.m_Items)
+            for(ShoppingListItem sli : sr.getAllItems())
             {
-                if (sli.m_Ingredient.equals(strIngredient))
+                if (sli.getIngredient().equals(strIngredient))
                 {
-                    sli.m_Ingredient = strNewName;
+                    sli.setIngredient(strNewName);
                 }
             }
         }
@@ -139,11 +100,11 @@ public class ShoppingList implements Parcelable
     boolean checkDataConsistency(Ingredients ingredients, LinkedList<String> missingIngredients)
     {
         boolean dataConsistent = true;
-        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
+        for(ShoppingRecipe recipe : getAllShoppingRecipes())
         {
-            for(ShoppingListItem li : e.getValue().m_Items)
+            for(ShoppingListItem li : recipe.getAllItems())
             {
-                String ingredient = li.m_Ingredient;
+                String ingredient = li.getIngredient();
                 if(ingredients.getIngredient(ingredient) == null)
                 {
                     if(!missingIngredients.contains(ingredient))
@@ -163,31 +124,30 @@ public class ShoppingList implements Parcelable
     {
         writer.beginObject();
         writer.name("id").value("Shoppinglist");
-        writer.name("currentSortOrder").value(m_CurrentSortOrder);
 
-        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
+        for(ShoppingRecipe recipe : getAllShoppingRecipes())
         {
-            writer.name(e.getKey());
+            writer.name(recipe.getName());
             writer.beginObject();
-            writer.name("ScalingFactor").value(e.getValue().m_fScalingFactor);
-            for(ShoppingListItem si : e.getValue().m_Items)
+            writer.name("ScalingFactor").value(recipe.getScalingFactor());
+            for(ShoppingListItem si : recipe.getAllItems())
             {
-                writer.name(si.m_Ingredient);
+                writer.name(si.getIngredient());
                 writer.beginObject();
 
-                writer.name("status").value(si.m_Status.toString());
+                writer.name("status").value(si.getStatus().toString());
 
                 writer.name("amountMinMax");
                 writer.beginArray();
-                writer.value(si.m_Amount.m_QuantityMin);
-                writer.value(si.m_Amount.m_QuantityMax);
-                writer.value(si.m_Amount.m_Unit.toString());
+                writer.value(si.getAmount().getQuantityMin());
+                writer.value(si.getAmount().getQuantityMax());
+                writer.value(si.getAmount().getUnit().toString());
                 writer.endArray();
 
-                writer.name("size").value(si.m_Size.toString());
-                writer.name("optional").value(si.m_Optional);
+                writer.name("size").value(si.getSize().toString());
+                writer.name("optional").value(si.isOptional());
 
-                writer.name("additionalInfo").value(si.m_AdditionalInfo);
+                writer.name("additionalInfo").value(si.getAdditionalInfo());
 
                 writer.endObject();
             }
@@ -212,11 +172,12 @@ public class ShoppingList implements Parcelable
             }
             else if(name.equals("currentSortOrder"))
             {
-                m_CurrentSortOrder = reader.nextString();
+                // Legacy item -> nothing to do
+                reader.skipValue();
             }
             else
             {
-                ShoppingRecipe recipe = new ShoppingRecipe();
+                ShoppingRecipe recipe = addRecipe(name);
 
                 reader.beginObject();
                 while (reader.hasNext())
@@ -224,12 +185,11 @@ public class ShoppingList implements Parcelable
                     String currentName = reader.nextName();
                     if (currentName.equals("ScalingFactor"))
                     {
-                        recipe.m_fScalingFactor = (float)reader.nextDouble();
+                        recipe.setScalingFactor((float)reader.nextDouble());
                     }
                     else
                     {
-                        ShoppingListItem item = new ShoppingListItem();
-                        item.m_Ingredient = currentName;
+                        ShoppingListItem item = recipe.addItem(currentName);
 
                         reader.beginObject();
                         while (reader.hasNext())
@@ -240,7 +200,7 @@ public class ShoppingList implements Parcelable
                                 case "status":
                                 {
                                     String str = reader.nextString();
-                                    item.m_Status = ShoppingListItem.Status.valueOf(str);
+                                    item.setStatus(ShoppingListItem.Status.valueOf(str));
                                     break;
                                 }
 
@@ -248,9 +208,9 @@ public class ShoppingList implements Parcelable
                                 {
                                     reader.beginArray();
 
-                                    item.m_Amount.m_QuantityMin = (float)reader.nextDouble();
+                                    item.getAmount().setQuantityMin((float)reader.nextDouble());
                                     String str = reader.nextString();
-                                    item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+                                    item.getAmount().setUnit(Amount.Unit.valueOf(str));
 
                                     reader.endArray();
                                     break;
@@ -260,10 +220,10 @@ public class ShoppingList implements Parcelable
                                 {
                                     reader.beginArray();
 
-                                    item.m_Amount.m_QuantityMin = (float)reader.nextDouble();
-                                    item.m_Amount.m_QuantityMax = (float) reader.nextDouble();
+                                    item.getAmount().setQuantityMin((float)reader.nextDouble());
+                                    item.getAmount().setQuantityMax((float) reader.nextDouble());
                                     String str = reader.nextString();
-                                    item.m_Amount.m_Unit = Amount.Unit.valueOf(str);
+                                    item.getAmount().setUnit(Amount.Unit.valueOf(str));
 
                                     reader.endArray();
                                     break;
@@ -272,97 +232,31 @@ public class ShoppingList implements Parcelable
                                 case "size":
                                 {
                                     String size = reader.nextString();
-                                    item.m_Size = RecipeItem.Size.valueOf(size);
+                                    item.setSize(RecipeItem.Size.valueOf(size));
                                     break;
                                 }
 
                                 case "optional":
                                 {
-                                    item.m_Optional = reader.nextBoolean();
+                                    item.setIsOptional(reader.nextBoolean());
                                     break;
                                 }
 
                                 case "additionalInfo":
                                 {
-                                    item.m_AdditionalInfo = reader.nextString();
+                                    item.setAdditionInfo(reader.nextString());
                                     break;
                                 }
                             }
                         }
                         reader.endObject();
-
-                        recipe.m_Items.add(item);
                     }
                 }
 
                 reader.endObject();
-
-                m_Items.put(name, recipe);
             }
         }
 
         reader.endObject();
     }
-
-    // Parcelable
-
-    @Override
-    public void writeToParcel(Parcel out, int flags)
-    {
-        out.writeString(m_CurrentSortOrder);
-
-        out.writeInt(m_Items.size());
-        for(LinkedHashMap.Entry<String, ShoppingRecipe> e : m_Items.entrySet())
-        {
-            out.writeString(e.getKey());
-            out.writeFloat(e.getValue().m_fScalingFactor);
-
-            out.writeInt(e.getValue().m_Items.size());
-            for(ShoppingListItem item : e.getValue().m_Items)
-            {
-                item.writeToParcel(out, flags);
-            }
-        }
-    }
-
-    private ShoppingList(Parcel in)
-    {
-        m_CurrentSortOrder = in.readString();
-
-        int size = in.readInt();
-        m_Items = new LinkedHashMap<>();
-        for(int i = 0; i < size; i++)
-        {
-            String strName = in.readString();
-            ShoppingRecipe recipe = new ShoppingRecipe();
-            recipe.m_fScalingFactor = in.readFloat();
-
-            int sizeItem = in.readInt();
-            for(int j = 0; j < sizeItem; j++)
-            {
-                ShoppingListItem item = ShoppingListItem.CREATOR.createFromParcel(in);
-                recipe.m_Items.add(item);
-            }
-            m_Items.put(strName, recipe);
-        }
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Parcelable.Creator<ShoppingList> CREATOR
-            = new Parcelable.Creator<ShoppingList>() {
-
-        @Override
-        public ShoppingList createFromParcel(Parcel in) {
-            return new ShoppingList(in);
-        }
-
-        @Override
-        public ShoppingList[] newArray(int size) {
-            return new ShoppingList[size];
-        }
-    };
 }

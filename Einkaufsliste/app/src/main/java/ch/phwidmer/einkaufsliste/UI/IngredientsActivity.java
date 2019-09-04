@@ -15,6 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.IOException;
+
+import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
+import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
@@ -38,8 +42,14 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_ingredients);
 
-        Intent intent = getIntent();
-        m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
+        try
+        {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(IOException e)
+        {
+            return;
+        }
 
         m_FAB = findViewById(R.id.fab);
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
@@ -113,10 +123,7 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
     @Override
     public void finish()
     {
-        Intent data = new Intent();
-        data.putExtra(MainActivity.EXTRA_GROCERYPLANNING, m_GroceryPlanning);
-        setResult(RESULT_OK, data);
-
+        m_GroceryPlanning.flush();
         super.finish();
     }
 
@@ -134,7 +141,7 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
     public void onAddIngredient(View v)
     {
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient));
-        newFragment.setListExcludedInputs(m_GroceryPlanning.m_Ingredients.getAllIngredients());
+        newFragment.setListExcludedInputs(m_GroceryPlanning.ingredients().getAllIngredientNames());
         newFragment.show(getSupportFragmentManager(), "addIngredient");
     }
 
@@ -151,17 +158,18 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
 
-            m_GroceryPlanning.m_Ingredients.addIngredient(strInput, Amount.Unit.valueOf(strDefaultUnit), m_GroceryPlanning.m_Categories.getDefaultCategory());
-
+            Ingredients.Ingredient ingredient = m_GroceryPlanning.ingredients().addIngredient(strInput,
+                                                                                              Amount.Unit.valueOf(strDefaultUnit),
+                                                                                              m_GroceryPlanning.categories().getDefaultCategory());
             adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();
-            m_RecyclerView.scrollToPosition(m_GroceryPlanning.m_Ingredients.getAllIngredients().indexOf(strInput));
+            m_RecyclerView.scrollToPosition(m_GroceryPlanning.ingredients().getAllIngredients().indexOf(ingredient));
         }
         else if(tag.equals("renameIngredient")) // See IngredientsAdapter
         {
-            m_GroceryPlanning.m_Ingredients.renameIngredient(strAdditonalInformation, strInput);
-            m_GroceryPlanning.m_Recipes.onIngredientRenamed(strAdditonalInformation, strInput);
-            m_GroceryPlanning.m_ShoppingList.onIngredientRenamed(strAdditonalInformation, strInput);
+            m_GroceryPlanning.ingredients().renameIngredient(m_GroceryPlanning.ingredients().getIngredient(strAdditonalInformation), strInput);
+            m_GroceryPlanning.recipes().onIngredientRenamed(strAdditonalInformation, strInput);
+            m_GroceryPlanning.shoppingList().onIngredientRenamed(strAdditonalInformation, strInput);
 
             adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();

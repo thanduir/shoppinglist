@@ -13,17 +13,24 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static String KEY_DEFAULT_NRPERSONS = "ch.phwidmer.einkaufsliste.DEF_NRPERSONS";
     public static String KEY_DEFAULT_UNIT = "ch.phwidmer.einkaufsliste.DEF_UNIT";
     public static String KEY_DEFAULT_SORORDER = "ch.phwidmer.einkaufsliste.DEF_SORORDER";
+
+    public static String KEY_ACTIVE_SORTORDER_CATEGORIES = "ch.phwidmer.einkaufsliste.categories.ACTIVE_SORORDER";
+    public static String KEY_ACTIVE_RECIPE = "ch.phwidmer.einkaufsliste.ACTIVE_RECIPE";
+    public static String KEY_ACTIVE_SORTORDER_GOSHOPPING = "ch.phwidmer.einkaufsliste.goshopping.ACTIVE_SORORDER";
 
     private Spinner         m_SpinnerDefaultUnit;
     private Spinner         m_SpinnerDefaultSortOrder;
@@ -33,8 +40,20 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Intent intent = getIntent();
-        GroceryPlanning m_GroceryPlanning = intent.getParcelableExtra(MainActivity.EXTRA_GROCERYPLANNING);
+        GroceryPlanning groceryPlanning;
+        try
+        {
+            groceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(IOException e)
+        {
+            return;
+        }
+
+        if(groceryPlanning == null)
+        {
+            return;
+        }
 
         m_SpinnerDefaultUnit = findViewById(R.id.spinnerDefaultUnit);
         EditText editTextDefaultNrPersons = findViewById(R.id.editTextDefaultNrPersons);
@@ -70,17 +89,18 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         });
 
         ArrayAdapter<CharSequence> adapterDefSortOrder = new ArrayAdapter<>(this, R.layout.spinner_item);
-        for(String strSortOrder : m_GroceryPlanning.m_Categories.getAllSortOrders())
+        for(Categories.SortOrder sortOrder : groceryPlanning.categories().getAllSortOrders())
         {
-            adapterDefSortOrder.add(strSortOrder);
+            adapterDefSortOrder.add(sortOrder.getName());
         }
         adapterDefSortOrder.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         m_SpinnerDefaultSortOrder.setAdapter(adapterDefSortOrder);
         m_SpinnerDefaultSortOrder.setOnItemSelectedListener(this);
         String strDefaulSortOrder = preferences.getString(KEY_DEFAULT_SORORDER, "");
-        if(m_GroceryPlanning.m_Categories.getAllSortOrders().contains(strDefaulSortOrder))
+        Categories.SortOrder sortOrder = groceryPlanning.categories().getSortOrder(strDefaulSortOrder);
+        if(sortOrder != null)
         {
-            m_SpinnerDefaultSortOrder.setSelection(m_GroceryPlanning.m_Categories.getAllSortOrders().indexOf(strDefaulSortOrder));
+            m_SpinnerDefaultSortOrder.setSelection(groceryPlanning.categories().getAllSortOrders().indexOf(sortOrder));
         }
         else
         {

@@ -17,12 +17,12 @@ public class SortedShoppingList
     public class CategoryShoppingItem
     {
         private String                       m_Ingredient;
-        private Amount                       m_Amount = new Amount();
+        private Amount                       m_Amount;
         private LinkedList<ShoppingListItem> m_ShoppingItems = new LinkedList<>();
 
         public ShoppingListItem.Status getStatus()
         {
-            return m_ShoppingItems.getFirst().m_Status;
+            return m_ShoppingItems.getFirst().getStatus();
         }
         public void invertStatus()
         {
@@ -34,7 +34,7 @@ public class SortedShoppingList
 
         public Boolean isOptional()
         {
-            return m_ShoppingItems.getFirst().m_Optional;
+            return m_ShoppingItems.getFirst().isOptional();
         }
 
         public Amount getAmount()
@@ -44,12 +44,12 @@ public class SortedShoppingList
 
         public RecipeItem.Size getSize()
         {
-            return m_ShoppingItems.getFirst().m_Size;
+            return m_ShoppingItems.getFirst().getSize();
         }
 
         public String getAdditionalInfo()
         {
-            return m_ShoppingItems.getFirst().m_AdditionalInfo;
+            return m_ShoppingItems.getFirst().getAdditionalInfo();
         }
     }
 
@@ -66,13 +66,12 @@ public class SortedShoppingList
 
         m_UnorderdList = new LinkedHashMap<>();
 
-        ArrayList<String> recipes = shoppingList.getAllShoppingRecipes();
-        for(String strName : recipes)
+        ArrayList<ShoppingList.ShoppingRecipe> recipes = shoppingList.getAllShoppingRecipes();
+        for(ShoppingList.ShoppingRecipe recipe : recipes)
         {
-            ShoppingList.ShoppingRecipe recipe = shoppingList.getShoppingRecipe(strName);
-            for(ShoppingListItem item : recipe.m_Items)
+            for(ShoppingListItem item : recipe.getAllItems())
             {
-                String strCategory = ingredients.getIngredient(item.m_Ingredient).m_Category;
+                String strCategory = ingredients.getIngredient(item.getIngredient()).getCategory();
 
                 if(!m_UnorderdList.containsKey(strCategory))
                 {
@@ -93,31 +92,31 @@ public class SortedShoppingList
 
         for(CategoryShoppingItem csi : categoryItems)
         {
-            if(!csi.m_Ingredient.equals(item.m_Ingredient))
+            if(!csi.m_Ingredient.equals(item.getIngredient()))
             {
                 continue;
             }
 
             ShoppingListItem firstItem = csi.m_ShoppingItems.getFirst();
-            if(item.m_Optional != firstItem.m_Optional
-               || item.m_Size != firstItem.m_Size
-               || item.m_Status != firstItem.m_Status
-               || !item.m_AdditionalInfo.equals(firstItem.m_AdditionalInfo))
+            if(item.isOptional() != firstItem.isOptional()
+               || item.getSize() != firstItem.getSize()
+               || item.getStatus() != firstItem.getStatus()
+               || !item.getAdditionalInfo().equals(firstItem.getAdditionalInfo()))
             {
                 continue;
             }
 
-            if(Amount.canBeAddedUp(item.m_Amount, csi.m_Amount))
+            if(Amount.canBeAddedUp(item.getAmount(), csi.m_Amount))
             {
-                csi.m_Amount = Amount.addUp(item.m_Amount, csi.m_Amount);
+                csi.m_Amount = Amount.addUp(item.getAmount(), csi.m_Amount);
                 csi.m_ShoppingItems.add(item);
                 return;
             }
         }
 
         CategoryShoppingItem csi = new CategoryShoppingItem();
-        csi.m_Ingredient = item.m_Ingredient;
-        csi.m_Amount = item.m_Amount;
+        csi.m_Ingredient = item.getIngredient();
+        csi.m_Amount = item.getAmount();
         csi.m_ShoppingItems.add(item);
         categoryItems.add(csi);
 
@@ -137,7 +136,7 @@ public class SortedShoppingList
         LinkedList<CategoryItem> incompatibleItems = new LinkedList<>();
 
         m_SortedList = new LinkedList<>();
-        for(Categories.Category category : sortOrder.m_CategoriesOrder)
+        for(Categories.Category category : sortOrder.getOrder())
         {
             String strCategory = category.getName();
 
@@ -151,7 +150,7 @@ public class SortedShoppingList
                 for(CategoryShoppingItem current : item.m_Items)
                 {
                     // Move items with an incompatible provenance to the corresponding list
-                    String strProvenance = m_Ingredients.getIngredient(current.m_Ingredient).m_strProvenance;
+                    String strProvenance = m_Ingredients.getIngredient(current.m_Ingredient).getProvenance();
                     if(!strProvenance.equals(Ingredients.c_strProvenanceEverywhere) && !strProvenance.equals(strSortOrderName))
                     {
                         addToIncompatibleItemsList(incompatibleItems, strProvenance, current);
