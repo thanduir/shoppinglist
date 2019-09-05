@@ -1,7 +1,6 @@
 package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
-import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Categories;
@@ -192,7 +190,7 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
 
-        ArrayList<Ingredients.Ingredient> ingredientsUsingSortOrder = new ArrayList<>();
+        ArrayList<String> ingredientsUsingSortOrder = new ArrayList<>();
         if(m_GroceryPlanning.ingredients().isSortOrderInUse(strName, ingredientsUsingSortOrder))
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());

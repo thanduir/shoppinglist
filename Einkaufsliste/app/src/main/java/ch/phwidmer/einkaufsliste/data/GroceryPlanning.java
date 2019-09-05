@@ -22,8 +22,6 @@ public abstract class GroceryPlanning
     protected Recipes         m_Recipes;
     protected ShoppingList    m_ShoppingList;
 
-    protected Context         m_Context;
-
     protected abstract void clearAll();
     public abstract void flush();
 

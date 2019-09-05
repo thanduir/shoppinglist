@@ -163,7 +163,6 @@ public class ShoppingListFS extends ShoppingList
         {
             vec.add(recipe.getName());
         }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 

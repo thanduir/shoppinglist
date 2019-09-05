@@ -7,16 +7,28 @@ import java.util.Locale;
 
 public class Helper {
 
-    public static class SortIgnoreCase implements Comparator<Object>
+    public interface NamedObject
     {
-        public int compare(Object o1, Object o2) {
-            String s1 = (String) o1;
-            String s2 = (String) o2;
+        String getName();
+    }
 
+    public static class SortStringIgnoreCase implements Comparator<String>
+    {
+        public int compare(String s1, String s2)
+        {
             final Collator instance = Collator.getInstance();
             // This strategy mean it'll ignore the accents
             instance.setStrength(Collator.NO_DECOMPOSITION);
             return instance.compare(s1.toLowerCase(), s2.toLowerCase());
+        }
+    }
+
+    public static class SortNamedIgnoreCase implements Comparator<NamedObject>
+    {
+        private SortStringIgnoreCase m_Sort = new SortStringIgnoreCase();
+
+        public int compare(NamedObject o1, NamedObject o2) {
+            return m_Sort.compare(o1.getName(), o2.getName());
         }
     }
 

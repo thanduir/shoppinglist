@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste.data.fs_based;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.TreeSet;
 
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Categories;
@@ -11,7 +12,7 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class IngredientsFS extends Ingredients
 {
-    public class IngredientFS implements Ingredients.Ingredient
+    public class IngredientFS extends Ingredients.Ingredient
     {
         String m_Name;
         private String m_Category = "";
@@ -62,11 +63,11 @@ public class IngredientsFS extends Ingredients
             m_DefaultUnit = unit;
         }
     }
-    private LinkedHashSet<IngredientFS> m_Ingredients;
+    private TreeSet<IngredientFS> m_Ingredients;
 
     IngredientsFS()
     {
-        m_Ingredients = new LinkedHashSet<>();
+        m_Ingredients = new TreeSet<>(new Helper.SortNamedIgnoreCase());
     }
 
     @Override
@@ -150,7 +151,6 @@ public class IngredientsFS extends Ingredients
         {
             vec.add(ingredient.getName());
         }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 }

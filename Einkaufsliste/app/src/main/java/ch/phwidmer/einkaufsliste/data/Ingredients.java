@@ -8,22 +8,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import ch.phwidmer.einkaufsliste.helper.Helper;
+
 public abstract class Ingredients
 {
     public static final String c_strProvenanceEverywhere = "*EVERYWHERE*";
 
-    public interface Ingredient
+    public abstract class Ingredient implements Helper.NamedObject
     {
-        String getName();
+        public abstract String getCategory();
+        public abstract void setCategory(String cateogry);
 
-        String getCategory();
-        void setCategory(String cateogry);
+        public abstract String getProvenance();
+        public abstract void setProvenance(String strProvenance);
 
-        String getProvenance();
-        void setProvenance(String strProvenance);
-
-        Amount.Unit getDefaultUnit();
-        void setDefaultUnit(Amount.Unit unit);
+        public abstract Amount.Unit getDefaultUnit();
+        public abstract void setDefaultUnit(Amount.Unit unit);
     }
 
     public abstract Ingredient addIngredient(String strName, Amount.Unit defaultUnit, Categories.Category category);
@@ -47,28 +47,28 @@ public abstract class Ingredients
         }
     }
 
-    public boolean isCategoryInUse(Categories.Category category, @NonNull ArrayList<Ingredient> ingredientsUsingCategory)
+    public boolean isCategoryInUse(Categories.Category category, @NonNull ArrayList<String> ingredientsUsingCategory)
     {
         boolean stillInUse = false;
         for(Ingredient ingredient : getAllIngredients())
         {
             if(ingredient.getCategory().equals(category.getName()))
             {
-                ingredientsUsingCategory.add(ingredient);
+                ingredientsUsingCategory.add(ingredient.getName());
                 stillInUse = true;
             }
         }
         return stillInUse;
     }
 
-    public boolean isSortOrderInUse(String strSortOrder, @NonNull ArrayList<Ingredient> ingredientsUsingSortOrder)
+    public boolean isSortOrderInUse(String strSortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)
     {
         boolean stillInUse = false;
         for(Ingredient ingredient : getAllIngredients())
         {
             if(ingredient.getProvenance().equals(strSortOrder))
             {
-                ingredientsUsingSortOrder.add(ingredient);
+                ingredientsUsingSortOrder.add(ingredient.getName());
                 stillInUse = true;
             }
         }

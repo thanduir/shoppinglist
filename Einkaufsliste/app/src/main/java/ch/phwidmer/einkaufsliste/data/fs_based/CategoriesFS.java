@@ -67,7 +67,7 @@ public class CategoriesFS extends Categories
         }
     }
 
-    private LinkedHashSet<String> m_Categories;
+    private LinkedHashSet<String>       m_Categories;
     private LinkedHashSet<SortOrderFS>  m_SortOrders;
 
     CategoriesFS()
@@ -151,14 +151,15 @@ public class CategoriesFS extends Categories
         {
             vec.add(new CategoryFS(str));
         }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 
     @Override
     public ArrayList<String> getAllCategorieNames()
     {
-        return new ArrayList<>(m_Categories);
+        ArrayList<String> vec = new ArrayList<>(m_Categories);
+        Collections.sort(vec, new Helper.SortStringIgnoreCase());
+        return vec;
     }
 
     @Override
@@ -254,7 +255,7 @@ public class CategoriesFS extends Categories
         {
             vec.add(sortOrder.getName());
         }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
+        Collections.sort(vec, new Helper.SortStringIgnoreCase());
         return vec;
     }
 }

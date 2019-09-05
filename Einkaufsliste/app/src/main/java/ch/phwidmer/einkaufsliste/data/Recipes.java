@@ -8,31 +8,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import ch.phwidmer.einkaufsliste.helper.Helper;
+
 public abstract class Recipes
 {
-    public interface Recipe
+    public abstract class Recipe implements Helper.NamedObject
     {
-        String getName();
+        public abstract int getNumberOfPersons();
+        public abstract void setNumberOfPersons(int number);
 
-        int getNumberOfPersons();
-        void setNumberOfPersons(int number);
-
-        RecipeItem addRecipeItem(String strIngredient);
-        void addRecipeItem(int position, final RecipeItem item);
-        void removeRecipeItem(RecipeItem r);
-        ArrayList<RecipeItem> getAllRecipeItems();
+        public abstract RecipeItem addRecipeItem(String strIngredient);
+        public abstract void addRecipeItem(int position, final RecipeItem item);
+        public abstract void removeRecipeItem(RecipeItem r);
+        public abstract ArrayList<RecipeItem> getAllRecipeItems();
 
         // Groups
 
-        void addGroup(String strName);
-        void removeGroup(String strName);
-        void renameGroup(String strOldName, String strNewName);
-        ArrayList<String> getAllGroupNames();
+        public abstract void addGroup(String strName);
+        public abstract void removeGroup(String strName);
+        public abstract void renameGroup(String strOldName, String strNewName);
+        public abstract ArrayList<String> getAllGroupNames();
 
-        RecipeItem addRecipeItemToGroup(String strGroup, String strIngredient);
-        void addRecipeItemToGroup(String strGroup, final RecipeItem r);
-        void removeRecipeItemFromGroup(String strGroup, RecipeItem r);
-        ArrayList<RecipeItem> getAllRecipeItemsInGroup(String strGroup);
+        public abstract RecipeItem addRecipeItemToGroup(String strGroup, String strIngredient);
+        public abstract void addRecipeItemToGroup(String strGroup, final RecipeItem r);
+        public abstract void removeRecipeItemFromGroup(String strGroup, RecipeItem r);
+        public abstract ArrayList<RecipeItem> getAllRecipeItemsInGroup(String strGroup);
     }
 
     public abstract Recipe addRecipe(String strName, int iNrPersons);

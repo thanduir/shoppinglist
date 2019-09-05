@@ -38,7 +38,7 @@ public class GroceryPlanningFactory
 
             case db_based:
             {
-                // TODO!
+                // Not implemented yet
                 return null;
             }
         }

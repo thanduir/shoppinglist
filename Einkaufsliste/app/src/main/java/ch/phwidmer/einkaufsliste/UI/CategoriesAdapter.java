@@ -101,7 +101,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     @Override
     public int getItemCount()
     {
-        return m_Categories.getSortOrdersCount();
+        return m_Categories.getCategoriesCount();
     }
 
     public void reactToSwipe(int position)
@@ -110,7 +110,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
         Categories.Category category = m_SortOrder.getOrder().get(position);
 
-        ArrayList<Ingredients.Ingredient> ingredientsUsingCategory = new ArrayList<>();
+        ArrayList<String> ingredientsUsingCategory = new ArrayList<>();
         if(m_Ingredients.isCategoryInUse(category, ingredientsUsingCategory))
         {
             notifyItemChanged(position);

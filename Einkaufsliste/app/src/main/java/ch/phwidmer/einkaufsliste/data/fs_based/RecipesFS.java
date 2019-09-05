@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.Recipes;
@@ -19,12 +20,12 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class RecipesFS extends Recipes
 {
-    public class RecipeFS implements Recipes.Recipe
+    public class RecipeFS extends Recipes.Recipe
     {
         String m_Name;
         private int m_NumberOfPersons = 0;
         private LinkedList<RecipeItemFS> m_Items = new LinkedList<>();
-        private TreeMap<String, LinkedList<RecipeItemFS>> m_Groups = new TreeMap<>(new Helper.SortIgnoreCase());
+        private TreeMap<String, LinkedList<RecipeItemFS>> m_Groups = new TreeMap<>(new Helper.SortStringIgnoreCase());
 
         RecipeFS(String strName)
         {
@@ -172,11 +173,11 @@ public class RecipesFS extends Recipes
         }
     }
 
-    private LinkedHashSet<RecipeFS> m_Recipies;
+    private TreeSet<RecipeFS> m_Recipies;
 
     RecipesFS()
     {
-        m_Recipies = new LinkedHashSet<>();
+        m_Recipies = new TreeSet<>(new Helper.SortNamedIgnoreCase());
     }
 
     @Override
@@ -272,7 +273,6 @@ public class RecipesFS extends Recipes
         {
             vec.add(recipe.getName());
         }
-        Collections.sort(vec, new Helper.SortIgnoreCase());
         return vec;
     }
 }
