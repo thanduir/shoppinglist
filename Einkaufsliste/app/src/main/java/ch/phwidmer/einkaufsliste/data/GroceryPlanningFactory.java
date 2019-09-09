@@ -27,7 +27,7 @@ public class GroceryPlanningFactory
         m_AppDataDirectory = appDataDirectory;
     }
 
-    public static GroceryPlanning groceryPlanning(Context context) throws IOException
+    public static GroceryPlanning groceryPlanning(Context context)
     {
         switch(m_Backend)
         {

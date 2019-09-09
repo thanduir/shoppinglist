@@ -98,17 +98,22 @@ public abstract class GroceryPlanning
             File fileOld = new File(fileToBeCreated.getAbsolutePath() + ".old");
             if(!fileToBeCreated.renameTo(fileOld))
             {
+                //noinspection ResultOfMethodCallIgnored
                 fileNew.delete();
+                //noinspection ResultOfMethodCallIgnored
                 fileOld.delete();
                 throw new IOException(context.getString(R.string.text_save_file_failed));
             }
             if(!fileNew.renameTo(fileToBeCreated))
             {
+                //noinspection ResultOfMethodCallIgnored
                 fileOld.renameTo(fileToBeCreated);
+                //noinspection ResultOfMethodCallIgnored
                 fileOld.delete();
                 throw new IOException(context.getString(R.string.text_save_file_failed));
             }
 
+            //noinspection ResultOfMethodCallIgnored
             fileOld.delete();
         }
 

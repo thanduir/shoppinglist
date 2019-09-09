@@ -1,6 +1,5 @@
 package ch.phwidmer.einkaufsliste.UI;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
-import java.io.IOException;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
@@ -36,15 +33,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_shopping);
 
-        try
-        {
-            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
-        }
-        catch(IOException e)
-        {
-            return;
-        }
-
+        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
         if(m_GroceryPlanning == null)
         {
             return;

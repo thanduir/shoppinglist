@@ -1,6 +1,5 @@
 package ch.phwidmer.einkaufsliste.UI;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -14,8 +13,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import java.io.IOException;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
@@ -42,14 +39,7 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_ingredients);
 
-        try
-        {
-            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
-        }
-        catch(IOException e)
-        {
-            return;
-        }
+        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
 
         m_FAB = findViewById(R.id.fab);
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);

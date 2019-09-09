@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
@@ -351,7 +352,11 @@ public class DataSynchronizationActivity extends AppCompatActivity implements In
 
         m_ListViewNearyDevices.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) ->
         {
-            String endpointId = (String)m_Devices.keySet().toArray()[position];
+            if(m_Devices.size() < position)
+            {
+                return;
+            }
+            String endpointId = (String) Objects.requireNonNull(m_Devices.keySet().toArray())[position];
             if(endpointId == null)
             {
                 return;

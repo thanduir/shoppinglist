@@ -54,14 +54,16 @@
     <string name="text_recipe_restored">Rezept wiederhergestellt</string>
     <string name="text_import_recipe">Rezept importieren</string>
     <string name="text_all_recipes_alreay_added">Kein Rezept zum hinzufügen verfügbar, weil alle Rezept schon hinzugefügt wurden.</string>
-    <string name="text_shoppnglist_reset">Einkaufsliste zurücksetzen</string>
-    <string name="text_shoppnglist_restored">Einkaufsliste wiederhergestellt</string>
+    <string name="text_reset_shoppinglist_header">Einkaufsliste zurücksetzen</string>
+    <string name="text_reset_shoppnglist">Soll die aktuelle Einkaufsliste wirklich zurückgesetzt werden?</string>
     <string name="text_add_sortorder">Sortierreihenfolge hinzufügen</string>
     <string name="text_sortorder_deleted">Sortierreihenfolge gelöscht</string>
     <string name="text_sortorder_restored">Sortierreihenfolge wiederhergestellt</string>
     <string name="text_default_unit">Standardeinheit</string>
     <string name="text_default_nrpersons">Standard # Personen</string>
     <string name="text_default_sortorder">Standard-Sortierreihenfolge</string>
+    <string name="text_rename_sortorder">Sortierreihenfolge \"%s\" umbenennen</string>
+    <string name="text_sortorder_renamed">Sortierreihenfolge \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_rename_category">Kategorie \"%s\" umbenennen</string>
     <string name="text_category_renamed">Kategorie \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_rename_ingredient">Zutat \"%s\" umbenennen</string>
@@ -70,7 +72,7 @@
     <string name="text_copy_recipe">Rezept \"%s\" kopieren</string>
     <string name="text_recipe_renamed">Rezept \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_delete_recipe_header">Rezept löschen</string>
-    <string name="text_delete_recipe">Soll das Rezept \"%s\" wirklich gelöscht werdeb?</string>
+    <string name="text_delete_recipe">Soll das Rezept \"%s\" wirklich gelöscht werden?</string>
     <string name="text_rename_group">Alternativen-Gruppe \"%s\" umbenennen</string>
     <string name="text_group_renamed">Alternativen-Gruppe \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_add_group">Alternativen-Gruppe hinzufügen</string>

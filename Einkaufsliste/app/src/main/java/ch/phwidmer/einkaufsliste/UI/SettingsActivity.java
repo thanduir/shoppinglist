@@ -1,6 +1,5 @@
 package ch.phwidmer.einkaufsliste.UI;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import ch.phwidmer.einkaufsliste.R;
@@ -40,16 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        GroceryPlanning groceryPlanning;
-        try
-        {
-            groceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
-        }
-        catch(IOException e)
-        {
-            return;
-        }
-
+        GroceryPlanning groceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
         if(groceryPlanning == null)
         {
             return;

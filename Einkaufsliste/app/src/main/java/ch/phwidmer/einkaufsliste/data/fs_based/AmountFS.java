@@ -1,8 +1,5 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
-import android.content.Context;
-
-import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Amount;
 
 public class AmountFS extends Amount

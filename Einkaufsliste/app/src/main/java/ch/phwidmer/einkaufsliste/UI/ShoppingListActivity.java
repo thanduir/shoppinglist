@@ -1,10 +1,11 @@
 package ch.phwidmer.einkaufsliste.UI;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -35,8 +35,6 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
 {
     private GroceryPlanning m_GroceryPlanning;
 
-    private ShoppingList m_RecentlyDeletedShoppingList;
-
     private RecyclerView            m_RecyclerViewRecipes;
     private ShoppingRecipesAdapter  m_AdapterRecipes;
 
@@ -49,14 +47,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_shopping_list);
 
-        try
-        {
-            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
-        }
-        catch(IOException e)
-        {
-            return;
-        }
+        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
 
         m_FAB = findViewById(R.id.fab);
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
@@ -335,32 +326,19 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
 
     public void onResetList(View v)
     {
-        m_RecentlyDeletedShoppingList = m_GroceryPlanning.shoppingList();
-
-        CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
-
-        m_GroceryPlanning.shoppingList().clearShoppingList();
-        m_AdapterRecipes = new ShoppingRecipesAdapter(coordLayout, m_RecyclerViewRecipes, m_GroceryPlanning.ingredients(), m_GroceryPlanning.shoppingList());
-        m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
-        initTouchHelper();
-
-        // TODO: Undo ersetzen durch Nachfrage "Wirklich löschen?"
-        /*
-        // Allow undo
-
-        Snackbar snackbar = Snackbar.make(coordLayout, R.string.text_shoppnglist_reset, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.text_undo, (View view) ->
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.text_reset_shoppinglist_header));
+        builder.setMessage(getResources().getString(R.string.text_reset_shoppnglist));
+        builder.setPositiveButton(android.R.string.yes, (DialogInterface dialog, int which) ->
         {
-            m_GroceryPlanning.m_ShoppingList = m_RecentlyDeletedShoppingList;
+            CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
+            m_GroceryPlanning.shoppingList().clearShoppingList();
             m_AdapterRecipes = new ShoppingRecipesAdapter(coordLayout, m_RecyclerViewRecipes, m_GroceryPlanning.ingredients(), m_GroceryPlanning.shoppingList());
             m_RecyclerViewRecipes.setAdapter(m_AdapterRecipes);
-
-            m_RecentlyDeletedShoppingList = null;
-
-            Snackbar snackbar1 = Snackbar.make(coordLayout, R.string.text_shoppnglist_restored, Snackbar.LENGTH_SHORT);
-            snackbar1.show();
+            initTouchHelper();
         });
-        snackbar.show();*/
+        builder.setNegativeButton(android.R.string.no, (DialogInterface dialog, int which) -> {});
+        builder.show();
     }
 
     @Override

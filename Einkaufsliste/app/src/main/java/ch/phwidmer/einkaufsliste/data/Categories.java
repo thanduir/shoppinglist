@@ -53,7 +53,6 @@ public abstract class Categories
     public abstract void removeSortOrder(String strName);
     public abstract SortOrder getSortOrder(String strName);
 
-    public abstract int getSortOrdersCount();
     public abstract ArrayList<SortOrder> getAllSortOrders();
     public abstract ArrayList<String> getAllSortOrderNames();
 

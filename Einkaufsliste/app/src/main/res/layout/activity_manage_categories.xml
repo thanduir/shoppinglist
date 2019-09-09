@@ -52,15 +52,6 @@
                 android:scaleType="center"
                 android:contentDescription="@string/button_add"
                 android:src="@drawable/ic_add_black_24dp" />
-
-            <ImageView
-                android:id="@+id/imageViewDelSortOrder"
-                android:layout_width="?listPreferredItemHeightSmall"
-                android:layout_height="match_parent"
-                android:onClick="onDeleteSortOrder"
-                android:scaleType="center"
-                android:contentDescription="@string/button_delete"
-                android:src="@drawable/ic_delete_black_24dp" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

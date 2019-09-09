@@ -1,5 +1,6 @@
 package ch.phwidmer.einkaufsliste.UI;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -75,6 +76,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         return new CategoriesAdapter.ViewHolder(v);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull final CategoriesAdapter.ViewHolder holder, int position)
     {
@@ -87,14 +89,12 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
                 return true;
         });
 
-        holder.m_ReorderView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    m_TouchHelper.startDrag(holder);
-                }
-                return false;
+        holder.m_ReorderView.setOnTouchListener((View v, MotionEvent event) ->
+        {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                m_TouchHelper.startDrag(holder);
             }
+            return false;
         });
     }
 

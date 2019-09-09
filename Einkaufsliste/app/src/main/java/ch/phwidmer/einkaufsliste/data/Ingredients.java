@@ -36,13 +36,13 @@ public abstract class Ingredients
     public abstract ArrayList<Ingredient> getAllIngredients();
     public abstract ArrayList<String> getAllIngredientNames();
 
-    public void onCategoryRenamed(Categories.Category category, Categories.Category newCategory)
+    public void onCategoryRenamed(String oldCategory, String newCategory)
     {
         for(Ingredient i : getAllIngredients())
         {
-            if(i.getCategory().equals(category.getName()))
+            if(i.getCategory().equals(oldCategory))
             {
-                i.setCategory(newCategory.getName());
+                i.setCategory(newCategory);
             }
         }
     }
@@ -59,6 +59,17 @@ public abstract class Ingredients
             }
         }
         return stillInUse;
+    }
+
+    public void onSortOrderRenamed(String oldSortOrder, String newSortOrder)
+    {
+        for(Ingredient i : getAllIngredients())
+        {
+            if(i.getProvenance().equals(oldSortOrder))
+            {
+                i.setProvenance(newSortOrder);
+            }
+        }
     }
 
     public boolean isSortOrderInUse(String strSortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)

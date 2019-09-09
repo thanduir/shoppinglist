@@ -1,15 +1,6 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.util.JsonReader;
-import android.util.JsonWriter;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -72,7 +63,8 @@ public class RecipesFS extends Recipes
         @Override
         public void removeRecipeItem(RecipeItem item)
         {
-            m_Items.remove((RecipeItemFS)item);
+            RecipeItemFS itemFS = (RecipeItemFS)item;
+            m_Items.remove(itemFS);
         }
         @Override
         public ArrayList<RecipeItem> getAllRecipeItems()
@@ -159,7 +151,8 @@ public class RecipesFS extends Recipes
                 return;
             }
 
-            m_Groups.get(strGroup).remove((RecipeItemFS)r);
+            RecipeItemFS rFS = (RecipeItemFS)r;
+            m_Groups.get(strGroup).remove(rFS);
         }
         @Override
         public ArrayList<RecipeItem> getAllRecipeItemsInGroup(String strGroup)
@@ -169,7 +162,7 @@ public class RecipesFS extends Recipes
                 return null;
             }
 
-            return new ArrayList<RecipeItem>(m_Groups.get(strGroup));
+            return new ArrayList<>(m_Groups.get(strGroup));
         }
     }
 
@@ -206,7 +199,8 @@ public class RecipesFS extends Recipes
     @Override
     public void removeRecipe(Recipe r)
     {
-        m_Recipies.remove((RecipeFS) r);
+        RecipeFS rFS = (RecipeFS)r;
+        m_Recipies.remove(rFS);
     }
 
     @Override
@@ -241,7 +235,16 @@ public class RecipesFS extends Recipes
         {
             recipe.m_Items.add(new RecipeItemFS(item));
         }
-        // TODO: ALSO COPY GROUPS!
+        for(TreeMap.Entry<String, LinkedList<RecipeItemFS>> oldItem : oldRecipe.m_Groups.entrySet())
+        {
+            LinkedList<RecipeItemFS> items = new LinkedList<>();
+            for(RecipeItemFS item : oldItem.getValue())
+            {
+                items.add(new RecipeItemFS(item));
+            }
+            recipe.m_Groups.put(oldItem.getKey(), items);
+        }
+
         m_Recipies.add(recipe);
     }
 

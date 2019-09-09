@@ -1,6 +1,7 @@
 package ch.phwidmer.einkaufsliste.UI;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -43,14 +44,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
         GroceryPlanningFactory.setBackend(GroceryPlanningFactory.Backend.fs_based);
         GroceryPlanningFactory.setAppDataDirectory(m_AppDataDirectory);
-        try
-        {
-            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
-        }
-        catch(IOException e)
-        {
-            showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage());
-        }
+        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
 
         writeStdDataFileIfNotPresent();
     }
@@ -165,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
                 m_GroceryPlanning.saveDataToFile(file, getBaseContext());
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
-                showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage());
+                showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage(), this);
             }
         } else if (tag.equals("onImport"))
         {
@@ -179,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded, strInput), Toast.LENGTH_SHORT).show();
             } catch (IOException e)
             {
-                showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage());
+                showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage(), this);
             }
         }
     }
@@ -216,9 +210,9 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         return super.onOptionsItemSelected(item);
     }
 
-    private void showErrorDialog(String title, String message)
+    public static void showErrorDialog(String title, String message, Context context)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
         builder.setMessage(message);
         builder.setIcon(android.R.drawable.ic_dialog_alert);

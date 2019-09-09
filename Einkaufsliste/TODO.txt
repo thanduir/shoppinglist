@@ -1,11 +1,6 @@
 TODO
 ====
 
-- TODOs in Code!
-- Test app and fix bug!
-- Clean up as many warnings (yellow marks) as possible
-
-- Allow renaming of sortorders! (mit menu (del + rename) analog zu rezepte)
 - Possibility to refer to other recipies within a recipe (or a subcategory for "partial recipes")? E.g. Salat within "Pommes + Cordon-Bleu" -> dependencies?
 - Possibility to add a picture to a recipe (-> can I save these in json? Or how to do this technically? Save in db should work, but otherwise?)
 

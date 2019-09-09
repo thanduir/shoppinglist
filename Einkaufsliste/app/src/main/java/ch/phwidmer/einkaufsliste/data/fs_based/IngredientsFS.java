@@ -1,8 +1,6 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
 import ch.phwidmer.einkaufsliste.data.Amount;
@@ -102,7 +100,8 @@ public class IngredientsFS extends Ingredients
     @Override
     public void removeIngredient(Ingredient ingredient)
     {
-        m_Ingredients.remove((IngredientFS)ingredient);
+        IngredientFS ingredientFS = (IngredientFS)ingredient;
+        m_Ingredients.remove(ingredientFS);
     }
 
     @Override

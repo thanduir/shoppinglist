@@ -1,14 +1,12 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.ShoppingList;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
-import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class ShoppingListFS extends ShoppingList
 {
@@ -78,7 +76,8 @@ public class ShoppingListFS extends ShoppingList
         @Override
         public void removeItem(ShoppingListItem item)
         {
-            m_Items.remove((ShoppingListItemFS)item);
+            ShoppingListItemFS itemFS = (ShoppingListItemFS)item;
+            m_Items.remove(itemFS);
         }
         @Override
         public ArrayList<ShoppingListItem> getAllItems()
@@ -147,7 +146,8 @@ public class ShoppingListFS extends ShoppingList
     @Override
     public void removeShoppingRecipe(ShoppingRecipe recipe)
     {
-        m_ShoppingRecipies.remove((ShoppingRecipeFS) recipe);
+        ShoppingRecipeFS recipeFS = (ShoppingRecipeFS)recipe;
+        m_ShoppingRecipies.remove(recipeFS);
     }
 
     @Override

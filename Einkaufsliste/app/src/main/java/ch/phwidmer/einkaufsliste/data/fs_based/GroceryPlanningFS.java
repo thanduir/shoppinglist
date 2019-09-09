@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
+import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.UI.MainActivity;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 
@@ -15,7 +16,7 @@ public class GroceryPlanningFS extends GroceryPlanning
 
     private File m_AppDataDirectory;
 
-    public static GroceryPlanningFS getInstance(File appDataDirectory, Context context) throws IOException
+    public static GroceryPlanningFS getInstance(File appDataDirectory, Context context)
     {
         if(m_Instance == null)
         {
@@ -24,7 +25,7 @@ public class GroceryPlanningFS extends GroceryPlanning
         return m_Instance;
     }
 
-    private GroceryPlanningFS(File appDataDirectory, Context context) throws IOException
+    private GroceryPlanningFS(File appDataDirectory, Context context)
     {
         clearAll();
 
@@ -34,11 +35,25 @@ public class GroceryPlanningFS extends GroceryPlanning
         File file = new File(m_AppDataDirectory, MainActivity.c_strSaveFilename);
         if(file.exists())
         {
-            loadDataFromFile(file);
+            try
+            {
+                loadDataFromFile(file);
+            }
+            catch(IOException e)
+            {
+                MainActivity.showErrorDialog(context.getString(R.string.text_load_file_failed), e.getMessage(), context);
+            }
         }
         else
         {
-            saveDataToFile(file, context);
+            try
+            {
+                saveDataToFile(file, context);
+            }
+            catch(IOException e)
+            {
+                MainActivity.showErrorDialog(context.getString(R.string.text_save_file_failed), e.getMessage(), context);
+            }
         }
     }
 
@@ -70,6 +85,7 @@ public class GroceryPlanningFS extends GroceryPlanning
             }
             catch(IOException e)
             {
+                //noinspection ResultOfMethodCallIgnored
                 m_File.delete();
             }
             finally

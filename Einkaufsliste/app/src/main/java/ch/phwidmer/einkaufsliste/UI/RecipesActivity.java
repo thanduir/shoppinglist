@@ -26,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -72,14 +71,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_recipes);
 
-        try
-        {
-            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
-        }
-        catch(IOException e)
-        {
-            return;
-        }
+        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
 
         m_FAB = findViewById(R.id.fab);
         m_FABGroup = findViewById(R.id.fabGroup);

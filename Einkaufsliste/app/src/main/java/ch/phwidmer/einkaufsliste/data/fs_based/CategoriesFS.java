@@ -236,12 +236,6 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public int getSortOrdersCount()
-    {
-        return m_SortOrders.size();
-    }
-
-    @Override
     public ArrayList<SortOrder> getAllSortOrders()
     {
         return new ArrayList<>(m_SortOrders);
