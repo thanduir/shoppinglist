@@ -77,7 +77,7 @@ public abstract class Amount {
             return;
         }
         float quanitityMax = getQuantityMax();
-        setQuantityMin(quanitityMax + getChangeAmount(quanitityMax));
+        setQuantityMax(quanitityMax + getChangeAmount(quanitityMax));
     }
 
     public void decreaseAmountMax()
@@ -91,7 +91,7 @@ public abstract class Amount {
         float changeAmount = getChangeAmount(quanitityMax);
         if(quanitityMax > changeAmount)
         {
-            setQuantityMin(quanitityMax - changeAmount);
+            setQuantityMax(quanitityMax - changeAmount);
         }
         else
         {

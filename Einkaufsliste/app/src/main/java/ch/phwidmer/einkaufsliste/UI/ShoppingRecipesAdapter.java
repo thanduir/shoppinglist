@@ -479,7 +479,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 }
                 else
                 {
-                    item.getAmount().setQuantityMax(Float.valueOf(s.toString()));
+                    item.getAmount().setQuantityMin(Float.valueOf(s.toString()));
                 }
             }
 

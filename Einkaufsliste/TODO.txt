@@ -2,13 +2,12 @@ TODO
 ====
 
 - Possibility to refer to other recipies within a recipe (or a subcategory for "partial recipes")? E.g. Salat within "Pommes + Cordon-Bleu" -> dependencies?
-- Possibility to add a picture to a recipe (-> can I save these in json? Or how to do this technically? Save in db should work, but otherwise?)
-
 - db statt json für aktuelle daten (json nur noch für import / export)
     - db: wie sortieren? SQL sort + danach noch spezialsort?
     - Reset db button in settings!
     - Ask before overwriting db (e.g. before importing file / resetting db)?
 
+- Possibility to add a picture to a recipe (-> can I save these in json? Or how to do this technically? Save in db should work, but otherwise?)
 - Use Google Paging Library (https://guides.codepath.com/android/Paging-Library-Guide) to speed up large RecyclerViews?
 - Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
     -> efficiently implementing this probably depends on a redesign of SortedShoppingList
