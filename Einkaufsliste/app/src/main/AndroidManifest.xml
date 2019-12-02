@@ -18,14 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".UI.DataSynchronizationActivity"
-            android:label="@string/activity_data_synchronisation"
-            android:parentActivityName=".UI.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".UI.MainActivity" />
-        </activity>
-        <activity
             android:name=".UI.SettingsActivity"
             android:label="@string/activity_settings"
             android:parentActivityName=".UI.MainActivity">

@@ -1,23 +1,21 @@
 TODO
 ====
 
-- Possibility to refer to other recipies within a recipe (or a subcategory for "partial recipes")? E.g. Salat within "Pommes + Cordon-Bleu" -> dependencies?
+- Can I change the code NOT to return "null-pointers"? -> one alternative is to return an "Optional"-type class
+    -> Where do i have to ensure this? Look through all the code!
+
 - db statt json für aktuelle daten (json nur noch für import / export)
     - db: wie sortieren? SQL sort + danach noch spezialsort?
     - Reset db button in settings!
-    - Ask before overwriting db (e.g. before importing file / resetting db)?
+    - Ask before overwriting db (e.g. before importing file / resetting db)!
+
+- Use Google Paging Library (https://guides.codepath.com/android/Paging-Library-Guide) to speed up large RecyclerViews?
+- Better possibilities for "insert-list" (add *-lists)? Sometimes certain items are hidden by the on-screen keyboard. should still be text searchable
+- Read (+) button sometimes not accessible (on bottom, but not visible and no scrolling possible)
+- Save-icon should rather be an export icon (how does this normally look?) The same for import
+- Alternatives: Könnten diese in der ShoppingList rückgängig-machbar sein (bzw. changeable)?
 
 - Possibility to add a picture to a recipe (-> can I save these in json? Or how to do this technically? Save in db should work, but otherwise?)
-- Use Google Paging Library (https://guides.codepath.com/android/Paging-Library-Guide) to speed up large RecyclerViews?
 - Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
     -> efficiently implementing this probably depends on a redesign of SortedShoppingList
     -> first define exactly how this should work! (vanish on click?)
-
-
-Low priority
-------------
-
-- Data synchronisation - part 2:
-    1. merge-functionality
-    2. two-way auto-sync with merge
-    3. [optional] Connect to Google App Folder API / Google App Engine / Amazon Web Services / Dropbox datastore API / something similar (or some of them)

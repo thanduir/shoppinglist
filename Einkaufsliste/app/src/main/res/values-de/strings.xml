@@ -9,14 +9,12 @@
     <string name="button_settings">Einstellungen</string>
     <string name="button_add">Hinzufügen</string>
     <string name="button_delete">Löschen</string>
-    <string name="button_datasynchronization">Daten synchronisieren</string>
     <string name="activity_ingredients">Zutaten verwalten</string>
     <string name="activity_categories">Sortierreihenfolge der Kategorien</string>
     <string name="activity_recipes">Rezepte verwalten</string>
     <string name="activity_manage_shoppinglist">Einkaufsliste erstellen</string>
     <string name="activity_go_shopping">Go Shopping!</string>
     <string name="activity_settings">Einstellungen</string>
-    <string name="activity_data_synchronisation">Daten-Synchronisierung</string>
     <string name="text_category">Kategorie</string>
     <string name="text_provenance">Herkunft</string>
     <string name="text_numberofpersons"># Personen</string>

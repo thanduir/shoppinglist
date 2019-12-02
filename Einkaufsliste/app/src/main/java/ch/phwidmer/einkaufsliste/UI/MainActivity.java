@@ -25,8 +25,6 @@ import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    public static final String EXTRA_SAVEDFILESPATH = "ch.phwidmer.einkaufsliste.SAVEDFILESPATH";
-
     public static final String c_strStdDataFilename = "ch.phwidmer.einkaufsliste.default.json";
     public static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
 
@@ -200,12 +198,6 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         else if (id == R.id.actionbar_button_export)
         {
             onExport();
-        }
-        else if (id == R.id.actionbar_button_datasynchronization)
-        {
-            Intent intent = new Intent(this, DataSynchronizationActivity.class);
-            intent.putExtra(EXTRA_SAVEDFILESPATH, m_AppDataDirectory.getPath());
-            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

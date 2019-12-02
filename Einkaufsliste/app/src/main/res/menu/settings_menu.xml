@@ -15,12 +15,6 @@
         android:icon="@drawable/ic_save_black_24dp" />
 
     <item
-        android:id="@+id/actionbar_button_datasynchronization"
-        android:title="@string/button_datasynchronization"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_data_sync" />
-
-    <item
         android:id="@+id/actionbar_button_settings"
         android:title="@string/button_settings"
         app:showAsAction="ifRoom"
