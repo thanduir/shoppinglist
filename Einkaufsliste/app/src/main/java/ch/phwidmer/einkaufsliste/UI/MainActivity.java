@@ -26,8 +26,8 @@ import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    public static final String c_strStdDataFilename = "ch.phwidmer.einkaufsliste.default.json";
-    public static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
+    private static final String c_strStdDataFilename = "ch.phwidmer.einkaufsliste.default.json";
+    private static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
 
     private File m_AppDataDirectory = null;
 
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
         GroceryPlanningFactory.setBackend(GroceryPlanningFactory.Backend.fs_based);
         GroceryPlanningFactory.setAppDataDirectory(m_AppDataDirectory);
+        GroceryPlanningFactory.setAppSaveFilename(c_strSaveFilename);
         m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
 
         writeStdDataFileIfNotPresent();

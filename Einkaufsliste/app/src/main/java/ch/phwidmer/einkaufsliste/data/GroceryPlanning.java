@@ -12,8 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import ch.phwidmer.einkaufsliste.R;
-
 public abstract class GroceryPlanning
 {
     private static int     SERIALIZING_VERSION = 1;
@@ -103,7 +101,7 @@ public abstract class GroceryPlanning
                 fileNew.delete();
                 //noinspection ResultOfMethodCallIgnored
                 fileOld.delete();
-                throw new IOException(context.getString(R.string.text_save_file_failed));
+                throw new IOException("Saving backup file failed");
             }
             if(!fileNew.renameTo(fileToBeCreated))
             {
@@ -111,7 +109,7 @@ public abstract class GroceryPlanning
                 fileOld.renameTo(fileToBeCreated);
                 //noinspection ResultOfMethodCallIgnored
                 fileOld.delete();
-                throw new IOException(context.getString(R.string.text_save_file_failed));
+                throw new IOException("Couldn't move new file");
             }
 
             //noinspection ResultOfMethodCallIgnored

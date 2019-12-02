@@ -16,24 +16,26 @@ public class GroceryPlanningFS extends GroceryPlanning
     private static GroceryPlanningFS m_Instance = null;
 
     private File m_AppDataDirectory;
+    private String m_strSaveFilename;
 
-    public static GroceryPlanningFS getInstance(@NonNull File appDataDirectory, @NonNull Context context)
+    public static GroceryPlanningFS getInstance(@NonNull File appDataDirectory, @NonNull String strSaveFilename, @NonNull Context context)
     {
         if(m_Instance == null)
         {
-            m_Instance = new GroceryPlanningFS(appDataDirectory, context);
+            m_Instance = new GroceryPlanningFS(appDataDirectory, strSaveFilename, context);
         }
         return m_Instance;
     }
 
-    private GroceryPlanningFS(@NonNull File appDataDirectory, @NonNull Context context)
+    private GroceryPlanningFS(@NonNull File appDataDirectory, @NonNull String strSaveFilename, @NonNull Context context)
     {
         clearAll();
 
         m_AppDataDirectory = appDataDirectory;
+        m_strSaveFilename = strSaveFilename;
 
         // Load saved data
-        File file = new File(m_AppDataDirectory, MainActivity.c_strSaveFilename);
+        File file = new File(m_AppDataDirectory, strSaveFilename);
         if(file.exists())
         {
             try
@@ -99,7 +101,7 @@ public class GroceryPlanningFS extends GroceryPlanning
     @Override
     public void flush()
     {
-        File file = new File(m_AppDataDirectory, MainActivity.c_strSaveFilename);
+        File file = new File(m_AppDataDirectory, m_strSaveFilename);
 
         Thread thread = new Thread(new SaveToFileThread(file));
         thread.start();

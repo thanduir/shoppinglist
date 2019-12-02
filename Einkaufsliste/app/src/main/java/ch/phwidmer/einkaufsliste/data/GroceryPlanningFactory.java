@@ -17,6 +17,7 @@ public class GroceryPlanningFactory
 
     private static Backend m_Backend = null;
     private static File m_AppDataDirectory = null;
+    private static String m_strAppSaveFilename = null;
 
     public static void setBackend(Backend backend)
     {
@@ -26,6 +27,11 @@ public class GroceryPlanningFactory
     public static void setAppDataDirectory(File appDataDirectory)
     {
         m_AppDataDirectory = appDataDirectory;
+    }
+
+    public static void setAppSaveFilename(String appSaveFilename)
+    {
+        m_strAppSaveFilename = appSaveFilename;
     }
 
     public static GroceryPlanning groceryPlanning(@NonNull Context context)
@@ -39,7 +45,7 @@ public class GroceryPlanningFactory
         {
             case fs_based:
             {
-                return GroceryPlanningFS.getInstance(m_AppDataDirectory, context);
+                return GroceryPlanningFS.getInstance(m_AppDataDirectory, m_strAppSaveFilename, context);
             }
 
             case db_based:
