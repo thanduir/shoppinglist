@@ -5,10 +5,9 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.concurrent.locks.ReentrantLock;
 
-import ch.phwidmer.einkaufsliste.R;
-import ch.phwidmer.einkaufsliste.UI.MainActivity;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 
 public class GroceryPlanningFS extends GroceryPlanning
@@ -44,7 +43,7 @@ public class GroceryPlanningFS extends GroceryPlanning
             }
             catch(IOException e)
             {
-                MainActivity.showErrorDialog(context.getString(R.string.text_load_file_failed), e.getMessage(), context);
+                throw new InvalidParameterException(e.getMessage());
             }
         }
         else
@@ -55,7 +54,7 @@ public class GroceryPlanningFS extends GroceryPlanning
             }
             catch(IOException e)
             {
-                MainActivity.showErrorDialog(context.getString(R.string.text_save_file_failed), e.getMessage(), context);
+                throw new InvalidParameterException(e.getMessage());
             }
         }
     }

@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import ch.phwidmer.einkaufsliste.R;
@@ -30,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     private static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
 
     private File m_AppDataDirectory = null;
-
     private GroceryPlanning m_GroceryPlanning;
 
     @Override
@@ -44,7 +44,14 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         GroceryPlanningFactory.setBackend(GroceryPlanningFactory.Backend.fs_based);
         GroceryPlanningFactory.setAppDataDirectory(m_AppDataDirectory);
         GroceryPlanningFactory.setAppSaveFilename(c_strSaveFilename);
-        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        try {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(InvalidParameterException e)
+        {
+            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+            return;
+        }
 
         writeStdDataFileIfNotPresent();
     }
@@ -204,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         return super.onOptionsItemSelected(item);
     }
 
-    public static void showErrorDialog(@NonNull String title, @NonNull String message, @NonNull Context context)
+    private static void showErrorDialog(@NonNull String title, @NonNull String message, @NonNull Context context)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
