@@ -1,9 +1,6 @@
 TODO
 ====
 
-- Can I change the code NOT to return "null-pointers"? -> one alternative is to return an "Optional"-type class
-    -> Where do i have to ensure this? Look through all the code!
-
 - db statt json für aktuelle daten (json nur noch für import / export)
     - db: wie sortieren? SQL sort + danach noch spezialsort?
     - Reset db button in settings!

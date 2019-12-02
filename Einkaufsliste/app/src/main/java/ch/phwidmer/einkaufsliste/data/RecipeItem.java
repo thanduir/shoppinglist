@@ -1,6 +1,7 @@
 package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import ch.phwidmer.einkaufsliste.R;
 
@@ -14,21 +15,21 @@ public interface RecipeItem
     }
 
     String getIngredient();
-    void setIngredient(String strIngredient);
+    void setIngredient(@NonNull String strIngredient);
 
     Amount getAmount();
-    void setAmount(Amount amount);
+    void setAmount(@NonNull Amount amount);
 
     String getAdditionalInfo();
-    void setAdditionInfo(String additionalInfo);
+    void setAdditionInfo(@NonNull String additionalInfo);
 
     Size getSize();
-    void setSize(Size size);
+    void setSize(@NonNull Size size);
 
     boolean isOptional();
     void setIsOptional(boolean optional);
 
-    static String toUIString(Context context, Size size)
+    static String toUIString(@NonNull Context context, @NonNull Size size)
     {
         switch(size)
         {

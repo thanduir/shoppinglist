@@ -7,6 +7,7 @@ import android.util.JsonWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.helper.Helper;
 
@@ -17,35 +18,35 @@ public abstract class Recipes
         public abstract int getNumberOfPersons();
         public abstract void setNumberOfPersons(int number);
 
-        public abstract RecipeItem addRecipeItem(String strIngredient);
-        public abstract void addRecipeItem(int position, final RecipeItem item);
-        public abstract void removeRecipeItem(RecipeItem r);
+        public abstract Optional<RecipeItem> addRecipeItem(@NonNull String strIngredient);
+        public abstract void addRecipeItem(int position, @NonNull final RecipeItem item);
+        public abstract void removeRecipeItem(@NonNull RecipeItem r);
         public abstract ArrayList<RecipeItem> getAllRecipeItems();
 
         // Groups
 
-        public abstract void addGroup(String strName);
-        public abstract void removeGroup(String strName);
-        public abstract void renameGroup(String strOldName, String strNewName);
+        public abstract void addGroup(@NonNull String strName);
+        public abstract void removeGroup(@NonNull String strName);
+        public abstract void renameGroup(@NonNull String strOldName, @NonNull String strNewName);
         public abstract ArrayList<String> getAllGroupNames();
 
-        public abstract RecipeItem addRecipeItemToGroup(String strGroup, String strIngredient);
-        public abstract void addRecipeItemToGroup(String strGroup, final RecipeItem r);
-        public abstract void removeRecipeItemFromGroup(String strGroup, RecipeItem r);
-        public abstract ArrayList<RecipeItem> getAllRecipeItemsInGroup(String strGroup);
+        public abstract Optional<RecipeItem> addRecipeItemToGroup(@NonNull String strGroup, @NonNull String strIngredient);
+        public abstract void addRecipeItemToGroup(@NonNull String strGroup, @NonNull final RecipeItem r);
+        public abstract void removeRecipeItemFromGroup(@NonNull String strGroup, @NonNull RecipeItem r);
+        public abstract ArrayList<RecipeItem> getAllRecipeItemsInGroup(@NonNull String strGroup);
     }
 
-    public abstract Recipe addRecipe(String strName, int iNrPersons);
-    public abstract void addRecipe(String strName, final Recipe r);
-    public abstract void removeRecipe(Recipe r);
-    public abstract void renameRecipe(Recipe recipe, String strNewName);
-    public abstract void copyRecipe(Recipe recipe, String strNewName);
-    public abstract Recipe getRecipe(String strName);
+    public abstract Optional<Recipe> addRecipe(@NonNull String strName, int iNrPersons);
+    public abstract void addRecipe(@NonNull String strName, @NonNull final Recipe r);
+    public abstract void removeRecipe(@NonNull Recipe r);
+    public abstract void renameRecipe(@NonNull Recipe recipe, @NonNull String strNewName);
+    public abstract void copyRecipe(@NonNull Recipe recipe, @NonNull String strNewName);
+    public abstract Optional<Recipe> getRecipe(@NonNull String strName);
 
     public abstract ArrayList<Recipe> getAllRecipes();
     public abstract ArrayList<String> getAllRecipeNames();
 
-    public boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> recipesUsingIngredient)
+    public boolean isIngredientInUse(@NonNull String strIngredient, @NonNull ArrayList<String> recipesUsingIngredient)
     {
         boolean stillInUse = false;
         for(Recipe recipe : getAllRecipes())
@@ -81,7 +82,7 @@ public abstract class Recipes
         return stillInUse;
     }
 
-    public void onIngredientRenamed(String strIngredient, String strNewName)
+    public void onIngredientRenamed(@NonNull String strIngredient, @NonNull String strNewName)
     {
         for(Recipe r : getAllRecipes())
         {
@@ -106,7 +107,7 @@ public abstract class Recipes
         }
     }
 
-    boolean checkDataConsistency(Ingredients ingredients, LinkedList<String> missingIngredients)
+    boolean checkDataConsistency(@NonNull Ingredients ingredients, @NonNull LinkedList<String> missingIngredients)
     {
         boolean dataConsistent = true;
         for(Recipe recipe : getAllRecipes())
@@ -114,7 +115,7 @@ public abstract class Recipes
             for(RecipeItem ri : recipe.getAllRecipeItems())
             {
                 String ingredient = ri.getIngredient();
-                if(ingredients.getIngredient(ingredient) == null)
+                if(!ingredients.getIngredient(ingredient).isPresent())
                 {
                     if(!missingIngredients.contains(ingredient))
                     {
@@ -129,7 +130,7 @@ public abstract class Recipes
                 for(RecipeItem ri : recipe.getAllRecipeItemsInGroup(strGroup))
                 {
                     String ingredient = ri.getIngredient();
-                    if(ingredients.getIngredient(ingredient) == null)
+                    if(!ingredients.getIngredient(ingredient).isPresent())
                     {
                         if(!missingIngredients.contains(ingredient))
                         {
@@ -145,7 +146,7 @@ public abstract class Recipes
 
     // Serializing
 
-    void saveToJson(JsonWriter writer) throws IOException
+    void saveToJson(@NonNull JsonWriter writer) throws IOException
     {
         writer.beginObject();
         writer.name("id").value("Recipes");
@@ -177,7 +178,7 @@ public abstract class Recipes
         writer.endObject();
     }
 
-    private void writeRecipeItem(JsonWriter writer, RecipeItem ri) throws IOException
+    private void writeRecipeItem(@NonNull JsonWriter writer, @NonNull RecipeItem ri) throws IOException
     {
         writer.name(ri.getIngredient());
         writer.beginObject();
@@ -196,7 +197,7 @@ public abstract class Recipes
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader) throws IOException
+    void readFromJson(@NonNull JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -215,7 +216,12 @@ public abstract class Recipes
             }
             else
             {
-                Recipe recipe = addRecipe(name, 0);
+                Optional<Recipe> optRecipe = addRecipe(name, 0);
+                if(!optRecipe.isPresent())
+                {
+                    throw new IOException();
+                }
+                Recipe recipe = optRecipe.get();
 
                 reader.beginObject();
                 while (reader.hasNext())
@@ -240,8 +246,12 @@ public abstract class Recipes
                             }
                             else
                             {
-                                RecipeItem item = recipe.addRecipeItemToGroup(groupName, groupCurrentName);
-                                readRecipeItem(reader, item);
+                                Optional<RecipeItem> item = recipe.addRecipeItemToGroup(groupName, groupCurrentName);
+                                if(!item.isPresent())
+                                {
+                                    throw new IOException();
+                                }
+                                readRecipeItem(reader, item.get());
                             }
                         }
 
@@ -250,8 +260,12 @@ public abstract class Recipes
                     }
                     else
                     {
-                        RecipeItem item = recipe.addRecipeItem(currentName);
-                        readRecipeItem(reader, item);
+                        Optional<RecipeItem> item = recipe.addRecipeItem(currentName);
+                        if(!item.isPresent())
+                        {
+                            throw new IOException();
+                        }
+                        readRecipeItem(reader, item.get());
                     }
                 }
 
@@ -262,7 +276,7 @@ public abstract class Recipes
         reader.endObject();
     }
 
-    private void readRecipeItem(JsonReader reader, RecipeItem item) throws IOException
+    private void readRecipeItem(@NonNull JsonReader reader, @NonNull RecipeItem item) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext())

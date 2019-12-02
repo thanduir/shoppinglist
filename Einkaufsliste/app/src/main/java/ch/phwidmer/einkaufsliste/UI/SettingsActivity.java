@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Amount;
@@ -86,10 +88,14 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         m_SpinnerDefaultSortOrder.setAdapter(adapterDefSortOrder);
         m_SpinnerDefaultSortOrder.setOnItemSelectedListener(this);
         String strDefaulSortOrder = preferences.getString(KEY_DEFAULT_SORORDER, "");
-        Categories.SortOrder sortOrder = groceryPlanning.categories().getSortOrder(strDefaulSortOrder);
-        if(sortOrder != null)
+        if(strDefaulSortOrder == null)
         {
-            m_SpinnerDefaultSortOrder.setSelection(groceryPlanning.categories().getAllSortOrders().indexOf(sortOrder));
+            strDefaulSortOrder = "";
+        }
+        Optional<Categories.SortOrder> sortOrder = groceryPlanning.categories().getSortOrder(strDefaulSortOrder);
+        if(sortOrder.isPresent())
+        {
+            m_SpinnerDefaultSortOrder.setSelection(groceryPlanning.categories().getAllSortOrders().indexOf(sortOrder.get()));
         }
         else
         {
@@ -105,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         editor.apply();
     }
 
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+    public void onItemSelected(@NonNull AdapterView<?> parent, @NonNull View view, int pos, long id)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
@@ -122,7 +128,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         editor.apply();
     }
 
-    public void onNothingSelected(AdapterView<?> parent)
+    public void onNothingSelected(@NonNull AdapterView<?> parent)
     {
     }
 }

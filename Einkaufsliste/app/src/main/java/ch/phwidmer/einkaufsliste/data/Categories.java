@@ -1,10 +1,12 @@
 package ch.phwidmer.einkaufsliste.data;
 
+import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public abstract class Categories
 {
@@ -26,15 +28,15 @@ public abstract class Categories
         }
     }
 
-    public abstract void addCategory(String strName);
-    public abstract void renameCategory(Category category, String strNewName);
-    public abstract void removeCategory(Category category);
-    public abstract Category getCategory(String category);
+    public abstract void addCategory(@NonNull String strName);
+    public abstract void renameCategory(@NonNull Category category, @NonNull String strNewName);
+    public abstract void removeCategory(@NonNull Category category);
+    public abstract Optional<Category> getCategory(@NonNull String category);
 
     public abstract int getCategoriesCount();
     public abstract ArrayList<Category> getAllCategories();
     public abstract ArrayList<String> getAllCategorieNames();
-    public abstract Category getDefaultCategory();
+    public abstract Optional<Category> getDefaultCategory();
 
     // SortOrder
 
@@ -48,10 +50,10 @@ public abstract class Categories
         void moveCategory(Category category, int newPos);
     }
 
-    public abstract SortOrder addSortOrder(String strName);
-    public abstract void renameSortOrder(SortOrder order, String strNewName);
-    public abstract void removeSortOrder(String strName);
-    public abstract SortOrder getSortOrder(String strName);
+    public abstract SortOrder addSortOrder(@NonNull String strName);
+    public abstract void renameSortOrder(@NonNull SortOrder order, @NonNull String strNewName);
+    public abstract void removeSortOrder(@NonNull String strName);
+    public abstract Optional<SortOrder> getSortOrder(@NonNull String strName);
 
     public abstract ArrayList<SortOrder> getAllSortOrders();
     public abstract ArrayList<String> getAllSortOrderNames();
@@ -123,7 +125,12 @@ public abstract class Categories
                         reader.beginArray();
                         ArrayList<Category> newOrder = new ArrayList<>();
                         while (reader.hasNext()) {
-                            newOrder.add(getCategory(reader.nextString()));
+                            Optional<Category> category = getCategory(reader.nextString());
+                            if(!category.isPresent())
+                            {
+                                throw new IOException();
+                            }
+                            newOrder.add(category.get());
                         }
                         reader.endArray();
 

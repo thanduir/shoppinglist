@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
+import android.support.annotation.NonNull;
+
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
@@ -14,7 +16,7 @@ public class ShoppingListItemFS extends ShoppingListItem
     private RecipeItemFS.Size   m_Size;
     private Boolean             m_Optional;
 
-    ShoppingListItemFS(String strIngredient)
+    ShoppingListItemFS(@NonNull String strIngredient)
     {
         m_Ingredient = strIngredient;
         m_Amount = new AmountFS();
@@ -23,7 +25,7 @@ public class ShoppingListItemFS extends ShoppingListItem
         m_Optional = false;
     }
 
-    ShoppingListItemFS(RecipeItem recipeItem)
+    ShoppingListItemFS(@NonNull RecipeItem recipeItem)
     {
         m_Amount = new AmountFS((AmountFS)recipeItem.getAmount());
         m_Ingredient = recipeItem.getIngredient();
@@ -38,7 +40,7 @@ public class ShoppingListItemFS extends ShoppingListItem
         return m_Status;
     }
     @Override
-    public void setStatus(Status status)
+    public void setStatus(@NonNull Status status)
     {
         m_Status = status;
     }
@@ -49,7 +51,7 @@ public class ShoppingListItemFS extends ShoppingListItem
         return m_Ingredient;
     }
     @Override
-    public void setIngredient(String strIngredient)
+    public void setIngredient(@NonNull String strIngredient)
     {
         m_Ingredient = strIngredient;
     }
@@ -60,7 +62,7 @@ public class ShoppingListItemFS extends ShoppingListItem
         return m_Amount;
     }
     @Override
-    public void setAmount(Amount amount)
+    public void setAmount(@NonNull Amount amount)
     {
         m_Amount = (AmountFS)amount;
     }
@@ -71,7 +73,7 @@ public class ShoppingListItemFS extends ShoppingListItem
         return m_AdditionalInfo;
     }
     @Override
-    public void setAdditionInfo(String additionalInfo)
+    public void setAdditionInfo(@NonNull String additionalInfo)
     {
         m_AdditionalInfo = additionalInfo;
     }
@@ -82,7 +84,7 @@ public class ShoppingListItemFS extends ShoppingListItem
         return m_Size;
     }
     @Override
-    public void setSize(RecipeItem.Size size)
+    public void setSize(@NonNull RecipeItem.Size size)
     {
         m_Size = size;
     }

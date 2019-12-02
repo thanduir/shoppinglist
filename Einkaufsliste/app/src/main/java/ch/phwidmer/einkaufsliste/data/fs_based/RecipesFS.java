@@ -1,7 +1,10 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -18,13 +21,13 @@ public class RecipesFS extends Recipes
         private LinkedList<RecipeItemFS> m_Items = new LinkedList<>();
         private TreeMap<String, LinkedList<RecipeItemFS>> m_Groups = new TreeMap<>(new Helper.SortStringIgnoreCase());
 
-        RecipeFS(String strName)
+        RecipeFS(@NonNull String strName)
         {
             m_Name = strName;
         }
 
         @Override
-        public String getName()
+        public @NonNull String getName()
         {
             return m_Name;
         }
@@ -41,27 +44,27 @@ public class RecipesFS extends Recipes
         }
 
         @Override
-        public RecipeItem addRecipeItem(String strIngredient)
+        public Optional<RecipeItem> addRecipeItem(@NonNull String strIngredient)
         {
             for(RecipeItemFS item : m_Items)
             {
                 if(item.getIngredient().equals(strIngredient))
                 {
-                    return null;
+                    return Optional.empty();
                 }
             }
 
             RecipeItemFS r = new RecipeItemFS(strIngredient);
             m_Items.add(r);
-            return r;
+            return Optional.of(r);
         }
         @Override
-        public void addRecipeItem(int position, final RecipeItem item)
+        public void addRecipeItem(int position, @NonNull final RecipeItem item)
         {
             m_Items.add(position, (RecipeItemFS)item);
         }
         @Override
-        public void removeRecipeItem(RecipeItem item)
+        public void removeRecipeItem(@NonNull RecipeItem item)
         {
             RecipeItemFS itemFS = (RecipeItemFS)item;
             m_Items.remove(itemFS);
@@ -75,7 +78,7 @@ public class RecipesFS extends Recipes
         // Groups
 
         @Override
-        public void addGroup(String strName)
+        public void addGroup(@NonNull String strName)
         {
             if(m_Groups.containsKey(strName))
             {
@@ -84,12 +87,12 @@ public class RecipesFS extends Recipes
             m_Groups.put(strName, new LinkedList<>());
         }
         @Override
-        public void removeGroup(String strName)
+        public void removeGroup(@NonNull String strName)
         {
             m_Groups.remove(strName);
         }
         @Override
-        public void renameGroup(String strOldName, String strNewName)
+        public void renameGroup(@NonNull String strOldName, @NonNull String strNewName)
         {
             if(!m_Groups.containsKey(strOldName) || m_Groups.containsKey(strNewName))
             {
@@ -106,34 +109,36 @@ public class RecipesFS extends Recipes
         }
 
         @Override
-        public RecipeItem addRecipeItemToGroup(String strGroup, String strIngredient)
+        public Optional<RecipeItem> addRecipeItemToGroup(@NonNull String strGroup, @NonNull String strIngredient)
         {
-            if(!m_Groups.containsKey(strGroup))
+            LinkedList<RecipeItemFS> group = m_Groups.get(strGroup);
+            if(group == null)
             {
-                return null;
+                return Optional.empty();
             }
 
-            for(RecipeItemFS item : m_Groups.get(strGroup))
+            for(RecipeItemFS item : group)
             {
                 if(item.getIngredient().equals(strIngredient))
                 {
-                    return null;
+                    return Optional.empty();
                 }
             }
 
             RecipeItemFS r = new RecipeItemFS(strIngredient);
-            m_Groups.get(strGroup).add(r);
-            return r;
+            group.add(r);
+            return Optional.of(r);
         }
         @Override
-        public void addRecipeItemToGroup(String strGroup, final RecipeItem r)
+        public void addRecipeItemToGroup(@NonNull String strGroup, @NonNull final RecipeItem r)
         {
-            if(!m_Groups.containsKey(strGroup))
+            LinkedList<RecipeItemFS> group = m_Groups.get(strGroup);
+            if(group == null)
             {
                 return;
             }
 
-            for(RecipeItemFS item : m_Groups.get(strGroup))
+            for(RecipeItemFS item : group)
             {
                 if(item.getIngredient().equals(r.getIngredient()))
                 {
@@ -141,28 +146,30 @@ public class RecipesFS extends Recipes
                 }
             }
 
-            m_Groups.get(strGroup).add((RecipeItemFS)r);
+            group.add((RecipeItemFS)r);
         }
         @Override
-        public void removeRecipeItemFromGroup(String strGroup, RecipeItem r)
+        public void removeRecipeItemFromGroup(@NonNull String strGroup, @NonNull RecipeItem r)
         {
-            if(!m_Groups.containsKey(strGroup))
+            LinkedList<RecipeItemFS> group = m_Groups.get(strGroup);
+            if(group == null)
             {
                 return;
             }
 
             RecipeItemFS rFS = (RecipeItemFS)r;
-            m_Groups.get(strGroup).remove(rFS);
+            group.remove(rFS);
         }
         @Override
-        public ArrayList<RecipeItem> getAllRecipeItemsInGroup(String strGroup)
+        public ArrayList<RecipeItem> getAllRecipeItemsInGroup(@NonNull String strGroup)
         {
-            if(!m_Groups.containsKey(strGroup))
+            LinkedList<RecipeItemFS> group = m_Groups.get(strGroup);
+            if(group == null)
             {
-                return null;
+                return new ArrayList<>();
             }
 
-            return new ArrayList<>(m_Groups.get(strGroup));
+            return new ArrayList<>(group);
         }
     }
 
@@ -174,22 +181,22 @@ public class RecipesFS extends Recipes
     }
 
     @Override
-    public Recipe addRecipe(String strName, int iNrPersons)
+    public Optional<Recipe> addRecipe(@NonNull String strName, int iNrPersons)
     {
-        if(getRecipe(strName) != null)
+        if(getRecipe(strName).isPresent())
         {
-            return null;
+            return Optional.empty();
         }
         RecipeFS r = new RecipeFS(strName);
         r.m_NumberOfPersons = iNrPersons;
         m_Recipies.add(r);
-        return r;
+        return Optional.of(r);
     }
 
     @Override
-    public void addRecipe(String strName, final Recipe r)
+    public void addRecipe(@NonNull String strName, @NonNull final Recipe r)
     {
-        if(getRecipe(strName) != null)
+        if(getRecipe(strName).isPresent())
         {
             return;
         }
@@ -197,16 +204,16 @@ public class RecipesFS extends Recipes
     }
 
     @Override
-    public void removeRecipe(Recipe r)
+    public void removeRecipe(@NonNull Recipe r)
     {
         RecipeFS rFS = (RecipeFS)r;
         m_Recipies.remove(rFS);
     }
 
     @Override
-    public void renameRecipe(Recipe recipe, String strNewName)
+    public void renameRecipe(@NonNull Recipe recipe, @NonNull String strNewName)
     {
-        if(getRecipe(strNewName) != null)
+        if(getRecipe(strNewName).isPresent())
         {
             return;
         }
@@ -216,19 +223,14 @@ public class RecipesFS extends Recipes
     }
 
     @Override
-    public void copyRecipe(Recipe r, String strNewName)
+    public void copyRecipe(@NonNull Recipe r, @NonNull String strNewName)
     {
-        if(getRecipe(strNewName) != null)
+        if(getRecipe(strNewName).isPresent())
         {
             return;
         }
 
         RecipeFS oldRecipe = (RecipeFS)r;
-        if(oldRecipe == null)
-        {
-            return;
-        }
-
         RecipeFS recipe = new RecipeFS(strNewName);
         recipe.m_NumberOfPersons = oldRecipe.m_NumberOfPersons;
         for(RecipeItemFS item : oldRecipe.m_Items)
@@ -249,17 +251,17 @@ public class RecipesFS extends Recipes
     }
 
     @Override
-    public Recipe getRecipe(String strName)
+    public Optional<Recipe> getRecipe(@NonNull String strName)
     {
         for(RecipeFS recipe : m_Recipies)
         {
             if(recipe.getName().equals(strName))
             {
-                return recipe;
+                return Optional.of(recipe);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override

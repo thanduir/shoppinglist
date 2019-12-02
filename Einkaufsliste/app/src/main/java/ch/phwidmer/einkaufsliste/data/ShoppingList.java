@@ -7,6 +7,7 @@ import android.util.JsonWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
 
 public abstract class ShoppingList
 {
@@ -18,10 +19,10 @@ public abstract class ShoppingList
         public abstract float getScalingFactor();
         public abstract void setScalingFactor(float factor);
 
-        public abstract ShoppingListItem addItem(String strIngredient);
-        public abstract void addItem(RecipeItem recipeItem);
-        public abstract void addItem(int position, ShoppingListItem item);
-        public abstract void removeItem(ShoppingListItem r);
+        public abstract Optional<ShoppingListItem> addItem(@NonNull String strIngredient);
+        public abstract void addItem(@NonNull RecipeItem recipeItem);
+        public abstract void addItem(int position, @NonNull ShoppingListItem item);
+        public abstract void removeItem(@NonNull ShoppingListItem r);
         public abstract ArrayList<ShoppingListItem> getAllItems();
 
         public void changeScalingFactor(float f)
@@ -36,34 +37,38 @@ public abstract class ShoppingList
         }
     }
 
-    protected abstract ShoppingRecipe addRecipe(String strName);
+    protected abstract Optional<ShoppingRecipe> addRecipe(@NonNull String strName);
 
-    public void addFromRecipe(String strName, Recipes.Recipe recipe)
+    public void addFromRecipe(@NonNull String strName, @NonNull Recipes.Recipe recipe)
     {
-        if(getShoppingRecipe(strName) != null)
+        if(getShoppingRecipe(strName).isPresent())
         {
             return;
         }
 
-        ShoppingRecipe item = addRecipe(strName);
-        item.setScalingFactor((float)recipe.getNumberOfPersons());
+        Optional<ShoppingRecipe> item = addRecipe(strName);
+        if(!item.isPresent())
+        {
+            return;
+        }
+        item.get().setScalingFactor((float)recipe.getNumberOfPersons());
         for(RecipeItem r : recipe.getAllRecipeItems())
         {
-            item.addItem(r);
+            item.get().addItem(r);
         }
     }
-    public abstract void addExistingShoppingRecipe(ShoppingRecipe recipe);
+    public abstract void addExistingShoppingRecipe(@NonNull ShoppingRecipe recipe);
 
-    public abstract ShoppingRecipe getShoppingRecipe(String strName);
-    public abstract void renameShoppingRecipe(ShoppingRecipe recipe, String strNewName);
-    public abstract void removeShoppingRecipe(ShoppingRecipe recipe);
+    public abstract Optional<ShoppingRecipe> getShoppingRecipe(@NonNull String strName);
+    public abstract void renameShoppingRecipe(@NonNull ShoppingRecipe recipe, @NonNull String strNewName);
+    public abstract void removeShoppingRecipe(@NonNull ShoppingRecipe recipe);
 
     public abstract ArrayList<ShoppingRecipe> getAllShoppingRecipes();
     public abstract ArrayList<String> getAllShoppingRecipeNames();
 
     public abstract void clearShoppingList();
 
-    public boolean isIngredientInUse(String strIngredient, @NonNull ArrayList<String> shoppingListItemUsingIngredient)
+    public boolean isIngredientInUse(@NonNull String strIngredient, @NonNull ArrayList<String> shoppingListItemUsingIngredient)
     {
         boolean stillInUse = false;
         for(ShoppingRecipe recipe : getAllShoppingRecipes())
@@ -83,7 +88,7 @@ public abstract class ShoppingList
         return stillInUse;
     }
 
-    public void onIngredientRenamed(String strIngredient, String strNewName)
+    public void onIngredientRenamed(@NonNull String strIngredient, @NonNull String strNewName)
     {
         for(ShoppingRecipe sr : getAllShoppingRecipes())
         {
@@ -97,7 +102,7 @@ public abstract class ShoppingList
         }
     }
 
-    boolean checkDataConsistency(Ingredients ingredients, LinkedList<String> missingIngredients)
+    boolean checkDataConsistency(@NonNull Ingredients ingredients, @NonNull LinkedList<String> missingIngredients)
     {
         boolean dataConsistent = true;
         for(ShoppingRecipe recipe : getAllShoppingRecipes())
@@ -105,7 +110,7 @@ public abstract class ShoppingList
             for(ShoppingListItem li : recipe.getAllItems())
             {
                 String ingredient = li.getIngredient();
-                if(ingredients.getIngredient(ingredient) == null)
+                if(!ingredients.getIngredient(ingredient).isPresent())
                 {
                     if(!missingIngredients.contains(ingredient))
                     {
@@ -120,7 +125,7 @@ public abstract class ShoppingList
 
     // Serializing
 
-    void saveToJson(JsonWriter writer) throws IOException
+    void saveToJson(@NonNull JsonWriter writer) throws IOException
     {
         writer.beginObject();
         writer.name("id").value("Shoppinglist");
@@ -157,7 +162,7 @@ public abstract class ShoppingList
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader) throws IOException
+    void readFromJson(@NonNull JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -177,7 +182,12 @@ public abstract class ShoppingList
             }
             else
             {
-                ShoppingRecipe recipe = addRecipe(name);
+                Optional<ShoppingRecipe> optRecipe = addRecipe(name);
+                if(!optRecipe.isPresent())
+                {
+                    throw new IOException();
+                }
+                ShoppingRecipe recipe = optRecipe.get();
 
                 reader.beginObject();
                 while (reader.hasNext())
@@ -189,7 +199,12 @@ public abstract class ShoppingList
                     }
                     else
                     {
-                        ShoppingListItem item = recipe.addItem(currentName);
+                        Optional<ShoppingListItem> optItem = recipe.addItem(currentName);
+                        if(!optItem.isPresent())
+                        {
+                            throw new IOException();
+                        }
+                        ShoppingListItem item = optItem.get();
 
                         reader.beginObject();
                         while (reader.hasNext())

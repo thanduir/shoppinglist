@@ -7,6 +7,7 @@ import android.util.JsonWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.helper.Helper;
 
@@ -17,26 +18,26 @@ public abstract class Ingredients
     public abstract class Ingredient implements Helper.NamedObject
     {
         public abstract String getCategory();
-        public abstract void setCategory(String cateogry);
+        public abstract void setCategory(@NonNull String cateogry);
 
         public abstract String getProvenance();
-        public abstract void setProvenance(String strProvenance);
+        public abstract void setProvenance(@NonNull String strProvenance);
 
         public abstract Amount.Unit getDefaultUnit();
-        public abstract void setDefaultUnit(Amount.Unit unit);
+        public abstract void setDefaultUnit(@NonNull Amount.Unit unit);
     }
 
-    public abstract Ingredient addIngredient(String strName, Amount.Unit defaultUnit, Categories.Category category);
-    protected abstract Ingredient addIngredient(String strName, Amount.Unit defaultUnit, String strCategory);
-    public abstract void removeIngredient(Ingredient ingredient);
-    public abstract void renameIngredient(Ingredient ingredient, String strNewName);
-    public abstract Ingredient getIngredient(String strName);
+    public abstract Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull Categories.Category category);
+    protected abstract Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull String strCategory);
+    public abstract void removeIngredient(@NonNull Ingredient ingredient);
+    public abstract void renameIngredient(@NonNull Ingredient ingredient, @NonNull String strNewName);
+    public abstract Optional<Ingredient> getIngredient(String strName);
 
     public abstract int getIngredientsCount();
     public abstract ArrayList<Ingredient> getAllIngredients();
     public abstract ArrayList<String> getAllIngredientNames();
 
-    public void onCategoryRenamed(String oldCategory, String newCategory)
+    public void onCategoryRenamed(@NonNull String oldCategory, @NonNull String newCategory)
     {
         for(Ingredient i : getAllIngredients())
         {
@@ -47,7 +48,7 @@ public abstract class Ingredients
         }
     }
 
-    public boolean isCategoryInUse(Categories.Category category, @NonNull ArrayList<String> ingredientsUsingCategory)
+    public boolean isCategoryInUse(@NonNull Categories.Category category, @NonNull ArrayList<String> ingredientsUsingCategory)
     {
         boolean stillInUse = false;
         for(Ingredient ingredient : getAllIngredients())
@@ -61,7 +62,7 @@ public abstract class Ingredients
         return stillInUse;
     }
 
-    public void onSortOrderRenamed(String oldSortOrder, String newSortOrder)
+    public void onSortOrderRenamed(@NonNull String oldSortOrder, @NonNull String newSortOrder)
     {
         for(Ingredient i : getAllIngredients())
         {
@@ -72,7 +73,7 @@ public abstract class Ingredients
         }
     }
 
-    public boolean isSortOrderInUse(String strSortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)
+    public boolean isSortOrderInUse(@NonNull String strSortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)
     {
         boolean stillInUse = false;
         for(Ingredient ingredient : getAllIngredients())
@@ -86,14 +87,14 @@ public abstract class Ingredients
         return stillInUse;
     }
 
-    boolean checkDataConsistency(Categories categories, LinkedList<String> missingCategories, LinkedList<String> missingSortOrders)
+    boolean checkDataConsistency(@NonNull Categories categories, @NonNull LinkedList<String> missingCategories, @NonNull LinkedList<String> missingSortOrders)
     {
         boolean dataConsistent = true;
 
         for(Ingredient ingredient : getAllIngredients())
         {
             String category = ingredient.getCategory();
-            if(categories.getCategory(category) == null)
+            if(!categories.getCategory(category).isPresent())
             {
                 if(!missingCategories.contains(category))
                 {
@@ -102,7 +103,7 @@ public abstract class Ingredients
                 dataConsistent = false;
             }
             String sortOrder = ingredient.getProvenance();
-            if(categories.getSortOrder(sortOrder) == null && !sortOrder.equals(c_strProvenanceEverywhere))
+            if(!categories.getSortOrder(sortOrder).isPresent() && !sortOrder.equals(c_strProvenanceEverywhere))
             {
                 if(!missingSortOrders.contains(sortOrder))
                 {
@@ -117,7 +118,7 @@ public abstract class Ingredients
 
     // Serializing
 
-    void saveToJson(JsonWriter writer) throws IOException
+    void saveToJson(@NonNull JsonWriter writer) throws IOException
     {
         writer.beginObject();
         writer.name("id").value("Ingredients");
@@ -136,7 +137,7 @@ public abstract class Ingredients
         writer.endObject();
     }
 
-    void readFromJson(JsonReader reader) throws IOException
+    void readFromJson(@NonNull JsonReader reader) throws IOException
     {
         reader.beginObject();
         while (reader.hasNext())
@@ -191,8 +192,12 @@ public abstract class Ingredients
                 }
                 reader.endObject();
 
-                Ingredient in = addIngredient(name, unit, strCategory);
-                in.setProvenance(strProvenance);
+                Optional<Ingredient> in = addIngredient(name, unit, strCategory);
+                if(!in.isPresent())
+                {
+                    throw new IOException();
+                }
+                in.get().setProvenance(strProvenance);
             }
         }
         reader.endObject();

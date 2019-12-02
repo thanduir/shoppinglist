@@ -25,7 +25,7 @@ public class InputStringDialogFragment extends DialogFragment {
 
     public interface InputStringResponder
     {
-        void onStringInput(String tag, String strInput, String strAdditonalInformation);
+        void onStringInput(@NonNull String tag, @NonNull String strInput, @NonNull String strAdditonalInformation);
     }
 
     private static final String m_keyTitle = "title";
@@ -46,7 +46,7 @@ public class InputStringDialogFragment extends DialogFragment {
     private ArrayList<String> m_ListInputsToConfirm;
     private ArrayList<String> m_ListOnlyAllowed;
 
-    public static InputStringDialogFragment newInstance(String strTitle)
+    public static InputStringDialogFragment newInstance(@NonNull String strTitle)
     {
         InputStringDialogFragment f = new InputStringDialogFragment();
 
@@ -60,7 +60,7 @@ public class InputStringDialogFragment extends DialogFragment {
         return f;
     }
 
-    public void setAdditionalInformation(String strAdditonalInformation)
+    public void setAdditionalInformation(@NonNull String strAdditonalInformation)
     {
         if(getArguments() == null)
         {
@@ -69,7 +69,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putString(m_keyAdditionalInformation, strAdditonalInformation);
     }
 
-    public void setDefaultValue(String strDefaultValue)
+    public void setDefaultValue(@NonNull String strDefaultValue)
     {
         if(getArguments() == null)
         {
@@ -87,7 +87,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putInt(m_keyInputType, inputType);
     }
 
-    public void setListExcludedInputs(ArrayList<String> listExcludedInputs)
+    public void setListExcludedInputs(@NonNull ArrayList<String> listExcludedInputs)
     {
         if(getArguments() == null)
         {
@@ -96,7 +96,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putStringArrayList(m_keyListExcludedInputs, listExcludedInputs);
     }
 
-    public void setListInputsToConfirm(ArrayList<String> listInputsToConfirm)
+    public void setListInputsToConfirm(@NonNull ArrayList<String> listInputsToConfirm)
     {
         if(getArguments() == null)
         {
@@ -105,7 +105,7 @@ public class InputStringDialogFragment extends DialogFragment {
         getArguments().putStringArrayList(m_keyListInputsToConfirm, listInputsToConfirm);
     }
 
-    public void setListOnlyAllowed(ArrayList<String> listOnlyAllowed)
+    public void setListOnlyAllowed(@NonNull ArrayList<String> listOnlyAllowed)
     {
         if(getArguments() == null)
         {
@@ -132,7 +132,7 @@ public class InputStringDialogFragment extends DialogFragment {
         m_ListOnlyAllowed = getArguments().getStringArrayList(m_keyListOnlyAllowed);
     }
 
-    private View setupStringInput(LayoutInflater inflater, ViewGroup container)
+    private View setupStringInput(@NonNull LayoutInflater inflater, @NonNull ViewGroup container)
     {
         final View mainView = inflater.inflate(R.layout.overlay_input_string, container, false);
 
@@ -163,7 +163,7 @@ public class InputStringDialogFragment extends DialogFragment {
         return mainView;
     }
 
-    private View setupInputFromStringList(LayoutInflater inflater, ViewGroup container)
+    private View setupInputFromStringList(@NonNull LayoutInflater inflater, @NonNull ViewGroup container)
     {
         final View mainView = inflater.inflate(R.layout.overlay_input_from_list, container, false);
 
@@ -261,7 +261,12 @@ public class InputStringDialogFragment extends DialogFragment {
                 builder.setMessage(getActivity().getResources().getString(R.string.file_exists_overwrite, strInput));
                 builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
                 {
-                    ((InputStringResponder) getActivity()).onStringInput(getTag(), strInput, m_AdditionalInformation);
+                    String tag = getTag();
+                    if(tag == null)
+                    {
+                        tag = "";
+                    }
+                    ((InputStringResponder) getActivity()).onStringInput(tag, strInput, m_AdditionalInformation);
                     dismiss();
                 });
                 builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) ->
@@ -272,7 +277,12 @@ public class InputStringDialogFragment extends DialogFragment {
             }
             else
             {
-                ((InputStringResponder) getActivity()).onStringInput(getTag(), strInput, m_AdditionalInformation);
+                String tag = getTag();
+                if(tag == null)
+                {
+                    tag = "";
+                }
+                ((InputStringResponder) getActivity()).onStringInput(tag, strInput, m_AdditionalInformation);
             }
             dismiss();
         });

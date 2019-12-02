@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste.helper;
 
+import android.support.annotation.NonNull;
+
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,12 +11,12 @@ public class Helper {
 
     public interface NamedObject
     {
-        String getName();
+        @NonNull String getName();
     }
 
     public static class SortStringIgnoreCase implements Comparator<String>
     {
-        public int compare(String s1, String s2)
+        public int compare(@NonNull String s1, @NonNull String s2)
         {
             final Collator instance = Collator.getInstance();
             // This strategy mean it'll ignore the accents
@@ -27,12 +29,12 @@ public class Helper {
     {
         private SortStringIgnoreCase m_Sort = new SortStringIgnoreCase();
 
-        public int compare(NamedObject o1, NamedObject o2) {
+        public int compare(@NonNull NamedObject o1, @NonNull NamedObject o2) {
             return m_Sort.compare(o1.getName(), o2.getName());
         }
     }
 
-    static boolean arrayListContainsIgnoreCase(ArrayList<String> list, String str)
+    static boolean arrayListContainsIgnoreCase(@NonNull ArrayList<String> list, @NonNull String str)
     {
         final Collator instance = Collator.getInstance();
         instance.setStrength(Collator.NO_DECOMPOSITION);
@@ -49,7 +51,7 @@ public class Helper {
     }
 
     // Format numbers: Write as integer without decimals if applicable, otherwise restrict decimal digits.
-    public static String formatNumber(Float f)
+    public static String formatNumber(@NonNull Float f)
     {
         if(f == Math.round(f))
         {

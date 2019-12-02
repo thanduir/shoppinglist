@@ -1,9 +1,10 @@
 package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.io.File;
-import java.io.IOException;
+import java.security.InvalidParameterException;
 
 import ch.phwidmer.einkaufsliste.data.fs_based.GroceryPlanningFS;
 
@@ -27,8 +28,13 @@ public class GroceryPlanningFactory
         m_AppDataDirectory = appDataDirectory;
     }
 
-    public static GroceryPlanning groceryPlanning(Context context)
+    public static GroceryPlanning groceryPlanning(@NonNull Context context)
     {
+        if(m_Backend == null)
+        {
+            throw new InvalidParameterException("Backend not set");
+        }
+
         switch(m_Backend)
         {
             case fs_based:
@@ -39,10 +45,10 @@ public class GroceryPlanningFactory
             case db_based:
             {
                 // Not implemented yet
-                return null;
+                throw new InvalidParameterException("Unimplemented backend");
             }
         }
 
-        return null;
+        throw new InvalidParameterException("Unknown backend");
     }
 }

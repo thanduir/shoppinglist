@@ -1,8 +1,11 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.ShoppingList;
@@ -16,7 +19,7 @@ public class ShoppingListFS extends ShoppingList
         private float m_fScalingFactor = 0.0f;
         private LinkedList<ShoppingListItemFS> m_Items = new LinkedList<>();
 
-        ShoppingRecipeFS(String strName)
+        ShoppingRecipeFS(@NonNull String strName)
         {
             m_Name = strName;
         }
@@ -40,22 +43,22 @@ public class ShoppingListFS extends ShoppingList
         }
 
         @Override
-        public ShoppingListItem addItem(String strIngredient)
+        public Optional<ShoppingListItem> addItem(@NonNull String strIngredient)
         {
             for(ShoppingListItemFS item : m_Items)
             {
                 if(item.getIngredient().equals(strIngredient))
                 {
-                    return null;
+                    return Optional.empty();
                 }
             }
 
             ShoppingListItemFS r = new ShoppingListItemFS(strIngredient);
             m_Items.add(r);
-            return r;
+            return Optional.of(r);
         }
         @Override
-        public void addItem(RecipeItem recipeItem)
+        public void addItem(@NonNull RecipeItem recipeItem)
         {
             for(ShoppingListItemFS item : m_Items)
             {
@@ -69,12 +72,12 @@ public class ShoppingListFS extends ShoppingList
             m_Items.add(r);
         }
         @Override
-        public void addItem(int position, ShoppingListItem item)
+        public void addItem(int position, @NonNull ShoppingListItem item)
         {
             m_Items.add(position, (ShoppingListItemFS)item);
         }
         @Override
-        public void removeItem(ShoppingListItem item)
+        public void removeItem(@NonNull ShoppingListItem item)
         {
             ShoppingListItemFS itemFS = (ShoppingListItemFS)item;
             m_Items.remove(itemFS);
@@ -95,21 +98,21 @@ public class ShoppingListFS extends ShoppingList
     }
 
     @Override
-    protected ShoppingRecipe addRecipe(String strName)
+    protected Optional<ShoppingRecipe> addRecipe(@NonNull String strName)
     {
-        if(getShoppingRecipe(strName) != null)
+        if(getShoppingRecipe(strName).isPresent())
         {
-            return null;
+            return Optional.empty();
         }
         ShoppingRecipeFS r = new ShoppingRecipeFS(strName);
         m_ShoppingRecipies.add(r);
-        return r;
+        return Optional.of(r);
     }
 
     @Override
-    public void addExistingShoppingRecipe(ShoppingRecipe recipe)
+    public void addExistingShoppingRecipe(@NonNull ShoppingRecipe recipe)
     {
-        if(getShoppingRecipe(recipe.getName()) != null)
+        if(getShoppingRecipe(recipe.getName()).isPresent())
         {
             return;
         }
@@ -118,23 +121,23 @@ public class ShoppingListFS extends ShoppingList
     }
 
     @Override
-    public ShoppingRecipe getShoppingRecipe(String strName)
+    public Optional<ShoppingRecipe> getShoppingRecipe(@NonNull String strName)
     {
         for(ShoppingRecipeFS recipe : m_ShoppingRecipies)
         {
             if(recipe.getName().equals(strName))
             {
-                return recipe;
+                return Optional.of(recipe);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public void renameShoppingRecipe(ShoppingRecipe recipe, String strNewName)
+    public void renameShoppingRecipe(@NonNull ShoppingRecipe recipe, @NonNull String strNewName)
     {
-        if(getShoppingRecipe(strNewName) != null)
+        if(getShoppingRecipe(strNewName).isPresent())
         {
             return;
         }
@@ -144,7 +147,7 @@ public class ShoppingListFS extends ShoppingList
     }
 
     @Override
-    public void removeShoppingRecipe(ShoppingRecipe recipe)
+    public void removeShoppingRecipe(@NonNull ShoppingRecipe recipe)
     {
         ShoppingRecipeFS recipeFS = (ShoppingRecipeFS)recipe;
         m_ShoppingRecipies.remove(recipeFS);

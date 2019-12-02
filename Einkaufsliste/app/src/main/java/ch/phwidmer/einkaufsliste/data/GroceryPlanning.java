@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
+import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
@@ -45,7 +46,7 @@ public abstract class GroceryPlanning
         return m_ShoppingList;
     }
 
-    public void saveDataToFile(File fileToBeCreated, Context context) throws IOException
+    public void saveDataToFile(@NonNull File fileToBeCreated, Context context) throws IOException
     {
         boolean moveFilesFirst = fileToBeCreated.exists();
 
@@ -120,7 +121,7 @@ public abstract class GroceryPlanning
         scanFile(context, fileToBeCreated);
     }
 
-    public void loadDataFromFile(File file) throws IOException
+    public void loadDataFromFile(@NonNull File file) throws IOException
     {
         try
         {
@@ -178,7 +179,7 @@ public abstract class GroceryPlanning
     }
 
     // Make file known to the MediaScanner so that it apears when the device is mount e.g. on windows.
-    public void scanFile(Context context, File f)
+    public void scanFile(Context context, @NonNull File f)
     {
         if(context == null)
         {

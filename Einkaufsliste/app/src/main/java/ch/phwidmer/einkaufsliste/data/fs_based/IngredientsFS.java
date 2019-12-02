@@ -1,6 +1,9 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import ch.phwidmer.einkaufsliste.data.Amount;
@@ -17,13 +20,13 @@ public class IngredientsFS extends Ingredients
         private String m_Provenance = c_strProvenanceEverywhere;
         private AmountFS.Unit m_DefaultUnit;
 
-        IngredientFS(String name)
+        IngredientFS(@NonNull String name)
         {
             m_Name = name;
         }
 
         @Override
-        public String getName()
+        public @NonNull String getName()
         {
             return m_Name;
         }
@@ -34,7 +37,7 @@ public class IngredientsFS extends Ingredients
             return m_Category;
         }
         @Override
-        public void setCategory(String category)
+        public void setCategory(@NonNull String category)
         {
             m_Category = category;
         }
@@ -45,7 +48,7 @@ public class IngredientsFS extends Ingredients
             return m_Provenance;
         }
         @Override
-        public void setProvenance(String strProvenance)
+        public void setProvenance(@NonNull String strProvenance)
         {
             m_Provenance = strProvenance;
         }
@@ -56,7 +59,7 @@ public class IngredientsFS extends Ingredients
             return m_DefaultUnit;
         }
         @Override
-        public void setDefaultUnit(Amount.Unit unit)
+        public void setDefaultUnit(@NonNull Amount.Unit unit)
         {
             m_DefaultUnit = unit;
         }
@@ -69,45 +72,45 @@ public class IngredientsFS extends Ingredients
     }
 
     @Override
-    public Ingredient addIngredient(String strName, Amount.Unit defaultUnit, Categories.Category category)
+    public Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull Categories.Category category)
     {
-        if(getIngredient(strName) != null)
+        if(getIngredient(strName).isPresent())
         {
-            return null;
+            return Optional.empty();
         }
         IngredientFS i = new IngredientFS(strName);
         i.m_DefaultUnit = defaultUnit;
         i.m_Category = category.getName();
         m_Ingredients.add(i);
-        return i;
+        return Optional.of(i);
     }
 
     @Override
-    protected Ingredient addIngredient(String strName, Amount.Unit defaultUnit, String strCategory)
+    protected Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull String strCategory)
     {
-        if(getIngredient(strName) != null)
+        if(getIngredient(strName).isPresent())
         {
-            return null;
+            return Optional.empty();
         }
 
         IngredientFS i = new IngredientFS(strName);
         i.m_DefaultUnit = defaultUnit;
         i.m_Category = strCategory;
         m_Ingredients.add(i);
-        return i;
+        return Optional.of(i);
     }
 
     @Override
-    public void removeIngredient(Ingredient ingredient)
+    public void removeIngredient(@NonNull Ingredient ingredient)
     {
         IngredientFS ingredientFS = (IngredientFS)ingredient;
         m_Ingredients.remove(ingredientFS);
     }
 
     @Override
-    public void renameIngredient(Ingredient ingredient, String strNewName)
+    public void renameIngredient(@NonNull Ingredient ingredient, @NonNull String strNewName)
     {
-        if(getIngredient(strNewName) != null)
+        if(getIngredient(strNewName).isPresent())
         {
             return;
         }
@@ -117,17 +120,17 @@ public class IngredientsFS extends Ingredients
     }
 
     @Override
-    public Ingredient getIngredient(String strName)
+    public Optional<Ingredient> getIngredient(@NonNull String strName)
     {
         for(IngredientFS ingredient : m_Ingredients)
         {
             if(ingredient.getName().equals(strName))
             {
-                return ingredient;
+                return Optional.of(ingredient);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override

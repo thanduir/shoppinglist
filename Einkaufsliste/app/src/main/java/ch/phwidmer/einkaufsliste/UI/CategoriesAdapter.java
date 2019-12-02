@@ -41,7 +41,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         TextView m_TextView;
         View m_View;
         ImageView m_ReorderView;
-        public ViewHolder(View v)
+        public ViewHolder(@NonNull View v)
         {
             super(v);
             m_View = v;
@@ -50,7 +50,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         }
     }
 
-    CategoriesAdapter(CoordinatorLayout coordLayout, RecyclerView recyclerView, Categories categories, Categories.SortOrder sortOrder, Ingredients ingredients)
+    CategoriesAdapter(@NonNull CoordinatorLayout coordLayout,
+                      @NonNull RecyclerView recyclerView,
+                      @NonNull Categories categories,
+                      @NonNull Categories.SortOrder sortOrder,
+                      @NonNull Ingredients ingredients)
     {
         m_Categories = categories;
         m_SortOrder = sortOrder;
@@ -61,7 +65,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
 
 
-    void setTouchHelper(ItemTouchHelper touchHelper)
+    void setTouchHelper(@NonNull ItemTouchHelper touchHelper)
     {
         m_TouchHelper = touchHelper;
     }
@@ -144,9 +148,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         snackbar.show();
     }
 
-    public boolean swipeAllowed(RecyclerView.ViewHolder vh) { return true; }
+    public boolean swipeAllowed(@NonNull RecyclerView.ViewHolder vh) { return true; }
 
-    public boolean reactToDrag(RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target)
+    public boolean reactToDrag(@NonNull RecyclerView.ViewHolder vh, @NonNull RecyclerView.ViewHolder target)
     {
         int oldPos = vh.getAdapterPosition();
         int newPos = target.getAdapterPosition();
@@ -157,7 +161,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         return true;
     }
 
-    private void renameCategory(final Categories.Category category)
+    private void renameCategory(@NonNull final Categories.Category category)
     {
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_category, category.getName()));
         newFragment.setDefaultValue(category.getName());
@@ -166,7 +170,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "renameCategory");
     }
 
-    public void clearViewBackground(RecyclerView.ViewHolder vh)
+    public void clearViewBackground(@NonNull RecyclerView.ViewHolder vh)
     {
         vh.itemView.setBackgroundColor(0);
     }

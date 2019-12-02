@@ -18,8 +18,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
+import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
@@ -68,7 +70,8 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                         return;
                     }
 
-                    if(vh.getID().equals(adapter.getActiveElement()))
+                    Optional<Pair<String, String>> activeElement = adapter.getActiveElement();
+                    if(activeElement.isPresent() && vh.getID().equals(activeElement.get()))
                     {
                         adapter.setActiveElement(null);
                     }
@@ -131,16 +134,17 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState)
     {
-        if(m_AdapterRecipes != null && m_AdapterRecipes.getActiveElement() != null)
+        Optional<Pair<String, String>> activeElement = m_AdapterRecipes.getActiveElement();
+        if(m_AdapterRecipes != null && activeElement.isPresent())
         {
-            savedInstanceState.putString("AdapterActiveElementFirst", m_AdapterRecipes.getActiveElement().first);
-            savedInstanceState.putString("AdapterActiveElementSecond", m_AdapterRecipes.getActiveElement().second);
+            savedInstanceState.putString("AdapterActiveElementFirst", activeElement.get().first);
+            savedInstanceState.putString("AdapterActiveElementSecond", activeElement.get().second);
         }
 
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void onAddShoppingRecipe(View v)
+    public void onAddShoppingRecipe(@NonNull View v)
     {
         ArrayList<String> inputList = new ArrayList<>();
         for(Recipes.Recipe recipe : m_GroceryPlanning.recipes().getAllRecipes())
@@ -163,7 +167,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
     }
 
-    public void onIncreaseAmount(View v)
+    public void onIncreaseAmount(@NonNull View v)
     {
         ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
         if(adapter == null)
@@ -173,7 +177,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         adapter.onChangeAmount(false,true);
     }
 
-    public void onDecreaseAmount(View v)
+    public void onDecreaseAmount(@NonNull View v)
     {
         ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
         if(adapter == null)
@@ -183,7 +187,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         adapter.onChangeAmount(false,false);
     }
 
-    public void onIncreaseAmountMax(View v)
+    public void onIncreaseAmountMax(@NonNull View v)
     {
         ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
         if(adapter == null)
@@ -193,7 +197,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         adapter.onChangeAmount(true,true);
     }
 
-    public void onDecreaseAmountMax(View v)
+    public void onDecreaseAmountMax(@NonNull View v)
     {
         ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
         if(adapter == null)
@@ -203,7 +207,8 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         adapter.onChangeAmount(true,false);
     }
 
-    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
+    @Override
+    public void onStringInput(@NonNull String tag, @NonNull String strInput, @NonNull String strAdditonalInformation)
     {
         ShoppingRecipesAdapter adapter = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
         if(adapter == null)
@@ -215,8 +220,18 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         {
             case "addRecipeItem": // See ShoppingRecipesAdapter
             {
-                ShoppingListItem item = m_GroceryPlanning.shoppingList().getShoppingRecipe(strAdditonalInformation).addItem(strInput);
-                item.getAmount().setUnit(m_GroceryPlanning.ingredients().getIngredient(strInput).getDefaultUnit());
+                Optional<ShoppingList.ShoppingRecipe> recipe = m_GroceryPlanning.shoppingList().getShoppingRecipe(strAdditonalInformation);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
+                Optional<ShoppingListItem> item = recipe.get().addItem(strInput);
+                Optional<Ingredients.Ingredient> ingredient = m_GroceryPlanning.ingredients().getIngredient(strInput);
+                if(!item.isPresent() || !ingredient.isPresent())
+                {
+                    return;
+                }
+                item.get().getAmount().setUnit(ingredient.get().getDefaultUnit());
 
                 Pair<String, String> newItem = new Pair<>(strAdditonalInformation, strInput);
                 adapter.notifyDataSetChanged();
@@ -228,8 +243,12 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
             {
                 float fNewValue = Float.valueOf(strInput);
 
-                ShoppingList.ShoppingRecipe recipe = m_GroceryPlanning.shoppingList().getShoppingRecipe(strAdditonalInformation);
-                recipe.changeScalingFactor(fNewValue);
+                Optional<ShoppingList.ShoppingRecipe> recipe = m_GroceryPlanning.shoppingList().getShoppingRecipe(strAdditonalInformation);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
+                recipe.get().changeScalingFactor(fNewValue);
                 adapter.notifyDataSetChanged();
                 break;
             }
@@ -243,19 +262,18 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                 }
                 strAdditonalInformation += strInput;
                 String[] infosSet = strAdditonalInformation.split(";");
-
-                Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(infosSet[0]);
-                if(recipe == null)
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(infosSet[0]);
+                if(!recipe.isPresent())
                 {
                     return;
                 }
 
                 // Verify if for all groups an item has been chosen already. If not, ask for it and call this method again afterwards
-                if(infosSet.length < recipe.getAllGroupNames().size() + 1)
+                if(infosSet.length < recipe.get().getAllGroupNames().size() + 1)
                 {
                     // There are more groups to ask about
-                    String strGroup = recipe.getAllGroupNames().get(infosSet.length - 1);
-                    ArrayList<RecipeItem> recipeItems = recipe.getAllRecipeItemsInGroup(strGroup);
+                    String strGroup = recipe.get().getAllGroupNames().get(infosSet.length - 1);
+                    ArrayList<RecipeItem> recipeItems = recipe.get().getAllRecipeItemsInGroup(strGroup);
                     if(recipeItems.size() < 2)
                     {
                         String itemName = "-";
@@ -287,18 +305,22 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                     ++iNr;
                 }
 
-                m_GroceryPlanning.shoppingList().addFromRecipe(strRecipe, m_GroceryPlanning.recipes().getRecipe(infosSet[0]));
-                ShoppingList.ShoppingRecipe shoppingRecipe = m_GroceryPlanning.shoppingList().getShoppingRecipe(strRecipe);
+                m_GroceryPlanning.shoppingList().addFromRecipe(strRecipe, recipe.get());
+                Optional<ShoppingList.ShoppingRecipe> shoppingRecipe = m_GroceryPlanning.shoppingList().getShoppingRecipe(strRecipe);
+                if(!shoppingRecipe.isPresent())
+                {
+                    return;
+                }
 
                 int i = 1;
-                for(String strGroup : recipe.getAllGroupNames())
+                for(String strGroup : recipe.get().getAllGroupNames())
                 {
                     String strIngredient = infosSet[i];
-                    for(RecipeItem item : recipe.getAllRecipeItemsInGroup(strGroup))
+                    for(RecipeItem item : recipe.get().getAllRecipeItemsInGroup(strGroup))
                     {
                         if(item.getIngredient().equals(strIngredient))
                         {
-                            shoppingRecipe.addItem(item);
+                            shoppingRecipe.get().addItem(item);
                             break;
                         }
                     }
@@ -313,7 +335,12 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
 
             case "renameShoppingRecipe":
             {
-                m_GroceryPlanning.shoppingList().renameShoppingRecipe(m_GroceryPlanning.shoppingList().getShoppingRecipe(strAdditonalInformation), strInput);
+                Optional<ShoppingList.ShoppingRecipe> recipe = m_GroceryPlanning.shoppingList().getShoppingRecipe(strAdditonalInformation);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
+                m_GroceryPlanning.shoppingList().renameShoppingRecipe(recipe.get(), strInput);
 
                 adapter.notifyDataSetChanged();
                 adapter.setActiveElement(new Pair<>(strInput, ""));

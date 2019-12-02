@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
@@ -84,19 +85,19 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
 
             public void afterTextChanged(Editable s) {
                 String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
-                if(recipe == null)
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                if(!recipe.isPresent())
                 {
                     return;
                 }
 
                 if(s.toString().isEmpty())
                 {
-                    recipe.setNumberOfPersons(0);
+                    recipe.get().setNumberOfPersons(0);
                 }
                 else
                 {
-                    recipe.setNumberOfPersons(Integer.valueOf(s.toString()));
+                    recipe.get().setNumberOfPersons(Integer.valueOf(s.toString()));
                 }
             }
 
@@ -131,9 +132,13 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         m_SpinnerRecipes.setOnItemSelectedListener(this);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String strActiveRecipe = preferences.getString(SettingsActivity.KEY_ACTIVE_RECIPE, "");
-        Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strActiveRecipe);
-        if(recipe != null && m_GroceryPlanning.recipes().getAllRecipes().contains(recipe))
+        String strActiveRecipe = preferences.getString(SettingsActivity.KEY_ACTIVE_RECIPE, "");
+        if(strActiveRecipe == null)
+        {
+            strActiveRecipe = "";
+        }
+        Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strActiveRecipe);
+        if(recipe.isPresent() && m_GroceryPlanning.recipes().getAllRecipes().contains(recipe.get()))
         {
             m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getPosition(strActiveRecipe));
             onItemSelected(null, null, m_SpinnerRecipesAdapter.getPosition(strActiveRecipe), 0);
@@ -236,14 +241,14 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void onAddRecipe(View v)
+    public void onAddRecipe(@NonNull View v)
     {
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_recipe));
         newFragment.setListExcludedInputs(m_GroceryPlanning.recipes().getAllRecipeNames());
         newFragment.show(getSupportFragmentManager(), "addRecipe");
     }
 
-    public void onDelRecipe(View v)
+    public void onDelRecipe(@NonNull View v)
     {
         if(m_SpinnerRecipes.getSelectedItem() == null)
         {
@@ -253,7 +258,12 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         String strName = (String)m_SpinnerRecipes.getSelectedItem();
 
         m_strRecentlyDeletedRecipe = strName;
-        m_RecentlyDeletedRecipe = m_GroceryPlanning.recipes().getRecipe(strName);
+        Optional<Recipes.Recipe> recipeToDelete = m_GroceryPlanning.recipes().getRecipe(strName);
+        if(!recipeToDelete.isPresent())
+        {
+            return;
+        }
+        m_RecentlyDeletedRecipe = recipeToDelete.get();
 
         m_GroceryPlanning.recipes().removeRecipe(m_RecentlyDeletedRecipe);
         m_SpinnerRecipesAdapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
@@ -280,7 +290,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         snackbar.show();
     }
 
-    public void onRenameRecipe(View v)
+    public void onRenameRecipe(@NonNull View v)
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
@@ -290,7 +300,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         newFragment.show(getSupportFragmentManager(), "renameRecipe");
     }
 
-    public void onCopyRecipe(View v)
+    public void onCopyRecipe(@NonNull View v)
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
@@ -300,7 +310,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         newFragment.show(getSupportFragmentManager(), "copyRecipe");
     }
 
-    public void onAddRecipeItem(View v)
+    public void onAddRecipeItem(@NonNull View v)
     {
         ArrayList<String> inputList = new ArrayList<>();
         for(Ingredients.Ingredient ingredient : m_GroceryPlanning.ingredients().getAllIngredients())
@@ -318,7 +328,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         newFragment.show(getSupportFragmentManager(), "addRecipeItem");
     }
 
-    public void onIncreaseAmount(View v)
+    public void onIncreaseAmount(@NonNull View v)
     {
         RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
         if(adapter == null)
@@ -328,7 +338,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         adapter.onChangeAmount(false,true);
     }
 
-    public void onDecreaseAmount(View v)
+    public void onDecreaseAmount(@NonNull View v)
     {
         RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
         if(adapter == null)
@@ -338,7 +348,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         adapter.onChangeAmount(false,false);
     }
 
-    public void onIncreaseAmountMax(View v)
+    public void onIncreaseAmountMax(@NonNull View v)
     {
         RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
         if(adapter == null)
@@ -348,7 +358,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         adapter.onChangeAmount(true,true);
     }
 
-    public void onDecreaseAmountMax(View v)
+    public void onDecreaseAmountMax(@NonNull View v)
     {
         RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
         if(adapter == null)
@@ -358,18 +368,23 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         adapter.onChangeAmount(true,false);
     }
 
-    public void onAddAlternativesGroup(View v)
+    public void onAddAlternativesGroup(@NonNull View v)
     {
         String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
-        Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
-        ArrayList<String> excludedInputs = recipe.getAllGroupNames();
+        Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+        if(!recipe.isPresent())
+        {
+            return;
+        }
+        ArrayList<String> excludedInputs = recipe.get().getAllGroupNames();
 
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_group));
         newFragment.setListExcludedInputs(excludedInputs);
         newFragment.show(getSupportFragmentManager(), "addAlternativesGroup");
     }
 
-    public void onStringInput(String tag, String strInput, String strAdditonalInformation)
+    @Override
+    public void onStringInput(@NonNull String tag, @NonNull String strInput, @NonNull String strAdditonalInformation)
     {
         switch(tag) {
             case "addRecipe":
@@ -387,8 +402,12 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             case "renameRecipe":
             {
                 final String strCurrentRecipe = (String) m_SpinnerRecipes.getSelectedItem();
-
-                m_GroceryPlanning.recipes().renameRecipe(m_GroceryPlanning.recipes().getRecipe(strCurrentRecipe), strInput);
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strCurrentRecipe);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
+                m_GroceryPlanning.recipes().renameRecipe(recipe.get(), strInput);
 
                 int index = m_SpinnerRecipes.getSelectedItemPosition();
                 m_SpinnerRecipesAdapter.remove(strCurrentRecipe);
@@ -402,8 +421,12 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             case "copyRecipe":
             {
                 final String strCurrentRecipe = (String) m_SpinnerRecipes.getSelectedItem();
-
-                m_GroceryPlanning.recipes().copyRecipe(m_GroceryPlanning.recipes().getRecipe(strCurrentRecipe), strInput);
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strCurrentRecipe);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
+                m_GroceryPlanning.recipes().copyRecipe(recipe.get(), strInput);
 
                 m_SpinnerRecipesAdapter.add(strInput);
                 m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getCount() - 1);
@@ -413,9 +436,13 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             case "addAlternativesGroup":
             {
                 String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
 
-                recipe.addGroup(strInput);
+                recipe.get().addGroup(strInput);
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
                 if (adapter == null) {
                     return;
@@ -429,8 +456,12 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             case "renameAlternativesGroup":
             {
                 String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
-                recipe.renameGroup(strAdditonalInformation, strInput);
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
+                recipe.get().renameGroup(strAdditonalInformation, strInput);
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
                 if (adapter == null) {
@@ -445,16 +476,25 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             case "addRecipeItem":
             {
                 String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
 
-                RecipeItem item = recipe.addRecipeItem(strInput);
-                item.getAmount().setUnit(m_GroceryPlanning.ingredients().getIngredient(strInput).getDefaultUnit());
+                Optional<RecipeItem> item = recipe.get().addRecipeItem(strInput);
+                Optional<Ingredients.Ingredient> ingredient = m_GroceryPlanning.ingredients().getIngredient(strInput);
+                if(!item.isPresent() || !ingredient.isPresent())
+                {
+                    return;
+                }
+                item.get().getAmount().setUnit(ingredient.get().getDefaultUnit());
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
                 if (adapter == null) {
                     return;
                 }
-                adapter.notifyItemInserted(recipe.getAllRecipeItems().size() - 1);
+                adapter.notifyItemInserted(recipe.get().getAllRecipeItems().size() - 1);
                 adapter.setActiveElement(strInput);
                 break;
             }
@@ -462,10 +502,19 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             case "addRecipeItemToGroup":
             {
                 String strRecipe = (String) m_SpinnerRecipes.getSelectedItem();
-                Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+                if(!recipe.isPresent())
+                {
+                    return;
+                }
 
-                RecipeItem item = recipe.addRecipeItemToGroup(strAdditonalInformation, strInput);
-                item.getAmount().setUnit(m_GroceryPlanning.ingredients().getIngredient(strInput).getDefaultUnit());
+                Optional<RecipeItem> item = recipe.get().addRecipeItemToGroup(strAdditonalInformation, strInput);
+                Optional<Ingredients.Ingredient> ingredient = m_GroceryPlanning.ingredients().getIngredient(strInput);
+                if(!item.isPresent() || !ingredient.isPresent())
+                {
+                    return;
+                }
+                item.get().getAmount().setUnit(ingredient.get().getDefaultUnit());
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
                 if (adapter == null) {
@@ -487,17 +536,21 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         }
 
         String strRecipe = (String)m_SpinnerRecipes.getSelectedItem();
-        Recipes.Recipe recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+        Optional<Recipes.Recipe> recipe = m_GroceryPlanning.recipes().getRecipe(strRecipe);
+        if(!recipe.isPresent())
+        {
+            return;
+        }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(SettingsActivity.KEY_ACTIVE_RECIPE, strRecipe);
         editor.apply();
 
-        m_EditTextNrPersons.setText(String.format(Locale.getDefault(), "%d", recipe.getNumberOfPersons()));
+        m_EditTextNrPersons.setText(String.format(Locale.getDefault(), "%d", recipe.get().getNumberOfPersons()));
 
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
-        m_Adapter = new RecipeItemsAdapter(coordLayout, m_RecyclerView, recipe, m_GroceryPlanning.ingredients());
+        m_Adapter = new RecipeItemsAdapter(coordLayout, m_RecyclerView, recipe.get(), m_GroceryPlanning.ingredients());
         m_RecyclerView.setAdapter(m_Adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener(
             (RecyclerView recyclerView, int position, View v) ->
@@ -545,7 +598,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
-    public void onNothingSelected(AdapterView<?> parent)
+    public void onNothingSelected(@NonNull AdapterView<?> parent)
     {
     }
 }

@@ -1,6 +1,9 @@
 package ch.phwidmer.einkaufsliste.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.R;
 
@@ -31,7 +34,7 @@ public abstract class Amount {
     public abstract void setQuantityMax(float quantity);
 
     public abstract Amount.Unit getUnit();
-    public abstract void setUnit(Amount.Unit unit);
+    public abstract void setUnit(@NonNull Amount.Unit unit);
 
     public abstract boolean isRange();
     public abstract void setIsRange(boolean bIsRange);
@@ -140,7 +143,7 @@ public abstract class Amount {
         }
     }
 
-    public static String toUIString(Context context, Unit unit)
+    public static String toUIString(@NonNull Context context, @NonNull Unit unit)
     {
         switch(unit)
         {
@@ -172,7 +175,7 @@ public abstract class Amount {
         }
     }
 
-    public static String shortForm(Context context, Unit unit)
+    public static String shortForm(@NonNull Context context, @NonNull Unit unit)
     {
         switch(unit)
         {
@@ -205,7 +208,7 @@ public abstract class Amount {
     }
 
     // asPrefix: Is it used in front of the corresponding item? Then we don't need to write "1 Piece Apple", but can use another form.
-    public static String shortFormAsPrefix(Context context, Unit unit)
+    public static String shortFormAsPrefix(@NonNull Context context, @NonNull Unit unit)
     {
         switch(unit)
         {
@@ -237,11 +240,11 @@ public abstract class Amount {
         }
     }
 
-    static Amount addUp(Amount m1, Amount m2)
+    static Optional<Amount> addUp(@NonNull Amount m1, @NonNull Amount m2)
     {
         if(!canBeAddedUp(m1, m2))
         {
-            return null;
+            return Optional.empty();
         }
 
         Amount result = m1.createNewInstance();
@@ -322,10 +325,10 @@ public abstract class Amount {
             default:
                 throw new IllegalArgumentException();
         }
-        return result;
+        return Optional.of(result);
     }
 
-    static boolean canBeAddedUp(Amount m1, Amount m2)
+    static boolean canBeAddedUp(@NonNull Amount m1, @NonNull Amount m2)
     {
         if(m1.isRange() || m2.isRange())
         {

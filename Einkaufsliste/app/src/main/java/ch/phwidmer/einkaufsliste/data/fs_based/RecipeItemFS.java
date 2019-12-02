@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
+import android.support.annotation.NonNull;
+
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 
@@ -10,12 +12,12 @@ public class RecipeItemFS implements RecipeItem {
     private Size m_Size = Size.Normal;
     private Boolean m_Optional = false;
 
-    RecipeItemFS(String strIngredient) {
+    RecipeItemFS(@NonNull String strIngredient) {
         m_Ingredient = strIngredient;
         m_Amount = new AmountFS();
     }
 
-    RecipeItemFS(RecipeItemFS other) {
+    RecipeItemFS(@NonNull RecipeItemFS other) {
         m_Ingredient = other.m_Ingredient;
         m_Amount = new AmountFS(other.m_Amount);
         m_AdditionalInfo = other.m_AdditionalInfo;
@@ -29,7 +31,7 @@ public class RecipeItemFS implements RecipeItem {
     }
 
     @Override
-    public void setIngredient(String strIngredient) {
+    public void setIngredient(@NonNull String strIngredient) {
         m_Ingredient = strIngredient;
     }
 
@@ -39,7 +41,7 @@ public class RecipeItemFS implements RecipeItem {
     }
 
     @Override
-    public void setAmount(Amount amount) {
+    public void setAmount(@NonNull Amount amount) {
         m_Amount = (AmountFS) amount;
     }
 
@@ -49,7 +51,7 @@ public class RecipeItemFS implements RecipeItem {
     }
 
     @Override
-    public void setAdditionInfo(String additionalInfo) {
+    public void setAdditionInfo(@NonNull String additionalInfo) {
         m_AdditionalInfo = additionalInfo;
     }
 
@@ -59,7 +61,7 @@ public class RecipeItemFS implements RecipeItem {
     }
 
     @Override
-    public void setSize(Size size) {
+    public void setSize(@NonNull Size size) {
         m_Size = size;
     }
 

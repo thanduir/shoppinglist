@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -73,31 +74,31 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         }
     }
 
-    public void manageCategories(View view)
+    public void manageCategories(@NonNull View view)
     {
         Intent intent = new Intent(this, CategoriesActivity.class);
          startActivity(intent);
     }
 
-    public void manageIngredients(View view)
+    public void manageIngredients(@NonNull View view)
     {
         Intent intent = new Intent(this, IngredientsActivity.class);
         startActivity(intent);
     }
 
-    public void manageRecipies(View view)
+    public void manageRecipies(@NonNull View view)
     {
         Intent intent = new Intent(this, RecipesActivity.class);
         startActivity(intent);
     }
 
-    public void editShoppingList(View view)
+    public void editShoppingList(@NonNull View view)
     {
         Intent intent = new Intent(this, ShoppingListActivity.class);
         startActivity(intent);
     }
 
-    public void goShopping(View view)
+    public void goShopping(@NonNull View view)
     {
         Intent intent = new Intent(this, GoShoppingActivity.class);
         startActivity(intent);
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     }
 
     @Override
-    public void onStringInput(String tag, String strInput, String strAdditonalInformation) {
+    public void onStringInput(@NonNull String tag, @NonNull String strInput, @NonNull String strAdditonalInformation) {
         if (tag.equals("onExport")) {
             String strFilename = strInput;
             if (!strFilename.endsWith(".json")) {
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         return super.onOptionsItemSelected(item);
     }
 
-    public static void showErrorDialog(String title, String message, Context context)
+    public static void showErrorDialog(@NonNull String title, @NonNull String message, @NonNull Context context)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);

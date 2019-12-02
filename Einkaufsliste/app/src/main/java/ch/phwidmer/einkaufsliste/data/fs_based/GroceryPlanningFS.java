@@ -1,6 +1,7 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,7 @@ public class GroceryPlanningFS extends GroceryPlanning
 
     private File m_AppDataDirectory;
 
-    public static GroceryPlanningFS getInstance(File appDataDirectory, Context context)
+    public static GroceryPlanningFS getInstance(@NonNull File appDataDirectory, @NonNull Context context)
     {
         if(m_Instance == null)
         {
@@ -25,7 +26,7 @@ public class GroceryPlanningFS extends GroceryPlanning
         return m_Instance;
     }
 
-    private GroceryPlanningFS(File appDataDirectory, Context context)
+    private GroceryPlanningFS(@NonNull File appDataDirectory, @NonNull Context context)
     {
         clearAll();
 

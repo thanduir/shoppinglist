@@ -1,8 +1,11 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.helper.Helper;
@@ -13,7 +16,7 @@ public class CategoriesFS extends Categories
     {
         private String m_Category;
 
-        private CategoryFS(String strName)
+        private CategoryFS(@NonNull String strName)
         {
             m_Category = strName;
         }
@@ -36,7 +39,7 @@ public class CategoriesFS extends Categories
         private String m_Name;
         ArrayList<Category> m_CategoriesOrder = new ArrayList<>();
 
-        SortOrderFS(String name)
+        SortOrderFS(@NonNull String name)
         {
             m_Name = name;
         }
@@ -54,13 +57,13 @@ public class CategoriesFS extends Categories
         }
 
         @Override
-        public void setOrder(ArrayList<Category> order)
+        public void setOrder(@NonNull ArrayList<Category> order)
         {
             m_CategoriesOrder = order;
         }
 
         @Override
-        public void moveCategory(Category category, int newPos)
+        public void moveCategory(@NonNull Category category, int newPos)
         {
             m_CategoriesOrder.remove(category);
             m_CategoriesOrder.add(newPos, category);
@@ -79,7 +82,7 @@ public class CategoriesFS extends Categories
     // Categories
 
     @Override
-    public void addCategory(String strName)
+    public void addCategory(@NonNull String strName)
     {
         if(m_Categories.contains(strName))
         {
@@ -94,7 +97,7 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public void renameCategory(Category category, String strNewName)
+    public void renameCategory(@NonNull Category category, @NonNull String strNewName)
     {
         if(!m_Categories.contains(category.getName()))
         {
@@ -116,7 +119,7 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public void removeCategory(Category category)
+    public void removeCategory(@NonNull Category category)
     {
         m_Categories.remove(category.getName());
 
@@ -127,14 +130,14 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public Category getCategory(String category)
+    public Optional<Category> getCategory(@NonNull String category)
     {
         if(m_Categories.contains(category))
         {
-            return new CategoryFS(category);
+            return Optional.of(new CategoryFS(category));
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -163,19 +166,19 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public Category getDefaultCategory()
+    public Optional<Category> getDefaultCategory()
     {
         if(m_Categories.size() > 0)
         {
-            return new CategoryFS((String)m_Categories.toArray()[0]);
+            return Optional.of(new CategoryFS((String)m_Categories.toArray()[0]));
         }
-        return null;
+        return Optional.empty();
     }
 
     // SortOrder
 
     @Override
-    public SortOrder addSortOrder(String strName)
+    public SortOrder addSortOrder(@NonNull String strName)
     {
         for(SortOrderFS sortOrder : m_SortOrders)
         {
@@ -195,7 +198,7 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public void renameSortOrder(SortOrder order, String strNewName)
+    public void renameSortOrder(@NonNull SortOrder order, @NonNull String strNewName)
     {
         for(SortOrderFS sortOrder : m_SortOrders)
         {
@@ -210,7 +213,7 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public void removeSortOrder(String strName)
+    public void removeSortOrder(@NonNull String strName)
     {
         for(SortOrderFS sortOrder : m_SortOrders)
         {
@@ -222,17 +225,17 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public SortOrder getSortOrder(String strName)
+    public Optional<SortOrder> getSortOrder(@NonNull String strName)
     {
         for(SortOrderFS sortOrder : m_SortOrders)
         {
             if(sortOrder.getName().equals(strName))
             {
-                return sortOrder;
+                return Optional.of(sortOrder);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override

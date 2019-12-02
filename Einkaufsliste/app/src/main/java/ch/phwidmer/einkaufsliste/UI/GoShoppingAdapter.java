@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.util.Optional;
+
 import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.SortedShoppingList;
@@ -28,7 +30,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         private CheckBox m_CheckBox;
         private TextView m_TextViewAdditionalInfo;
         private String m_id;
-        public ViewHolder(View v)
+        public ViewHolder(@NonNull View v)
         {
             super(v);
             m_TextView = v.findViewById(R.id.textView);
@@ -38,7 +40,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         }
     }
 
-    GoShoppingAdapter(SortedShoppingList sortedList)
+    GoShoppingAdapter(@NonNull SortedShoppingList sortedList)
     {
         m_SortedList = sortedList;
     }
@@ -60,33 +62,37 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
 
         if(!m_SortedList.isCategory(position))
         {
-            SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
+            Optional<SortedShoppingList.CategoryShoppingItem> item = m_SortedList.getListItem(position);
+            if(!item.isPresent())
+            {
+                return;
+            }
 
             String text = "";
-            if(item.getAmount().getUnit() != Amount.Unit.Unitless)
+            if(item.get().getAmount().getUnit() != Amount.Unit.Unitless)
             {
-                text = Helper.formatNumber(item.getAmount().getQuantityMin());
-                if(item.getAmount().isRange())
+                text = Helper.formatNumber(item.get().getAmount().getQuantityMin());
+                if(item.get().getAmount().isRange())
                 {
-                    text += "-" + Helper.formatNumber(item.getAmount().getQuantityMax());
+                    text += "-" + Helper.formatNumber(item.get().getAmount().getQuantityMax());
                 }
-                text += " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.getAmount().getUnit()) + " ";
+                text += " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.get().getAmount().getUnit()) + " ";
             }
             text += holder.m_id;
             holder.m_CheckBox.setText(text);
 
             String additionalText = "";
-            if(item.getSize() != RecipeItem.Size.Normal)
+            if(item.get().getSize() != RecipeItem.Size.Normal)
             {
-                additionalText += RecipeItem.toUIString(holder.itemView.getContext(), item.getSize());
+                additionalText += RecipeItem.toUIString(holder.itemView.getContext(), item.get().getSize());
             }
-            if(!item.getAdditionalInfo().isEmpty())
+            if(!item.get().getAdditionalInfo().isEmpty())
             {
                 if(!additionalText.isEmpty())
                 {
                     additionalText += ", ";
                 }
-                additionalText += item.getAdditionalInfo();
+                additionalText += item.get().getAdditionalInfo();
             }
             if(!additionalText.isEmpty())
             {
@@ -99,7 +105,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         updateAppearance(holder, position);
     }
 
-    void updateAppearance(GoShoppingAdapter.ViewHolder holder, int position)
+    void updateAppearance(@NonNull GoShoppingAdapter.ViewHolder holder, int position)
     {
         if(m_SortedList.isCategory(position))
         {
@@ -127,8 +133,13 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
 
             holder.m_TextViewAdditionalInfo.setTextColor(Color.GRAY);
 
-            SortedShoppingList.CategoryShoppingItem item = m_SortedList.getListItem(position);
-            if(item.isOptional())
+            Optional<SortedShoppingList.CategoryShoppingItem> item = m_SortedList.getListItem(position);
+            if(!item.isPresent())
+            {
+                return;
+            }
+
+            if(item.get().isOptional())
             {
                 holder.m_CheckBox.setTextColor(Color.GRAY);
                 holder.m_CheckBox.setTypeface(holder.m_CheckBox.getTypeface(), Typeface.ITALIC);
@@ -139,7 +150,8 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
                 holder.m_CheckBox.setTypeface(null, Typeface.NORMAL);
             }
 
-            if(item.getStatus() != ShoppingListItem.Status.None)
+            Optional<ShoppingListItem.Status> itemStatus = item.get().getStatus();
+            if(itemStatus.isPresent() && itemStatus.get() != ShoppingListItem.Status.None)
             {
                 holder.m_CheckBox.setPaintFlags(holder.m_CheckBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.m_CheckBox.setChecked(true);

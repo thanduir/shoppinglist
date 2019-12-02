@@ -1,5 +1,7 @@
 package ch.phwidmer.einkaufsliste.data.fs_based;
 
+import android.support.annotation.NonNull;
+
 import ch.phwidmer.einkaufsliste.data.Amount;
 
 public class AmountFS extends Amount
@@ -17,7 +19,7 @@ public class AmountFS extends Amount
         m_Unit = Unit.Count;
     }
 
-    AmountFS(AmountFS other)
+    AmountFS(@NonNull AmountFS other)
     {
         m_QuantityMin = other.m_QuantityMin;
         m_QuantityMax = other.m_QuantityMax;
@@ -58,7 +60,7 @@ public class AmountFS extends Amount
         return m_Unit;
     }
     @Override
-    public void setUnit(Amount.Unit unit)
+    public void setUnit(@NonNull Amount.Unit unit)
     {
         m_Unit = unit;
     }
