@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.Categories;
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
-import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
@@ -267,9 +267,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
 
         ArrayAdapter<CharSequence> adapterStdUnit = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-        for(Amount.Unit u : Amount.Unit.values())
+        for(Unit u : Unit.values())
         {
-            adapterStdUnit.add(Amount.toUIString(vh.itemView.getContext(), u));
+            adapterStdUnit.add(Unit.toUIString(vh.itemView.getContext(), u));
         }
         adapterStdUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerStdUnit.setAdapter(adapterStdUnit);
@@ -318,7 +318,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
         else if(parent == vh.m_SpinnerStdUnit)
         {
-            ingredient.get().setDefaultUnit(Amount.Unit.values()[vh.m_SpinnerStdUnit.getSelectedItemPosition()]);
+            ingredient.get().setDefaultUnit(Unit.values()[vh.m_SpinnerStdUnit.getSelectedItemPosition()]);
         }
     }
 

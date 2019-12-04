@@ -4,7 +4,7 @@ TODO
 - db statt json für aktuelle daten (json nur noch für import / export)
     - db: wie sortieren? SQL sort + danach noch spezialsort?
     - Reset db button in settings! (Need to have this also for FS-based, don't I? And an option to switch between storage types!)
-    - Ask before overwriting db (e.g. before importing file / resetting db)!
+    - Need some way to inspect db? (json export partially works for this though)
 
 - Use Google Paging Library (https://guides.codepath.com/android/Paging-Library-Guide) to speed up large RecyclerViews?
 - Better possibilities for "insert-list" (add *-lists)? Sometimes certain items are hidden by the on-screen keyboard. should still be text searchable

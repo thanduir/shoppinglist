@@ -67,7 +67,7 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         }
         else
         {
-            String strDefaultSortOrder = preferences.getString(SettingsActivity.KEY_DEFAULT_SORORDER, "");
+            String strDefaultSortOrder = preferences.getString(SettingsActivity.KEY_DEFAULT_SORORDER, SettingsActivity.defaultSortOrder);
             if(strDefaultSortOrder == null)
             {
                 strDefaultSortOrder = "";

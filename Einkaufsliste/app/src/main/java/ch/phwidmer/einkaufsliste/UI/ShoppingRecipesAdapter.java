@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
-import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.ShoppingList;
@@ -150,14 +150,14 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         private void updateDescription(@NonNull Context context)
         {
             String text = "";
-            if(m_RecipeItem.getAmount().getUnit() != Amount.Unit.Unitless)
+            if(m_RecipeItem.getAmount().getUnit() != Unit.Unitless)
             {
                 text += Helper.formatNumber(m_RecipeItem.getAmount().getQuantityMin());
                 if(m_RecipeItem.getAmount().isRange())
                 {
                     text += "-" + Helper.formatNumber(m_RecipeItem.getAmount().getQuantityMax());
                 }
-                text += " " + Amount.shortForm(context, m_RecipeItem.getAmount().getUnit());
+                text += " " + Unit.shortForm(context, m_RecipeItem.getAmount().getUnit());
             }
             if(m_RecipeItem.getSize() != RecipeItem.Size.Normal)
             {
@@ -387,9 +387,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         ShoppingListItem item = vh.m_RecipeItem;
 
         ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-        for(Amount.Unit u : Amount.Unit.values())
+        for(Unit u : Unit.values())
         {
-            adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
+            adapterAmount.add(Unit.toUIString(vh.itemView.getContext(), u));
         }
         adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerAmount.setAdapter(adapterAmount);
@@ -623,7 +623,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         if(parent == vh.m_SpinnerAmount)
         {
-            item.getAmount().setUnit(Amount.Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
+            item.getAmount().setUnit(Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
             adjustEditTextAmount(vh, item);
         }
         else if(parent == vh.m_SpinnerSize)
@@ -747,7 +747,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
     private void adjustEditTextAmount(@NonNull ShoppingRecipesAdapter.ViewHolderActive vh, @NonNull ShoppingListItem item)
     {
-        if(item.getAmount().getUnit() == Amount.Unit.Unitless)
+        if(item.getAmount().getUnit() == Unit.Unitless)
         {
             vh.m_EditTextAmount.setText("");
             vh.m_EditTextAmountMax.setText("");

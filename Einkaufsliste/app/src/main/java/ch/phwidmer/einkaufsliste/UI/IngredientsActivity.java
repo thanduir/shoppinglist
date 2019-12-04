@@ -19,10 +19,10 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
-import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
@@ -153,7 +153,7 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
         if(tag.equals("addIngredient"))
         {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, Amount.Unit.Count.toString());
+            final String strDefaultUnit = preferences.getString(SettingsActivity.KEY_DEFAULT_UNIT, SettingsActivity.defaultUnit.toString());
 
             Optional<Categories.Category> defaultCategory = m_GroceryPlanning.categories().getDefaultCategory();
             if(!defaultCategory.isPresent())
@@ -161,7 +161,7 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
                 return;
             }
             Optional<Ingredients.Ingredient> ingredient = m_GroceryPlanning.ingredients().addIngredient(strInput,
-                                                                                                        Amount.Unit.valueOf(strDefaultUnit),
+                                                                                                        Unit.valueOf(strDefaultUnit),
                                                                                                         defaultCategory.get());
             if(!ingredient.isPresent())
             {

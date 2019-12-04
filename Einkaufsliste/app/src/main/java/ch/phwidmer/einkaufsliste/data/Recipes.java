@@ -291,7 +291,7 @@ public abstract class Recipes
 
                     item.getAmount().setQuantityMin((float)reader.nextDouble());
                     String str = reader.nextString();
-                    item.getAmount().setUnit(Amount.Unit.valueOf(str));
+                    item.getAmount().setUnit(Unit.valueOf(str));
 
                     reader.endArray();
                     break;
@@ -304,7 +304,7 @@ public abstract class Recipes
                     item.getAmount().setQuantityMin((float)reader.nextDouble());
                     item.getAmount().setQuantityMax((float) reader.nextDouble());
                     String str = reader.nextString();
-                    item.getAmount().setUnit(Amount.Unit.valueOf(str));
+                    item.getAmount().setUnit(Unit.valueOf(str));
 
                     reader.endArray();
                     break;

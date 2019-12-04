@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,23 +15,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.data.DataBackend;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
 {
-    private static final String c_strStdDataFilename = "ch.phwidmer.einkaufsliste.default.json";
-    private static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
-
     private File m_AppDataDirectory = null;
     private GroceryPlanning m_GroceryPlanning;
 
@@ -41,44 +38,18 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
         m_AppDataDirectory = getExternalFilesDir(null);
 
-        GroceryPlanningFactory.setBackend(GroceryPlanningFactory.Backend.fs_based);
-        GroceryPlanningFactory.setAppDataDirectory(m_AppDataDirectory);
-        GroceryPlanningFactory.setAppSaveFilename(c_strSaveFilename);
+        SettingsActivity.setDefaultPreferencesIfNothingSet(this);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String strBackend = preferences.getString(SettingsActivity.KEY_CURRENT_BACKEND, SettingsActivity.defaultBackend.toString());
+        GroceryPlanningFactory.setBackend(DataBackend.valueOf(strBackend));
+
         try {
             m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
         }
         catch(InvalidParameterException e)
         {
             MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
-            return;
-        }
-
-        writeStdDataFileIfNotPresent();
-    }
-
-    private void writeStdDataFileIfNotPresent()
-    {
-        File testDataFile = new File(m_AppDataDirectory, c_strStdDataFilename);
-        if(!testDataFile.exists())
-        {
-            try {
-                InputStream dataInputStream = getResources().openRawResource(R.raw.default_data);
-                OutputStream output = new FileOutputStream(testDataFile);
-
-                int read;
-                byte[] bytes = new byte[1024];
-
-                while ((read = dataInputStream.read(bytes)) != -1) {
-                    output.write(bytes, 0, read);
-                }
-
-                output.close();
-
-                m_GroceryPlanning.scanFile(getBaseContext(), testDataFile);
-            }
-            catch(IOException ignore)
-            {
-            }
         }
     }
 
@@ -118,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         File directory = m_AppDataDirectory;
         for(File f : directory.listFiles())
         {
-            if(!f.getName().endsWith(".json") || f.getName().equals(c_strSaveFilename) || f.getName().equals(c_strStdDataFilename))
+            if(!f.getName().endsWith(".json"))
             {
                 continue;
             }
@@ -137,12 +108,6 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
     {
         InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_saveas));
         newFragment.setListInputsToConfirm(getListOfExistingFiles(true));
-        ArrayList<String> excludedList = new ArrayList<>();
-        excludedList.add(c_strStdDataFilename);
-        excludedList.add(c_strStdDataFilename.replace(".json", ""));
-        excludedList.add(c_strSaveFilename);
-        excludedList.add(c_strSaveFilename.replace(".json", ""));
-        newFragment.setListExcludedInputs(excludedList);
         newFragment.show(getSupportFragmentManager(), "onExport");
     }
 
@@ -170,18 +135,25 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
             }
         } else if (tag.equals("onImport"))
         {
-            try {
-                File file = new File(m_AppDataDirectory, strInput);
-                m_GroceryPlanning.loadDataFromFile(file);
-
-                File file2 = new File(m_AppDataDirectory, c_strSaveFilename);
-                m_GroceryPlanning.saveDataToFile(file2, getBaseContext());
-
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded, strInput), Toast.LENGTH_SHORT).show();
-            } catch (IOException e)
+            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.text_replace_by_import_header));
+            builder.setMessage(getString(R.string.text_action_reset_data));
+            builder.setNegativeButton(android.R.string.cancel, (DialogInterface dialog, int which) -> {});
+            builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->
             {
-                showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage(), this);
-            }
+                try {
+                    File file = new File(m_AppDataDirectory, strInput);
+                    m_GroceryPlanning.loadDataFromFile(file);
+
+                    m_GroceryPlanning.flush();
+
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_loaded, strInput), Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    m_GroceryPlanning.clearAll();
+                    showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+                }
+            });
+            builder.show();
         }
     }
 
@@ -217,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
         builder.setTitle(title);
         builder.setMessage(message);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton(R.string.accept, (DialogInterface dialog, int which) ->{});
+        builder.setPositiveButton(android.R.string.ok, (DialogInterface dialog, int which) ->{});
         builder.show();
     }
 }

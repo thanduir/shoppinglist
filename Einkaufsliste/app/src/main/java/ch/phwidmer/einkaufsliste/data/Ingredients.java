@@ -23,12 +23,12 @@ public abstract class Ingredients
         public abstract String getProvenance();
         public abstract void setProvenance(@NonNull String strProvenance);
 
-        public abstract Amount.Unit getDefaultUnit();
-        public abstract void setDefaultUnit(@NonNull Amount.Unit unit);
+        public abstract Unit getDefaultUnit();
+        public abstract void setDefaultUnit(@NonNull Unit unit);
     }
 
-    public abstract Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull Categories.Category category);
-    protected abstract Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull String strCategory);
+    public abstract Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Unit defaultUnit, @NonNull Categories.Category category);
+    protected abstract Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Unit defaultUnit, @NonNull String strCategory);
     public abstract void removeIngredient(@NonNull Ingredient ingredient);
     public abstract void renameIngredient(@NonNull Ingredient ingredient, @NonNull String strNewName);
     public abstract Optional<Ingredient> getIngredient(String strName);
@@ -155,7 +155,7 @@ public abstract class Ingredients
             {
                 String strCategory = "";
                 String strProvenance = "";
-                Amount.Unit unit = Amount.Unit.Unitless;
+                Unit unit = Unit.Unitless;
 
                 reader.beginObject();
                 while (reader.hasNext())
@@ -179,7 +179,7 @@ public abstract class Ingredients
                         case "default-unit":
                         {
                             String strUnit = reader.nextString();
-                            unit = Amount.Unit.valueOf(strUnit);
+                            unit = Unit.valueOf(strUnit);
                             break;
                         }
 

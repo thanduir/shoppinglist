@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class IngredientsFS extends Ingredients
@@ -18,7 +18,7 @@ public class IngredientsFS extends Ingredients
         String m_Name;
         private String m_Category = "";
         private String m_Provenance = c_strProvenanceEverywhere;
-        private AmountFS.Unit m_DefaultUnit;
+        private Unit m_DefaultUnit;
 
         IngredientFS(@NonNull String name)
         {
@@ -54,12 +54,12 @@ public class IngredientsFS extends Ingredients
         }
 
         @Override
-        public Amount.Unit getDefaultUnit()
+        public Unit getDefaultUnit()
         {
             return m_DefaultUnit;
         }
         @Override
-        public void setDefaultUnit(@NonNull Amount.Unit unit)
+        public void setDefaultUnit(@NonNull Unit unit)
         {
             m_DefaultUnit = unit;
         }
@@ -72,7 +72,7 @@ public class IngredientsFS extends Ingredients
     }
 
     @Override
-    public Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull Categories.Category category)
+    public Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Unit defaultUnit, @NonNull Categories.Category category)
     {
         if(getIngredient(strName).isPresent())
         {
@@ -86,7 +86,7 @@ public class IngredientsFS extends Ingredients
     }
 
     @Override
-    protected Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Amount.Unit defaultUnit, @NonNull String strCategory)
+    protected Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Unit defaultUnit, @NonNull String strCategory)
     {
         if(getIngredient(strName).isPresent())
         {

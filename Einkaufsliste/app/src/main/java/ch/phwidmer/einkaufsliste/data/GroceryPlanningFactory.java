@@ -3,35 +3,17 @@ package ch.phwidmer.einkaufsliste.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.io.File;
 import java.security.InvalidParameterException;
 
 import ch.phwidmer.einkaufsliste.data.fs_based.GroceryPlanningFS;
 
 public class GroceryPlanningFactory
 {
-    public enum Backend {
-        fs_based,
-        db_based
-    }
+    private static DataBackend m_Backend = null;
 
-    private static Backend m_Backend = null;
-    private static File m_AppDataDirectory = null;
-    private static String m_strAppSaveFilename = null;
-
-    public static void setBackend(Backend backend)
+    public static void setBackend(DataBackend backend)
     {
         m_Backend = backend;
-    }
-
-    public static void setAppDataDirectory(File appDataDirectory)
-    {
-        m_AppDataDirectory = appDataDirectory;
-    }
-
-    public static void setAppSaveFilename(String appSaveFilename)
-    {
-        m_strAppSaveFilename = appSaveFilename;
     }
 
     public static GroceryPlanning groceryPlanning(@NonNull Context context)
@@ -45,7 +27,7 @@ public class GroceryPlanningFactory
         {
             case fs_based:
             {
-                return GroceryPlanningFS.getInstance(m_AppDataDirectory, m_strAppSaveFilename, context);
+                return GroceryPlanningFS.getInstance(context);
             }
 
             case db_based:

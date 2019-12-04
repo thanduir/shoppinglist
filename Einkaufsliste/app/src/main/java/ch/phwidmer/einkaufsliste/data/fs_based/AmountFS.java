@@ -3,6 +3,7 @@ package ch.phwidmer.einkaufsliste.data.fs_based;
 import android.support.annotation.NonNull;
 
 import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.Unit;
 
 public class AmountFS extends Amount
 {
@@ -55,12 +56,12 @@ public class AmountFS extends Amount
     }
 
     @Override
-    public Amount.Unit getUnit()
+    public Unit getUnit()
     {
         return m_Unit;
     }
     @Override
-    public void setUnit(@NonNull Amount.Unit unit)
+    public void setUnit(@NonNull Unit unit)
     {
         m_Unit = unit;
     }

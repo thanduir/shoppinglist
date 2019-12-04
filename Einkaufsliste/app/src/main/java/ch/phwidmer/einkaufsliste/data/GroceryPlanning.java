@@ -21,7 +21,7 @@ public abstract class GroceryPlanning
     protected Recipes         m_Recipes;
     protected ShoppingList    m_ShoppingList;
 
-    protected abstract void clearAll();
+    public abstract void clearAll();
     public abstract void flush();
 
     public Categories categories()
@@ -177,7 +177,7 @@ public abstract class GroceryPlanning
     }
 
     // Make file known to the MediaScanner so that it apears when the device is mount e.g. on windows.
-    public void scanFile(Context context, @NonNull File f)
+    private void scanFile(Context context, @NonNull File f)
     {
         if(context == null)
         {

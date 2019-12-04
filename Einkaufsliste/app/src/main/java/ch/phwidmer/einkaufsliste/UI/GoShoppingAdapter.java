@@ -13,10 +13,10 @@ import android.widget.TextView;
 
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.SortedShoppingList;
-import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 
@@ -69,14 +69,14 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             }
 
             String text = "";
-            if(item.get().getAmount().getUnit() != Amount.Unit.Unitless)
+            if(item.get().getAmount().getUnit() != Unit.Unitless)
             {
                 text = Helper.formatNumber(item.get().getAmount().getQuantityMin());
                 if(item.get().getAmount().isRange())
                 {
                     text += "-" + Helper.formatNumber(item.get().getAmount().getQuantityMax());
                 }
-                text += " " + Amount.shortFormAsPrefix(holder.itemView.getContext(), item.get().getAmount().getUnit()) + " ";
+                text += " " + Unit.shortFormAsPrefix(holder.itemView.getContext(), item.get().getAmount().getUnit()) + " ";
             }
             text += holder.m_id;
             holder.m_CheckBox.setText(text);

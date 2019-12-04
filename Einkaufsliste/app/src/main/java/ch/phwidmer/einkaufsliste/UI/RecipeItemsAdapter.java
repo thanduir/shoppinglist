@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
-import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.Recipes;
@@ -98,14 +98,14 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         void setDescription(@NonNull Context context, @NonNull RecipeItem item)
         {
             String text = "";
-            if(item.getAmount().getUnit() != Amount.Unit.Unitless)
+            if(item.getAmount().getUnit() != Unit.Unitless)
             {
                 text += Helper.formatNumber(item.getAmount().getQuantityMin());
                 if(item.getAmount().isRange())
                 {
                     text += "-" + Helper.formatNumber(item.getAmount().getQuantityMax());
                 }
-                text += " " + Amount.shortForm(context, item.getAmount().getUnit());
+                text += " " + Unit.shortForm(context, item.getAmount().getUnit());
             }
             if(item.getSize() != RecipeItem.Size.Normal)
             {
@@ -418,9 +418,9 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         vh.m_View.setBackgroundColor(ContextCompat.getColor(vh.m_View.getContext(), R.color.colorHighlightedBackground));
 
         ArrayAdapter<CharSequence> adapterAmount = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
-        for(Amount.Unit u : Amount.Unit.values())
+        for(Unit u : Unit.values())
         {
-            adapterAmount.add(Amount.toUIString(vh.itemView.getContext(), u));
+            adapterAmount.add(Unit.toUIString(vh.itemView.getContext(), u));
         }
         adapterAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerAmount.setAdapter(adapterAmount);
@@ -717,7 +717,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         if(parent == vh.m_SpinnerAmount)
         {
-            item.get().getAmount().setUnit(Amount.Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
+            item.get().getAmount().setUnit(Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
             adjustEditTextAmount(vh, item.get());
         }
         else if(parent == vh.m_SpinnerSize)
@@ -884,7 +884,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
     private void adjustEditTextAmount(@NonNull RecipeItemsAdapter.ViewHolderActive vh, @NonNull RecipeItem item)
     {
-        if(item.getAmount().getUnit() == Amount.Unit.Unitless)
+        if(item.getAmount().getUnit() == Unit.Unitless)
         {
             vh.m_EditTextAmount.setText("");
             vh.m_EditTextAmountMax.setText("");

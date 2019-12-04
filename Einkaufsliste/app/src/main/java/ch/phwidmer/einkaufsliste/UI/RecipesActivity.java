@@ -41,8 +41,8 @@ import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 
-public class RecipesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder {
-
+public class RecipesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
+{
     private GroceryPlanning m_GroceryPlanning;
 
     private Spinner                     m_SpinnerRecipes;

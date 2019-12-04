@@ -60,6 +60,9 @@
     <string name="text_default_unit">Standardeinheit</string>
     <string name="text_default_nrpersons">Standard # Personen</string>
     <string name="text_default_sortorder">Standard-Sortierreihenfolge</string>
+    <string name="text_backend">Backend</string>
+    <string name="text_clear_all_data">Alle Daten zurücksetzen</string>
+    <string name="text_reset_data_to_default">Alle Daten mit Standardwerten ersetzen</string>
     <string name="text_rename_sortorder">Sortierreihenfolge \"%s\" umbenennen</string>
     <string name="text_sortorder_renamed">Sortierreihenfolge \"%1$s\" umbenannt zu \"%2$s\".</string>
     <string name="text_rename_category">Kategorie \"%s\" umbenennen</string>
@@ -81,17 +84,16 @@
     <string name="file_exists_overwrite_header">Datei existiert bereits.</string>
     <string name="file_exists_overwrite">Die Datei %s existiert bereits. Soll sie überschrieben werden?</string>
     <string name="provenance_everywhere">Überall</string>
-    <string name="file_received">Datei %s erhalten</string>
-    <string name="file_copy_error">Fehler beim Kopieren der Datei %s</string>
-    <string name="file_exists_already">Datei existiert schon. Umbenennen oder Bestätigen zum Überschreiben.</string>
-    <string name="connection_established">Verbunden mit %s.\nVerfügbare Dateien:</string>
-    <string name="connection_rejected">Verbindungsversuch zurückgewiesen.</string>
-    <string name="requesting_file">Fordere Datei %s an.</string>
-    <string name="permission_not_granted">Zugriffsrechte nicht erteilt.</string>
-    <string name="accept_connection_header">Verbindung zu %s akzeptieren</string>
-    <string name="accept_connection_confirm_code">Bitte bestätigen, dass der Code auf beiden Geräten derselbe ist: %s</string>
-    <string name="accept">Akzeptieren</string>
-    <string name="find_nearby_devices">Finde Geräte in der Nähe</string>
+    <string name="text_action_reset_data">Dies löscht allevorhandenen Daten unwiderruflich. Fortfahren?</string>
+    <string name="text_clear_all_data_header">Alle Daten zurücksetzen</string>
+    <string name="text_reset_to_default_header">Alle Daten löschen und mit den Standarddaten ersetzen.</string>
+    <string name="text_replace_by_import_header">Dateiimport ersetzt aktuelle Daten</string>
+    <string name="text_default_data_loaded">Standarddaten geladen</string>
+    <string name="text_backend_changed_successfully">Backend erfolgreich geändert</string>
+    <string name="text_change_backend_failed">Änderung des Backends fehlgeschlagen</string>
+    <string name="text_switch_backend_header">Ändere Backend</string>
+    <string name="text_switch_backend">Das Backend soll geändert werden. Dabei werden alle vorhandenen Daten ins neue Backend kopiert. Fortfahren?</string>
+    <string name="text_all_data_cleared">Alle Daten zurückgesetzt</string>
 
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>
@@ -126,4 +128,7 @@
     <string name="size_small">Klein</string>
     <string name="size_normal">Normal</string>
     <string name="size_large">Gross</string>
+
+    <string name="backend_fs_based">Json-basiertes Backend</string>
+    <string name="backend_db_based">SQL Backend</string>
 </resources>

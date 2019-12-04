@@ -12,29 +12,29 @@ import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 
 public class GroceryPlanningFS extends GroceryPlanning
 {
+    private static final String c_strSaveFilename = "ch.phwidmer.einkaufsliste.einkaufsliste.json";
+
     private static GroceryPlanningFS m_Instance = null;
 
     private File m_AppDataDirectory;
-    private String m_strSaveFilename;
 
-    public static GroceryPlanningFS getInstance(@NonNull File appDataDirectory, @NonNull String strSaveFilename, @NonNull Context context)
+    public static GroceryPlanningFS getInstance(@NonNull Context context)
     {
         if(m_Instance == null)
         {
-            m_Instance = new GroceryPlanningFS(appDataDirectory, strSaveFilename, context);
+            m_Instance = new GroceryPlanningFS(context);
         }
         return m_Instance;
     }
 
-    private GroceryPlanningFS(@NonNull File appDataDirectory, @NonNull String strSaveFilename, @NonNull Context context)
+    private GroceryPlanningFS(@NonNull Context context)
     {
         clearAll();
 
-        m_AppDataDirectory = appDataDirectory;
-        m_strSaveFilename = strSaveFilename;
+        m_AppDataDirectory = context.getFilesDir();
 
         // Load saved data
-        File file = new File(m_AppDataDirectory, strSaveFilename);
+        File file = new File(m_AppDataDirectory, c_strSaveFilename);
         if(file.exists())
         {
             try
@@ -60,7 +60,7 @@ public class GroceryPlanningFS extends GroceryPlanning
     }
 
     @Override
-    protected void clearAll()
+    public void clearAll()
     {
         m_Categories = new CategoriesFS();
         m_Ingredients = new IngredientsFS();
@@ -100,7 +100,7 @@ public class GroceryPlanningFS extends GroceryPlanning
     @Override
     public void flush()
     {
-        File file = new File(m_AppDataDirectory, m_strSaveFilename);
+        File file = new File(m_AppDataDirectory, c_strSaveFilename);
 
         Thread thread = new Thread(new SaveToFileThread(file));
         thread.start();
