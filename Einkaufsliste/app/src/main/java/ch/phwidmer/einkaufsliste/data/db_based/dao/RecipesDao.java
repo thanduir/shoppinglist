@@ -21,10 +21,10 @@ public interface RecipesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertRecipe(RecipeRow user);
 
-    @Query("SELECT RecipeRow.id FROM RecipeRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT RecipeRow.id FROM RecipeRow ORDER BY nameSortable COLLATE NOCASE ASC")
     long[] getAllRecipeIds();
 
-    @Query("SELECT RecipeRow.name FROM RecipeRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT RecipeRow.name FROM RecipeRow ORDER BY nameSortable COLLATE NOCASE ASC")
     List<String> getAllRecipeNames();
 
     @Query("SELECT RecipeRow.name FROM RecipeRow WHERE id = :id")
@@ -94,10 +94,10 @@ public interface RecipesDao {
     @Query("SELECT RecipeItemGroupRow.id FROM RecipeItemGroupRow WHERE recipeID = :recipeID AND name LIKE :name")
     long[] getRecipeItemGroupIds(long recipeID, String name);
 
-    @Query("SELECT * FROM RecipeItemGroupRow WHERE recipeId = :recipeId AND name LIKE :name ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT * FROM RecipeItemGroupRow WHERE recipeId = :recipeId AND name LIKE :name ORDER BY nameSortable COLLATE NOCASE ASC")
     RecipeItemGroupRow getRecipeItemGroup(long recipeId, String name);
 
-    @Query("SELECT RecipeItemGroupRow.name FROM RecipeItemGroupRow WHERE recipeId = :recipeId ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT RecipeItemGroupRow.name FROM RecipeItemGroupRow WHERE recipeId = :recipeId ORDER BY nameSortable COLLATE NOCASE ASC")
     List<String> getAllRecipeItemGroupNames(long recipeId);
 
     @Update

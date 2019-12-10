@@ -10,6 +10,7 @@ import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.ingredient.IngredientRow;
+import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class IngredientsDB extends Ingredients {
     private AppDatabase database;
@@ -119,6 +120,7 @@ public class IngredientsDB extends Ingredients {
         CategoriesDB.CategoryDB categoryDB = (CategoriesDB.CategoryDB)category;
 
         row.name = strName;
+        row.nameSortable = Helper.stripAccents(strName);
         row.category = categoryDB.getId();
         row.provenance = -1;
         row.defaultUnit = defaultUnit.toString();
@@ -141,6 +143,7 @@ public class IngredientsDB extends Ingredients {
         IngredientDB ingredientDB = (IngredientDB)ingredient;
         IngredientRow row = database.ingredientsDao().getIngredient(ingredientDB.getId());
         row.name = strNewName;
+        row.nameSortable = Helper.stripAccents(strNewName);
         database.ingredientsDao().updateIngredient(row);
     }
 

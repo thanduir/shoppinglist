@@ -17,10 +17,10 @@ public interface IngredientsDao {
     @Query("SELECT Count(IngredientRow.id) FROM IngredientRow")
     long getIngredientsCount();
 
-    @Query("SELECT IngredientRow.id FROM IngredientRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT IngredientRow.id FROM IngredientRow ORDER BY nameSortable COLLATE NOCASE ASC")
     long[] getAllIngredientIds();
 
-    @Query("SELECT IngredientRow.name FROM IngredientRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT IngredientRow.name FROM IngredientRow ORDER BY nameSortable COLLATE NOCASE ASC")
     List<String> getAllIngredientNames();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

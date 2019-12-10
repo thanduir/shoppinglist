@@ -13,6 +13,7 @@ import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.recipe.RecipeItemGroupRow;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.recipe.RecipeItemRow;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.recipe.RecipeRow;
+import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class RecipesDB extends Recipes {
     private AppDatabase database;
@@ -100,6 +101,7 @@ public class RecipesDB extends Recipes {
             RecipeItemGroupRow row = new RecipeItemGroupRow();
 
             row.name = strName;
+            row.nameSortable = Helper.stripAccents(strName);
             row.recipeID = m_Id;
 
             database.recipesDao().insertRecipeItemGroup(row);
@@ -240,6 +242,7 @@ public class RecipesDB extends Recipes {
         RecipeRow row = new RecipeRow();
 
         row.name = strName;
+        row.nameSortable = Helper.stripAccents(strName);
         row.numberOfPersons = iNrPersons;
 
         long id = database.recipesDao().insertRecipe(row);
@@ -258,6 +261,7 @@ public class RecipesDB extends Recipes {
         RecipeDB recipeDB = (RecipeDB)recipe;
         RecipeRow row = database.recipesDao().getRecipe(recipeDB.getId());
         row.name = strNewName;
+        row.nameSortable = Helper.stripAccents(strNewName);
         database.recipesDao().updateRecipes(row);
     }
     @Override
@@ -270,6 +274,7 @@ public class RecipesDB extends Recipes {
 
         RecipeRow row = new RecipeRow();
         row.name = strNewName;
+        row.nameSortable = Helper.stripAccents(strNewName);
         row.numberOfPersons = recipe.getNumberOfPersons();
         long id = database.recipesDao().insertRecipe(row);
 

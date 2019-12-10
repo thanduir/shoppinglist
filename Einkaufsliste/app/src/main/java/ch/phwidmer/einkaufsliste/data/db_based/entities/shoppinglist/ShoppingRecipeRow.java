@@ -16,5 +16,8 @@ public class ShoppingRecipeRow
     public String name;
 
     @ColumnInfo
+    public String nameSortable;
+
+    @ColumnInfo
     public float scalingFactor;
 }

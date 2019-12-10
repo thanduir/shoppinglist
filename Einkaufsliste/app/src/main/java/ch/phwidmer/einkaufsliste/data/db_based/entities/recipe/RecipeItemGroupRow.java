@@ -21,4 +21,7 @@ public class RecipeItemGroupRow {
 
     @ColumnInfo
     public String name;
+
+    @ColumnInfo
+    public String nameSortable;
 }

@@ -3,9 +3,11 @@ package ch.phwidmer.einkaufsliste.helper;
 import android.support.annotation.NonNull;
 
 import java.text.Collator;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class Helper {
 
@@ -65,5 +67,12 @@ public class Helper {
         {
             return String.format(Locale.getDefault(), "%.2f", f);
         }
+    }
+
+    public static String stripAccents(String str)
+    {
+        String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(nfdNormalizedString).replaceAll("");
     }
 }

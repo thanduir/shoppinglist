@@ -8,9 +8,11 @@ Version 1
 	tbl CategoryRow: 
 		id: long
 		name: string
+		nameSortable: string
 	tbl SortOrderRow: 
 		id: long
 		name: string
+		nameSortable: string
 	tbl CategorySortOrderRow:
 		id: long
 		SortOrderID: long
@@ -20,6 +22,7 @@ Version 1
 	tbl IngredientRow:
 		id: long
 		name: string
+		nameSortable: string
 		category: long (categoryID)
 		provenance: long (-1 or SortOrderID)
 		default-unit: string
@@ -27,6 +30,7 @@ Version 1
 	tbl RecipeRow
 		id: long
 		name: string
+		nameSortable: string
 		numberOfPersons: int
 	tbl RecipeItemRow
 		id: long
@@ -39,14 +43,16 @@ Version 1
 		additionalInfo: string
 		size: string
 		optional: boolean
-	tbl RecipeItemGroups
+	tbl RecipeItemGroupRow
 		id: long
 		name: string
+		nameSortable: string
 		recipeID: long
 - ShoppingList
 	tbl ShoppingRecipeRow
 		id: long
 		name: string
+		nameSortable: string
 		scalingFactor: float
 	tbl ShoppingListItemRow
 		id: long

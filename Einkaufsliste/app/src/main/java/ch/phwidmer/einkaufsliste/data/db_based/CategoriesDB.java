@@ -10,6 +10,7 @@ import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.category.CategoryRow;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.category.CategorySortOrderRow;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.category.SortOrderRow;
+import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class CategoriesDB extends Categories {
     private AppDatabase database;
@@ -61,6 +62,7 @@ public class CategoriesDB extends Categories {
 
         CategoryRow row = new CategoryRow();
         row.name = strName;
+        row.nameSortable = Helper.stripAccents(strName);
         long id = database.categoriesDao().insertCategory(row);
 
         int nextPosition = getCategoriesCount() - 1;
@@ -83,6 +85,7 @@ public class CategoriesDB extends Categories {
         CategoryDB catDB = (CategoryDB)category;
         CategoryRow row = database.categoriesDao().getCategory(catDB.getId());
         row.name = strNewName;
+        row.nameSortable = Helper.stripAccents(strNewName);
         database.categoriesDao().updateCategories(row);
     }
     @Override
@@ -236,6 +239,7 @@ public class CategoriesDB extends Categories {
 
         SortOrderRow row = new SortOrderRow();
         row.name = strName;
+        row.nameSortable = Helper.stripAccents(strName);
         long id = database.categoriesDao().insertSortOrder(row);
 
         long[] categories = database.categoriesDao().getAllCategoryIds();
@@ -261,6 +265,7 @@ public class CategoriesDB extends Categories {
         SortOrderDB sortOrderDB = (SortOrderDB)order;
         SortOrderRow row = database.categoriesDao().getSortOrder(sortOrderDB.getId());
         row.name = strNewName;
+        row.nameSortable = Helper.stripAccents(strNewName);
         database.categoriesDao().updateSortOrders(row);
     }
     @Override

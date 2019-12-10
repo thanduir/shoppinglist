@@ -23,10 +23,10 @@ public interface ShoppingListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertShoppingRecipe(ShoppingRecipeRow recipeRow);
 
-    @Query("SELECT ShoppingRecipeRow.id FROM ShoppingRecipeRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT ShoppingRecipeRow.id FROM ShoppingRecipeRow ORDER BY nameSortable COLLATE NOCASE ASC")
     long[] getAllShoppingRecipeIds();
 
-    @Query("SELECT ShoppingRecipeRow.name FROM ShoppingRecipeRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT ShoppingRecipeRow.name FROM ShoppingRecipeRow ORDER BY nameSortable COLLATE NOCASE ASC")
     List<String> getAllShoppingRecipeNames();
 
     @Query("SELECT ShoppingRecipeRow.name FROM ShoppingRecipeRow WHERE id = :id")

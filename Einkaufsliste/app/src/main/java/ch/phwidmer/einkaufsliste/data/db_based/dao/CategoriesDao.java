@@ -27,7 +27,7 @@ public interface CategoriesDao {
     @Query("SELECT CategoryRow.id FROM CategoryRow")
     long[] getAllCategoryIds();
 
-    @Query("SELECT CategoryRow.name FROM CategoryRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT CategoryRow.name FROM CategoryRow ORDER BY nameSortable COLLATE NOCASE ASC")
     List<String> getAllCategoryNames();
 
     @Query("SELECT CategoryRow.id FROM CategoryRow WHERE name LIKE :name")
@@ -53,10 +53,10 @@ public interface CategoriesDao {
     @Query("SELECT SortOrderRow.name FROM SortOrderRow WHERE id = :id")
     String getSortOrderName(long id);
 
-    @Query("SELECT SortOrderRow.id FROM SortOrderRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT SortOrderRow.id FROM SortOrderRow ORDER BY nameSortable COLLATE NOCASE ASC")
     long[] getAllSortOrderIds();
 
-    @Query("SELECT SortOrderRow.name FROM SortOrderRow ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT SortOrderRow.name FROM SortOrderRow ORDER BY nameSortable COLLATE NOCASE ASC")
     List<String> getAllSortOrderNames();
 
     @Query("SELECT SortOrderRow.id FROM SortOrderRow WHERE name LIKE :name")

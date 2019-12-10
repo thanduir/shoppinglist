@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9a993aa1943af97e7ec24d51c259ca86",
+    "identityHash": "bdbea08d32a9c2d07a2809f8c741845b",
     "entities": [
       {
         "tableName": "CategoryRow",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `nameSortable` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,6 +17,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameSortable",
+            "columnName": "nameSortable",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -32,7 +38,7 @@
       },
       {
         "tableName": "SortOrderRow",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `nameSortable` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +49,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameSortable",
+            "columnName": "nameSortable",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -136,7 +148,7 @@
       },
       {
         "tableName": "IngredientRow",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `category` INTEGER NOT NULL, `provenance` INTEGER NOT NULL, `defaultUnit` TEXT, FOREIGN KEY(`category`) REFERENCES `CategoryRow`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `nameSortable` TEXT, `category` INTEGER NOT NULL, `provenance` INTEGER NOT NULL, `defaultUnit` TEXT, FOREIGN KEY(`category`) REFERENCES `CategoryRow`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -147,6 +159,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameSortable",
+            "columnName": "nameSortable",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -201,7 +219,7 @@
       },
       {
         "tableName": "RecipeRow",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `numberOfPersons` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `nameSortable` TEXT, `numberOfPersons` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -212,6 +230,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameSortable",
+            "columnName": "nameSortable",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -364,7 +388,7 @@
       },
       {
         "tableName": "RecipeItemGroupRow",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeID` INTEGER NOT NULL, `name` TEXT, FOREIGN KEY(`recipeID`) REFERENCES `RecipeRow`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeID` INTEGER NOT NULL, `name` TEXT, `nameSortable` TEXT, FOREIGN KEY(`recipeID`) REFERENCES `RecipeRow`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -381,6 +405,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameSortable",
+            "columnName": "nameSortable",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -417,7 +447,7 @@
       },
       {
         "tableName": "ShoppingRecipeRow",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `scalingFactor` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `nameSortable` TEXT, `scalingFactor` REAL NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -428,6 +458,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameSortable",
+            "columnName": "nameSortable",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -574,7 +610,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9a993aa1943af97e7ec24d51c259ca86')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bdbea08d32a9c2d07a2809f8c741845b')"
     ]
   }
 }

@@ -21,6 +21,9 @@ public class IngredientRow {
     @ColumnInfo
     public String name;
 
+    @ColumnInfo
+    public String nameSortable;
+
     @ColumnInfo(index = true)
     public long category;
 

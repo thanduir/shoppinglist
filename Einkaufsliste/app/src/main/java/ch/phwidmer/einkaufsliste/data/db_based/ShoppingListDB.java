@@ -15,6 +15,7 @@ import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.recipe.RecipeItemRow;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.shoppinglist.ShoppingListItemRow;
 import ch.phwidmer.einkaufsliste.data.db_based.entities.shoppinglist.ShoppingRecipeRow;
+import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class ShoppingListDB extends ShoppingList
 {
@@ -171,6 +172,7 @@ public class ShoppingListDB extends ShoppingList
         ShoppingRecipeRow row = new ShoppingRecipeRow();
 
         row.name = strName;
+        row.nameSortable = Helper.stripAccents(strName);
         row.scalingFactor = 0.0f;
 
         long id = database.shoppingListDao().insertShoppingRecipe(row);
@@ -187,6 +189,7 @@ public class ShoppingListDB extends ShoppingList
 
         ShoppingRecipeRow row = new ShoppingRecipeRow();
         row.name = strName;
+        row.nameSortable = Helper.stripAccents(strName);
         row.scalingFactor = recipe.getNumberOfPersons();
         long id = database.shoppingListDao().insertShoppingRecipe(row);
 
@@ -213,6 +216,7 @@ public class ShoppingListDB extends ShoppingList
         ShoppingRecipeDB recipeDB = (ShoppingRecipeDB)recipe;
         ShoppingRecipeRow row = database.shoppingListDao().getShoppingRecipe(recipeDB.getId());
         row.name = strNewName;
+        row.nameSortable = Helper.stripAccents(strNewName);
         database.shoppingListDao().updateShoppingRecipes(row);
     }
     @Override

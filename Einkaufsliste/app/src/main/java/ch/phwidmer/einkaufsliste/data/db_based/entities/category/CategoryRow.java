@@ -12,4 +12,7 @@ public class CategoryRow {
 
     @ColumnInfo
     public String name;
+
+    @ColumnInfo
+    public String nameSortable;
 }

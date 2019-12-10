@@ -15,5 +15,8 @@ public class RecipeRow {
     public String name;
 
     @ColumnInfo
+    public String nameSortable;
+
+    @ColumnInfo
     public int numberOfPersons;
 }
