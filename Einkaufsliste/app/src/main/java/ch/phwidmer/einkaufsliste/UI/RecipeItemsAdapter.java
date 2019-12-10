@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
@@ -52,11 +53,6 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
     private RecyclerView        m_RecyclerView;
     private CoordinatorLayout   m_CoordLayout;
     private Integer             m_iActiveElement;
-
-    private RecipeItem              m_RecentlyDeleted;
-    private String                  m_GroupOfRecentlyDeletedItem;
-    private int                     m_RecentlyDeletedIndex;
-    private ArrayList<RecipeItem>   m_ItemsOfRecentlyDeletedGroup;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -113,7 +109,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                 {
                     text += ", ";
                 }
-                text += RecipeItem.toUIString(context, item.getSize());
+                text += RecipeItem.Size.toUIString(context, item.getSize());
             }
             if(!item.getAdditionalInfo().isEmpty())
             {
@@ -430,7 +426,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
         for(RecipeItem.Size size : RecipeItem.Size.values())
         {
-            adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
+            adapterSize.add(RecipeItem.Size.toUIString(vh.itemView.getContext(), size));
         }
         adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerSize.setAdapter(adapterSize);
@@ -501,14 +497,17 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                 {
                     return;
                 }
+
+                Amount amount = item.get().getAmount();
                 if(s.toString().isEmpty())
                 {
-                    item.get().getAmount().setQuantityMin(0.0f);
+                    amount.setQuantityMin(0.0f);
                 }
                 else
                 {
-                    item.get().getAmount().setQuantityMin(Float.valueOf(s.toString()));
+                    amount.setQuantityMin(Float.valueOf(s.toString()));
                 }
+                item.get().setAmount(amount);
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -532,14 +531,16 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
                     return;
                 }
 
+                Amount amount = item.get().getAmount();
                 if(s.toString().isEmpty())
                 {
-                    item.get().getAmount().setQuantityMax(0.0f);
+                    amount.setQuantityMax(0.0f);
                 }
                 else
                 {
-                    item.get().getAmount().setQuantityMax(Float.valueOf(s.toString()));
+                    amount.setQuantityMax(Float.valueOf(s.toString()));
                 }
+                item.get().setAmount(amount);
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -561,7 +562,10 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             }
 
             vh.m_TableRowAmountRange.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            recipeItem.get().getAmount().setIsRange(isChecked);
+
+            Amount amount = recipeItem.get().getAmount();
+            amount.setIsRange(isChecked);
+            recipeItem.get().setAmount(amount);
 
             adjustEditTextAmount(vh, item.get());
         });
@@ -589,28 +593,30 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             return;
         }
 
+        Amount amount = item.get().getAmount();
         if(bIncrease)
         {
             if(bChangeMax)
             {
-                item.get().getAmount().increaseAmountMax();
+                amount.increaseAmountMax();
             }
             else
             {
-                item.get().getAmount().increaseAmountMin();
+                amount.increaseAmountMin();
             }
         }
         else
         {
             if(bChangeMax)
             {
-                item.get().getAmount().decreaseAmountMax();
+                amount.decreaseAmountMax();
             }
             else
             {
-                item.get().getAmount().decreaseAmountMin();
+                amount.decreaseAmountMin();
             }
         }
+        item.get().setAmount(amount);
 
         if(bChangeMax)
         {
@@ -662,12 +668,7 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             return;
         }
 
-        m_GroupOfRecentlyDeletedItem = strGroup;
-        m_ItemsOfRecentlyDeletedGroup = m_Recipe.getAllRecipeItemsInGroup(strGroup);
-        if(m_ItemsOfRecentlyDeletedGroup == null)
-        {
-            return;
-        }
+        final UndoData.RecipeItemGroupUndoData recentlyDeletedGroup = new UndoData.RecipeItemGroupUndoData(strGroup, m_Recipe.getAllRecipeItemsInGroup(strGroup));
         m_Recipe.removeGroup(strGroup);
 
         notifyDataSetChanged();
@@ -678,16 +679,9 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
-            m_Recipe.addGroup(m_GroupOfRecentlyDeletedItem);
-            for(RecipeItem item : m_ItemsOfRecentlyDeletedGroup)
-            {
-                m_Recipe.addRecipeItemToGroup(m_GroupOfRecentlyDeletedItem, item);
-            }
+            recentlyDeletedGroup.addToRecipe(m_Recipe);
 
             notifyDataSetChanged();
-
-            m_GroupOfRecentlyDeletedItem = "";
-            m_ItemsOfRecentlyDeletedGroup = null;
 
             Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();
@@ -717,7 +711,9 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
 
         if(parent == vh.m_SpinnerAmount)
         {
-            item.get().getAmount().setUnit(Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
+            Amount amount = item.get().getAmount();
+            amount.setUnit(Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
+            item.get().setAmount(amount);
             adjustEditTextAmount(vh, item.get());
         }
         else if(parent == vh.m_SpinnerSize)
@@ -752,25 +748,23 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         {
             return;
         }
-        m_RecentlyDeleted = itemToDelete.get();
+
+        final UndoData.RecipeItemUndoData recentlyDeletedItem = new UndoData.RecipeItemUndoData(itemToDelete.get());
         if(holder.isPartOfGroup())
         {
-            m_GroupOfRecentlyDeletedItem = getGroup(holder.m_id);
-            ArrayList<RecipeItem> group = m_Recipe.getAllRecipeItemsInGroup(m_GroupOfRecentlyDeletedItem);
+            String strGroup = getGroup(holder.m_id);
+            recentlyDeletedItem.setGroup(strGroup);
+            ArrayList<RecipeItem> group = m_Recipe.getAllRecipeItemsInGroup(strGroup);
             if(group == null)
             {
                 return;
             }
-            m_RecentlyDeletedIndex = group.indexOf(m_RecentlyDeleted);
-            m_Recipe.removeRecipeItemFromGroup(m_GroupOfRecentlyDeletedItem, m_RecentlyDeleted);
+            m_Recipe.removeRecipeItemFromGroup(strGroup, itemToDelete.get());
         }
         else
         {
-            m_RecentlyDeletedIndex = position;
-            m_GroupOfRecentlyDeletedItem = "";
-            m_Recipe.removeRecipeItem(m_RecentlyDeleted);
+            m_Recipe.removeRecipeItem(itemToDelete.get());
         }
-
 
         notifyDataSetChanged();
         setActiveElement("");
@@ -780,25 +774,26 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
-            if(m_GroupOfRecentlyDeletedItem.isEmpty())
+            if(recentlyDeletedItem.getGroup().isEmpty())
             {
-                m_Recipe.addRecipeItem(m_RecentlyDeletedIndex, m_RecentlyDeleted);
-            }
-            else
-            {
-                ArrayList<RecipeItem> group = m_Recipe.getAllRecipeItemsInGroup(m_GroupOfRecentlyDeletedItem);
-                if(group == null)
+                Optional<RecipeItem> newItem = m_Recipe.addRecipeItem(recentlyDeletedItem.getIngredient());
+                if(!newItem.isPresent())
                 {
                     return;
                 }
-                m_Recipe.addRecipeItemToGroup(m_GroupOfRecentlyDeletedItem, m_RecentlyDeleted);
+                recentlyDeletedItem.initializeItem(newItem.get());
+            }
+            else
+            {
+                Optional<RecipeItem> newItem = m_Recipe.addRecipeItemToGroup(recentlyDeletedItem.getGroup(), recentlyDeletedItem.getIngredient());
+                if(!newItem.isPresent())
+                {
+                    return;
+                }
+                recentlyDeletedItem.initializeItem(newItem.get());
             }
 
             notifyDataSetChanged();
-
-            m_RecentlyDeleted = null;
-            m_RecentlyDeletedIndex = -1;
-            m_GroupOfRecentlyDeletedItem = "";
 
             Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();

@@ -12,6 +12,7 @@ public abstract class ShoppingListItem
 
     public abstract Status getStatus();
     public abstract void setStatus(@NonNull Status status);
+    public abstract void invertStatus();
 
     public abstract String getIngredient();
     public abstract void setIngredient(@NonNull String strIngredient);
@@ -27,16 +28,4 @@ public abstract class ShoppingListItem
 
     public abstract boolean isOptional();
     public abstract void setIsOptional(boolean optional);
-
-    void invertStatus()
-    {
-        if(getStatus() == Status.None)
-        {
-            setStatus(Status.Taken);
-        }
-        else
-        {
-            setStatus(Status.None);
-        }
-    }
 }

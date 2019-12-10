@@ -23,6 +23,7 @@ import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.DataBackend;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
+import ch.phwidmer.einkaufsliste.data.utilities.JsonSerializer;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 
 public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
@@ -128,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
             File file = new File(m_AppDataDirectory, strFilename);
             try {
-                m_GroceryPlanning.saveDataToFile(file, getBaseContext());
+                JsonSerializer serializer = new JsonSerializer(m_GroceryPlanning);
+                serializer.saveDataToFile(file, getBaseContext());
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.text_data_saved, strFilename), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 showErrorDialog(getString(R.string.text_save_file_failed), e.getMessage(), this);
@@ -143,7 +145,8 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
             {
                 try {
                     File file = new File(m_AppDataDirectory, strInput);
-                    m_GroceryPlanning.loadDataFromFile(file);
+                    JsonSerializer serializer = new JsonSerializer(m_GroceryPlanning);
+                    serializer.loadDataFromFile(file);
 
                     m_GroceryPlanning.flush();
 

@@ -84,7 +84,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             String additionalText = "";
             if(item.get().getSize() != RecipeItem.Size.Normal)
             {
-                additionalText += RecipeItem.toUIString(holder.itemView.getContext(), item.get().getSize());
+                additionalText += RecipeItem.Size.toUIString(holder.itemView.getContext(), item.get().getSize());
             }
             if(!item.get().getAdditionalInfo().isEmpty())
             {

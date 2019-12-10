@@ -7,19 +7,19 @@ import ch.phwidmer.einkaufsliste.data.RecipeItem;
 
 public class RecipeItemFS implements RecipeItem {
     private String m_Ingredient;
-    private AmountFS m_Amount;
+    private Amount m_Amount;
     private String m_AdditionalInfo = "";
     private Size m_Size = Size.Normal;
     private Boolean m_Optional = false;
 
     RecipeItemFS(@NonNull String strIngredient) {
         m_Ingredient = strIngredient;
-        m_Amount = new AmountFS();
+        m_Amount = new Amount();
     }
 
     RecipeItemFS(@NonNull RecipeItemFS other) {
         m_Ingredient = other.m_Ingredient;
-        m_Amount = new AmountFS(other.m_Amount);
+        m_Amount = new Amount(other.m_Amount);
         m_AdditionalInfo = other.m_AdditionalInfo;
         m_Size = other.m_Size;
         m_Optional = other.m_Optional;
@@ -37,12 +37,12 @@ public class RecipeItemFS implements RecipeItem {
 
     @Override
     public Amount getAmount() {
-        return m_Amount;
+        return new Amount(m_Amount);
     }
 
     @Override
     public void setAmount(@NonNull Amount amount) {
-        m_Amount = (AmountFS) amount;
+        m_Amount = amount;
     }
 
     @Override

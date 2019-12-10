@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.helper.Helper;
@@ -57,11 +58,6 @@ public class RecipesFS extends Recipes
             RecipeItemFS r = new RecipeItemFS(strIngredient);
             m_Items.add(r);
             return Optional.of(r);
-        }
-        @Override
-        public void addRecipeItem(int position, @NonNull final RecipeItem item)
-        {
-            m_Items.add(position, (RecipeItemFS)item);
         }
         @Override
         public void removeRecipeItem(@NonNull RecipeItem item)
@@ -130,25 +126,6 @@ public class RecipesFS extends Recipes
             return Optional.of(r);
         }
         @Override
-        public void addRecipeItemToGroup(@NonNull String strGroup, @NonNull final RecipeItem r)
-        {
-            LinkedList<RecipeItemFS> group = m_Groups.get(strGroup);
-            if(group == null)
-            {
-                return;
-            }
-
-            for(RecipeItemFS item : group)
-            {
-                if(item.getIngredient().equals(r.getIngredient()))
-                {
-                    return;
-                }
-            }
-
-            group.add((RecipeItemFS)r);
-        }
-        @Override
         public void removeRecipeItemFromGroup(@NonNull String strGroup, @NonNull RecipeItem r)
         {
             LinkedList<RecipeItemFS> group = m_Groups.get(strGroup);
@@ -191,16 +168,6 @@ public class RecipesFS extends Recipes
         r.m_NumberOfPersons = iNrPersons;
         m_Recipies.add(r);
         return Optional.of(r);
-    }
-
-    @Override
-    public void addRecipe(@NonNull String strName, @NonNull final Recipe r)
-    {
-        if(getRecipe(strName).isPresent())
-        {
-            return;
-        }
-        m_Recipies.add((RecipeFS)r);
     }
 
     @Override
@@ -279,5 +246,68 @@ public class RecipesFS extends Recipes
             vec.add(recipe.getName());
         }
         return vec;
+    }
+
+    @Override
+    public boolean isIngredientInUse(@NonNull Ingredients.Ingredient ingredient, @NonNull ArrayList<String> recipesUsingIngredient)
+    {
+        boolean stillInUse = false;
+        for(RecipeFS recipe : m_Recipies)
+        {
+            for(RecipeItem ri : recipe.m_Items)
+            {
+                if(ri.getIngredient().equals(ingredient.getName()))
+                {
+                    if(!recipesUsingIngredient.contains(recipe.getName()))
+                    {
+                        recipesUsingIngredient.add(recipe.getName());
+                    }
+                    stillInUse = true;
+                }
+            }
+
+            for(TreeMap.Entry<String, LinkedList<RecipeItemFS>> entry : recipe.m_Groups.entrySet())
+            {
+                for(RecipeItemFS ri : entry.getValue())
+                {
+                    if(ri.getIngredient().equals(ingredient.getName()))
+                    {
+                        if(!recipesUsingIngredient.contains(recipe.getName()))
+                        {
+                            recipesUsingIngredient.add(recipe.getName());
+                        }
+                        stillInUse = true;
+                    }
+                }
+            }
+        }
+
+        return stillInUse;
+    }
+
+    @Override
+    public void onIngredientRenamed(@NonNull String strIngredient, @NonNull String strNewName)
+    {
+        for(RecipeFS r : m_Recipies)
+        {
+            for(RecipeItem ri : r.m_Items)
+            {
+                if (ri.getIngredient().equals(strIngredient))
+                {
+                    ri.setIngredient(strNewName);
+                }
+            }
+
+            for(TreeMap.Entry<String, LinkedList<RecipeItemFS>> entry : r.m_Groups.entrySet())
+            {
+                for(RecipeItemFS ri : entry.getValue())
+                {
+                    if (ri.getIngredient().equals(strIngredient))
+                    {
+                        ri.setIngredient(strNewName);
+                    }
+                }
+            }
+        }
     }
 }

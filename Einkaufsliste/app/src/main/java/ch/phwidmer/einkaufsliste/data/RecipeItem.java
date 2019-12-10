@@ -11,7 +11,25 @@ public interface RecipeItem
     {
         Small,
         Normal,
-        Large
+        Large;
+
+        public static String toUIString(@NonNull Context context, @NonNull Size size)
+        {
+            switch(size)
+            {
+                case Normal:
+                    return context.getResources().getString(R.string.size_normal);
+
+                case Small:
+                    return context.getResources().getString(R.string.size_small);
+
+                case Large:
+                    return context.getResources().getString(R.string.size_large);
+
+                default:
+                    return size.toString();
+            }
+        }
     }
 
     String getIngredient();
@@ -28,22 +46,4 @@ public interface RecipeItem
 
     boolean isOptional();
     void setIsOptional(boolean optional);
-
-    static String toUIString(@NonNull Context context, @NonNull Size size)
-    {
-        switch(size)
-        {
-            case Normal:
-                return context.getResources().getString(R.string.size_normal);
-
-            case Small:
-                return context.getResources().getString(R.string.size_small);
-
-            case Large:
-                return context.getResources().getString(R.string.size_large);
-
-            default:
-                return size.toString();
-        }
-    }
 }

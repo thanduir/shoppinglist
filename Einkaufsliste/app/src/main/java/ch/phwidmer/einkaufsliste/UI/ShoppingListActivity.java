@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
@@ -91,6 +92,11 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
             {
                 m_AdapterRecipes.setActiveElement(new Pair<>(strActiveElementFirst, strActiveElementSecond));
             }
+        }
+
+        if(m_GroceryPlanning.recipes().getAllRecipeNames().size() == 0)
+        {
+            m_FAB.hide();
         }
 
         m_RecyclerViewRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -231,7 +237,9 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                 {
                     return;
                 }
-                item.get().getAmount().setUnit(ingredient.get().getDefaultUnit());
+                Amount amount = item.get().getAmount();
+                amount.setUnit(ingredient.get().getDefaultUnit());
+                item.get().setAmount(amount);
 
                 Pair<String, String> newItem = new Pair<>(strAdditonalInformation, strInput);
                 adapter.notifyDataSetChanged();

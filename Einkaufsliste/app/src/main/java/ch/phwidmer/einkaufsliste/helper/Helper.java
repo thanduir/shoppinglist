@@ -19,7 +19,7 @@ public class Helper {
         public int compare(@NonNull String s1, @NonNull String s2)
         {
             final Collator instance = Collator.getInstance();
-            // This strategy mean it'll ignore the accents
+            // This strategy means it'll ignore the accents
             instance.setStrength(Collator.NO_DECOMPOSITION);
             return instance.compare(s1.toLowerCase(), s2.toLowerCase());
         }

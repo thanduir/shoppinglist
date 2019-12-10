@@ -93,6 +93,11 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
             m_Adapter.setActiveElement(strActiveElement);
         }
 
+        if(m_GroceryPlanning.categories().getCategoriesCount() == 0 || m_GroceryPlanning.categories().getAllSortOrderNames().size() == 0)
+        {
+            m_FAB.hide();
+        }
+
         m_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {

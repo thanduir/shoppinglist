@@ -9,6 +9,7 @@ import java.security.InvalidParameterException;
 import java.util.concurrent.locks.ReentrantLock;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
+import ch.phwidmer.einkaufsliste.data.utilities.JsonSerializer;
 
 public class GroceryPlanningFS extends GroceryPlanning
 {
@@ -35,11 +36,12 @@ public class GroceryPlanningFS extends GroceryPlanning
 
         // Load saved data
         File file = new File(m_AppDataDirectory, c_strSaveFilename);
+        JsonSerializer serializer = new JsonSerializer(this);
         if(file.exists())
         {
             try
             {
-                loadDataFromFile(file);
+                serializer.loadDataFromFile(file);
             }
             catch(IOException e)
             {
@@ -50,7 +52,7 @@ public class GroceryPlanningFS extends GroceryPlanning
         {
             try
             {
-                saveDataToFile(file, context);
+                serializer.saveDataToFile(file, null);
             }
             catch(IOException e)
             {
@@ -83,7 +85,8 @@ public class GroceryPlanningFS extends GroceryPlanning
             lock.lock();
             try
             {
-                saveDataToFile(m_File, null);
+                JsonSerializer serializer = new JsonSerializer(GroceryPlanningFS.this);
+                serializer.saveDataToFile(m_File, null);
             }
             catch(IOException e)
             {

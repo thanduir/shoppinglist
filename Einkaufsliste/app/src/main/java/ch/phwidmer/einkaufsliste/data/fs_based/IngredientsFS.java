@@ -86,21 +86,6 @@ public class IngredientsFS extends Ingredients
     }
 
     @Override
-    protected Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Unit defaultUnit, @NonNull String strCategory)
-    {
-        if(getIngredient(strName).isPresent())
-        {
-            return Optional.empty();
-        }
-
-        IngredientFS i = new IngredientFS(strName);
-        i.m_DefaultUnit = defaultUnit;
-        i.m_Category = strCategory;
-        m_Ingredients.add(i);
-        return Optional.of(i);
-    }
-
-    @Override
     public void removeIngredient(@NonNull Ingredient ingredient)
     {
         IngredientFS ingredientFS = (IngredientFS)ingredient;
@@ -154,5 +139,59 @@ public class IngredientsFS extends Ingredients
             vec.add(ingredient.getName());
         }
         return vec;
+    }
+
+    @Override
+    public void onCategoryRenamed(@NonNull String oldCategory, @NonNull String newCategory)
+    {
+        for(Ingredient i : m_Ingredients)
+        {
+            if(i.getCategory().equals(oldCategory))
+            {
+                i.setCategory(newCategory);
+            }
+        }
+    }
+
+    @Override
+    public void onSortOrderRenamed(@NonNull String oldSortOrder, @NonNull String newSortOrder)
+    {
+        for(Ingredient i : m_Ingredients)
+        {
+            if(i.getProvenance().equals(oldSortOrder))
+            {
+                i.setProvenance(newSortOrder);
+            }
+        }
+    }
+
+    @Override
+    public boolean isCategoryInUse(@NonNull Categories.Category category, @NonNull ArrayList<String> ingredientsUsingCategory)
+    {
+        boolean stillInUse = false;
+        for(Ingredient ingredient : m_Ingredients)
+        {
+            if(ingredient.getCategory().equals(category.getName()))
+            {
+                ingredientsUsingCategory.add(ingredient.getName());
+                stillInUse = true;
+            }
+        }
+        return stillInUse;
+    }
+
+    @Override
+    public boolean isSortOrderInUse(@NonNull Categories.SortOrder sortOrder, @NonNull ArrayList<String> ingredientsUsingSortOrder)
+    {
+        boolean stillInUse = false;
+        for(Ingredient ingredient : m_Ingredients)
+        {
+            if(ingredient.getProvenance().equals(sortOrder.getName()))
+            {
+                ingredientsUsingSortOrder.add(ingredient.getName());
+                stillInUse = true;
+            }
+        }
+        return stillInUse;
     }
 }

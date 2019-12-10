@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
@@ -51,10 +52,6 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
     private Integer m_iActiveElement;
     private RecyclerView m_RecyclerView;
     private CoordinatorLayout m_CoordLayout;
-
-    private ShoppingList.ShoppingRecipe m_RecentlyDeleted = null;
-    private ShoppingListItem m_RecentlyDeletedItem = null;
-    private int m_RecentlyDeletedIndex = -1;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -165,7 +162,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                 {
                     text += ", ";
                 }
-                text += RecipeItem.toUIString(context, m_RecipeItem.getSize());
+                text += RecipeItem.Size.toUIString(context, m_RecipeItem.getSize());
             }
             if(!m_RecipeItem.getAdditionalInfo().isEmpty())
             {
@@ -399,7 +396,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         ArrayAdapter<CharSequence> adapterSize = new ArrayAdapter<>(vh.m_View.getContext(), R.layout.spinner_item);
         for(RecipeItem.Size size : RecipeItem.Size.values())
         {
-            adapterSize.add(RecipeItem.toUIString(vh.itemView.getContext(), size));
+            adapterSize.add(RecipeItem.Size.toUIString(vh.itemView.getContext(), size));
         }
         adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vh.m_SpinnerSize.setAdapter(adapterSize);
@@ -475,14 +472,17 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
                 ShoppingRecipesAdapter.ViewHolder vh = (ShoppingRecipesAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(child);
                 ShoppingListItem item = vh.m_RecipeItem;
+
+                Amount amount = item.getAmount();
                 if(s.toString().isEmpty())
                 {
-                    item.getAmount().setQuantityMin(0.0f);
+                    amount.setQuantityMin(0.0f);
                 }
                 else
                 {
-                    item.getAmount().setQuantityMin(Float.valueOf(s.toString()));
+                    amount.setQuantityMin(Float.valueOf(s.toString()));
                 }
+                item.setAmount(amount);
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -511,14 +511,16 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
                     return;
                 }
 
+                Amount amount = item.getAmount();
                 if(s.toString().isEmpty())
                 {
-                    item.getAmount().setQuantityMax(0.0f);
+                    amount.setQuantityMax(0.0f);
                 }
                 else
                 {
-                    item.getAmount().setQuantityMax(Float.valueOf(s.toString()));
+                    amount.setQuantityMax(Float.valueOf(s.toString()));
                 }
+                item.setAmount(amount);
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -545,7 +547,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             }
 
             vh.m_TableRowAmountRange.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            recipeItem.getAmount().setIsRange(isChecked);
+            Amount amount = recipeItem.getAmount();
+            amount.setIsRange(isChecked);
+            recipeItem.setAmount(amount);
 
             adjustEditTextAmount(vh, item);
         });
@@ -572,28 +576,30 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
         ShoppingListItem item = holder.m_RecipeItem;
 
+        Amount amount = item.getAmount();
         if(bIncrease)
         {
             if(bChangeMax)
             {
-                item.getAmount().increaseAmountMax();
+                amount.increaseAmountMax();
             }
             else
             {
-                item.getAmount().increaseAmountMin();
+                amount.increaseAmountMin();
             }
         }
         else
         {
             if(bChangeMax)
             {
-                item.getAmount().decreaseAmountMax();
+                amount.decreaseAmountMax();
             }
             else
             {
-                item.getAmount().decreaseAmountMin();
+                amount.decreaseAmountMin();
             }
         }
+        item.setAmount(amount);
 
         if(bChangeMax)
         {
@@ -623,7 +629,9 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         if(parent == vh.m_SpinnerAmount)
         {
-            item.getAmount().setUnit(Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
+            Amount amount = item.getAmount();
+            amount.setUnit(Unit.values()[vh.m_SpinnerAmount.getSelectedItemPosition()]);
+            item.setAmount(amount);
             adjustEditTextAmount(vh, item);
         }
         else if(parent == vh.m_SpinnerSize)
@@ -669,9 +677,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             return;
         }
 
-        m_RecentlyDeletedIndex = recipe.get().getAllItems().indexOf(holder.m_RecipeItem);
-        m_RecentlyDeleted = recipe.get();
-        m_RecentlyDeletedItem = holder.m_RecipeItem;
+        final UndoData.ShoppingListItemUndoData recentlyDeletedItem = new UndoData.ShoppingListItemUndoData(holder.m_RecipeItem);
         recipe.get().removeItem(holder.m_RecipeItem);
 
         notifyDataSetChanged();
@@ -682,17 +688,14 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
-            if(m_RecentlyDeletedItem == null)
+            Optional<ShoppingListItem> newItem = recipe.get().addItem(recentlyDeletedItem.getIngredient());
+            if(!newItem.isPresent())
             {
                 return;
             }
-            m_RecentlyDeleted.addItem(m_RecentlyDeletedIndex, m_RecentlyDeletedItem);
+            recentlyDeletedItem.initializeItem(newItem.get());
 
             notifyDataSetChanged();
-
-            m_RecentlyDeletedIndex = -1;
-            m_RecentlyDeleted = null;
-            m_RecentlyDeletedItem = null;
 
             Snackbar currentSnackbar = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             currentSnackbar.show();
@@ -838,10 +841,8 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         {
             return;
         }
-        m_RecentlyDeleted = recipeToDelete.get();
-        m_RecentlyDeletedIndex = -1;
-        m_RecentlyDeletedItem = null;
-        m_ShoppingList.removeShoppingRecipe(m_RecentlyDeleted);
+        final UndoData.ShoppingRecipeUndoData recentlyDeletedRecipe = new UndoData.ShoppingRecipeUndoData(recipeToDelete.get());
+        m_ShoppingList.removeShoppingRecipe(recipeToDelete.get());
 
         notifyDataSetChanged();
         setActiveElement(null);
@@ -851,17 +852,14 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
-            if(m_RecentlyDeletedItem != null)
+            Optional<ShoppingList.ShoppingRecipe> newRecipe = m_ShoppingList.addNewRecipe(recentlyDeletedRecipe.getName());
+            if(!newRecipe.isPresent())
             {
                 return;
             }
-            m_ShoppingList.addExistingShoppingRecipe(m_RecentlyDeleted);
+            recentlyDeletedRecipe.initializeRecipe(newRecipe.get());
 
             notifyDataSetChanged();
-
-            m_RecentlyDeletedIndex = -1;
-            m_RecentlyDeleted = null;
-            m_RecentlyDeletedItem = null;
 
             Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();

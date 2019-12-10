@@ -213,15 +213,10 @@ public class CategoriesFS extends Categories
     }
 
     @Override
-    public void removeSortOrder(@NonNull String strName)
+    public void removeSortOrder(@NonNull SortOrder order)
     {
-        for(SortOrderFS sortOrder : m_SortOrders)
-        {
-            if(sortOrder.getName().equals(strName))
-            {
-                m_SortOrders.remove(sortOrder);
-            }
-        }
+        SortOrderFS sortOrder = (SortOrderFS)order;
+        m_SortOrders.remove(sortOrder);
     }
 
     @Override

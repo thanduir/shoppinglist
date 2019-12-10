@@ -1,0 +1,61 @@
+Einkaufsliste database schema
+=============================
+
+Version 1
+---------
+
+- Categories
+	tbl CategoryRow: 
+		id: long
+		name: string
+	tbl SortOrderRow: 
+		id: long
+		name: string
+	tbl CategorySortOrderRow:
+		id: long
+		SortOrderID: long
+		CategoryID: long
+		Position: long
+- Ingredients
+	tbl IngredientRow:
+		id: long
+		name: string
+		category: long (categoryID)
+		provenance: long (-1 or SortOrderID)
+		default-unit: string
+- Recipes
+	tbl RecipeRow
+		id: long
+		name: string
+		numberOfPersons: int
+	tbl RecipeItemRow
+		id: long
+		recipeID: long
+		group: long (-1 or groupID)
+		ingredientID: long
+		amountMin: float (-1 for unused)
+		amountMax: float (-1 for unused)
+		amountUnit: string
+		additionalInfo: string
+		size: string
+		optional: boolean
+	tbl RecipeItemGroups
+		id: long
+		name: string
+		recipeID: long
+- ShoppingList
+	tbl ShoppingRecipeRow
+		id: long
+		name: string
+		scalingFactor: float
+	tbl ShoppingListItemRow
+		id: long
+		shoppingRecipeID: long
+		ingredientID: int
+		amountMin: float (-1 for unused)
+		amountMax: float (-1 for unused)
+		amountUnit: string
+		additionalInfo: string
+		size: string
+		optional: boolean
+		status: string

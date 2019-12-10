@@ -7,7 +7,10 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Amount;
+import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
+import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.data.ShoppingList;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 
@@ -72,11 +75,6 @@ public class ShoppingListFS extends ShoppingList
             m_Items.add(r);
         }
         @Override
-        public void addItem(int position, @NonNull ShoppingListItem item)
-        {
-            m_Items.add(position, (ShoppingListItemFS)item);
-        }
-        @Override
         public void removeItem(@NonNull ShoppingListItem item)
         {
             ShoppingListItemFS itemFS = (ShoppingListItemFS)item;
@@ -86,6 +84,20 @@ public class ShoppingListFS extends ShoppingList
         public ArrayList<ShoppingListItem> getAllItems()
         {
             return new ArrayList<>(m_Items);
+        }
+
+        @Override
+        public void changeScalingFactor(float f)
+        {
+            float fFactor = f / getScalingFactor();
+            setScalingFactor(f);
+
+            for(ShoppingListItem sli : m_Items)
+            {
+                Amount amount = sli.getAmount();
+                amount.scaleAmount(fFactor);
+                sli.setAmount(amount);
+            }
         }
 
     }
@@ -98,7 +110,7 @@ public class ShoppingListFS extends ShoppingList
     }
 
     @Override
-    protected Optional<ShoppingRecipe> addRecipe(@NonNull String strName)
+    public Optional<ShoppingRecipe> addNewRecipe(@NonNull String strName)
     {
         if(getShoppingRecipe(strName).isPresent())
         {
@@ -110,14 +122,23 @@ public class ShoppingListFS extends ShoppingList
     }
 
     @Override
-    public void addExistingShoppingRecipe(@NonNull ShoppingRecipe recipe)
+    public void addFromRecipe(@NonNull String strName, @NonNull Recipes.Recipe recipe)
     {
-        if(getShoppingRecipe(recipe.getName()).isPresent())
+        if(getShoppingRecipe(strName).isPresent())
         {
             return;
         }
 
-        m_ShoppingRecipies.add((ShoppingRecipeFS)recipe);
+        Optional<ShoppingRecipe> item = addNewRecipe(strName);
+        if(!item.isPresent())
+        {
+            return;
+        }
+        item.get().setScalingFactor((float)recipe.getNumberOfPersons());
+        for(RecipeItem r : recipe.getAllRecipeItems())
+        {
+            item.get().addItem(r);
+        }
     }
 
     @Override
@@ -173,5 +194,41 @@ public class ShoppingListFS extends ShoppingList
     public void clearShoppingList()
     {
         m_ShoppingRecipies.clear();
+    }
+
+    @Override
+    public boolean isIngredientInUse(@NonNull Ingredients.Ingredient ingredient, @NonNull ArrayList<String> shoppingListItemUsingIngredient)
+    {
+        boolean stillInUse = false;
+        for(ShoppingRecipe recipe : getAllShoppingRecipes())
+        {
+            for(ShoppingListItem sli : recipe.getAllItems())
+            {
+                if (sli.getIngredient().equals(ingredient.getName()))
+                {
+                    if(!shoppingListItemUsingIngredient.contains(recipe.getName()))
+                    {
+                        shoppingListItemUsingIngredient.add(recipe.getName());
+                    }
+                    stillInUse = true;
+                }
+            }
+        }
+        return stillInUse;
+    }
+
+    @Override
+    public void onIngredientRenamed(@NonNull String strIngredient, @NonNull String strNewName)
+    {
+        for(ShoppingRecipeFS sr : m_ShoppingRecipies)
+        {
+            for(ShoppingListItemFS sli : sr.m_Items)
+            {
+                if (sli.getIngredient().equals(strIngredient))
+                {
+                    sli.setIngredient(strNewName);
+                }
+            }
+        }
     }
 }

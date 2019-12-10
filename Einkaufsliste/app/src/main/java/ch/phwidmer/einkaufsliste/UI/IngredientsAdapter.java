@@ -34,14 +34,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private static final int TYPE_INACTIVE = 1;
     private static final int TYPE_ACTIVE = 2;
 
-    private GroceryPlanning m_GroceryPlanning;
-    private RecyclerView m_RecyclerView;
-    private CoordinatorLayout m_CoordLayout;
+    private GroceryPlanning     m_GroceryPlanning;
+    private RecyclerView        m_RecyclerView;
+    private CoordinatorLayout   m_CoordLayout;
 
     private Integer m_iActiveElement;
-
-    private String                 m_strRecentlyDeleted;
-    private Ingredients.Ingredient m_RecentlyDeleted;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -341,10 +338,15 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
         IngredientsAdapter.ViewHolder holder = (IngredientsAdapter.ViewHolder)m_RecyclerView.getChildViewHolder(activeItem);
         String strIngredient = (String)holder.m_TextView.getText();
+        Optional<Ingredients.Ingredient> ingredientToDelete = m_GroceryPlanning.ingredients().getIngredient(strIngredient);
+        if(!ingredientToDelete.isPresent())
+        {
+            return;
+        }
 
         ArrayList<String> recipesUsingIngredient = new ArrayList<>();
         ArrayList<String> shoppinglistUsingIngredient = new ArrayList<>();
-        if(m_GroceryPlanning.recipes().isIngredientInUse(strIngredient, recipesUsingIngredient) || m_GroceryPlanning.shoppingList().isIngredientInUse(strIngredient, shoppinglistUsingIngredient))
+        if(m_GroceryPlanning.recipes().isIngredientInUse(ingredientToDelete.get(), recipesUsingIngredient) || m_GroceryPlanning.shoppingList().isIngredientInUse(ingredientToDelete.get(), shoppinglistUsingIngredient))
         {
             notifyItemChanged(position);
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
@@ -358,15 +360,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             return;
         }
 
-        m_strRecentlyDeleted = strIngredient;
-        Optional<Ingredients.Ingredient> ingredientToDelete = m_GroceryPlanning.ingredients().getIngredient(strIngredient);
-        if(!ingredientToDelete.isPresent())
-        {
-            return;
-        }
-        m_RecentlyDeleted = ingredientToDelete.get();
+        final UndoData.IngredientUndoData recentlyDeletedIngredient = new UndoData.IngredientUndoData(ingredientToDelete.get());
 
-        m_GroceryPlanning.ingredients().removeIngredient(m_RecentlyDeleted);
+        m_GroceryPlanning.ingredients().removeIngredient(ingredientToDelete.get());
         notifyDataSetChanged();
         setActiveElement("");
 
@@ -374,23 +370,19 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) -> {
-            Optional<Categories.Category> category = m_GroceryPlanning.categories().getCategory(m_RecentlyDeleted.getCategory());
+            Optional<Categories.Category> category = m_GroceryPlanning.categories().getCategory(recentlyDeletedIngredient.getCategory());
             if(!category.isPresent())
             {
                 return;
             }
-            m_GroceryPlanning.ingredients().addIngredient(m_strRecentlyDeleted, m_RecentlyDeleted.getDefaultUnit(), category.get());
-            Optional<Ingredients.Ingredient> ingredient = m_GroceryPlanning.ingredients().getIngredient(m_strRecentlyDeleted);
+            Optional<Ingredients.Ingredient> ingredient = m_GroceryPlanning.ingredients().addIngredient(recentlyDeletedIngredient.getName(), recentlyDeletedIngredient.getDefaultUnit(), category.get());
             if(!ingredient.isPresent())
             {
                 return;
             }
-            ingredient.get().setProvenance(m_RecentlyDeleted.getProvenance());
+            ingredient.get().setProvenance(recentlyDeletedIngredient.getProvenance());
 
             notifyDataSetChanged();
-
-            m_strRecentlyDeleted = "";
-            m_RecentlyDeleted = null;
 
             Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();

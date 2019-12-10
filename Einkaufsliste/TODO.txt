@@ -1,18 +1,19 @@
 TODO
 ====
 
-- db statt json für aktuelle daten (json nur noch für import / export)
-    - db: wie sortieren? SQL sort + danach noch spezialsort?
-    - Reset db button in settings! (Need to have this also for FS-based, don't I? And an option to switch between storage types!)
-    - Need some way to inspect db? (json export partially works for this though)
-
 - Use Google Paging Library (https://guides.codepath.com/android/Paging-Library-Guide) to speed up large RecyclerViews?
+- db: recipes -> Älplermagronen sind zu unterst in der Liste!
 - Better possibilities for "insert-list" (add *-lists)? Sometimes certain items are hidden by the on-screen keyboard. should still be text searchable
-- Save-icon should rather be an export icon (how does this normally look?) The same for import
 - Read (+) button sometimes not accessible (on bottom, but not visible and no scrolling possible)
 
+- Make as many db calls as possible async! This might speed things up. In the end i might even be able to unset allowMainThreadQueries
+    * Look for slow operations and prioritize them!
+    * Importing data seems to take quite a while. -> either speed it up or show a waiting cursor!
+- Make sure both implementations are as fast as (reasonably) possible
+- Decide on which backend should be standard!
+
 - Alternatives: Könnten diese in der ShoppingList rückgängig-machbar sein (bzw. changeable)?
-- Possibility to add a picture to a recipe (-> can I save these in json? Or how to do this technically? Save in db should work, but otherwise?)
+- Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)
 - Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
     -> efficiently implementing this probably depends on a redesign of SortedShoppingList
     -> first define exactly how this should work! (vanish on click?)

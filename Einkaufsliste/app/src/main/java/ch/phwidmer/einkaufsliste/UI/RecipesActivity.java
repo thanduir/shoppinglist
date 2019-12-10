@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
+import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
@@ -52,9 +53,6 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
     private ArrayAdapter<CharSequence>  m_SpinnerRecipesAdapter;
 
     private ItemTouchHelper             m_ItemTouchHelper;
-
-    private String                      m_strRecentlyDeletedRecipe;
-    private Recipes.Recipe              m_RecentlyDeletedRecipe;
 
     private RecyclerView                m_RecyclerView;
     private RecipeItemsAdapter          m_Adapter;
@@ -121,6 +119,15 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
                 }
             }
         });
+
+        if(m_GroceryPlanning.ingredients().getIngredientsCount() == 0 || m_GroceryPlanning.recipes().getAllRecipeNames().size() == 0)
+        {
+            m_FAB.hide();
+        }
+        if(m_GroceryPlanning.recipes().getAllRecipeNames().size() == 0)
+        {
+            m_FABGroup.hide();
+        }
 
         m_SpinnerRecipesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         for(Recipes.Recipe recipe : m_GroceryPlanning.recipes().getAllRecipes())
@@ -257,15 +264,15 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
 
         String strName = (String)m_SpinnerRecipes.getSelectedItem();
 
-        m_strRecentlyDeletedRecipe = strName;
         Optional<Recipes.Recipe> recipeToDelete = m_GroceryPlanning.recipes().getRecipe(strName);
         if(!recipeToDelete.isPresent())
         {
             return;
         }
-        m_RecentlyDeletedRecipe = recipeToDelete.get();
 
-        m_GroceryPlanning.recipes().removeRecipe(m_RecentlyDeletedRecipe);
+        final UndoData.RecipeUndoData recentlyDeletedRecipe = new UndoData.RecipeUndoData(recipeToDelete.get());
+
+        m_GroceryPlanning.recipes().removeRecipe(recipeToDelete.get());
         m_SpinnerRecipesAdapter.remove((CharSequence)m_SpinnerRecipes.getSelectedItem());
         m_SpinnerRecipes.setAdapter(m_SpinnerRecipesAdapter);
         updateVisibility();
@@ -276,13 +283,15 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         Snackbar snackbar = Snackbar.make(coordLayout, R.string.text_recipe_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
-            m_GroceryPlanning.recipes().addRecipe(m_strRecentlyDeletedRecipe, m_RecentlyDeletedRecipe);
-            m_SpinnerRecipesAdapter.add(m_strRecentlyDeletedRecipe);
+            Optional<Recipes.Recipe> newRecipe = m_GroceryPlanning.recipes().addRecipe(recentlyDeletedRecipe.getName(), recentlyDeletedRecipe.getNumberOfPersons());
+            if(!newRecipe.isPresent())
+            {
+                return;
+            }
+            recentlyDeletedRecipe.initializeRecipe(newRecipe.get());
+            m_SpinnerRecipesAdapter.add(recentlyDeletedRecipe.getName());
             m_SpinnerRecipes.setSelection(m_SpinnerRecipesAdapter.getCount() - 1);
             updateVisibility();
-
-            m_strRecentlyDeletedRecipe = "";
-            m_RecentlyDeletedRecipe = null;
 
             Snackbar snackbar1 = Snackbar.make(coordLayout, R.string.text_recipe_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();
@@ -488,7 +497,9 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
                 {
                     return;
                 }
-                item.get().getAmount().setUnit(ingredient.get().getDefaultUnit());
+                Amount amount = item.get().getAmount();
+                amount.setUnit(ingredient.get().getDefaultUnit());
+                item.get().setAmount(amount);
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
                 if (adapter == null) {
@@ -514,7 +525,9 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
                 {
                     return;
                 }
-                item.get().getAmount().setUnit(ingredient.get().getDefaultUnit());
+                Amount amount = item.get().getAmount();
+                amount.setUnit(ingredient.get().getDefaultUnit());
+                item.get().setAmount(amount);
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
                 if (adapter == null) {

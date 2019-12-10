@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.security.InvalidParameterException;
 
+import ch.phwidmer.einkaufsliste.data.db_based.GroceryPlanningDB;
 import ch.phwidmer.einkaufsliste.data.fs_based.GroceryPlanningFS;
 
 public class GroceryPlanningFactory
@@ -32,8 +33,7 @@ public class GroceryPlanningFactory
 
             case db_based:
             {
-                // Not implemented yet
-                throw new InvalidParameterException("Unimplemented backend");
+                return GroceryPlanningDB.getInstance(context);
             }
         }
 

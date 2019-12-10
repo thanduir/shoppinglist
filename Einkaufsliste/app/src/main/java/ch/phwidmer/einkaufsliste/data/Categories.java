@@ -1,10 +1,7 @@
 package ch.phwidmer.einkaufsliste.data;
 
 import android.support.annotation.NonNull;
-import android.util.JsonReader;
-import android.util.JsonWriter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -52,103 +49,9 @@ public abstract class Categories
 
     public abstract SortOrder addSortOrder(@NonNull String strName);
     public abstract void renameSortOrder(@NonNull SortOrder order, @NonNull String strNewName);
-    public abstract void removeSortOrder(@NonNull String strName);
+    public abstract void removeSortOrder(@NonNull SortOrder order);
     public abstract Optional<SortOrder> getSortOrder(@NonNull String strName);
 
     public abstract ArrayList<SortOrder> getAllSortOrders();
     public abstract ArrayList<String> getAllSortOrderNames();
-
-    // Serializing
-
-    void saveToJson(JsonWriter writer) throws IOException
-    {
-        writer.beginObject();
-        writer.name("id").value("Categories");
-
-        writer.name("all categories");
-        writer.beginArray();
-        for(Category c : getAllCategories())
-        {
-            writer.value(c.getName());
-        }
-        writer.endArray();
-
-        writer.name("sortOrders");
-        writer.beginObject();
-        for(SortOrder order : getAllSortOrders())
-        {
-            writer.name(order.getName());
-            writer.beginArray();
-            for(Category c : order.getOrder())
-            {
-                writer.value(c.getName());
-            }
-            writer.endArray();
-        }
-        writer.endObject();
-
-        writer.endObject();
-    }
-
-    void readFromJson(JsonReader reader) throws IOException
-    {
-        reader.beginObject();
-        while (reader.hasNext())
-        {
-            String name = reader.nextName();
-            switch(name) {
-                case "id":
-                {
-                    String id = reader.nextString();
-                    if (!id.equals("Categories")) {
-                        throw new IOException();
-                    }
-                    break;
-                }
-
-                case ("all categories"):
-                {
-                    reader.beginArray();
-                    while (reader.hasNext()) {
-                        addCategory(reader.nextString());
-                    }
-                    reader.endArray();
-                    break;
-                }
-
-                case ("sortOrders"):
-                {
-                    reader.beginObject();
-                    while (reader.hasNext()) {
-                        String orderName = reader.nextName();
-
-                        reader.beginArray();
-                        ArrayList<Category> newOrder = new ArrayList<>();
-                        while (reader.hasNext()) {
-                            Optional<Category> category = getCategory(reader.nextString());
-                            if(!category.isPresent())
-                            {
-                                throw new IOException();
-                            }
-                            newOrder.add(category.get());
-                        }
-                        reader.endArray();
-
-                        SortOrder order = addSortOrder(orderName);
-                        order.setOrder(newOrder);
-                    }
-                    reader.endObject();
-                    break;
-                }
-
-                default:
-                {
-                    reader.skipValue();
-                    break;
-                }
-            }
-        }
-
-        reader.endObject();
-    }
 }

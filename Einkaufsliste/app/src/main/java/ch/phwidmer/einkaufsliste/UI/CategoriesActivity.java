@@ -37,18 +37,15 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 {
     private GroceryPlanning m_GroceryPlanning;
 
-    private Spinner                     m_SpinnerSortOrders;
-    private RecyclerView                m_RecyclerView;
-    private RecyclerView.Adapter        m_Adapter;
+    private Spinner                         m_SpinnerSortOrders;
+    private RecyclerView                    m_RecyclerView;
+    private RecyclerView.Adapter            m_Adapter;
 
-    private ArrayAdapter<CharSequence>  m_SpinnerSortOrdersAdapter;
+    private ArrayAdapter<CharSequence>      m_SpinnerSortOrdersAdapter;
 
-    private FloatingActionButton        m_FAB;
+    private FloatingActionButton            m_FAB;
 
-    private ItemTouchHelper             m_ItemTouchHelper;
-
-    private String                      m_strRecentlyDeletedSortOrder;
-    private Categories.SortOrder        m_RecentlyDeletedSortOrder;
+    private ItemTouchHelper                 m_ItemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,6 +56,7 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
 
         m_FAB = findViewById(R.id.fab);
+        m_FAB.hide();
 
         // Manage SortOrders
 
@@ -162,11 +160,6 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
     public void onStringInput(@NonNull String tag, @NonNull String strInput, @NonNull String strAdditonalInformation)
     {
-        if(m_RecyclerView.getAdapter() == null)
-        {
-            return;
-        }
-
         switch(tag) {
             case "addSortOrder":
             {
@@ -198,6 +191,11 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
             case "addCategory":
             {
+                if(m_RecyclerView.getAdapter() == null)
+                {
+                    return;
+                }
+
                 m_GroceryPlanning.categories().addCategory(strInput);
                 CategoriesAdapter adapter = (CategoriesAdapter) m_RecyclerView.getAdapter();
                 adapter.notifyItemInserted(adapter.getItemCount() - 1);
@@ -206,6 +204,11 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
             case "renameCategory": // See CategoriesAdapter
             {
+                if(m_RecyclerView.getAdapter() == null)
+                {
+                    return;
+                }
+
                 Optional<Categories.Category> category = m_GroceryPlanning.categories().getCategory(strAdditonalInformation);
                 if(!category.isPresent())
                 {
@@ -230,9 +233,14 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         }
 
         String strName = (String)m_SpinnerSortOrders.getSelectedItem();
+        Optional<Categories.SortOrder> sortOrderToDelete = m_GroceryPlanning.categories().getSortOrder(strName);
+        if(!sortOrderToDelete.isPresent())
+        {
+            return;
+        }
 
         ArrayList<String> ingredientsUsingSortOrder = new ArrayList<>();
-        if(m_GroceryPlanning.ingredients().isSortOrderInUse(strName, ingredientsUsingSortOrder))
+        if(m_GroceryPlanning.ingredients().isSortOrderInUse(sortOrderToDelete.get(), ingredientsUsingSortOrder))
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(m_RecyclerView.getContext());
             builder.setTitle(m_RecyclerView.getContext().getResources().getString(R.string.text_delete_sortorder_disallowed_header));
@@ -242,17 +250,12 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
             return;
         }
 
-        m_strRecentlyDeletedSortOrder = strName;
-        Optional<Categories.SortOrder> sortOrderToDelete = m_GroceryPlanning.categories().getSortOrder(strName);
-        if(!sortOrderToDelete.isPresent())
-        {
-            return;
-        }
-        m_RecentlyDeletedSortOrder = sortOrderToDelete.get();
-        m_GroceryPlanning.categories().removeSortOrder(strName);
+        final UndoData.SortOrderUndoData recentlyDeletedSortOrder = new UndoData.SortOrderUndoData(sortOrderToDelete.get());
+        m_GroceryPlanning.categories().removeSortOrder(sortOrderToDelete.get());
         m_SpinnerSortOrdersAdapter.remove(strName);
         if(m_SpinnerSortOrdersAdapter.getCount() == 0)
         {
+            m_FAB.hide();
             m_Adapter = null;
             m_RecyclerView.setAdapter(null);
         }
@@ -262,12 +265,9 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
         Snackbar snackbar = Snackbar.make(coordLayout, R.string.text_sortorder_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) -> {
-                m_GroceryPlanning.categories().addSortOrder(m_strRecentlyDeletedSortOrder).setOrder(m_RecentlyDeletedSortOrder.getOrder());
-                m_SpinnerSortOrdersAdapter.add(m_strRecentlyDeletedSortOrder);
+                m_GroceryPlanning.categories().addSortOrder(recentlyDeletedSortOrder.getName()).setOrder(recentlyDeletedSortOrder.getOrder());
+                m_SpinnerSortOrdersAdapter.add(recentlyDeletedSortOrder.getName());
                 m_SpinnerSortOrders.setSelection(m_SpinnerSortOrdersAdapter.getCount() - 1);
-
-                m_strRecentlyDeletedSortOrder = "";
-                m_RecentlyDeletedSortOrder = null;
 
                 Snackbar snackbar1 = Snackbar.make(coordLayout, R.string.text_sortorder_restored, Snackbar.LENGTH_SHORT);
                 snackbar1.show();
@@ -301,6 +301,8 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(SettingsActivity.KEY_ACTIVE_SORTORDER_CATEGORIES, strSortOrder);
         editor.apply();
+
+        m_FAB.show();
 
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
         m_Adapter = new CategoriesAdapter(coordLayout, m_RecyclerView, m_GroceryPlanning.categories(), order.get(), m_GroceryPlanning.ingredients());

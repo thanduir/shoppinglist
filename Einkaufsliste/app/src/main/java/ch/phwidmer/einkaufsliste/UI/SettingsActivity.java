@@ -31,6 +31,7 @@ import ch.phwidmer.einkaufsliste.data.DataBackend;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Unit;
+import ch.phwidmer.einkaufsliste.data.utilities.JsonSerializer;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -177,15 +178,18 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     public void onItemSelected(@NonNull AdapterView<?> parent, @NonNull View view, int pos, long id)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
 
         if(parent == m_SpinnerDefaultUnit)
         {
+            SharedPreferences.Editor editor = preferences.edit();
             editor.putString(KEY_DEFAULT_UNIT, Unit.values()[m_SpinnerDefaultUnit.getSelectedItemPosition()].toString());
+            editor.apply();
         }
         else if(parent == m_SpinnerDefaultSortOrder)
         {
+            SharedPreferences.Editor editor = preferences.edit();
             editor.putString(KEY_DEFAULT_SORORDER, m_SpinnerDefaultSortOrder.getSelectedItem().toString());
+            editor.apply();
         }
         else if(parent == m_SpinnerBackend)
         {
@@ -205,13 +209,14 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             {
                 if(changeBackend(strBackend))
                 {
+                    SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(KEY_CURRENT_BACKEND, strBackend);
+                    editor.apply();
+                    GroceryPlanningFactory.setBackend(DataBackend.valueOf(strBackend));
                 }
             });
             builder.show();
         }
-
-        editor.apply();
     }
 
     public void onNothingSelected(@NonNull AdapterView<?> parent)
@@ -223,9 +228,10 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         File currentDataFile = getTemporaryFile();
 
         try {
-            GroceryPlanningFactory.groceryPlanning(this).saveDataToFile(currentDataFile, this);
+            JsonSerializer serializer = new JsonSerializer(GroceryPlanningFactory.groceryPlanning(this));
+            serializer.saveDataToFile(currentDataFile, this);
             GroceryPlanningFactory.setBackend(DataBackend.valueOf(strNewBackend));
-            GroceryPlanningFactory.groceryPlanning(this).loadDataFromFile(currentDataFile);
+            serializer.loadDataFromFile(currentDataFile);
 
             Toast.makeText(this, getResources().getString(R.string.text_backend_changed_successfully), Toast.LENGTH_SHORT).show();
         }
@@ -288,7 +294,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
             // Load file into GroceryPlanning
             GroceryPlanning groceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
-            groceryPlanning.loadDataFromFile(testDataFile);
+            JsonSerializer serializer = new JsonSerializer(groceryPlanning);
+            serializer.loadDataFromFile(testDataFile);
             groceryPlanning.flush();
 
             Toast.makeText(this, getResources().getString(R.string.text_default_data_loaded), Toast.LENGTH_SHORT).show();

@@ -11,7 +11,7 @@ public class ShoppingListItemFS extends ShoppingListItem
     private Status              m_Status = Status.None;
 
     private String              m_Ingredient;
-    private AmountFS            m_Amount;
+    private Amount              m_Amount;
     private String              m_AdditionalInfo;
     private RecipeItemFS.Size   m_Size;
     private Boolean             m_Optional;
@@ -19,7 +19,7 @@ public class ShoppingListItemFS extends ShoppingListItem
     ShoppingListItemFS(@NonNull String strIngredient)
     {
         m_Ingredient = strIngredient;
-        m_Amount = new AmountFS();
+        m_Amount = new Amount();
         m_AdditionalInfo = "";
         m_Size = RecipeItem.Size.Normal;
         m_Optional = false;
@@ -27,7 +27,7 @@ public class ShoppingListItemFS extends ShoppingListItem
 
     ShoppingListItemFS(@NonNull RecipeItem recipeItem)
     {
-        m_Amount = new AmountFS((AmountFS)recipeItem.getAmount());
+        m_Amount = new Amount(recipeItem.getAmount());
         m_Ingredient = recipeItem.getIngredient();
         m_Optional = recipeItem.isOptional();
         m_AdditionalInfo = recipeItem.getAdditionalInfo();
@@ -44,6 +44,18 @@ public class ShoppingListItemFS extends ShoppingListItem
     {
         m_Status = status;
     }
+    @Override
+    public void invertStatus()
+    {
+        if(m_Status == Status.None)
+        {
+            setStatus(Status.Taken);
+        }
+        else
+        {
+            setStatus(Status.None);
+        }
+    }
 
     @Override
     public String getIngredient()
@@ -59,12 +71,12 @@ public class ShoppingListItemFS extends ShoppingListItem
     @Override
     public Amount getAmount()
     {
-        return m_Amount;
+        return new Amount(m_Amount);
     }
     @Override
     public void setAmount(@NonNull Amount amount)
     {
-        m_Amount = (AmountFS)amount;
+        m_Amount = amount;
     }
 
     @Override

@@ -31,7 +31,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     private Ingredients m_Ingredients;
 
-    private Categories.Category m_RecentlyDeleted;
     private RecyclerView m_RecyclerView;
     private ItemTouchHelper m_TouchHelper = null;
     private CoordinatorLayout m_CoordLayout;
@@ -128,19 +127,17 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
             return;
         }
 
+        final String strRecentlyDeletedCategory = category.getName();
         m_Categories.removeCategory(category);
         notifyDataSetChanged();
 
         // Allow undo
 
-        m_RecentlyDeleted = category;
         Snackbar snackbar = Snackbar.make(m_CoordLayout, R.string.text_item_deleted, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.text_undo, (View view) ->
         {
-            m_Categories.addCategory(m_RecentlyDeleted.getName());
+            m_Categories.addCategory(strRecentlyDeletedCategory);
             notifyDataSetChanged();
-
-            m_RecentlyDeleted = null;
 
             Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
             snackbar1.show();

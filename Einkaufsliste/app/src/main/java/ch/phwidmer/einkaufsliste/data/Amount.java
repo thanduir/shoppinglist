@@ -4,23 +4,77 @@ import android.support.annotation.NonNull;
 
 import java.util.Optional;
 
-public abstract class Amount {
+public class Amount
+{
+    private static float QUANTITY_UNUSED = -1;
 
-    protected abstract Amount createNewInstance();
+    private float m_QuantityMin;
+    private float m_QuantityMax;
+    private Unit m_Unit;
 
-    public abstract float getQuantityMin();
-    public abstract void setQuantityMin(float quantity);
+    public Amount()
+    {
+        m_QuantityMin = 1.0f;
+        m_QuantityMax = QUANTITY_UNUSED;
+        m_Unit = Unit.Count;
+    }
 
-    public abstract float getQuantityMax();
-    public abstract void setQuantityMax(float quantity);
+    public Amount(@NonNull Amount other)
+    {
+        m_QuantityMin = other.m_QuantityMin;
+        m_QuantityMax = other.m_QuantityMax;
+        m_Unit = other.m_Unit;
+    }
 
-    public abstract Unit getUnit();
-    public abstract void setUnit(@NonNull Unit unit);
+    public float getQuantityMin()
+    {
+        return m_QuantityMin;
+    }
+    public void setQuantityMin(float quantity)
+    {
+        m_QuantityMin = quantity;
+    }
 
-    public abstract boolean isRange();
-    public abstract void setIsRange(boolean bIsRange);
+    public float getQuantityMax()
+    {
+        return m_QuantityMax;
+    }
+    public void setQuantityMax(float quantity)
+    {
+        m_QuantityMax = quantity;
+    }
 
-    void scaleAmount(float fFactor)
+    public Unit getUnit()
+    {
+        return m_Unit;
+    }
+    public void setUnit(@NonNull Unit unit)
+    {
+        m_Unit = unit;
+    }
+
+    public boolean isRange()
+    {
+        return m_QuantityMax != QUANTITY_UNUSED;
+    }
+    public void setIsRange(boolean bIsRange)
+    {
+        if(bIsRange == isRange())
+        {
+            return;
+        }
+
+        if(bIsRange)
+        {
+            m_QuantityMax = m_QuantityMin;
+        }
+        else
+        {
+            m_QuantityMax = QUANTITY_UNUSED;
+        }
+    }
+
+    public void scaleAmount(float fFactor)
     {
         if(getUnit() == Unit.Unitless || fFactor < 0.0f)
         {
@@ -131,7 +185,7 @@ public abstract class Amount {
             return Optional.empty();
         }
 
-        Amount result = m1.createNewInstance();
+        Amount result = new Amount();
 
         switch(m1.getUnit())
         {
