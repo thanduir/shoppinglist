@@ -33,13 +33,14 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
-import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.ShoppingList;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
 
 public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipesAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
@@ -809,10 +810,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             inputList.add(ingredient.getName());
         }
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient));
-        newFragment.setDefaultValue(strRecipe);
-        newFragment.setAdditionalInformation(strRecipe);
-        newFragment.setListOnlyAllowed(inputList);
+        InputStringFromList newFragment = InputStringFromList.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient), inputList, strRecipe);
         newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "addRecipeItem");
     }
 
@@ -869,7 +867,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
     private void onRenameShoppingRecipe(@NonNull final String strRecipe)
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_recipe, strRecipe));
+        InputStringFree newFragment = InputStringFree.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_recipe, strRecipe));
         newFragment.setDefaultValue(strRecipe);
         newFragment.setAdditionalInformation(strRecipe);
         newFragment.setListExcludedInputs(m_ShoppingList.getAllShoppingRecipeNames());
@@ -895,7 +893,7 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
             return;
         }
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(v.getContext().getResources().getString(R.string.text_change_nrpersons, strRecipe));
+        InputStringFree newFragment = InputStringFree.newInstance(v.getContext().getResources().getString(R.string.text_change_nrpersons, strRecipe));
         newFragment.setAdditionalInformation(strRecipe);
         newFragment.setDefaultValue(((Float)recipe.get().getScalingFactor()).toString());
         newFragment.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);

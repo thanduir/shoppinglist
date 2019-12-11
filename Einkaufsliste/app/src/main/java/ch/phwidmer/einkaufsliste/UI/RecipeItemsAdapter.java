@@ -31,12 +31,13 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
-import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
 
 public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
@@ -646,15 +647,13 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             inputList.add(ingredient.getName());
         }
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_add_ingredient));
-        newFragment.setAdditionalInformation(strGroup);
-        newFragment.setListOnlyAllowed(inputList);
+        InputStringFromList newFragment = InputStringFromList.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_add_ingredient), inputList, strGroup);
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "addRecipeItemToGroup");
     }
 
     private void onRenameGroup(@NonNull final String strGroup)
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_group, strGroup));
+        InputStringFree newFragment = InputStringFree.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_group, strGroup));
         newFragment.setDefaultValue(strGroup);
         newFragment.setAdditionalInformation(strGroup);
         newFragment.setListExcludedInputs(m_Recipe.getAllGroupNames());

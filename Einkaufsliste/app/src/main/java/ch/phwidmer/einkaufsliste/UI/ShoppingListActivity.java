@@ -23,7 +23,6 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
-import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
@@ -33,8 +32,10 @@ import ch.phwidmer.einkaufsliste.data.ShoppingList;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
-public class ShoppingListActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
+public class ShoppingListActivity extends AppCompatActivity implements InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
 
@@ -168,8 +169,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
             return;
         }
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_import_recipe));
-        newFragment.setListOnlyAllowed(inputList);
+        InputStringFromList newFragment = InputStringFromList.newInstance(getResources().getString(R.string.text_import_recipe), inputList, "");
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
     }
 
@@ -298,9 +298,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                     {
                         groupItems.add(item.getIngredient());
                     }
-                    InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_chose_from_group, strGroup));
-                    newFragment.setListOnlyAllowed(groupItems);
-                    newFragment.setAdditionalInformation(strAdditonalInformation);
+                    InputStringFromList newFragment = InputStringFromList.newInstance(getResources().getString(R.string.text_chose_from_group, strGroup), groupItems, strAdditonalInformation);
                     newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
                     break;
                 }

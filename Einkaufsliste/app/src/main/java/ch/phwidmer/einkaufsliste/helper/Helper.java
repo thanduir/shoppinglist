@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import java.text.Collator;
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -34,22 +33,6 @@ public class Helper {
         public int compare(@NonNull NamedObject o1, @NonNull NamedObject o2) {
             return m_Sort.compare(o1.getName(), o2.getName());
         }
-    }
-
-    static boolean arrayListContainsIgnoreCase(@NonNull ArrayList<String> list, @NonNull String str)
-    {
-        final Collator instance = Collator.getInstance();
-        instance.setStrength(Collator.NO_DECOMPOSITION);
-
-        String toSearch = str.toLowerCase();
-        for(String s : list)
-        {
-            if(instance.equals(s.toLowerCase(), toSearch))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     // Format numbers: Write as integer without decimals if applicable, otherwise restrict decimal digits.

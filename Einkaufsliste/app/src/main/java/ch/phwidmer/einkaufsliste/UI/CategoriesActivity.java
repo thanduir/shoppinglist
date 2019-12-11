@@ -26,14 +26,15 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
-import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
-public class CategoriesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
+public class CategoriesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
 
@@ -146,14 +147,14 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
 
     public void onAddCategory(@NonNull View v)
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.button_add_category));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.button_add_category));
         newFragment.setListExcludedInputs(m_GroceryPlanning.categories().getAllCategorieNames());
         newFragment.show(getSupportFragmentManager(), "addCategory");
     }
 
     public void onAddSortOrder(@NonNull View v)
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_sortorder));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_add_sortorder));
         newFragment.setListExcludedInputs(m_GroceryPlanning.categories().getAllSortOrderNames());
         newFragment.show(getSupportFragmentManager(), "addSortOrder");
     }
@@ -279,7 +280,7 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
     {
         final String strCurrentSortOrder = (String)m_SpinnerSortOrders.getSelectedItem();
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_rename_sortorder, strCurrentSortOrder));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_rename_sortorder, strCurrentSortOrder));
         newFragment.setDefaultValue(strCurrentSortOrder);
         newFragment.setAdditionalInformation(strCurrentSortOrder);
         newFragment.setListExcludedInputs(m_GroceryPlanning.categories().getAllSortOrderNames());

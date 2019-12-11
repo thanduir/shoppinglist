@@ -20,14 +20,15 @@ import ch.phwidmer.einkaufsliste.data.Categories;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
 import ch.phwidmer.einkaufsliste.data.Unit;
-import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
-public class IngredientsActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
+public class IngredientsActivity extends AppCompatActivity implements InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
 
@@ -142,7 +143,7 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
 
     public void onAddIngredient(@NonNull View v)
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_add_ingredient));
         newFragment.setListExcludedInputs(m_GroceryPlanning.ingredients().getAllIngredientNames());
         newFragment.show(getSupportFragmentManager(), "addIngredient");
     }

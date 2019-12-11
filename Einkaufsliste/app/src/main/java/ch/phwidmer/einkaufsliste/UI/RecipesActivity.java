@@ -33,7 +33,6 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
-import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
@@ -41,8 +40,11 @@ import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
-public class RecipesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringDialogFragment.InputStringResponder
+public class RecipesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringResponder
 {
     private GroceryPlanning m_GroceryPlanning;
 
@@ -250,7 +252,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
 
     public void onAddRecipe(@NonNull View v)
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_recipe));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_add_recipe));
         newFragment.setListExcludedInputs(m_GroceryPlanning.recipes().getAllRecipeNames());
         newFragment.show(getSupportFragmentManager(), "addRecipe");
     }
@@ -303,7 +305,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_rename_recipe, strCurrentRecipe));
         newFragment.setDefaultValue(strCurrentRecipe);
         newFragment.setListExcludedInputs(m_GroceryPlanning.recipes().getAllRecipeNames());
         newFragment.show(getSupportFragmentManager(), "renameRecipe");
@@ -313,7 +315,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
     {
         final String strCurrentRecipe = (String)m_SpinnerRecipes.getSelectedItem();
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_copy_recipe, strCurrentRecipe));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_copy_recipe, strCurrentRecipe));
         newFragment.setDefaultValue(strCurrentRecipe);
         newFragment.setListExcludedInputs(m_GroceryPlanning.recipes().getAllRecipeNames());
         newFragment.show(getSupportFragmentManager(), "copyRecipe");
@@ -332,8 +334,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             inputList.add(ingredient.getName());
         }
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_ingredient));
-        newFragment.setListOnlyAllowed(inputList);
+        InputStringFromList newFragment = InputStringFromList.newInstance(getResources().getString(R.string.text_add_ingredient), inputList, "");
         newFragment.show(getSupportFragmentManager(), "addRecipeItem");
     }
 
@@ -387,7 +388,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         }
         ArrayList<String> excludedInputs = recipe.get().getAllGroupNames();
 
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.text_add_group));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_add_group));
         newFragment.setListExcludedInputs(excludedInputs);
         newFragment.show(getSupportFragmentManager(), "addAlternativesGroup");
     }

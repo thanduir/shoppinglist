@@ -24,9 +24,11 @@ import ch.phwidmer.einkaufsliste.data.DataBackend;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.utilities.JsonSerializer;
-import ch.phwidmer.einkaufsliste.helper.InputStringDialogFragment;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
-public class MainActivity extends AppCompatActivity implements InputStringDialogFragment.InputStringResponder
+public class MainActivity extends AppCompatActivity implements InputStringResponder
 {
     private File m_AppDataDirectory = null;
     private GroceryPlanning m_GroceryPlanning;
@@ -107,15 +109,14 @@ public class MainActivity extends AppCompatActivity implements InputStringDialog
 
     public void onExport()
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_saveas));
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.alert_saveas));
         newFragment.setListInputsToConfirm(getListOfExistingFiles(true));
         newFragment.show(getSupportFragmentManager(), "onExport");
     }
 
     public void onImport()
     {
-        InputStringDialogFragment newFragment = InputStringDialogFragment.newInstance(getResources().getString(R.string.alert_load));
-        newFragment.setListOnlyAllowed(getListOfExistingFiles(false));
+        InputStringFromList newFragment = InputStringFromList.newInstance(getResources().getString(R.string.alert_load), getListOfExistingFiles(false), "");
         newFragment.show(getSupportFragmentManager(), "onImport");
     }
 
