@@ -27,12 +27,19 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <AutoCompleteTextView
-            android:id="@+id/inputListControl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <android.support.v7.widget.SearchView
+            android:id="@+id/searchViewInputFromList"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="236dp"
+            android:layout_height="32dp"
             android:completionThreshold="0"
             android:text="" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewInputFromList"
+            android:layout_width="236dp"
+            android:layout_height="320dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"

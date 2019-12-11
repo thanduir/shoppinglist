@@ -1,15 +1,12 @@
 TODO
 ====
 
-- Better possibilities for "insert-list" (add *-lists)? Sometimes certain items are hidden by the on-screen keyboard. should still be text searchable
-    -> list with filter instead of textbox with autocomplete?
-- Ingredients:
+- Ingredients view verbessern. Ideen:
     * Abtrennung zwischen Buchstaben ("A", dann kommen alle die mit "a" beginnen, dann "B", ...)
     * Can i make the ingredients page text-searchable (i.e. search file that scrolls to the ingredient one is looking for)?
         -> or could i define a filter similar to what will be done for the "insert-list"?
-
-- reset to defaults button to small (for two lines) in german...
 - Read (+) button sometimes not accessible (on bottom, but not visible and no scrolling possible)
+    -> How to solve this problem? (Could i add a way to show the button anyways?)
 
 - Make as many db calls as possible async! This might speed things up. In the end i might even be able to unset allowMainThreadQueries
     * Look for slow operations and prioritize them!
@@ -17,7 +14,7 @@ TODO
 - Make sure both backend implementations are as fast as (reasonably) possible
 - Decide on which backend should be the default choice!
 
-- Look through program (UI) to find other areas worth improving!
+- Look through program (UI) to check for other areas worth improving!
 
 - Alternatives: Könnten diese in der ShoppingList rückgängig-machbar sein (bzw. changeable)?
 - Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)

@@ -3,25 +3,25 @@ package ch.phwidmer.einkaufsliste.helper.stringInput;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import ch.phwidmer.einkaufsliste.R;
+import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 
-// TODO: Improve this class (and simplify if possible): list with filter instead of textbox with autocomplete?
-public class InputStringFromList extends DialogFragment {
-    private static final String m_keyTitle = "title";
-    private static final String m_keyAdditionalInformation = "additionalInfo";
-    private static final String m_keyListOnlyAllowed = "listOnlyAllowed";
+public class InputStringFromList extends DialogFragment
+{
+    private static final String m_keyTitle                  = "title";
+    private static final String m_keyAdditionalInformation  = "additionalInfo";
+    private static final String m_keyListOnlyAllowed        = "listOnlyAllowed";
 
     private String              m_Title;
     private String              m_AdditionalInformation;
@@ -53,75 +53,35 @@ public class InputStringFromList extends DialogFragment {
         m_ListAllowedInputs = getArguments().getStringArrayList(m_keyListOnlyAllowed);
     }
 
-    private View setupInputFromStringList(@NonNull LayoutInflater inflater, @NonNull ViewGroup container)
-    {
-        final View mainView = inflater.inflate(R.layout.overlay_input_from_list, container, false);
-
-        AutoCompleteTextView inputView = mainView.findViewById(R.id.inputListControl);
-        if(getContext() == null)
-        {
-            return null;
-        }
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, m_ListAllowedInputs);
-        inputView.setAdapter(adapter);
-        inputView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-                Button button = mainView.findViewById(R.id.ButtonOk);
-                String strInput = s.toString();
-                button.setEnabled(StringInputHelper.arrayListContainsIgnoreCase(m_ListAllowedInputs, strInput));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        inputView.setOnFocusChangeListener((View v, boolean hasFocus) ->
-        {
-            if (hasFocus) {
-                AutoCompleteTextView view = mainView.findViewById(R.id.inputListControl);
-                if (view.getText().toString().length() == 0) {
-                    // We want to trigger the drop down, replace the text.
-                    view.setText("");
-                }
-            }
-        });
-
-        return mainView;
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if(getActivity() == null)
+        if(getActivity() == null || getContext() == null)
         {
             return null;
         }
 
-        View view = setupInputFromStringList(inflater, container);
-        if(view == null)
-        {
-            return null;
-        }
+        final View mainView = inflater.inflate(R.layout.overlay_input_from_list, container, false);
 
-        TextView textView = view.findViewById(R.id.textViewTitle);
-        textView.setText(m_Title);
+        TextView textViewTitle = mainView.findViewById(R.id.textViewTitle);
+        Button buttonCancel = mainView.findViewById(R.id.ButtonCancel);
+        Button buttonOk = mainView.findViewById(R.id.ButtonOk);
+        RecyclerView recyclerViewStringInput = mainView.findViewById(R.id.recyclerViewInputFromList);
+        SearchView searchView = mainView.findViewById(R.id.searchViewInputFromList);
 
-        Button buttonCancel = view.findViewById(R.id.ButtonCancel);
+        textViewTitle.setText(m_Title);
+
         buttonCancel.setOnClickListener((View v) -> dismiss());
 
-        final View mainView = view;
-        Button buttonOk = mainView.findViewById(R.id.ButtonOk);
         buttonOk.setEnabled(false);
         buttonOk.setOnClickListener((View v) ->
         {
-            AutoCompleteTextView inputView = mainView.findViewById(R.id.inputListControl);
-            String strInput = inputView.getText().toString();
+            InputStringFromListAdapter stringInputAdapter = (InputStringFromListAdapter)recyclerViewStringInput.getAdapter();
+            if(stringInputAdapter == null)
+            {
+                return;
+            }
+            String strInput = stringInputAdapter.getActiveElement();
 
             String tag = getTag();
             if(tag == null)
@@ -130,6 +90,34 @@ public class InputStringFromList extends DialogFragment {
             }
             ((InputStringResponder) getActivity()).onStringInput(tag, strInput, m_AdditionalInformation);
             dismiss();
+        });
+
+        recyclerViewStringInput.setHasFixedSize(true);
+        recyclerViewStringInput.setLayoutManager(new LinearLayoutManager(getContext()));
+        InputStringFromListAdapter adapter = new InputStringFromListAdapter(m_ListAllowedInputs);
+        recyclerViewStringInput.setAdapter(adapter);
+        ItemClickSupport.addTo(recyclerViewStringInput).setOnItemClickListener((RecyclerView recyclerView, int position, View v) ->
+        {
+            InputStringFromListAdapter stringInputAdapter = (InputStringFromListAdapter)recyclerView.getAdapter();
+            if(stringInputAdapter == null)
+            {
+                return;
+            }
+            boolean elementExists = stringInputAdapter.setActiveElement(position);
+            buttonOk.setEnabled(elementExists);
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String text) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String text) {
+                adapter.getFilter().filter(text);
+                return true;
+            }
         });
 
         return mainView;

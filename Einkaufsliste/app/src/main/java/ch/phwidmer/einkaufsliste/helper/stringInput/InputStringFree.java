@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 import ch.phwidmer.einkaufsliste.R;
 
-// TODO: Improve / simplify this class? Could i split it even further? Move common code (with InputStringFromList) to StringInputHelper!
 public class InputStringFree extends DialogFragment {
     private static final String m_keyTitle = "title";
     private static final String m_keyAdditionalInformation = "additionalInfo";

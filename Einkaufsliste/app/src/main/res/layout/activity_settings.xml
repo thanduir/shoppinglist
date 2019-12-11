@@ -104,7 +104,7 @@
     <Button
         android:id="@+id/btnResetToEmpty"
         android:layout_width="230dp"
-        android:layout_height="50dp"
+        android:layout_height="64dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -117,7 +117,7 @@
     <Button
         android:id="@+id/btnResetToDefault"
         android:layout_width="230dp"
-        android:layout_height="50dp"
+        android:layout_height="64dp"
         android:onClick="onResetDataToDefault"
         android:text="@string/text_reset_data_to_default"
         android:layout_marginStart="16dp"
