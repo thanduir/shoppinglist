@@ -1,12 +1,9 @@
 TODO
 ====
 
-- Read (+) button sometimes not accessible (on bottom, but not visible and no scrolling possible)
-    -> How to solve this problem? (Could i add a way to show the button anyways?)
-
 - Look through program (UI) to check for other areas worth improving (esp. small QoL fixes)!
 
-- Decide wether to implement these now (otherwise delete them or move 'em to the bottom of the list):
+- Decide wether to implement these now (otherwise delete them or move 'em to the list at the bottom):
     - Alternatives: Könnten diese in der ShoppingList rückgängig-machbar sein (bzw. changeable)?
     - Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)
     - Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top

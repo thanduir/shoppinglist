@@ -106,7 +106,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
-                } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
+                } else if (dy <= 0 && m_FAB.getVisibility() != View.VISIBLE) {
                     m_FAB.show();
                 }
             }

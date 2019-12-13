@@ -115,7 +115,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
                     m_FABGroup.hide();
-                } else if (dy < 0 && m_FAB.getVisibility() != View.VISIBLE) {
+                } else if (dy <= 0 && m_FAB.getVisibility() != View.VISIBLE) {
                     m_FAB.show();
                     m_FABGroup.show();
                 }
