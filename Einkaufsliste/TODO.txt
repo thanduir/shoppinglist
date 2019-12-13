@@ -1,23 +1,24 @@
 TODO
 ====
 
-- Ingredients view verbessern. Ideen:
-    * Abtrennung zwischen Buchstaben ("A", dann kommen alle die mit "a" beginnen, dann "B", ...)
-    * Can i make the ingredients page text-searchable (i.e. search file that scrolls to the ingredient one is looking for)?
-        -> or could i define a filter similar to what will be done for the "insert-list"?
 - Read (+) button sometimes not accessible (on bottom, but not visible and no scrolling possible)
     -> How to solve this problem? (Could i add a way to show the button anyways?)
 
-- Make as many db calls as possible async! This might speed things up. In the end i might even be able to unset allowMainThreadQueries
-    * Look for slow operations and prioritize them!
-    * Importing data seems to take quite a while. -> either speed it up or show a waiting cursor!
-- Make sure both backend implementations are as fast as (reasonably) possible
-- Decide on which backend should be the default choice!
+- Look through program (UI) to check for other areas worth improving (esp. small QoL fixes)!
 
-- Look through program (UI) to check for other areas worth improving!
+- Decide wether to implement these now (otherwise delete them or move 'em to the bottom of the list):
+    - Alternatives: Könnten diese in der ShoppingList rückgängig-machbar sein (bzw. changeable)?
+    - Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)
+    - Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
+        -> efficiently implementing this probably depends on a redesign of SortedShoppingList
+        -> first define exactly how this should work! (vanish on click?)
+    - Further speed improvements for json possible?
+    - Make as many db calls as possible async! This might speed things up. In the end i might even be able to unset allowMainThreadQueries
+        * Look for slow operations and prioritize them!
+        * Importing data seems to take quite a while. -> either speed it up or show a waiting cursor!
+        * Can i speed the db backend up with other changes?
+    - Decide on which backend should be the default choice!
 
-- Alternatives: Könnten diese in der ShoppingList rückgängig-machbar sein (bzw. changeable)?
-- Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)
-- Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
-    -> efficiently implementing this probably depends on a redesign of SortedShoppingList
-    -> first define exactly how this should work! (vanish on click?)
+Ideas for later
+---------------
+

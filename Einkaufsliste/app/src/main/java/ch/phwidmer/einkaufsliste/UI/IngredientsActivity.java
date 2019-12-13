@@ -5,13 +5,16 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.Optional;
@@ -113,12 +116,58 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.ingredients_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if(item.getItemId() == android.R.id.home)
+        int id = item.getItemId();
+
+        if(id == android.R.id.home)
         {
             onBackPressed();
             return true;
+        }
+        else if (id == R.id.action_search)
+        {
+            SearchView view = (SearchView)item.getActionView();
+            view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String text) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String text) {
+                    IngredientsAdapter adapter = (IngredientsAdapter)m_RecyclerView.getAdapter();
+                    if(adapter == null)
+                    {
+                        return true;
+                    }
+                    adapter.getFilter().filter(text);
+                    return true;
+                }
+            });
+            view.setIconified(false);
+            view.requestFocus();
+            item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    // Write your code here
+                    m_Adapter.getFilter().filter("");
+                    view.setQuery("", false);
+                    view.clearFocus();
+                    return true;
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }
@@ -173,9 +222,10 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
             {
                 return;
             }
+            adapter.updateFilteredListForElementAdded(ingredient.get());
             adapter.setActiveElement(strInput);
             adapter.notifyDataSetChanged();
-            m_RecyclerView.scrollToPosition(m_GroceryPlanning.ingredients().getAllIngredients().indexOf(ingredient.get()));
+            m_RecyclerView.scrollToPosition(adapter.getCurrentPositionOfElement(ingredient.get()));
         }
         else if(tag.equals("renameIngredient")) // See IngredientsAdapter
         {

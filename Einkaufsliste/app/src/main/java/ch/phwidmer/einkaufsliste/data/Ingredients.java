@@ -21,6 +21,17 @@ public abstract class Ingredients
 
         public abstract Unit getDefaultUnit();
         public abstract void setDefaultUnit(@NonNull Unit unit);
+
+        @Override
+        public boolean equals(Object other)
+        {
+            if(!(other instanceof Ingredient))
+            {
+                return false;
+            }
+            Ingredient i = (Ingredient)other;
+            return this.getName().equals(i.getName());
+        }
     }
 
     public abstract Optional<Ingredient> addIngredient(@NonNull String strName, @NonNull Unit defaultUnit, @NonNull Categories.Category category);

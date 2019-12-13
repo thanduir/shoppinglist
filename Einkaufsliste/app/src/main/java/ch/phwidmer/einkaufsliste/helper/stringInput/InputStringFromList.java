@@ -105,6 +105,7 @@ public class InputStringFromList extends DialogFragment
             }
             boolean elementExists = stringInputAdapter.setActiveElement(position);
             buttonOk.setEnabled(elementExists);
+            searchView.clearFocus();
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

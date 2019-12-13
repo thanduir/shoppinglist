@@ -9,16 +9,21 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.Categories;
@@ -26,10 +31,11 @@ import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
+public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener, Filterable
 {
     private static final int TYPE_INACTIVE = 1;
     private static final int TYPE_ACTIVE = 2;
@@ -38,7 +44,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private RecyclerView        m_RecyclerView;
     private CoordinatorLayout   m_CoordLayout;
 
-    private Integer m_iActiveElement;
+    private ArrayList<Ingredients.Ingredient> m_filteredElements;
+    private Ingredients.Ingredient            m_ActiveElement;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -102,16 +109,18 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     IngredientsAdapter(@NonNull CoordinatorLayout coordLayout, @NonNull RecyclerView recyclerView, @NonNull GroceryPlanning groceryPlanning)
     {
-        m_iActiveElement = -1;
+        m_ActiveElement = null;
         m_GroceryPlanning = groceryPlanning;
         m_RecyclerView = recyclerView;
         m_CoordLayout = coordLayout;
+
+        m_filteredElements = m_GroceryPlanning.ingredients().getAllIngredients();
     }
 
     @Override
     public int getItemViewType(int position)
     {
-        if(m_iActiveElement == position)
+        if(m_ActiveElement != null && getFilteredIngredients().indexOf(m_ActiveElement) == position)
         {
             return TYPE_ACTIVE;
         }
@@ -144,14 +153,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void onBindViewHolder(@NonNull IngredientsAdapter.ViewHolder holder, int position)
     {
-        String strIngredient = getSortedIngredients().get(position).getName();
+        String strIngredient = getFilteredIngredients().get(position).getName();
         holder.m_id = strIngredient;
         holder.m_TextView.setText(strIngredient);
 
         final View view = holder.itemView;
         holder.m_TextView.setOnClickListener((View v) -> view.performClick());
 
-        if(m_iActiveElement == position)
+        if(m_ActiveElement != null && m_ActiveElement.getName().equals(strIngredient))
         {
             updateViewHolderActive(holder);
         }
@@ -164,33 +173,34 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public int getItemCount()
     {
-        return m_GroceryPlanning.ingredients().getIngredientsCount();
+        return m_filteredElements.size();
     }
 
     String getActiveElement()
     {
-        if(m_iActiveElement == -1)
+        if(m_ActiveElement == null)
         {
             return "";
         }
-        return getSortedIngredients().get(m_iActiveElement).getName();
+
+        return m_ActiveElement.getName();
     }
 
     void setActiveElement(@NonNull String strElement)
     {
-        if(m_iActiveElement != -1)
+        if(m_ActiveElement != null)
         {
-            notifyItemChanged(m_iActiveElement);
+            notifyItemChanged(getFilteredIngredients().indexOf(m_ActiveElement));
         }
 
-        m_iActiveElement = -1;
+        m_ActiveElement = null;
         if(!strElement.equals(""))
         {
             Optional<Ingredients.Ingredient> ingredient = m_GroceryPlanning.ingredients().getIngredient(strElement);
             if(ingredient.isPresent())
             {
-                m_iActiveElement = getSortedIngredients().indexOf(ingredient.get());
-                notifyItemChanged(m_iActiveElement);
+                m_ActiveElement = ingredient.get();
+                notifyItemChanged(getFilteredIngredients().indexOf(m_ActiveElement));
             }
         }
     }
@@ -276,12 +286,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public void onItemSelected(@NonNull AdapterView<?> parent, @NonNull View view, int pos, long id)
     {
-        if(m_iActiveElement == -1 || m_RecyclerView.getLayoutManager() == null)
+        if(m_ActiveElement == null || m_RecyclerView.getLayoutManager() == null)
         {
             return;
         }
 
-        View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(getFilteredIngredients().indexOf(m_ActiveElement));
         if(v == null)
         {
             return;
@@ -363,6 +373,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         final UndoData.IngredientUndoData recentlyDeletedIngredient = new UndoData.IngredientUndoData(ingredientToDelete.get());
 
         m_GroceryPlanning.ingredients().removeIngredient(ingredientToDelete.get());
+        updateFilteredListForElementRemoved(ingredientToDelete.get());
         notifyDataSetChanged();
         setActiveElement("");
 
@@ -382,6 +393,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             }
             ingredient.get().setProvenance(recentlyDeletedIngredient.getProvenance());
 
+            updateFilteredListForElementAdded(ingredient.get());
             notifyDataSetChanged();
 
             Snackbar snackbar1 = Snackbar.make(m_CoordLayout, R.string.text_item_restored, Snackbar.LENGTH_SHORT);
@@ -399,11 +411,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return false;
     }
 
-    private ArrayList<Ingredients.Ingredient> getSortedIngredients()
-    {
-        return m_GroceryPlanning.ingredients().getAllIngredients();
-    }
-
     private void renameIngredient(@NonNull final String strIngredient)
     {
         InputStringFree newFragment = InputStringFree.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_rename_ingredient, strIngredient));
@@ -416,7 +423,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public void clearViewBackground(@NonNull RecyclerView.ViewHolder vh)
     {
-        if(m_iActiveElement == -1)
+        if(m_ActiveElement == null)
         {
             vh.itemView.setBackgroundColor(0);
             return;
@@ -427,7 +434,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             return;
         }
 
-        View v = m_RecyclerView.getLayoutManager().findViewByPosition(m_iActiveElement);
+        View v = m_RecyclerView.getLayoutManager().findViewByPosition(getFilteredIngredients().indexOf(m_ActiveElement));
 
         if(v != null && m_RecyclerView.getChildViewHolder(v) == vh)
         {
@@ -437,5 +444,77 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         {
             vh.itemView.setBackgroundColor(0);
         }
+    }
+
+    int getCurrentPositionOfElement(Ingredients.Ingredient ingredient)
+    {
+        return m_filteredElements.indexOf(ingredient);
+    }
+
+    private ArrayList<Ingredients.Ingredient> getFilteredIngredients()
+    {
+        return m_filteredElements;
+    }
+
+    private ArrayList<Pair<Ingredients.Ingredient, String>> getAllIngredients()
+    {
+        ArrayList<Ingredients.Ingredient> allIngredients = m_GroceryPlanning.ingredients().getAllIngredients();
+
+        ArrayList<Pair<Ingredients.Ingredient, String>> itemsWithCompareKey = new ArrayList<>(allIngredients.size());
+        for(Ingredients.Ingredient ingredient : allIngredients)
+        {
+            itemsWithCompareKey.add(new Pair<>(ingredient, Helper.stripAccents(ingredient.getName()).toLowerCase()));
+        }
+        return itemsWithCompareKey;
+    }
+
+    private void updateFilteredListForElementRemoved(Ingredients.Ingredient ingredient)
+    {
+        m_filteredElements.remove(ingredient);
+    }
+
+    void updateFilteredListForElementAdded(Ingredients.Ingredient ingredient)
+    {
+        int position = Collections.binarySearch(m_filteredElements, ingredient, new Helper.SortNamedIgnoreCase());
+        m_filteredElements.add(-position - 1, ingredient);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                m_filteredElements = (ArrayList<Ingredients.Ingredient>) results.values;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<Ingredients.Ingredient> filteredResults;
+                if (constraint.length() == 0) {
+                    filteredResults = m_GroceryPlanning.ingredients().getAllIngredients();
+                } else {
+                    filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredResults;
+
+                return results;
+            }
+        };
+    }
+
+    private List<Ingredients.Ingredient> getFilteredResults(String constraint) {
+        List<Ingredients.Ingredient> results = new ArrayList<>();
+
+        String constraintWithoutAccents = Helper.stripAccents(constraint).toLowerCase();
+        for (Pair<Ingredients.Ingredient, String> item : getAllIngredients()) {
+            if (item.second.contains(constraintWithoutAccents) || item.first == m_ActiveElement) {
+                results.add(item.first);
+            }
+        }
+        return results;
     }
 }
