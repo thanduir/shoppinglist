@@ -121,6 +121,7 @@ public class InputStringFromList extends DialogFragment
             }
         });
 
+        searchView.requestFocus();
         return mainView;
     }
 }
