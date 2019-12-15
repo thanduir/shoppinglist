@@ -1,6 +1,8 @@
 package ch.phwidmer.einkaufsliste.UI;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +34,7 @@ import ch.phwidmer.einkaufsliste.data.ShoppingList;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
@@ -43,6 +46,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
     private ShoppingRecipesAdapter  m_AdapterRecipes;
 
     private FloatingActionButton    m_FAB;
+    private FloatingActionButton    m_FABNewRecipe;
 
     private ItemTouchHelper         m_ItemTouchHelper;
 
@@ -54,6 +58,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
 
         m_FAB = findViewById(R.id.fab);
+        m_FABNewRecipe = findViewById((R.id.fabEmptyRecipe));
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);
 
         m_RecyclerViewRecipes = findViewById(R.id.recyclerViewShoppingRecipe);
@@ -106,8 +111,10 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0 && m_FAB.getVisibility() == View.VISIBLE) {
                     m_FAB.hide();
+                    m_FABNewRecipe.hide();
                 } else if (dy <= 0 && m_FAB.getVisibility() != View.VISIBLE) {
                     m_FAB.show();
+                    m_FABNewRecipe.show();
                 }
             }
         });
@@ -149,6 +156,13 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         }
 
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onAddEmptyShoppingRecipe(@NonNull View v)
+    {
+        InputStringFree newFragment = InputStringFree.newInstance(getResources().getString(R.string.text_add_recipe));
+        newFragment.setListExcludedInputs(m_GroceryPlanning.shoppingList().getAllShoppingRecipeNames());
+        newFragment.show(getSupportFragmentManager(), "addEmptyShoppingRecipe");
     }
 
     public void onAddShoppingRecipe(@NonNull View v)
@@ -258,6 +272,24 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                 }
                 recipe.get().changeScalingFactor(fNewValue);
                 adapter.notifyDataSetChanged();
+                break;
+            }
+
+            case "addEmptyShoppingRecipe":
+            {
+                Optional<ShoppingList.ShoppingRecipe> shoppingRecipe = m_GroceryPlanning.shoppingList().addNewRecipe(strInput);
+                if(!shoppingRecipe.isPresent())
+                {
+                    return;
+                }
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                final int iNrPersons = preferences.getInt(SettingsActivity.KEY_DEFAULT_NRPERSONS, SettingsActivity.defaultNrPersons);
+                shoppingRecipe.get().setScalingFactor(iNrPersons);
+
+                adapter.notifyDataSetChanged();
+                adapter.setActiveElement(new Pair<>(strInput, ""));
+                m_RecyclerViewRecipes.scrollToPosition(adapter.getItemCount()-1);
                 break;
             }
 

@@ -1,22 +1,19 @@
 TODO
 ====
 
-- Look through program (UI) to check for other areas worth improving (esp. small QoL fixes)!
+- Option in Go Shopping to set marked items as invisible?
+    -> add chk_box on the other side of the spinner on top? Or another spinner somewhere to choose between different modes? Or a switchable FAB wit different states?
+    * Option to make every completed category invisible?
+    * Make every completed item removed upon clicking on it?
+    * Remove from view by swiping? (Probably not a good idea as it's tedious and you can easily swipe the wrong item...)
+    * Collapsing categories by clicking on header? (then the name changes and shows # of items not okay'd)
+        -> good idea, but there might still be quite a list of collabsed entries...
+    * (Optional) collabsable pseudo-category with items already checked? (Checked items are move there upon checking or after a short time or with an animation?)
+        -> optionally i could just have to top-level items checked / unchecked, and below each the same structure as now (and these top-level items are collapsible?)!
+        -> Whether to have this two top-level items or not must be configurable, however (chkbox in this activity or in the settings?)
+    -> In any case, it needs to be revertable in case you accidentially hide the wrong item!)
 
-- Decide wether to implement these now (otherwise delete them or move 'em to the list at the bottom):
-    - Alternatives: Könnten diese in der ShoppingList rückgängig-machbar sein (bzw. changeable)?
-    - Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)
-    - Option in Go Shopping to set marked items as invisible -> add chk_box on the other side of the spinner on top
-        -> efficiently implementing this probably depends on a redesign of SortedShoppingList
-        -> first define exactly how this should work! (vanish on click?)
-    - Further speed improvements for json possible?
-    - Make as many db calls as possible async! This might speed things up. In the end i might even be able to unset allowMainThreadQueries
-        * Look for slow operations and prioritize them!
-        * Importing data seems to take quite a while. -> either speed it up or show a waiting cursor!
-        * Can i speed the db backend up with other changes?
-    - Decide on which backend should be the default choice!
-
-
-Ideas for later
----------------
-
+- Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)
+    -> Wäre es ok, die Bilder im Rezepte-Dialog und im "insert-list" für Rezepte anzuzeigen? (Im ShoppingList-Activity gibt es keinen sinnvollen Platz, denke ich. Es hat schon so (zu) viele informationen)
+        -> Im "insert-list" könnte ich für dies auf kacheln umstellen als anzeige im recyclerview (bild + titel darunter).
+        -> Im Prinzip könnte ich sogar etwas ähnliches für die auswahl der rezepte in der recipes activity machen

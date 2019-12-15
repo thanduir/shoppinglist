@@ -400,7 +400,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             case "addRecipe":
             {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                final int iNrPersons = preferences.getInt(SettingsActivity.KEY_DEFAULT_NRPERSONS, 4);
+                final int iNrPersons = preferences.getInt(SettingsActivity.KEY_DEFAULT_NRPERSONS, SettingsActivity.defaultNrPersons);
 
                 m_GroceryPlanning.recipes().addRecipe(strInput, iNrPersons);
                 m_SpinnerRecipesAdapter.add(strInput);
