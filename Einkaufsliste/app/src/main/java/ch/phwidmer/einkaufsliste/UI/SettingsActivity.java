@@ -32,6 +32,7 @@ import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.data.utilities.JsonSerializer;
+import ch.phwidmer.einkaufsliste.helper.sortedshoppinglist.SortedShoppingList;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -40,14 +41,16 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     public static final String KEY_DEFAULT_SORORDER   = "ch.phwidmer.einkaufsliste.DEF_SORORDER";
     public static final String KEY_CURRENT_BACKEND    = "ch.phwidmer.einkaufsliste.goshopping.CURRENT_BACKEND";
 
-    public static final String KEY_ACTIVE_SORTORDER_CATEGORIES    = "ch.phwidmer.einkaufsliste.categories.ACTIVE_SORORDER";
+    public static final String KEY_ACTIVE_SORTORDER_CATEGORIES    = "ch.phwidmer.einkaufsliste.categories.ACTIVE_SORTORDER_CATEGORIES";
     public static final String KEY_ACTIVE_RECIPE                  = "ch.phwidmer.einkaufsliste.ACTIVE_RECIPE";
-    public static final String KEY_ACTIVE_SORTORDER_GOSHOPPING    = "ch.phwidmer.einkaufsliste.goshopping.ACTIVE_SORORDER";
+    public static final String KEY_ACTIVE_SORTORDER_GOSHOPPING    = "ch.phwidmer.einkaufsliste.goshopping.ACTIVE_SORTORDER_GOSHOPPING";
+    public static final String KEY_ACTIVE_LISTORDER_GOSHOPPING    = "ch.phwidmer.einkaufsliste.goshopping.ACTIVE_LISTORDER_GOSHOPPING";
 
     public static final int defaultNrPersons        = 4;
     public static final Unit defaultUnit            = Unit.Count;
     public static final String defaultSortOrder     = "";
     public static final DataBackend defaultBackend  = DataBackend.fs_based;
+    public static final SortedShoppingList.ListOrder defaultListOrder  = SortedShoppingList.ListOrder.STANDARD;
 
     private Spinner m_SpinnerDefaultUnit;
     private Spinner m_SpinnerDefaultSortOrder;

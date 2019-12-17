@@ -28,6 +28,7 @@
     <string name="button_import">Load</string>
     <string name="button_rename">Rename</string>
     <string name="button_copy">Copy</string>
+    <string name="button_switchmode">Switch mode</string>
     <string name="alert_saveas">Save as</string>
     <string name="alert_load">Import file</string>
     <string name="text_data_saved">Data saved to %s</string>
@@ -94,6 +95,8 @@
     <string name="text_switch_backend_header">Switching backend</string>
     <string name="text_switch_backend">About to switch backend. All data will be copied to the new backend. Proceed?</string>
     <string name="text_all_data_cleared">All data cleared</string>
+    <string name="text_header_checked_items">Collected items</string>
+    <string name="text_header_unchecked_items">Uncollected items</string>
 
     <string name="unit_count_long">Count</string>
     <string name="unit_kilogram_long">Kilogram</string>

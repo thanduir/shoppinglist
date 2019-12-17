@@ -39,6 +39,14 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="40dp" />
+
+            <ImageView
+                android:id="@+id/imageViewSwitchMode"
+                android:layout_width="?listPreferredItemHeightSmall"
+                android:layout_height="match_parent"
+                android:onClick="onSwitchMode"
+                android:scaleType="center"
+                android:contentDescription="@string/button_switchmode" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

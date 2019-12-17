@@ -29,6 +29,7 @@
     <string name="button_import">Laden</string>
     <string name="button_rename">Umbenennen</string>
     <string name="button_copy">Kopieren</string>
+    <string name="button_switchmode">Darstellungsmodus ändern</string>
     <string name="alert_saveas">Speichern als&#8230;</string>
     <string name="alert_load">Datei importieren</string>
     <string name="text_data_saved">Daten gespeichert in %s</string>
@@ -95,6 +96,8 @@
     <string name="text_switch_backend_header">Ändere Backend</string>
     <string name="text_switch_backend">Das Backend soll geändert werden. Dabei werden alle vorhandenen Daten ins neue Backend kopiert. Fortfahren?</string>
     <string name="text_all_data_cleared">Alle Daten zurückgesetzt</string>
+    <string name="text_header_checked_items">Eingesammelte Zutaten</string>
+    <string name="text_header_unchecked_items">Nicht eingesammelte Zutaten</string>
 
     <string name="unit_count_long">Anzahl</string>
     <string name="unit_kilogram_long">Kilogramm</string>

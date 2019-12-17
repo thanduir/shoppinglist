@@ -178,7 +178,7 @@ public class Amount
         }
     }
 
-    static Optional<Amount> addUp(@NonNull Amount m1, @NonNull Amount m2)
+    public static Optional<Amount> addUp(@NonNull Amount m1, @NonNull Amount m2)
     {
         if(!canBeAddedUp(m1, m2))
         {
@@ -266,7 +266,7 @@ public class Amount
         return Optional.of(result);
     }
 
-    static boolean canBeAddedUp(@NonNull Amount m1, @NonNull Amount m2)
+    public static boolean canBeAddedUp(@NonNull Amount m1, @NonNull Amount m2)
     {
         if(m1.isRange() || m2.isRange())
         {

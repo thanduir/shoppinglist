@@ -1,5 +1,6 @@
 package ch.phwidmer.einkaufsliste.UI;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -16,9 +17,11 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.Helper;
 import ch.phwidmer.einkaufsliste.R;
-import ch.phwidmer.einkaufsliste.data.SortedShoppingList;
 import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
+import ch.phwidmer.einkaufsliste.helper.sortedshoppinglist.CategoryShoppingItem;
+import ch.phwidmer.einkaufsliste.helper.sortedshoppinglist.SortedListItem;
+import ch.phwidmer.einkaufsliste.helper.sortedshoppinglist.SortedShoppingList;
 
 public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.ViewHolder>
 {
@@ -58,11 +61,16 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull GoShoppingAdapter.ViewHolder holder, int position)
     {
-        holder.m_id = m_SortedList.getName(position);
-
-        if(!m_SortedList.isCategory(position))
+        Optional<SortedListItem> listItem = m_SortedList.getItem(position);
+        if(!listItem.isPresent())
         {
-            Optional<SortedShoppingList.CategoryShoppingItem> item = m_SortedList.getListItem(position);
+            return;
+        }
+        holder.m_id = listItem.get().getName();
+
+        if(listItem.get().getType() == SortedListItem.ShoppingItemType.INGREDIENT)
+        {
+            Optional<CategoryShoppingItem> item = listItem.get().getShoppingItem();
             if(!item.isPresent())
             {
                 return;
@@ -102,12 +110,13 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
         }
         holder.m_TextView.setText(holder.m_id);
 
-        updateAppearance(holder, position);
+        updateAppearance(holder, listItem.get());
     }
 
-    void updateAppearance(@NonNull GoShoppingAdapter.ViewHolder holder, int position)
+    @SuppressLint("SetTextI18n")
+    void updateAppearance(@NonNull GoShoppingAdapter.ViewHolder holder, SortedListItem listItem)
     {
-        if(m_SortedList.isCategory(position))
+        if(listItem.getType() != SortedListItem.ShoppingItemType.INGREDIENT)
         {
             holder.m_TextView.setTypeface(holder.m_TextView.getTypeface(), Typeface.BOLD);
 
@@ -115,13 +124,19 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
             holder.m_TextViewAdditionalInfo.setVisibility(View.GONE);
             holder.m_TextView.setVisibility(View.VISIBLE);
 
-            if(m_SortedList.isIncompatibleItemsList(position))
+            if(listItem.getType() == SortedListItem.ShoppingItemType.TOPLEVEL_HEADER)
             {
-                holder.m_TextView.setTextColor(Color.RED);
+                holder.m_TextView.setTextColor(Color.BLUE);
             }
-            else
+            else if(listItem.getType() == SortedListItem.ShoppingItemType.CATEGORY_HEADER)
             {
                 holder.m_TextView.setTextColor(Color.BLACK);
+                holder.m_TextView.setText("  " + holder.m_TextView.getText());
+            }
+            else // INCOMPATIBLE_ITEMS_HEADER
+            {
+                holder.m_TextView.setTextColor(Color.RED);
+                holder.m_TextView.setText("  " + holder.m_TextView.getText());
             }
 
         }
@@ -133,7 +148,7 @@ public class GoShoppingAdapter extends RecyclerView.Adapter<GoShoppingAdapter.Vi
 
             holder.m_TextViewAdditionalInfo.setTextColor(Color.GRAY);
 
-            Optional<SortedShoppingList.CategoryShoppingItem> item = m_SortedList.getListItem(position);
+            Optional<CategoryShoppingItem> item = listItem.getShoppingItem();
             if(!item.isPresent())
             {
                 return;

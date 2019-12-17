@@ -1,19 +1,16 @@
 TODO
 ====
 
-- Option in Go Shopping to set marked items as invisible?
-    -> add chk_box on the other side of the spinner on top? Or another spinner somewhere to choose between different modes? Or a switchable FAB wit different states?
-    * Option to make every completed category invisible?
-    * Make every completed item removed upon clicking on it?
-    * Remove from view by swiping? (Probably not a good idea as it's tedious and you can easily swipe the wrong item...)
-    * Collapsing categories by clicking on header? (then the name changes and shows # of items not okay'd)
-        -> good idea, but there might still be quite a list of collabsed entries...
-    * (Optional) collabsable pseudo-category with items already checked? (Checked items are move there upon checking or after a short time or with an animation?)
-        -> optionally i could just have to top-level items checked / unchecked, and below each the same structure as now (and these top-level items are collapsible?)!
-        -> Whether to have this two top-level items or not must be configurable, however (chkbox in this activity or in the settings?)
-    -> In any case, it needs to be revertable in case you accidentially hide the wrong item!)
-
-- Possibility to add a picture to a recipe (-> save them separatly in a folder (export how?). But how / where to show them?)
-    -> Wäre es ok, die Bilder im Rezepte-Dialog und im "insert-list" für Rezepte anzuzeigen? (Im ShoppingList-Activity gibt es keinen sinnvollen Platz, denke ich. Es hat schon so (zu) viele informationen)
-        -> Im "insert-list" könnte ich für dies auf kacheln umstellen als anzeige im recyclerview (bild + titel darunter).
-        -> Im Prinzip könnte ich sogar etwas ähnliches für die auswahl der rezepte in der recipes activity machen
+- multi-select in "insert-lists"? (dort wo es überhaupt sinn macht)
+    -> auch überlegen, wie ich dann die ausgewählten Elemente besser sichtbar machen kann! (gibt es "pin to top" für recyclerview std-mässig?)
+    * (Better) alternatives:
+        - close and insert on click on item (might need loading speed improvements though)
+        - double clicking, long tapping or swiping (which of those?) instantly inserts items without closing the dialog. (UI then? Ok button still needed or just one close button?)
+        -> Maybe implement (in a first step) both of these with minimal UI changes and a way to switch between them in order to test which is better?
+        -> Beware though: There are instances where it only makes sense to be able to choose one item. The second possibility needs to be able to turn off for these case.
+        -> Atm InputStringFromList is used in these cases:
+            * MainActivity -> import file (ONLY SINGLE-SELECTION!
+            * ShoppingListActivity -> while inserting recipe, choose item from group (ONLY SINGLE-SELECTION!
+            * RecipiesActivity -> add ingredient to recipe (or to recipe group) (Multi select ok)
+            * ShoppingListActivity -> add recipe to list (Multi select ok)
+            * ShoppingListActivity -> add ingredient to shoppingrecipe (Multi select ok)
