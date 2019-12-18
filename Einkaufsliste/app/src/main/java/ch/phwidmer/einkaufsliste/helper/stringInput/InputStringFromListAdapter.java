@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.helper.Helper;
@@ -22,7 +22,7 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromListAdapter.ViewHolder> implements Filterable
 {
     private ArrayList<String> m_allItems;
-    private ArrayList<Pair<String, String>> m_ItemsWithCompareKey;
+    private TreeMap<String, String> m_ItemsWithCompareKey;
     private ArrayList<String> m_currentItems;
 
     private String m_ActiveElement;
@@ -45,11 +45,11 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
     {
         m_allItems = allItems;
         m_currentItems = allItems;
-        m_ItemsWithCompareKey = new ArrayList<>(m_allItems.size());
+        m_ItemsWithCompareKey = new TreeMap<>();
 
         for(String item : m_allItems)
         {
-            m_ItemsWithCompareKey.add(new Pair<>(item, Helper.stripAccents(item).toLowerCase()));
+            m_ItemsWithCompareKey.put(item, Helper.stripAccents(item).toLowerCase());
         }
     }
 
@@ -102,6 +102,22 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
         return true;
     }
 
+    String getItemAtPosition(int position)
+    {
+        return m_currentItems.get(position);
+    }
+
+    void removeItem(String element)
+    {
+        int position = m_currentItems.indexOf(element);
+        m_currentItems.remove(element);
+
+        m_allItems.remove(element);
+        m_ItemsWithCompareKey.remove(element);
+
+        notifyItemRemoved(position);
+    }
+
     @Override
     public int getItemCount()
     {
@@ -139,9 +155,9 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
         List<String> results = new ArrayList<>();
 
         String constraintWithoutAccents = Helper.stripAccents(constraint).toLowerCase();
-        for (Pair<String, String> item : m_ItemsWithCompareKey) {
-            if (item.second.contains(constraintWithoutAccents) || item.first.equals(m_ActiveElement)) {
-                results.add(item.first);
+        for (TreeMap.Entry<String, String> item : m_ItemsWithCompareKey.entrySet()) {
+            if (item.getValue().contains(constraintWithoutAccents) || item.getKey().equals(m_ActiveElement)) {
+                results.add(item.getKey());
             }
         }
         return results;

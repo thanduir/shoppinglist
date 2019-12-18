@@ -333,6 +333,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     {
     }
 
+    @Override
     public void reactToSwipe(int position)
     {
         // Remove element

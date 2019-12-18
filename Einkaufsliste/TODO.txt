@@ -1,16 +1,4 @@
 TODO
 ====
 
-- multi-select in "insert-lists"? (dort wo es überhaupt sinn macht)
-    -> auch überlegen, wie ich dann die ausgewählten Elemente besser sichtbar machen kann! (gibt es "pin to top" für recyclerview std-mässig?)
-    * (Better) alternatives:
-        - close and insert on click on item (might need loading speed improvements though)
-        - double clicking, long tapping or swiping (which of those?) instantly inserts items without closing the dialog. (UI then? Ok button still needed or just one close button?)
-        -> Maybe implement (in a first step) both of these with minimal UI changes and a way to switch between them in order to test which is better?
-        -> Beware though: There are instances where it only makes sense to be able to choose one item. The second possibility needs to be able to turn off for these case.
-        -> Atm InputStringFromList is used in these cases:
-            * MainActivity -> import file (ONLY SINGLE-SELECTION!
-            * ShoppingListActivity -> while inserting recipe, choose item from group (ONLY SINGLE-SELECTION!
-            * RecipiesActivity -> add ingredient to recipe (or to recipe group) (Multi select ok)
-            * ShoppingListActivity -> add recipe to list (Multi select ok)
-            * ShoppingListActivity -> add ingredient to shoppingrecipe (Multi select ok)
+- nothing planned at the moment

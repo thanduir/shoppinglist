@@ -35,7 +35,7 @@ import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
-import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromListMultiSelect;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
 public class ShoppingListActivity extends AppCompatActivity implements InputStringResponder
@@ -183,7 +183,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
             return;
         }
 
-        InputStringFromList newFragment = InputStringFromList.newInstance(getResources().getString(R.string.text_import_recipe), inputList, "");
+        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_import_recipe), inputList, "", InputStringFromListMultiSelect.SelectionType.MultiSelect);
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
     }
 
@@ -330,7 +330,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                     {
                         groupItems.add(item.getIngredient());
                     }
-                    InputStringFromList newFragment = InputStringFromList.newInstance(getResources().getString(R.string.text_chose_from_group, strGroup), groupItems, strAdditonalInformation);
+                    InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_chose_from_group, strGroup), groupItems, strAdditonalInformation, InputStringFromListMultiSelect.SelectionType.SingleSelect);
                     newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
                     break;
                 }

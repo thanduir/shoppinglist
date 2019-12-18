@@ -37,7 +37,7 @@ import ch.phwidmer.einkaufsliste.data.RecipeItem;
 import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
-import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromListMultiSelect;
 
 public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.ViewHolder> implements ReactToTouchActionsInterface, AdapterView.OnItemSelectedListener
 {
@@ -647,7 +647,10 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             inputList.add(ingredient.getName());
         }
 
-        InputStringFromList newFragment = InputStringFromList.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_add_ingredient), inputList, strGroup);
+        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_add_ingredient),
+                                                                                                inputList,
+                                                                                                strGroup,
+                                                                                                InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements);
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "addRecipeItemToGroup");
     }
 

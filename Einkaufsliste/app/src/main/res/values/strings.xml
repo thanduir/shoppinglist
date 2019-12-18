@@ -29,6 +29,7 @@
     <string name="button_rename">Rename</string>
     <string name="button_copy">Copy</string>
     <string name="button_switchmode">Switch mode</string>
+    <string name="button_close">Close</string>
     <string name="alert_saveas">Save as</string>
     <string name="alert_load">Import file</string>
     <string name="text_data_saved">Data saved to %s</string>

@@ -41,7 +41,7 @@ import ch.phwidmer.einkaufsliste.data.Recipes;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsCallback;
 import ch.phwidmer.einkaufsliste.helper.ReactToTouchActionsInterface;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFree;
-import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromList;
+import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringFromListMultiSelect;
 import ch.phwidmer.einkaufsliste.helper.stringInput.InputStringResponder;
 
 public class RecipesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, InputStringResponder
@@ -334,7 +334,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
             inputList.add(ingredient.getName());
         }
 
-        InputStringFromList newFragment = InputStringFromList.newInstance(getResources().getString(R.string.text_add_ingredient), inputList, "");
+        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_add_ingredient), inputList, "", InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements);
         newFragment.show(getSupportFragmentManager(), "addRecipeItem");
     }
 

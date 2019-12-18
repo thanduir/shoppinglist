@@ -30,6 +30,7 @@
     <string name="button_rename">Umbenennen</string>
     <string name="button_copy">Kopieren</string>
     <string name="button_switchmode">Darstellungsmodus ändern</string>
+    <string name="button_close">Schliessen</string>
     <string name="alert_saveas">Speichern als&#8230;</string>
     <string name="alert_load">Datei importieren</string>
     <string name="text_data_saved">Daten gespeichert in %s</string>
