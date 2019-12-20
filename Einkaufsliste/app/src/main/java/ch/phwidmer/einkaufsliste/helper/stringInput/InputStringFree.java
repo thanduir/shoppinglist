@@ -158,18 +158,18 @@ public class InputStringFree extends DialogFragment {
         }
 
         TextView textView = view.findViewById(R.id.textViewTitle);
+        Button buttonCancel = view.findViewById(R.id.ButtonCancel);
+        Button buttonOk = view.findViewById(R.id.ButtonOk);
+        EditText editText = view.findViewById(R.id.editTextInput);
+
         textView.setText(m_Title);
 
-        Button buttonCancel = view.findViewById(R.id.ButtonCancel);
         buttonCancel.setOnClickListener((View v) -> dismiss());
 
-        final View mainView = view;
-        Button buttonOk = mainView.findViewById(R.id.ButtonOk);
         buttonOk.setEnabled(!m_DefaultValue.isEmpty()
                 && (m_ListExcludedInputs == null || !StringInputHelper.arrayListContainsIgnoreCase(m_ListExcludedInputs, m_DefaultValue)));
         buttonOk.setOnClickListener((View v) ->
         {
-            EditText editText = mainView.findViewById(R.id.editTextInput);
             String strInput = editText.getText().toString();
 
             if(m_ListInputsToConfirm != null && StringInputHelper.arrayListContainsIgnoreCase(m_ListInputsToConfirm, strInput))
@@ -209,6 +209,8 @@ public class InputStringFree extends DialogFragment {
             }
         });
 
-        return mainView;
+        editText.requestFocus();
+
+        return view;
     }
 }
