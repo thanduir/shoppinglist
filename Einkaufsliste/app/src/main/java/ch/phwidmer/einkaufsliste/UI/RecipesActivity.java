@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
@@ -72,7 +73,13 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_recipes);
 
-        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        try {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(InvalidParameterException e)
+        {
+            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+        }
 
         m_FAB = findViewById(R.id.fab);
         m_FABGroup = findViewById(R.id.fabGroup);

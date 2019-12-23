@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.Optional;
 
@@ -41,7 +42,13 @@ public class GoShoppingActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_shopping);
 
-        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        try {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(InvalidParameterException e)
+        {
+            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+        }
         if(m_GroceryPlanning == null)
         {
             return;

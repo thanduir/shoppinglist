@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -54,7 +55,13 @@ public class CategoriesActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_categories);
 
-        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        try {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(InvalidParameterException e)
+        {
+            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+        }
 
         m_FAB = findViewById(R.id.fab);
         m_FAB.hide();

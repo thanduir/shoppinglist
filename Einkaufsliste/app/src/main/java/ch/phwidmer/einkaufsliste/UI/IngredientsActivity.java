@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import java.security.InvalidParameterException;
 import java.util.Optional;
 
 import ch.phwidmer.einkaufsliste.data.Categories;
@@ -45,7 +46,13 @@ public class IngredientsActivity extends AppCompatActivity implements InputStrin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_ingredients);
 
-        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        try {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(InvalidParameterException e)
+        {
+            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+        }
 
         m_FAB = findViewById(R.id.fab);
         CoordinatorLayout coordLayout = findViewById(R.id.fabCoordinatorLayout);

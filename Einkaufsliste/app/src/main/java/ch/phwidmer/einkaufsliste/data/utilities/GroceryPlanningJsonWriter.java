@@ -29,9 +29,9 @@ class GroceryPlanningJsonWriter {
 
         // Concept if the file already exists:
         //      * write to filename.new
+        //      * delete filename.old if it already exists
         //      * move existing to filename.old
         //      * move filename.new to filename
-        //      * delete filename.old
 
         File fileNew;
         if(moveFilesFirst)
@@ -74,25 +74,22 @@ class GroceryPlanningJsonWriter {
         if(moveFilesFirst)
         {
             File fileOld = new File(fileToBeCreated.getAbsolutePath() + ".old");
-            if(!fileToBeCreated.renameTo(fileOld))
+            if(fileOld.exists())
             {
                 //noinspection ResultOfMethodCallIgnored
-                fileNew.delete();
-                //noinspection ResultOfMethodCallIgnored
                 fileOld.delete();
+            }
+            if(!fileToBeCreated.renameTo(fileOld))
+            {
                 throw new IOException("Saving backup file failed");
             }
             if(!fileNew.renameTo(fileToBeCreated))
             {
                 //noinspection ResultOfMethodCallIgnored
                 fileOld.renameTo(fileToBeCreated);
-                //noinspection ResultOfMethodCallIgnored
-                fileOld.delete();
+
                 throw new IOException("Couldn't move new file");
             }
-
-            //noinspection ResultOfMethodCallIgnored
-            fileOld.delete();
         }
     }
 

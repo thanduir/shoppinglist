@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
@@ -55,7 +56,13 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_shopping_list);
 
-        m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        try {
+            m_GroceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(InvalidParameterException e)
+        {
+            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+        }
 
         m_FAB = findViewById(R.id.fab);
         m_FABNewRecipe = findViewById((R.id.fabEmptyRecipe));
@@ -102,6 +109,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
 
         if(m_GroceryPlanning.recipes().getAllRecipeNames().size() == 0)
         {
+            m_FABNewRecipe.hide();
             m_FAB.hide();
         }
 

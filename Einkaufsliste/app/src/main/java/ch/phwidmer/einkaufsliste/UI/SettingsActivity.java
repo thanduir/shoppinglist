@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.InvalidParameterException;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -95,7 +96,14 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        GroceryPlanning groceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        GroceryPlanning groceryPlanning = null;
+        try {
+            groceryPlanning = GroceryPlanningFactory.groceryPlanning(this);
+        }
+        catch(InvalidParameterException e)
+        {
+            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+        }
         if(groceryPlanning == null)
         {
             return;

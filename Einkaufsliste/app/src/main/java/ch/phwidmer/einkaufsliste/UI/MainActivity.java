@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements InputStringRespon
         }
         catch(InvalidParameterException e)
         {
-            MainActivity.showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
+            showErrorDialog(getString(R.string.text_load_file_failed), e.getMessage(), this);
         }
     }
 
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements InputStringRespon
         return super.onOptionsItemSelected(item);
     }
 
-    private static void showErrorDialog(@NonNull String title, @NonNull String message, @NonNull Context context)
+    static void showErrorDialog(@NonNull String title, @NonNull String message, @NonNull Context context)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
