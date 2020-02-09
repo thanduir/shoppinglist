@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste.data;
 
 import android.support.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class Amount
@@ -91,21 +92,14 @@ public class Amount
     public void increaseAmountMin()
     {
         float quanitityMin = getQuantityMin();
-        setQuantityMin(quanitityMin + getChangeAmount(quanitityMin));
+        setQuantityMin(getChangedAmount(quanitityMin, true));
     }
 
     public void decreaseAmountMin()
     {
         float quanitityMin = getQuantityMin();
-        float changeAmount = getChangeAmount(quanitityMin);
-        if(quanitityMin > changeAmount)
-        {
-            setQuantityMin(quanitityMin - changeAmount);
-        }
-        else
-        {
-            setQuantityMin(0);
-        }
+        float changedAmount = getChangedAmount(quanitityMin, false);
+        setQuantityMin(changedAmount);
     }
 
     public void increaseAmountMax()
@@ -115,7 +109,7 @@ public class Amount
             return;
         }
         float quanitityMax = getQuantityMax();
-        setQuantityMax(quanitityMax + getChangeAmount(quanitityMax));
+        setQuantityMax(getChangedAmount(quanitityMax, true));
     }
 
     public void decreaseAmountMax()
@@ -126,55 +120,66 @@ public class Amount
         }
 
         float quanitityMax = getQuantityMax();
-        float changeAmount = getChangeAmount(quanitityMax);
-        if(quanitityMax > changeAmount)
-        {
-            setQuantityMax(quanitityMax - changeAmount);
-        }
-        else
-        {
-            setQuantityMax(0);
-        }
+        float changedAmount = getChangedAmount(quanitityMax, false);
+        setQuantityMax(changedAmount);
     }
 
-    private float getChangeAmount(float quantity)
+    private static float[] valueSteps =
+            {0, 0.1f, 0.2f, 0.25f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f,
+             1.0f, 1.25f, 1.5f, 1.75f,
+             2.0f, 2.5f, 3.0f, 3.5f, 4.0f, 4.5f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f,
+             10.0f, 12.5f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f,
+             20.0f, 25.0f, 30.0f, 35.0f, 40.0f, 45.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f,
+             100.0f, 110.0f, 120.0f, 125.0f, 130.0f, 140.0f, 150.0f, 160.0f, 170.0f, 180.0f, 190.0f,
+             200.0f, 225.0f, 250.0f, 275.0f,
+             300.0f, 350.0f, 400.0f, 450.0f, 500.0f, 550.0f,
+             600.0f, 750.0f, 1000.0f, 1500.0f, 2000.0f, 3000.0f, 4000.0f, 5000.0f, 10000.0f};
+    private float getChangedAmount(float quantity, boolean bIncrease)
     {
         if(getUnit() == Unit.Unitless)
         {
             return 0f;
         }
 
-        if(quantity == 0.0f)
+        int position = Arrays.binarySearch(valueSteps, quantity);
+        if(position >= 0)
         {
-            return 1.0f;
-        }
-        else if(quantity < 0.01f)
-        {
-            return 0.001f;
-        }
-        else if(quantity < 0.1f)
-        {
-            return 0.01f;
-        }
-        else if(quantity < 1.0f)
-        {
-            return 0.1f;
-        }
-        else if(quantity < 10.0f)
-        {
-            return 1.0f;
-        }
-        else if(quantity < 100.0f)
-        {
-            return 10.0f;
-        }
-        else if(quantity < 1000.0f)
-        {
-            return 50.0f;
+            if(bIncrease)
+            {
+                if(position == valueSteps.length -1)
+                {
+                    return quantity;
+                }
+                return valueSteps[position + 1];
+            }
+            else
+            {
+                if(position == 0)
+                {
+                    return 0f;
+                }
+                return valueSteps[position - 1];
+            }
         }
         else
         {
-            return 100.0f;
+            int insertionPos = -position - 1;
+            if(bIncrease)
+            {
+                if(insertionPos == valueSteps.length)
+                {
+                    return quantity;
+                }
+                return valueSteps[insertionPos];
+            }
+            else
+            {
+                if(insertionPos == 0)
+                {
+                    return 0f;
+                }
+                return valueSteps[insertionPos - 1];
+            }
         }
     }
 

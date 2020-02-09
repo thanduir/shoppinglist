@@ -34,6 +34,7 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
@@ -507,6 +508,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
                 }
                 Amount amount = item.get().getAmount();
                 amount.setUnit(ingredient.get().getDefaultUnit());
+                amount.setQuantityMin(Unit.getDefaultQuantity(amount.getUnit()));
                 item.get().setAmount(amount);
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();
@@ -535,6 +537,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
                 }
                 Amount amount = item.get().getAmount();
                 amount.setUnit(ingredient.get().getDefaultUnit());
+                amount.setQuantityMin(Unit.getDefaultQuantity(amount.getUnit()));
                 item.get().setAmount(amount);
 
                 RecipeItemsAdapter adapter = (RecipeItemsAdapter) m_RecyclerView.getAdapter();

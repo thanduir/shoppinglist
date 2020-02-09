@@ -1,15 +1,11 @@
 TODO
 ====
 
-- +/- buttons: Change amount often not useful -> how to handle this better?
-    - Number handling (alternatives):
-        * runden auf vielfaches des änderungsintervalls
-        * Have a list and set to next higher / lower in list?
-- Inserting new item with e.g. Unit Gram: Default of "1g" is in general not useful... What to do? Ask for amount? Better default? No value?
-- "Schiebe-Einfügen": Besseres Feedback, dass etwas hinzugefügt wurde (unklar, ob es geklappt hat, wenn es nochmals einfügbar ist)!
-- Schiebe-Einfüg-Screen besser schliessbar (kein Platz um auf graue fläche zu klicken -> 2x klicken müssen)
-    -> Close Button oben bzw. cross to close there? Or just make sure it doesn't use the whole screen?
-- Element-aus-Gruppe-einfügen-Screen sollte visuell anders aussehen als der normale Schiebe-Einfüg-Screen
-    (damit man sie auseinanderhalten kann insb. wenn sie direkt aufeinander folgen (bzw. rekursiv aufgerufen werden)
+- "Schiebe-Einfügen":
+    * Besseres Feedback, dass etwas hinzugefügt wurde (unklar, ob es geklappt hat, wenn es nochmals einfügbar ist)!
+    * Screen besser schliessbar (kein Platz um auf graue fläche zu klicken -> 2x klicken müssen)
+        -> Close Button oben bzw. cross to close there? Or just make sure it doesn't use the whole screen?
+    * Element-aus-Gruppe-einfügen-Screen sollte visuell anders aussehen als der normale Schiebe-Einfüg-Screen
+        (damit man sie auseinanderhalten kann insb. wenn sie direkt aufeinander folgen (bzw. rekursiv aufgerufen werden)
 
 - nothing more planned at the moment

@@ -26,6 +26,7 @@ import java.util.Optional;
 import ch.phwidmer.einkaufsliste.data.Amount;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanningFactory;
 import ch.phwidmer.einkaufsliste.data.Ingredients;
+import ch.phwidmer.einkaufsliste.data.Unit;
 import ch.phwidmer.einkaufsliste.helper.ItemClickSupport;
 import ch.phwidmer.einkaufsliste.R;
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
@@ -261,6 +262,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                 }
                 Amount amount = item.get().getAmount();
                 amount.setUnit(ingredient.get().getDefaultUnit());
+                amount.setQuantityMin(Unit.getDefaultQuantity(amount.getUnit()));
                 item.get().setAmount(amount);
 
                 Pair<String, String> newItem = new Pair<>(strAdditonalInformation, strInput);

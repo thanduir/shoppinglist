@@ -20,6 +20,26 @@ public enum Unit {
 
     Unitless;
 
+    public static float getDefaultQuantity(@NonNull Unit unit)
+    {
+        switch(unit)
+        {
+            case Count:
+                return 1.0f;
+
+            case Kilogram:
+            case Gram:
+            case Liter:
+            case Deciliter:
+            case Milliliter:
+            case Dessertspoon:
+            case Teaspoon:
+            case Unitless:
+            default:
+                return 0.0f;
+        }
+    }
+
     public static String toUIString(@NonNull Context context, @NonNull Unit unit)
     {
         switch(unit)
