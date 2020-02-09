@@ -895,7 +895,11 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
 
         InputStringFree newFragment = InputStringFree.newInstance(v.getContext().getResources().getString(R.string.text_change_nrpersons, strRecipe));
         newFragment.setAdditionalInformation(strRecipe);
-        newFragment.setDefaultValue(((Float)recipe.get().getScalingFactor()).toString());
+        // Convert float to string without trailing zeros
+        float fFactor = recipe.get().getScalingFactor();
+        int i = (int) fFactor;
+        String strFactor = fFactor == i ? String.valueOf(i) : String.valueOf(fFactor);
+        newFragment.setDefaultValue(strFactor);
         newFragment.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "changeRecipeScaling");
     }
