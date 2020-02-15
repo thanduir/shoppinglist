@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -85,10 +86,13 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
         Button buttonOk = mainView.findViewById(R.id.ButtonOk);
         m_RecyclerView = mainView.findViewById(R.id.recyclerViewInputFromList);
         SearchView searchView = mainView.findViewById(R.id.searchViewInputFromList);
+        ImageView closeView = mainView.findViewById(R.id.close_overlay);
 
         textViewTitle.setText(m_Title);
 
         buttonCancel.setVisibility(View.INVISIBLE);
+
+        closeView.setOnClickListener((View v) -> dismiss());
 
         buttonOk.setEnabled(true);
         buttonOk.setText(R.string.button_close);

@@ -3,8 +3,8 @@ TODO
 
 - "Schiebe-Einfügen":
     * Besseres Feedback, dass etwas hinzugefügt wurde (unklar, ob es geklappt hat, wenn es nochmals einfügbar ist)!
-    * Screen besser schliessbar (kein Platz um auf graue fläche zu klicken -> 2x klicken müssen)
-        -> Close Button oben bzw. cross to close there? Or just make sure it doesn't use the whole screen?
+        -> Zahl in Klammern rechts (wenn schon eingefügt), die zeigt, wieviele instanzen davon schon eingefügt sind!
+        -> auch animation verlängern(?) / verbessern
     * Element-aus-Gruppe-einfügen-Screen sollte visuell anders aussehen als der normale Schiebe-Einfüg-Screen
         (damit man sie auseinanderhalten kann insb. wenn sie direkt aufeinander folgen (bzw. rekursiv aufgerufen werden)
 

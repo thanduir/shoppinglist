@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -68,10 +69,13 @@ public class InputStringFromList extends DialogFragment
         Button buttonOk = mainView.findViewById(R.id.ButtonOk);
         RecyclerView recyclerViewStringInput = mainView.findViewById(R.id.recyclerViewInputFromList);
         SearchView searchView = mainView.findViewById(R.id.searchViewInputFromList);
+        ImageView closeView = mainView.findViewById(R.id.close_overlay);
 
         textViewTitle.setText(m_Title);
 
         buttonCancel.setOnClickListener((View v) -> dismiss());
+
+        closeView.setOnClickListener((View v) -> dismiss());
 
         buttonOk.setEnabled(false);
         buttonOk.setOnClickListener((View v) ->
