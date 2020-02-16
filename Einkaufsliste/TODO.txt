@@ -1,11 +1,4 @@
 TODO
 ====
 
-- "Schiebe-Einfügen":
-    * Besseres Feedback, dass etwas hinzugefügt wurde (unklar, ob es geklappt hat, wenn es nochmals einfügbar ist)!
-        -> Zahl in Klammern rechts (wenn schon eingefügt), die zeigt, wieviele instanzen davon schon eingefügt sind!
-        -> auch animation verlängern(?) / verbessern
-    * Element-aus-Gruppe-einfügen-Screen sollte visuell anders aussehen als der normale Schiebe-Einfüg-Screen
-        (damit man sie auseinanderhalten kann insb. wenn sie direkt aufeinander folgen (bzw. rekursiv aufgerufen werden)
-
 - nothing more planned at the moment

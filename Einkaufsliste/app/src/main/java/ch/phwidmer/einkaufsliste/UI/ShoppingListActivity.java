@@ -177,6 +177,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
     public void onAddShoppingRecipe(@NonNull View v)
     {
         ArrayList<String> inputList = new ArrayList<>();
+        ArrayList<String> alreadyChosen = m_GroceryPlanning.shoppingList().getAllShoppingRecipeNames();
         for(Recipes.Recipe recipe : m_GroceryPlanning.recipes().getAllRecipes())
         {
             ShoppingRecipesAdapter adapterItems = (ShoppingRecipesAdapter)m_RecyclerViewRecipes.getAdapter();
@@ -186,13 +187,8 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
             }
             inputList.add(recipe.getName());
         }
-        if(inputList.isEmpty())
-        {
-            Toast.makeText(v.getContext(), R.string.text_all_recipes_alreay_added, Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_import_recipe), inputList, "", InputStringFromListMultiSelect.SelectionType.MultiSelect);
+        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_import_recipe), inputList, "", InputStringFromListMultiSelect.SelectionType.MultiSelect, alreadyChosen);
         newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
     }
 
@@ -340,7 +336,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
                     {
                         groupItems.add(item.getIngredient());
                     }
-                    InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_chose_from_group, strGroup), groupItems, strAdditonalInformation, InputStringFromListMultiSelect.SelectionType.SingleSelect);
+                    InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_chose_from_group, strGroup), groupItems, strAdditonalInformation, InputStringFromListMultiSelect.SelectionType.SingleSelect, new ArrayList<>());
                     newFragment.show(getSupportFragmentManager(), "addShoppingRecipe");
                     break;
                 }

@@ -332,17 +332,22 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
     public void onAddRecipeItem(@NonNull View v)
     {
         ArrayList<String> inputList = new ArrayList<>();
+        ArrayList<String> alreadyChosen = new ArrayList<>();
         for(Ingredients.Ingredient ingredient : m_GroceryPlanning.ingredients().getAllIngredients())
         {
             RecipeItemsAdapter adapterItems = (RecipeItemsAdapter)m_RecyclerView.getAdapter();
-            if(adapterItems == null || adapterItems.containsItem(ingredient.getName()))
+            if(adapterItems == null)
             {
                 continue;
+            }
+            if(adapterItems.containsItem(ingredient.getName()))
+            {
+                alreadyChosen.add(ingredient.getName());
             }
             inputList.add(ingredient.getName());
         }
 
-        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_add_ingredient), inputList, "", InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements);
+        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(getResources().getString(R.string.text_add_ingredient), inputList, "", InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements, alreadyChosen);
         newFragment.show(getSupportFragmentManager(), "addRecipeItem");
     }
 

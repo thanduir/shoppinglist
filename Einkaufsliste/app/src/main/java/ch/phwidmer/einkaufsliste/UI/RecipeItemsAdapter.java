@@ -636,21 +636,13 @@ public class RecipeItemsAdapter extends RecyclerView.Adapter<RecipeItemsAdapter.
             return;
         }
 
-        ArrayList<String> inputList = new ArrayList<>();
+        ArrayList<String> inputList = m_Ingredients.getAllIngredientNames();
         ArrayList<String> ingredientsUsed = getRecipeItemsList();
-        for(Ingredients.Ingredient ingredient : m_Ingredients.getAllIngredients())
-        {
-            if(ingredientsUsed.contains(ingredient.getName()))
-            {
-                continue;
-            }
-            inputList.add(ingredient.getName());
-        }
-
         InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(m_RecyclerView.getContext().getResources().getString(R.string.text_add_ingredient),
                                                                                                 inputList,
                                                                                                 strGroup,
-                                                                                                InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements);
+                                                                                                InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements,
+                                                                                                ingredientsUsed);
         newFragment.show(((AppCompatActivity) m_RecyclerView.getContext()).getSupportFragmentManager(), "addRecipeItemToGroup");
     }
 

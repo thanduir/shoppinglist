@@ -65,7 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            android:background="#FFFFFF"
             android:orientation="horizontal">
 
             <Button

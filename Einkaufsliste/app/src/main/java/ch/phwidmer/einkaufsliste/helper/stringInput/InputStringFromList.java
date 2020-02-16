@@ -98,7 +98,7 @@ public class InputStringFromList extends DialogFragment
 
         recyclerViewStringInput.setHasFixedSize(true);
         recyclerViewStringInput.setLayoutManager(new LinearLayoutManager(getContext()));
-        InputStringFromListAdapter adapter = new InputStringFromListAdapter(m_ListAllowedInputs);
+        InputStringFromListAdapter adapter = new InputStringFromListAdapter(m_ListAllowedInputs, new ArrayList<>());
         recyclerViewStringInput.setAdapter(adapter);
         ItemClickSupport.addTo(recyclerViewStringInput).setOnItemClickListener((RecyclerView recyclerView, int position, View v) ->
         {

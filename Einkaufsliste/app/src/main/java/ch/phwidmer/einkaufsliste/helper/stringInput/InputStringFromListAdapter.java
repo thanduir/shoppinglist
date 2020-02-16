@@ -26,6 +26,7 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
     private ArrayList<String> m_currentItems;
 
     private String m_ActiveElement;
+    private ArrayList<String> m_ChosenItems;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -39,9 +40,14 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
             m_TextView = v.findViewById(R.id.textView);
             m_id = "";
         }
+
+        String getId()
+        {
+            return m_id;
+        }
     }
 
-    InputStringFromListAdapter(@NonNull ArrayList<String> allItems)
+    InputStringFromListAdapter(@NonNull ArrayList<String> allItems, @NonNull ArrayList<String> preselectedItems)
     {
         m_allItems = allItems;
         m_currentItems = allItems;
@@ -51,6 +57,8 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
         {
             m_ItemsWithCompareKey.put(item, Helper.stripAccents(item).toLowerCase());
         }
+
+        m_ChosenItems = preselectedItems;
     }
 
     @Override @NonNull
@@ -71,11 +79,16 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
         updateAppearance(holder);
     }
 
-    private void updateAppearance(@NonNull InputStringFromListAdapter.ViewHolder holder)
+    void updateAppearance(@NonNull InputStringFromListAdapter.ViewHolder holder)
     {
         if(holder.m_id.equals(m_ActiveElement))
         {
             holder.m_TextView.setTypeface(holder.m_TextView.getTypeface(), Typeface.BOLD);
+            holder.m_Frame.setBackgroundColor(Color.LTGRAY);
+        }
+        else if(m_ChosenItems.contains(holder.m_id))
+        {
+            holder.m_TextView.setTypeface(null, Typeface.ITALIC);
             holder.m_Frame.setBackgroundColor(Color.LTGRAY);
         }
         else
@@ -102,20 +115,29 @@ class InputStringFromListAdapter extends RecyclerView.Adapter<InputStringFromLis
         return true;
     }
 
+    void setItemChosen(int position)
+    {
+        if(position < 0 || position > m_currentItems.size())
+        {
+            return;
+        }
+
+        String item = m_currentItems.get(position);
+        if(!m_ChosenItems.contains(item))
+        {
+            m_ChosenItems.add(item);
+        }
+        notifyDataSetChanged();
+    }
+
+    boolean isItemChosen(String name)
+    {
+        return m_ChosenItems.contains(name);
+    }
+
     String getItemAtPosition(int position)
     {
         return m_currentItems.get(position);
-    }
-
-    void removeItem(String element)
-    {
-        int position = m_currentItems.indexOf(element);
-        m_currentItems.remove(element);
-
-        m_allItems.remove(element);
-        m_ItemsWithCompareKey.remove(element);
-
-        notifyItemRemoved(position);
     }
 
     @Override

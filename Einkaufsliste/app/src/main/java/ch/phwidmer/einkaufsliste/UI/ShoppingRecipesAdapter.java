@@ -801,16 +801,17 @@ public class ShoppingRecipesAdapter extends RecyclerView.Adapter<ShoppingRecipes
         }
 
         ArrayList<String> inputList = new ArrayList<>();
+        ArrayList<String> alreadyChosen = new ArrayList<>();
         for(Ingredients.Ingredient ingredient : m_Ingredients.getAllIngredients())
         {
             if(getShoppingListItem(recipe.get(), ingredient.getName()).isPresent())
             {
-                continue;
+                alreadyChosen.add(ingredient.getName());
             }
             inputList.add(ingredient.getName());
         }
 
-        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient), inputList, strRecipe, InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements);
+        InputStringFromListMultiSelect newFragment = InputStringFromListMultiSelect.newInstance(v.getContext().getResources().getString(R.string.text_add_ingredient), inputList, strRecipe, InputStringFromListMultiSelect.SelectionType.MultiSelectDifferentElements, alreadyChosen);
         newFragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "addRecipeItem");
     }
 

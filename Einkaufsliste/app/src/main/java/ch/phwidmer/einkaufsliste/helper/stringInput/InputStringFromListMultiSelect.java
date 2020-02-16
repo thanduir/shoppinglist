@@ -34,16 +34,19 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
     private static final String m_keyAdditionalInformation  = "additionalInfo";
     private static final String m_keyListOnlyAllowed        = "listOnlyAllowed";
     private static final String m_keySelectionType          = "selectionType";
+    private static final String m_keyPreselectedItems       = "preselectedItems";
 
     private String              m_Title;
     private String              m_AdditionalInformation;
     private ArrayList<String>   m_ListAllowedInputs;
+    private ArrayList<String>   m_ListPreselectedItems;
     private SelectionType       m_SelectionType;
 
     private RecyclerView        m_RecyclerView;
 
     public static InputStringFromListMultiSelect newInstance(@NonNull String strTitle, @NonNull ArrayList<String> listAllowedInputs,
-                                                             @NonNull String strAdditonalInformation, SelectionType selectionType)
+                                                             @NonNull String strAdditonalInformation, SelectionType selectionType,
+                                                             @NonNull ArrayList<String> preselectedItems)
     {
         InputStringFromListMultiSelect f = new InputStringFromListMultiSelect();
 
@@ -52,6 +55,7 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
         args.putStringArrayList(m_keyListOnlyAllowed, listAllowedInputs);
         args.putString(m_keyAdditionalInformation, strAdditonalInformation);
         args.putInt(m_keySelectionType, selectionType.ordinal());
+        args.putStringArrayList(m_keyPreselectedItems, preselectedItems);
         f.setArguments(args);
 
         return f;
@@ -69,6 +73,7 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
         m_AdditionalInformation = getArguments().getString(m_keyAdditionalInformation);
         m_ListAllowedInputs = getArguments().getStringArrayList(m_keyListOnlyAllowed);
         m_SelectionType = SelectionType.values()[getArguments().getInt(m_keySelectionType)];
+        m_ListPreselectedItems = getArguments().getStringArrayList(m_keyPreselectedItems);
     }
 
     @Override
@@ -100,7 +105,7 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
 
         m_RecyclerView.setHasFixedSize(true);
         m_RecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        InputStringFromListAdapter adapter = new InputStringFromListAdapter(m_ListAllowedInputs);
+        InputStringFromListAdapter adapter = new InputStringFromListAdapter(m_ListAllowedInputs, m_ListPreselectedItems);
         m_RecyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(m_RecyclerView).setOnItemClickListener((RecyclerView recyclerView, int position, View v) -> searchView.clearFocus());
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ReactToTouchActionsCallback(this,
@@ -151,11 +156,13 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
 
         if(m_SelectionType == SelectionType.MultiSelect)
         {
+            stringInputAdapter.setItemChosen(position);
             stringInputAdapter.notifyItemChanged(position);
         }
         else if(m_SelectionType == SelectionType.MultiSelectDifferentElements)
         {
-            stringInputAdapter.removeItem(strInput);
+            stringInputAdapter.setItemChosen(position);
+            stringInputAdapter.notifyItemChanged(position);
         }
         else if(m_SelectionType == SelectionType.SingleSelect)
         {
@@ -166,6 +173,17 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
     @Override
     public boolean swipeAllowed(RecyclerView.ViewHolder vh)
     {
+        if(m_SelectionType == SelectionType.MultiSelectDifferentElements)
+        {
+            InputStringFromListAdapter stringInputAdapter = (InputStringFromListAdapter)m_RecyclerView.getAdapter();
+            if(stringInputAdapter == null)
+            {
+                return false;
+            }
+
+            InputStringFromListAdapter.ViewHolder holder = (InputStringFromListAdapter.ViewHolder)vh;
+            return !stringInputAdapter.isItemChosen(holder.getId());
+        }
         return true;
     }
 
@@ -178,6 +196,11 @@ public class InputStringFromListMultiSelect extends DialogFragment implements Re
     @Override
     public void clearViewBackground(@NonNull RecyclerView.ViewHolder vh)
     {
-        vh.itemView.setBackgroundColor(0);
+        InputStringFromListAdapter stringInputAdapter = (InputStringFromListAdapter)m_RecyclerView.getAdapter();
+        if(stringInputAdapter == null)
+        {
+            return;
+        }
+        stringInputAdapter.updateAppearance((InputStringFromListAdapter.ViewHolder)vh);
     }
 }
