@@ -1,4 +1,7 @@
 TODO
 ====
 
+- nötiges haltbarkeitsdatum / wann man etwas braucht datum in shoppinglist?
+- Per device GUID for recipebook?
+
 - nothing more planned at the moment
