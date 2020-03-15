@@ -13,7 +13,7 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class IngredientsFS extends Ingredients
 {
-    public class IngredientFS extends Ingredients.Ingredient
+    public static class IngredientFS extends Ingredients.Ingredient
     {
         String m_Name;
         private String m_Category = "";

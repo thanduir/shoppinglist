@@ -9,7 +9,7 @@ public abstract class Categories
 {
     // Categories
 
-    public abstract class Category
+    public static abstract class Category
     {
         public abstract String getName();
 

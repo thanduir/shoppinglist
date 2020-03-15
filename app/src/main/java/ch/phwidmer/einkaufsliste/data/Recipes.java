@@ -9,7 +9,7 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public abstract class Recipes
 {
-    public abstract class Recipe implements Helper.NamedObject
+    public static abstract class Recipe implements Helper.NamedObject
     {
         public abstract int getNumberOfPersons();
         public abstract void setNumberOfPersons(int number);

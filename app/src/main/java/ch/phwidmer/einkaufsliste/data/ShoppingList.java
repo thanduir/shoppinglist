@@ -2,14 +2,18 @@ package ch.phwidmer.einkaufsliste.data;
 
 import android.support.annotation.NonNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
 public abstract class ShoppingList
 {
-    public abstract class ShoppingRecipe
+    public static abstract class ShoppingRecipe
     {
         public abstract String getName();
+
+        public abstract LocalDate getDueDate();
+        public abstract void setDueDate(LocalDate date);
 
         // Current scaling factor used for the items in the list.
         public abstract float getScalingFactor();

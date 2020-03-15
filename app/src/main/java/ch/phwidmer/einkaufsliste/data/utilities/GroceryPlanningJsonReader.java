@@ -6,6 +6,7 @@ import android.util.JsonReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -41,19 +42,36 @@ class GroceryPlanningJsonReader {
             int iVersion = -1;
             while (jr.hasNext()) {
                 String name = jr.nextName();
-                if (name.equals("id")) {
-                    String id = jr.nextString();
-                    if (!id.equals("ch.phwidmer.einkaufsliste"))
+                switch(name)
+                {
+                    case "id":
                     {
-                        throw new IOException("Invalid ID string");
+                        String id = jr.nextString();
+                        if (!id.equals("ch.phwidmer.einkaufsliste"))
+                        {
+                            throw new IOException("Invalid ID string");
+                        }
+                        bIDFound = true;
+                        break;
                     }
-                    bIDFound = true;
-                }
-                else if (name.equals("version")) {
-                    iVersion = jr.nextInt();
-                    if (iVersion > JsonSerializer.SERIALIZING_VERSION)
+
+                    case "origin":
                     {
-                        throw new IOException("Invalid version");
+                        // Origin is not used here
+                        jr.beginArray();
+                        jr.nextString();
+                        jr.nextString();
+                        jr.endArray();
+                        break;
+                    }
+
+                    case "version":
+                    {
+                        iVersion = jr.nextInt();
+                        if (iVersion > JsonSerializer.SERIALIZING_VERSION)
+                        {
+                            throw new IOException("Invalid version");
+                        }
                     }
                 }
             }
@@ -393,6 +411,10 @@ class GroceryPlanningJsonReader {
                     if (currentName.equals("ScalingFactor"))
                     {
                         recipe.setScalingFactor((float)reader.nextDouble());
+                    }
+                    else if (currentName.equals("DueDate"))
+                    {
+                        recipe.setDueDate(LocalDate.parse(reader.nextString()));
                     }
                     else
                     {

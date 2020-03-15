@@ -1,7 +1,8 @@
 TODO
 ====
 
-- nötiges haltbarkeitsdatum / wann man etwas braucht datum in shoppinglist?
-- Per device GUID for recipebook?
+- nötiges haltbarkeitsdatum / wann man etwas braucht datum in shoppinglist (duedate):
+    * GUI-Integration!
+    * Implement db-backend for this
 
 - nothing more planned at the moment

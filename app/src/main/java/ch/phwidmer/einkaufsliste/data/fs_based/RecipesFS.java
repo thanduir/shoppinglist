@@ -15,7 +15,7 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class RecipesFS extends Recipes
 {
-    public class RecipeFS extends Recipes.Recipe
+    public static class RecipeFS extends Recipes.Recipe
     {
         String m_Name;
         private int m_NumberOfPersons = 0;

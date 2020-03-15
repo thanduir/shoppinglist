@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste.data.db_based;
 
 import android.support.annotation.NonNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,17 @@ public class ShoppingListDB extends ShoppingList
         public String getName()
         {
             return database.shoppingListDao().getShoppingRecipeName(m_Id);
+        }
+
+        // TODO: Implement due date correctly!
+        @Override
+        public LocalDate getDueDate()
+        {
+            return LocalDate.now();
+        }
+        @Override
+        public void setDueDate(LocalDate date)
+        {
         }
 
         // Current scaling factor used for the items in the list.

@@ -12,7 +12,7 @@ import ch.phwidmer.einkaufsliste.helper.Helper;
 
 public class CategoriesFS extends Categories
 {
-    public class CategoryFS extends Category
+    public static class CategoryFS extends Category
     {
         private String m_Category;
 
@@ -34,7 +34,7 @@ public class CategoriesFS extends Categories
         }
     }
 
-    public class SortOrderFS implements Categories.SortOrder
+    public static class SortOrderFS implements Categories.SortOrder
     {
         private String m_Name;
         ArrayList<Category> m_CategoriesOrder = new ArrayList<>();

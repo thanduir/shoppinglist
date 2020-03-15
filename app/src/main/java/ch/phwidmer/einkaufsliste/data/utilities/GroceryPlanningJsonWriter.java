@@ -23,7 +23,7 @@ class GroceryPlanningJsonWriter {
         m_GroceryPlanning = groceryPlanning;
     }
 
-    void write(@NonNull File fileToBeCreated) throws IOException
+    void write(@NonNull File fileToBeCreated,  String uniqueID) throws IOException
     {
         boolean moveFilesFirst = fileToBeCreated.exists();
 
@@ -53,6 +53,13 @@ class GroceryPlanningJsonWriter {
 
             jw.beginObject();
             jw.name("id").value("ch.phwidmer.einkaufsliste");
+
+            jw.name("origin");
+            jw.beginArray();
+            jw.value("android");
+            jw.value(uniqueID);
+            jw.endArray();
+
             jw.name("version").value(JsonSerializer.SERIALIZING_VERSION);
             jw.endObject();
 
@@ -207,6 +214,7 @@ class GroceryPlanningJsonWriter {
             writer.name(recipe.getName());
             writer.beginObject();
             writer.name("ScalingFactor").value(recipe.getScalingFactor());
+            writer.name("DueDate").value(recipe.getDueDate().toString());
             for(ShoppingListItem si : recipe.getAllItems())
             {
                 writer.name(si.getIngredient());

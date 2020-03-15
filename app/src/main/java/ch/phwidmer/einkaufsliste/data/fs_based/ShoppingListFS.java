@@ -2,6 +2,7 @@ package ch.phwidmer.einkaufsliste.data.fs_based;
 
 import android.support.annotation.NonNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -16,10 +17,11 @@ import ch.phwidmer.einkaufsliste.data.ShoppingListItem;
 
 public class ShoppingListFS extends ShoppingList
 {
-    public class ShoppingRecipeFS extends ShoppingRecipe
+    public static class ShoppingRecipeFS extends ShoppingRecipe
     {
         private String m_Name;
         private float m_fScalingFactor = 0.0f;
+        private LocalDate m_LocalDate = LocalDate.now();
         private LinkedList<ShoppingListItemFS> m_Items = new LinkedList<>();
 
         ShoppingRecipeFS(@NonNull String strName)
@@ -31,6 +33,17 @@ public class ShoppingListFS extends ShoppingList
         public String getName()
         {
             return m_Name;
+        }
+
+        @Override
+        public LocalDate getDueDate()
+        {
+            return m_LocalDate;
+        }
+        @Override
+        public void setDueDate(LocalDate date)
+        {
+            m_LocalDate = date;
         }
 
         // Current scaling factor used for the items in the list.

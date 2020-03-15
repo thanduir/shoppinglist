@@ -11,7 +11,7 @@ public abstract class Ingredients
 {
     public static final String c_strProvenanceEverywhere = "*EVERYWHERE*";
 
-    public abstract class Ingredient implements Helper.NamedObject
+    public static abstract class Ingredient implements Helper.NamedObject
     {
         public abstract String getCategory();
         public abstract void setCategory(@NonNull String cateogry);

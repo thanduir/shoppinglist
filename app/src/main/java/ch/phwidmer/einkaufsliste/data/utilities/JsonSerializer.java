@@ -1,16 +1,21 @@
 package ch.phwidmer.einkaufsliste.data.utilities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaScannerConnection;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import ch.phwidmer.einkaufsliste.data.GroceryPlanning;
 
 public class JsonSerializer {
     static final int SERIALIZING_VERSION = 1;
+
+    private static final String KEY_INSTANCE_UID    = "ch.phwidmer.einkaufsliste.INSTANCE_UID";
 
     private GroceryPlanning m_GroceryPlanning;
     private boolean         m_CheckDataConsistency = true;
@@ -29,7 +34,7 @@ public class JsonSerializer {
     public void saveDataToFile(@NonNull File fileToBeCreated, Context context) throws IOException
     {
         GroceryPlanningJsonWriter writer = new GroceryPlanningJsonWriter(m_GroceryPlanning);
-        writer.write(fileToBeCreated);
+        writer.write(fileToBeCreated, getUID(context));
 
         scanFile(context, fileToBeCreated);
     }
@@ -58,5 +63,24 @@ public class JsonSerializer {
                 new String[] {f.getAbsolutePath()},
                 new String[] {"application/json"},
                 null);
+    }
+
+    private String getUID(Context context)
+    {
+        if(context == null)
+        {
+            return "";
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if(!preferences.contains(KEY_INSTANCE_UID))
+        {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(KEY_INSTANCE_UID, UUID.randomUUID().toString());
+            editor.apply();
+        }
+
+        return preferences.getString(KEY_INSTANCE_UID, "");
     }
 }
