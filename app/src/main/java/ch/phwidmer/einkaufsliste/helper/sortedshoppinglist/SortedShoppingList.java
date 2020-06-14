@@ -105,7 +105,7 @@ public class SortedShoppingList
         Collections.sort(categoryItems, new SortByIngredients());
     }
 
-    private class SortByIngredients implements Comparator<Object> {
+    private static class SortByIngredients implements Comparator<Object> {
         public int compare(Object o1, Object o2) {
             CategoryShoppingItem s1 = (CategoryShoppingItem) o1;
             CategoryShoppingItem s2 = (CategoryShoppingItem) o2;

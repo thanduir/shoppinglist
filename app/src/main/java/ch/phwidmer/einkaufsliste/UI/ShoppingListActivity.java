@@ -269,7 +269,7 @@ public class ShoppingListActivity extends AppCompatActivity implements InputStri
 
             case "changeRecipeScaling": // See ShoppingRecipesAdapter
             {
-                float fNewValue = Float.valueOf(strInput);
+                float fNewValue = Float.parseFloat(strInput);
 
                 Optional<ShoppingList.ShoppingRecipe> recipe = m_GroceryPlanning.shoppingList().getShoppingRecipe(strAdditonalInformation);
                 if(!recipe.isPresent())

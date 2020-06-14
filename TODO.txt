@@ -1,8 +1,14 @@
 TODO
 ====
 
+- Json Fileformat v2 importer!
+    * add in UI possibility to change order of fixed-order lists? (RecipeItems etc.)
 - nötiges haltbarkeitsdatum / wann man etwas braucht datum in shoppinglist (duedate):
     * GUI-Integration!
     * Implement db-backend for this
+- in go shopping: gleiche zutaten mit untersch. eigenschaften (z.B. klein/gross, add. info.)
+    trotzdem zusammenfassen, aber darunter aufzählung der einzelnen sachen (e.g. * 3 Peperoni,
+    darunter eine zeile "2 gross" und eine "1 klein")
+- make sure all features from qt program are present and work the same!
 
 - nothing more planned at the moment
